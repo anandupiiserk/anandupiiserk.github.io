@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anandu Prabhakaran IIT Roorkee</title>
+    <title>Anandu Prabharakan - IIT Roorkee</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -188,10 +187,47 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            border-bottom: 3px solid transparent;
+            color: #a5b4fc;
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+        }
+        .nav-tab:hover {
+            color: white;
+            border-bottom-color: rgba(165, 180, 252, 0.5);
+        }
+        .nav-tab.active-tab {
+            color: white;
+            border-bottom-color: #818cf8;
+            font-weight: 700;
+        }
+        
+        .website-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .website-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body class="gradient-bg text-white w-screen min-h-screen flex justify-center items-start lg:items-center p-4">
 
+    <!-- Background Hazard Elements -->
     <div class="hazard-element cyclone" style="top: 15%; left: 10%;"></div>
     <div class="hazard-element fire" style="bottom: 10%; right: 5%;"></div>
     <div class="hazard-element cyclone-2" style="top: 60%; left: 75%;"></div>
@@ -203,87 +239,92 @@
     <div class="shape-blob blob-2"></div>
     <div class="shape-blob blob-3"></div>
 
-    <div class="glass-card w-full max-w-4xl p-8 md:p-12 rounded-3xl my-8">
+    <div class="glass-card w-full max-w-4xl p-8 md:p-12 rounded-3xl my-8" id="main-card">
         
-        <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400" id="header-name">Anandu P</h1>
-            <p class="text-gray-300 mt-2 text-lg" id="header-subtitle">Researcher at IIT Roorkee</p>
-
-            <div class="mt-4">
-                <a href="https://sites.google.com/view/anandu-prabhakar" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 text-gray-300 hover:text-indigo-300 transition-colors">
-                    <i class="fas fa-globe"></i>
-                    <span>Personal Website</span>
-                </a>
-            </div>
+        <div class="text-center mb-8">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400">Anandu P</h1>
+            <p class="text-gray-300 mt-2 text-lg">Researcher at IIT Roorkee</p>
+            
+            <!-- Website Link -->
+            <a href="https://sites.google.com/view/anandu-prabhakar" target="_blank" class="website-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                Visit My Website
+            </a>
         </div>
 
-        <div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-200">
-                <div>
-                    <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Education & Experience</h2>
-                    <div id="education-list">
-                        <div class="mb-4">
-                            <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">Ph.D. in Disaster Mitigation & Management</p>
-                            <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">CoEDMM, Indian Institute of Technology Roorkee</p>
-                            <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">PMRF Fellow (Jan 2023 - Present)</p>
-                            <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">MHRD-JRF Fellow (Jul 2022 - Dec 2022)</p>
-                        </div>
-                        <div class="mb-4">
-                            <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">M.Sc. Geological Sciences</p>
-                            <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Indian Institute of Science Education and Research (IISER) Kolkata</p>
-                        </div>
-                        <div class="mb-4">
-                            <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">Raman Charpak Fellow</p>
-                            <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Centre d'Écologie Fonctionnelle et Évolutive (CEFE), CNRS</p>
-                            <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Montpellier, Occitanie, France (Jul 2025 - Dec 2025)</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- Tabs Navigation -->
+        <div class="border-b border-gray-700/50 mb-8">
+            <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                <a href="#" class="nav-tab active-tab" data-tab="home">Home</a>
+            </nav>
+        </div>
 
-                <div>
-                    <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Contact</h2>
-                    <div class="flex flex-col space-y-3 mb-8">
-                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anandu_p@dm.iitr.ac.in" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 hover:text-cyan-300 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <span>anandu_p@dm.iitr.ac.in</span>
-                        </a>
-                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anandupiiserk@gmail.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 hover:text-cyan-300 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <span>anandupiiserk@gmail.com</span>
-                        </a>
-                    </div>
-
+        <!-- Tab Content -->
+        <div id="tab-content-container">
+            <!-- Home Tab -->
+            <div id="home-content" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-200">
+                    <!-- Left Column -->
                     <div>
+                        <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Education & Experience</h2>
+                        <div id="education-list">
+                            <div class="education-item mb-4">
+                                <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">Ph.D. in Disaster Mitigation & Management</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">CoEDMM, Indian Institute of Technology Roorkee</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">PMRF Fellow (Jan 2023 - Present)</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">MHRD-JRF Fellow (Jul 2022 - Dec 2022)</p>
+                            </div>
+                            <div class="education-item mb-4">
+                                <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">M.Sc. Geological Sciences</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Indian Institute of Science Education and Research (IISER) Kolkata</p>
+                            </div>
+                            <div class="education-item mb-4">
+                                <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">Raman Charpak Fellow</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Centre d'Écologie Fonctionnelle et Évolutive (CEFE), CNRS</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Montpellier, Occitanie, France (Jul 2025 - Dec 2025)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Contact</h2>
+                        <div class="flex flex-col space-y-3 mb-8">
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anandu_p@dm.iitr.ac.in" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 hover:text-cyan-300 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <span>anandu_p@dm.iitr.ac.in</span>
+                            </a>
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anandupiiserk@gmail.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 hover:text-cyan-300 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <span>anandupiiserk@gmail.com</span>
+                            </a>
+                        </div>
+
                         <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Research Interests</h2>
                         <div id="interests-container" class="flex flex-wrap gap-2">
-                            <span class="bg-gray-700/50 text-cyan-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
-                                Forest Fire Modelling
-                            </span>
-                            <span class="bg-gray-700/50 text-amber-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
-                                Early Warning Systems
-                            </span>
-                            <span class="bg-gray-700/50 text-green-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
-                                NWP & WRF
-                            </span>
-                            <span class="bg-gray-700/50 text-sky-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
-                                Tropical Cyclones
-                            </span>
-                            <span class="bg-gray-700/50 text-rose-400 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
-                                Climate Change Disasters
-                            </span>
+                            <span class="bg-gray-700/50 text-cyan-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">Forest Fire Modelling</span>
+                            <span class="bg-gray-700/50 text-amber-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">Early Warning Systems</span>
+                            <span class="bg-gray-700/50 text-green-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">NWP & WRF</span>
+                            <span class="bg-gray-700/50 text-sky-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">Tropical Cyclones</span>
+                            <span class="bg-gray-700/50 text-rose-400 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">Climate Change Disasters</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
+    <!-- Custom context menu -->
     <div id="custom-menu" class="hidden absolute rounded-lg text-sm z-50">
         <button id="copy-btn">Copy</button>
         <button id="cut-btn">Cut</button>
         <button id="print-btn">Print</button>
     </div>
-
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -294,8 +335,8 @@
         const copyBtn = document.getElementById('copy-btn');
         const cutBtn = document.getElementById('cut-btn');
         const printBtn = document.getElementById('print-btn');
-        const glassCard = document.querySelector('.glass-card');
-        
+        const glassCard = document.getElementById('main-card');
+
         // 2. Custom context menu logic
         document.addEventListener('mouseup', (e) => {
             const selection = window.getSelection().toString();
@@ -328,7 +369,7 @@
 
         cutBtn.addEventListener('click', () => {
             // Note: execCommand('cut') only works in contentEditable elements.
-            // It will likely not work here, but is included for completeness.
+            // It will likely not work here, but is included per the request.
             document.execCommand('cut');
             customMenu.style.display = 'none';
         });
@@ -338,8 +379,8 @@
             customMenu.style.display = 'none';
         });
         
-        // 4. Parallax effect for the glass card
-        document.body.addEventListener('mousemove', (e) => {
+        // 4. Parallax effect for the glass card - only when hovering over the card
+        glassCard.addEventListener('mousemove', (e) => {
             if(!glassCard) return;
             
             // Only apply parallax on screens wider than 1024px
@@ -349,22 +390,21 @@
             }
 
             const { clientX, clientY } = e;
-            const { innerWidth, innerHeight } = window;
+            const { left, top, width, height } = glassCard.getBoundingClientRect();
 
-            // Calculate rotation based on cursor position
-            const xRotation = (clientY / innerHeight - 0.5) * -15; 
-            const yRotation = (clientX / innerWidth - 0.5) * 15;
+            // Calculate rotation based on cursor position relative to the card
+            const xRotation = ((clientY - top) / height - 0.5) * -15; 
+            const yRotation = ((clientX - left) / width - 0.5) * 15;
 
             glassCard.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
         });
 
-        // Reset transform when mouse leaves the body
-        document.body.addEventListener('mouseleave', () => {
+        // Reset transform when mouse leaves the card
+        glassCard.addEventListener('mouseleave', () => {
             if(glassCard){
                  glassCard.style.transform = `rotateX(0deg) rotateY(0deg)`;
             }
         });
-
     });
     </script>
 </body>
