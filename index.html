@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anandu Prabharakan - IIT Roorkee</title>
+    <title>Anandu P - Welcome Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -223,6 +224,90 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
+        
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #e2e8f0;
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(109, 40, 217, 0.3);
+            color: #e2e8f0;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .social-links a:hover {
+            background: #8b5cf6;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .website-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(109, 40, 217, 0.3);
+            color: #e2e8f0;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .website-icon:hover {
+            background: #8b5cf6;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .copyright {
+            font-size: 1rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .social-links {
+                gap: 10px;
+            }
+            
+            .social-links a, .website-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body class="gradient-bg text-white w-screen min-h-screen flex justify-center items-start lg:items-center p-4">
@@ -317,6 +402,40 @@
             </div>
         </div>
 
+        <!-- Footer -->
+        <footer>
+            <div class="social-links">
+                <a href="https://x.com/anandup10" title="Twitter" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.blogger.com/profile/03363089627354540732" title="Blogger" target="_blank">
+                    <i class="fab fa-blogger"></i>
+                </a>
+                <a href="https://orcid.org/0000-0001-6621-2522" title="ORCID" target="_blank">
+                    <i class="fab fa-orcid"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/anandu-p-7a353272/" title="LinkedIn" target="_blank">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="https://www.researchgate.net/profile/Anandu-Prabhakaran" title="ResearchGate" target="_blank">
+                    <i class="fab fa-researchgate"></i>
+                </a>
+                <a href="https://scholar.google.com/citations?user=0PK5HxYAAAAJ&hl=en" title="Google Scholar" target="_blank">
+                    <i class="fas fa-graduation-cap"></i>
+                </a>
+                <a href="https://github.com/anandupiiserk" title="GitHub" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <!-- Website Icon -->
+                <a href="https://sites.google.com/view/anandu-prabhakar" title="My Website" target="_blank" class="website-icon">
+                    <i class="fas fa-globe"></i>
+                </a>
+            </div>
+            <div class="copyright">
+                <i class="far fa-copyright"></i>
+                <span id="copyright-year"></span>
+            </div>
+        </footer>
     </div>
 
     <!-- Custom context menu -->
@@ -337,7 +456,14 @@
         const printBtn = document.getElementById('print-btn');
         const glassCard = document.getElementById('main-card');
 
-        // 2. Custom context menu logic
+        // 2. Auto-update copyright year
+        const copyrightElement = document.getElementById('copyright-year');
+        if (copyrightElement) {
+            const currentYear = new Date().getFullYear();
+            copyrightElement.textContent = `${currentYear} Anandu Prabhakaran`;
+        }
+
+        // 3. Custom context menu logic
         document.addEventListener('mouseup', (e) => {
             const selection = window.getSelection().toString();
             // Check if it's a left click and there's a selection
@@ -361,7 +487,7 @@
             }
         });
 
-        // 3. Menu button actions
+        // 4. Menu button actions
         copyBtn.addEventListener('click', () => {
             document.execCommand('copy');
             customMenu.style.display = 'none';
@@ -379,7 +505,7 @@
             customMenu.style.display = 'none';
         });
         
-        // 4. Parallax effect for the glass card - only when hovering over the card
+        // 5. Parallax effect for the glass card - only when hovering over the card
         glassCard.addEventListener('mousemove', (e) => {
             if(!glassCard) return;
             
