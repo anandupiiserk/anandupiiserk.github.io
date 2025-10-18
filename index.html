@@ -68,18 +68,18 @@
             font-family: 'Inter', sans-serif;
             perspective: 1000px;
             overflow-x: hidden;
-        }
-        
-        @media (min-width: 1024px) {
-            body {
-                overflow: hidden;
-            }
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .gradient-bg {
             background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes gradientAnimation {
@@ -98,6 +98,9 @@
             transition: transform 0.1s ease-out;
             position: relative;
             z-index: 10;
+            margin: auto;
+            width: 100%;
+            max-width: 1200px;
         }
 
         @keyframes fadeIn {
@@ -363,10 +366,22 @@
                 height: 45px;
                 font-size: 1.2rem;
             }
+            
+            .glass-card {
+                margin: 20px auto;
+                padding: 20px;
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-height: 800px) {
+            .glass-card {
+                margin: 20px auto;
+            }
         }
     </style>
 </head>
-<body class="gradient-bg text-white w-screen min-h-screen flex justify-center items-start lg:items-center p-4">
+<body class="gradient-bg text-white w-screen min-h-screen p-4">
 
     <!-- Background Hazard Elements -->
     <div class="hazard-element cyclone" style="top: 15%; left: 10%;"></div>
@@ -380,7 +395,7 @@
     <div class="shape-blob blob-2"></div>
     <div class="shape-blob blob-3"></div>
 
-    <div class="glass-card w-full max-w-4xl p-8 md:p-12 rounded-3xl my-8" id="main-card">
+    <div class="glass-card p-8 md:p-12 rounded-3xl" id="main-card">
         
         <div class="text-center mb-8">
             <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400">Anandu P</h1>
