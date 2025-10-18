@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anandu P - Welcome Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
+        
+        @media (min-width: 1024px) {
+            body {
+                overflow: hidden;
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            animation: fadeIn 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: transform 0.1s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .hazard-element {
+            position: absolute;
+            opacity: 0.1;
+            filter: blur(15px);
+            animation: pulse 10s infinite ease-in-out alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .cyclone {
+            width: 30vw; height: 30vw;
+            background: radial-gradient(circle, rgba(64,101,133,1) 0%, rgba(30,48,64,0) 70%);
+            border-radius: 50%;
+            top: 10%; left: 10%;
+            animation: rotateCyclone 40s linear infinite, pulse 10s infinite ease-in-out alternate;
+            transform-origin: 50% 50%;
+        }
+
+        .fire {
+            width: 25vw; height: 25vw;
+            background: radial-gradient(circle, rgba(255,100,0,1) 0%, rgba(255,0,0,0) 70%);
+            border-radius: 50%;
+            bottom: 5%; right: 15%;
+            animation: flareUp 15s infinite ease-in-out alternate, pulse 10s infinite ease-in-out alternate;
+        }
+
+        .cyclone-2 {
+            width: 20vw; height: 20vw;
+            background: radial-gradient(circle, rgba(40,60,80,1) 0%, rgba(20,30,40,0) 70%);
+            border-radius: 50%;
+            top: 60%; left: 70%;
+            animation: rotateCyclone 30s linear infinite reverse, pulse 12s infinite ease-in-out alternate;
+            transform-origin: 50% 50%;
+        }
+
+        .fire-2 {
+            width: 15vw; height: 15vw;
+            background: radial-gradient(circle, rgba(255,50,0,1) 0%, rgba(200,0,0,0) 70%);
+            border-radius: 50%;
+            top: 20%; right: 25%;
+            animation: flareUp 20s infinite ease-in-out alternate reverse, pulse 8s infinite ease-in-out alternate;
+        }
+
+        @keyframes rotateCyclone {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes flareUp {
+            0% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.1); opacity: 0.15; }
+            100% { transform: scale(1); opacity: 0.1; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.15; }
+            100% { opacity: 0.1; }
+        }
+        
+        .shape-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+        }
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            left: -150px;
+            background: rgba(142, 68, 173, 0.5);
+            animation: moveBlob1 25s alternate infinite;
+        }
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            right: -100px;
+            background: rgba(52, 152, 219, 0.5);
+            animation: moveBlob2 20s alternate infinite;
+        }
+        .blob-3 {
+            width: 200px;
+            height: 200px;
+            bottom: 50%;
+            left: 40%;
+            background: rgba(243, 156, 18, 0.4);
+            animation: moveBlob3 18s alternate infinite;
+        }
+
+        @keyframes moveBlob1 {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(100px, 50px) scale(1.2); }
+        }
+        @keyframes moveBlob2 {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(-80px, -40px) scale(0.8); }
+        }
+        @keyframes moveBlob3 {
+            from { transform: translate(0, 0) scale(1) rotate(0deg); }
+            to { transform: translate(150px, -100px) scale(1.3) rotate(180deg); }
+        }
+        
+        ::selection {
+            background: #8e44ad;
+            color: #e0e7ff;
+        }
+        
+        #custom-menu {
+            background: rgba(30, 30, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.3);
+            padding: 8px;
+        }
+        #custom-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 16px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: #e0e7ff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        #custom-menu button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            border-bottom: 3px solid transparent;
+            color: #a5b4fc;
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-tab:hover {
+            color: white;
+            border-bottom-color: rgba(165, 180, 252, 0.5);
+        }
+        .nav-tab.active-tab {
+            color: white;
+            border-bottom-color: #818cf8;
+            font-weight: 700;
+        }
+
+        /* Admin panel styles */
+        .admin-panel {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+        
+        /* All edit controls are hidden by default */
+        .edit-btn,
+        .delete-section-btn,
+        .drag-handle,
+        .move-buttons,
+        .delete-btn,
+        .add-interest-btn,
+        .add-item-btn,
+        .add-section-btn,
+        .tab-edit-btn,
+        .add-tab-btn {
+            display: none !important;
+        }
+        
+        /* Show edit controls only in admin mode */
+        .admin-edit-mode .edit-btn,
+        .admin-edit-mode .delete-section-btn,
+        .admin-edit-mode .drag-handle,
+        .admin-edit-mode .move-buttons,
+        .admin-edit-mode .add-interest-btn,
+        .admin-edit-mode .add-item-btn,
+        .admin-edit-mode .add-section-btn,
+        .admin-edit-mode .tab-edit-btn,
+        .admin-edit-mode .add-tab-btn {
+            display: flex !important;
+        }
+        
+        .admin-edit-mode .research-interest .delete-btn {
+            display: none !important;
+        }
+        
+        .admin-edit-mode .research-interest:hover .delete-btn {
+            display: flex !important;
+        }
+        
+        .admin-edit-mode .edit-section:hover .edit-btn,
+        .admin-edit-mode .edit-section:hover .delete-section-btn {
+            display: flex !important;
+        }
+        
+        .admin-edit-mode .nav-tab:hover .tab-edit-btn {
+            display: flex !important;
+        }
+        
+        .admin-edit-mode .education-item {
+            position: relative;
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-edit-mode .education-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 8px;
+        }
+        
+        .admin-edit-mode .education-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .education-item .drag-handle {
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: move;
+        }
+        
+        .education-item .move-buttons {
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .education-item .move-buttons button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .education-item .move-buttons button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .research-interest {
+            position: relative;
+        }
+        
+        .research-interest .delete-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: rgba(255, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .add-interest-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .add-interest-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .edit-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-size: 12px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .edit-section {
+            position: relative;
+        }
+        
+        .add-section-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .add-section-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .add-item-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .add-item-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .delete-section-btn {
+            position: absolute;
+            top: 5px;
+            right: 35px;
+            background: rgba(255, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-size: 12px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .tab-edit-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .add-tab-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .add-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: rgba(30, 30, 45, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #4f46e5;
+            border: none;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #4338ca;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.8);
+            border: none;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: rgba(220, 38, 38, 0.9);
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white w-screen min-h-screen flex justify-center items-start lg:items-center p-4">
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-panel fixed top-0 left-0 w-full py-2 px-4 hidden">
+        <div class="flex justify-between items-center">
+            <div class="text-sm font-bold">Admin Mode</div>
+            <div class="flex gap-2">
+                <button id="save-changes" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">Save Changes</button>
+                <button id="exit-admin" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Exit Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Hazard Elements -->
+    <div class="hazard-element cyclone" style="top: 15%; left: 10%;"></div>
+    <div class="hazard-element fire" style="bottom: 10%; right: 5%;"></div>
+    <div class="hazard-element cyclone-2" style="top: 60%; left: 75%;"></div>
+    <div class="hazard-element fire-2" style="top: 20%; right: 30%;"></div>
+    <div class="hazard-element fire" style="bottom: 40%; left: 20%; animation-delay: -7s; animation-duration: 18s;"></div>
+    <div class="hazard-element cyclone" style="top: 5%; right: 5%; animation-delay: -12s; animation-duration: 35s;"></div>
+
+    <div class="shape-blob blob-1"></div>
+    <div class="shape-blob blob-2"></div>
+    <div class="shape-blob blob-3"></div>
+
+    <div class="glass-card w-full max-w-4xl p-8 md:p-12 rounded-3xl my-8">
+        
+        <div class="text-center mb-8 edit-section">
+            <button class="edit-btn" data-target="header"><i class="fas fa-edit"></i></button>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400" id="header-name">Anandu P</h1>
+            <p class="text-gray-300 mt-2 text-lg" id="header-subtitle">Researcher at IIT Roorkee</p>
+            
+            <!-- Admin Login Button -->
+            <div class="mt-4">
+                <button id="admin-login" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                    <i class="fas fa-lock mr-2"></i>Admin Login
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="border-b border-gray-700/50 mb-8">
+            <nav class="-mb-px flex space-x-6" aria-label="Tabs" id="tabs-container">
+                <a href="#" class="nav-tab active-tab" data-tab="home">
+                    Home
+                    <button class="tab-edit-btn" data-tab="home"><i class="fas fa-edit"></i></button>
+                </a>
+                <a href="#" class="nav-tab" data-tab="about">
+                    About Me
+                    <button class="tab-edit-btn" data-tab="about"><i class="fas fa-edit"></i></button>
+                </a>
+                <a href="#" class="nav-tab" data-tab="gallery">
+                    Gallery
+                    <button class="tab-edit-btn" data-tab="gallery"><i class="fas fa-edit"></i></button>
+                </a>
+                <button class="add-tab-btn">+ Add Tab</button>
+            </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab-content-container">
+            <!-- Home Tab -->
+            <div id="home-content" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-200">
+                    <!-- Left Column -->
+                    <div class="edit-section">
+                        <button class="edit-btn" data-target="education"><i class="fas fa-edit"></i></button>
+                        <button class="delete-section-btn"><i class="fas fa-trash"></i></button>
+                        <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Education & Experience</h2>
+                        <div id="education-list">
+                            <div class="education-item mb-4" data-id="1">
+                                <i class="fas fa-grip-lines drag-handle"></i>
+                                <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">Ph.D. in Disaster Mitigation & Management</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">CoEDMM, Indian Institute of Technology Roorkee</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">PMRF Fellow (Jan 2023 - Present)</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">MHRD-JRF Fellow (Jul 2022 - Dec 2022)</p>
+                                <div class="move-buttons">
+                                    <button class="move-up"><i class="fas fa-arrow-up"></i></button>
+                                    <button class="move-down"><i class="fas fa-arrow-down"></i></button>
+                                    <button class="edit-item"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-item"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="education-item mb-4" data-id="2">
+                                <i class="fas fa-grip-lines drag-handle"></i>
+                                <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">M.Sc. Geological Sciences</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Indian Institute of Science Education and Research (IISER) Kolkata</p>
+                                <div class="move-buttons">
+                                    <button class="move-up"><i class="fas fa-arrow-up"></i></button>
+                                    <button class="move-down"><i class="fas fa-arrow-down"></i></button>
+                                    <button class="edit-item"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-item"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="education-item mb-4" data-id="3">
+                                <i class="fas fa-grip-lines drag-handle"></i>
+                                <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">Raman Charpak Fellow</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Centre d'Écologie Fonctionnelle et Évolutive (CEFE), CNRS</p>
+                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Montpellier, Occitanie, France (Jul 2025 - Dec 2025)</p>
+                                <div class="move-buttons">
+                                    <button class="move-up"><i class="fas fa-arrow-up"></i></button>
+                                    <button class="move-down"><i class="fas fa-arrow-down"></i></button>
+                                    <button class="edit-item"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-item"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="add-item-btn">+ Add Education/Experience</button>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="edit-section">
+                        <button class="edit-btn" data-target="contact"><i class="fas fa-edit"></i></button>
+                        <button class="delete-section-btn"><i class="fas fa-trash"></i></button>
+                        <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Contact</h2>
+                        <div class="flex flex-col space-y-3 mb-8">
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anandu_p@dm.iitr.ac.in" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 hover:text-cyan-300 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <span>anandu_p@dm.iitr.ac.in</span>
+                            </a>
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anandupiiserk@gmail.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 hover:text-cyan-300 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <span>anandupiiserk@gmail.com</span>
+                            </a>
+                        </div>
+
+                        <div class="edit-section">
+                            <button class="edit-btn" data-target="interests"><i class="fas fa-edit"></i></button>
+                            <button class="delete-section-btn"><i class="fas fa-trash"></i></button>
+                            <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Research Interests</h2>
+                            <div id="interests-container" class="flex flex-wrap gap-2">
+                                <span class="research-interest bg-gray-700/50 text-cyan-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
+                                    Forest Fire Modelling
+                                    <button class="delete-btn"><i class="fas fa-times"></i></button>
+                                </span>
+                                <span class="research-interest bg-gray-700/50 text-amber-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
+                                    Early Warning Systems
+                                    <button class="delete-btn"><i class="fas fa-times"></i></button>
+                                </span>
+                                <span class="research-interest bg-gray-700/50 text-green-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
+                                    NWP & WRF
+                                    <button class="delete-btn"><i class="fas fa-times"></i></button>
+                                </span>
+                                <span class="research-interest bg-gray-700/50 text-sky-300 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
+                                    Tropical Cyclones
+                                    <button class="delete-btn"><i class="fas fa-times"></i></button>
+                                </span>
+                                <span class="research-interest bg-gray-700/50 text-rose-400 text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default">
+                                    Climate Change Disasters
+                                    <button class="delete-btn"><i class="fas fa-times"></i></button>
+                                </span>
+                                <button id="add-interest" class="add-interest-btn">
+                                    <i class="fas fa-plus mr-1"></i> Add Interest
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-section-btn">+ Add New Section</button>
+            </div>
+
+            <!-- About Me Tab -->
+            <div id="about-content" class="tab-content hidden">
+                 <div class="text-gray-200 space-y-4 edit-section">
+                    <button class="edit-btn" data-target="about"><i class="fas fa-edit"></i></button>
+                    <h2 class="text-xl font-bold text-gray-100">About Me</h2>
+                    <p>I am a dedicated researcher with a passion for understanding and mitigating the impacts of climate-induced disasters. My work focuses on developing predictive models for events like forest fires and tropical cyclones, aiming to create robust early warning systems that can save lives and protect ecosystems.</p>
+                    <p>Through my doctoral research and collaborations, I delve into complex climate data, utilizing Numerical Weather Prediction (NWP) and the Weather Research and Forecasting (WRF) model to simulate and forecast hazardous conditions. I am driven by the challenge of translating complex scientific insights into actionable strategies for disaster management.</p>
+                 </div>
+                 <button class="add-section-btn">+ Add New Section</button>
+            </div>
+
+            <!-- Gallery Tab -->
+            <div id="gallery-content" class="tab-content hidden">
+                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 1</div>
+                    <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 2</div>
+                    <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 3</div>
+                    <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 4</div>
+                    <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 5</div>
+                    <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 6</div>
+                 </div>
+                 <button class="add-section-btn">+ Add New Section</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Custom context menu -->
+    <div id="custom-menu" class="hidden absolute rounded-lg text-sm z-50">
+        <button id="copy-btn">Copy</button>
+        <button id="cut-btn">Cut</button>
+        <button id="print-btn">Print</button>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Edit Content</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="modal-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Edit Modal -->
+    <div id="tab-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="tab-modal-title">Edit Tab</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="tab-modal-body">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="tab-modal-cancel">Cancel</button>
+                <button class="btn btn-danger" id="tab-modal-delete">Delete Tab</button>
+                <button class="btn btn-primary" id="tab-modal-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Disable default right-click context menu
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        const customMenu = document.getElementById('custom-menu');
+        const copyBtn = document.getElementById('copy-btn');
+        const cutBtn = document.getElementById('cut-btn');
+        const printBtn = document.getElementById('print-btn');
+        const glassCard = document.querySelector('.glass-card');
+        const tabsContainer = document.getElementById('tabs-container');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const adminPanel = document.getElementById('admin-panel');
+        const adminLoginBtn = document.getElementById('admin-login');
+        const saveChangesBtn = document.getElementById('save-changes');
+        const exitAdminBtn = document.getElementById('exit-admin');
+        const educationList = document.getElementById('education-list');
+        const interestsContainer = document.getElementById('interests-container');
+        const addInterestBtn = document.getElementById('add-interest');
+        const editModal = document.getElementById('edit-modal');
+        const modalClose = document.querySelector('.modal-close');
+        const modalCancel = document.getElementById('modal-cancel');
+        const modalSave = document.getElementById('modal-save');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const tabModal = document.getElementById('tab-modal');
+        const tabModalClose = document.querySelectorAll('.modal-close')[1];
+        const tabModalCancel = document.getElementById('tab-modal-cancel');
+        const tabModalDelete = document.getElementById('tab-modal-delete');
+        const tabModalSave = document.getElementById('tab-modal-save');
+        const tabModalTitle = document.getElementById('tab-modal-title');
+        const tabModalBody = document.getElementById('tab-modal-body');
+        const addTabBtn = document.querySelector('.add-tab-btn');
+
+        let isAdminMode = false;
+        let draggedItem = null;
+        let currentEditTarget = null;
+        let currentTabEditTarget = null;
+
+        // 2. Tab switching logic
+        function setupTabSwitching() {
+            const tabs = document.querySelectorAll('.nav-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    // Don't switch tabs if clicking on edit button
+                    if (e.target.classList.contains('tab-edit-btn') || 
+                        e.target.closest('.tab-edit-btn')) {
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    
+                    // Deactivate all tabs
+                    tabs.forEach(item => item.classList.remove('active-tab'));
+                    
+                    // Activate the clicked tab
+                    tab.classList.add('active-tab');
+                    
+                    const targetId = tab.dataset.tab;
+                    
+                    // Hide all content
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    // Show the target content
+                    const targetContent = document.getElementById(targetId + '-content');
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                    }
+                });
+            });
+        }
+        
+        // Initialize tab switching
+        setupTabSwitching();
+
+        // 3. Custom context menu logic
+        document.addEventListener('mouseup', (e) => {
+            const selection = window.getSelection().toString();
+            // Check if it's a left click and there's a selection
+            if (e.button === 0 && selection.length > 0) {
+                // Position and show the menu
+                const x = e.clientX;
+                const y = e.clientY;
+                customMenu.style.top = `${y}px`;
+                customMenu.style.left = `${x}px`;
+                customMenu.style.display = 'block';
+            } else {
+                // Hide the menu if no selection
+                customMenu.style.display = 'none';
+            }
+        });
+        
+        // Hide menu on any mousedown, allows re-selecting text easily
+         document.addEventListener('mousedown', (e) => {
+            if (customMenu.style.display === 'block' && !customMenu.contains(e.target)) {
+                customMenu.style.display = 'none';
+            }
+        });
+
+        // 4. Menu button actions
+        copyBtn.addEventListener('click', () => {
+            document.execCommand('copy');
+            customMenu.style.display = 'none';
+        });
+
+        cutBtn.addEventListener('click', () => {
+            // Note: execCommand('cut') only works in contentEditable elements.
+            // It will likely not work here, but is included per the request.
+            document.execCommand('cut');
+            customMenu.style.display = 'none';
+        });
+
+        printBtn.addEventListener('click', () => {
+            window.print();
+            customMenu.style.display = 'none';
+        });
+        
+        // 5. Parallax effect for the glass card
+        document.body.addEventListener('mousemove', (e) => {
+            if(!glassCard) return;
+            
+            // Only apply parallax on screens wider than 1024px
+            if (window.innerWidth < 1024) {
+                glassCard.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                return;
+            }
+
+            const { clientX, clientY } = e;
+            const { innerWidth, innerHeight } = window;
+
+            // Calculate rotation based on cursor position
+            const xRotation = (clientY / innerHeight - 0.5) * -15; 
+            const yRotation = (clientX / innerWidth - 0.5) * 15;
+
+            glassCard.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+        });
+
+        // Reset transform when mouse leaves the body
+        document.body.addEventListener('mouseleave', () => {
+            if(glassCard){
+                 glassCard.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            }
+        });
+
+        // 6. Admin Panel Logic
+        adminLoginBtn.addEventListener('click', () => {
+            // No username/password required as per request
+            enterAdminMode();
+        });
+
+        exitAdminBtn.addEventListener('click', () => {
+            exitAdminMode();
+        });
+
+        saveChangesBtn.addEventListener('click', () => {
+            saveChanges();
+        });
+
+        // Modal event listeners
+        modalClose.addEventListener('click', closeModal);
+        modalCancel.addEventListener('click', closeModal);
+        modalSave.addEventListener('click', saveModal);
+        
+        tabModalClose.addEventListener('click', closeTabModal);
+        tabModalCancel.addEventListener('click', closeTabModal);
+        tabModalSave.addEventListener('click', saveTabModal);
+        tabModalDelete.addEventListener('click', deleteTab);
+
+        function enterAdminMode() {
+            isAdminMode = true;
+            document.body.classList.add('admin-edit-mode');
+            adminPanel.classList.remove('hidden');
+            adminLoginBtn.classList.add('hidden');
+            
+            // Initialize drag and drop for education items
+            initDragAndDrop();
+            
+            // Add event listeners for move buttons
+            document.querySelectorAll('.move-up').forEach(btn => {
+                btn.addEventListener('click', moveItemUp);
+            });
+            
+            document.querySelectorAll('.move-down').forEach(btn => {
+                btn.addEventListener('click', moveItemDown);
+            });
+            
+            // Add event listeners for edit buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', editSection);
+            });
+            
+            // Add event listeners for delete buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', deleteInterest);
+            });
+            
+            document.querySelectorAll('.delete-section-btn').forEach(btn => {
+                btn.addEventListener('click', deleteSection);
+            });
+            
+            document.querySelectorAll('.delete-item').forEach(btn => {
+                btn.addEventListener('click', deleteEducationItem);
+            });
+            
+            document.querySelectorAll('.edit-item').forEach(btn => {
+                btn.addEventListener('click', editEducationItem);
+            });
+            
+            // Add event listener for adding new interests
+            addInterestBtn.addEventListener('click', addNewInterest);
+            
+            // Add event listeners for add buttons
+            document.querySelectorAll('.add-item-btn').forEach(btn => {
+                btn.addEventListener('click', addEducationItem);
+            });
+            
+            document.querySelectorAll('.add-section-btn').forEach(btn => {
+                btn.addEventListener('click', addNewSection);
+            });
+            
+            // Add event listeners for tab edit buttons
+            document.querySelectorAll('.tab-edit-btn').forEach(btn => {
+                btn.addEventListener('click', editTab);
+            });
+            
+            // Add event listener for add tab button
+            addTabBtn.addEventListener('click', addNewTab);
+        }
+
+        function exitAdminMode() {
+            isAdminMode = false;
+            document.body.classList.remove('admin-edit-mode');
+            adminPanel.classList.add('hidden');
+            adminLoginBtn.classList.remove('hidden');
+            
+            // Remove event listeners
+            document.querySelectorAll('.move-up').forEach(btn => {
+                btn.removeEventListener('click', moveItemUp);
+            });
+            
+            document.querySelectorAll('.move-down').forEach(btn => {
+                btn.removeEventListener('click', moveItemDown);
+            });
+            
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.removeEventListener('click', editSection);
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.removeEventListener('click', deleteInterest);
+            });
+            
+            document.querySelectorAll('.delete-section-btn').forEach(btn => {
+                btn.removeEventListener('click', deleteSection);
+            });
+            
+            document.querySelectorAll('.delete-item').forEach(btn => {
+                btn.removeEventListener('click', deleteEducationItem);
+            });
+            
+            document.querySelectorAll('.edit-item').forEach(btn => {
+                btn.removeEventListener('click', editEducationItem);
+            });
+            
+            addInterestBtn.removeEventListener('click', addNewInterest);
+            
+            document.querySelectorAll('.add-item-btn').forEach(btn => {
+                btn.removeEventListener('click', addEducationItem);
+            });
+            
+            document.querySelectorAll('.add-section-btn').forEach(btn => {
+                btn.removeEventListener('click', addNewSection);
+            });
+            
+            document.querySelectorAll('.tab-edit-btn').forEach(btn => {
+                btn.removeEventListener('click', editTab);
+            });
+            
+            addTabBtn.removeEventListener('click', addNewTab);
+        }
+
+        function initDragAndDrop() {
+            const educationItems = document.querySelectorAll('.education-item');
+            
+            educationItems.forEach(item => {
+                item.setAttribute('draggable', 'true');
+                
+                item.addEventListener('dragstart', (e) => {
+                    draggedItem = item;
+                    setTimeout(() => {
+                        item.classList.add('dragging');
+                    }, 0);
+                });
+                
+                item.addEventListener('dragend', () => {
+                    draggedItem = null;
+                    item.classList.remove('dragging');
+                });
+            });
+            
+            educationList.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(educationList, e.clientY);
+                if (afterElement == null) {
+                    educationList.appendChild(draggedItem);
+                } else {
+                    educationList.insertBefore(draggedItem, afterElement);
+                }
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.education-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function moveItemUp(e) {
+            const item = e.target.closest('.education-item');
+            const prevItem = item.previousElementSibling;
+            
+            if (prevItem) {
+                educationList.insertBefore(item, prevItem);
+            }
+        }
+
+        function moveItemDown(e) {
+            const item = e.target.closest('.education-item');
+            const nextItem = item.nextElementSibling;
+            
+            if (nextItem) {
+                educationList.insertBefore(nextItem, item);
+            }
+        }
+
+        function editSection(e) {
+            const target = e.target.closest('.edit-btn').dataset.target;
+            currentEditTarget = target;
+            
+            let title = '';
+            let content = '';
+            
+            switch(target) {
+                case 'header':
+                    title = 'Edit Header';
+                    content = `
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" value="${document.getElementById('header-name').textContent}">
+                        </div>
+                        <div class="form-group">
+                            <label for="subtitle">Subtitle</label>
+                            <input type="text" id="subtitle" value="${document.getElementById('header-subtitle').textContent}">
+                        </div>
+                    `;
+                    break;
+                case 'education':
+                    title = 'Edit Education Section';
+                    content = `
+                        <div class="form-group">
+                            <label for="section-title">Section Title</label>
+                            <input type="text" id="section-title" value="Education & Experience">
+                        </div>
+                    `;
+                    break;
+                case 'contact':
+                    title = 'Edit Contact Section';
+                    content = `
+                        <div class="form-group">
+                            <label for="section-title">Section Title</label>
+                            <input type="text" id="section-title" value="Contact">
+                        </div>
+                    `;
+                    break;
+                case 'interests':
+                    title = 'Edit Research Interests Section';
+                    content = `
+                        <div class="form-group">
+                            <label for="section-title">Section Title</label>
+                            <input type="text" id="section-title" value="Research Interests">
+                        </div>
+                    `;
+                    break;
+                case 'about':
+                    title = 'Edit About Me';
+                    content = `
+                        <div class="form-group">
+                            <label for="about-content">About Me Content</label>
+                            <textarea id="about-content">${document.querySelector('#about-content .edit-section p').textContent}</textarea>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            editModal.style.display = 'flex';
+        }
+
+        function editEducationItem(e) {
+            const item = e.target.closest('.education-item');
+            const title = item.querySelector('p.font-bold').textContent;
+            const details = Array.from(item.querySelectorAll('p.text-sm')).map(p => p.textContent).join('\n');
+            
+            modalTitle.textContent = 'Edit Education/Experience';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label for="item-title">Title</label>
+                    <input type="text" id="item-title" value="${title}">
+                </div>
+                <div class="form-group">
+                    <label for="item-details">Details (one per line)</label>
+                    <textarea id="item-details">${details}</textarea>
+                </div>
+            `;
+            
+            currentEditTarget = item;
+            editModal.style.display = 'flex';
+        }
+
+        function deleteInterest(e) {
+            e.stopPropagation();
+            const interest = e.target.closest('.research-interest');
+            interest.remove();
+        }
+
+        function deleteSection(e) {
+            e.stopPropagation();
+            const section = e.target.closest('.edit-section');
+            if (confirm('Are you sure you want to delete this section?')) {
+                section.remove();
+            }
+        }
+
+        function deleteEducationItem(e) {
+            e.stopPropagation();
+            const item = e.target.closest('.education-item');
+            if (confirm('Are you sure you want to delete this item?')) {
+                item.remove();
+            }
+        }
+
+        function addNewInterest() {
+            const newInterest = prompt('Enter new research interest:');
+            if (newInterest && newInterest.trim() !== '') {
+                const colors = ['text-cyan-300', 'text-amber-300', 'text-green-300', 'text-sky-300', 'text-rose-400'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                const interestElement = document.createElement('span');
+                interestElement.className = `research-interest bg-gray-700/50 ${randomColor} text-sm font-medium px-3 py-1 rounded-full transition-transform duration-300 hover:scale-110 cursor-default`;
+                interestElement.innerHTML = `
+                    ${newInterest}
+                    <button class="delete-btn"><i class="fas fa-times"></i></button>
+                `;
+                
+                interestsContainer.insertBefore(interestElement, addInterestBtn);
+                
+                // Add event listener to the new delete button
+                interestElement.querySelector('.delete-btn').addEventListener('click', deleteInterest);
+            }
+        }
+
+        function addEducationItem() {
+            modalTitle.textContent = 'Add Education/Experience';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label for="item-title">Title</label>
+                    <input type="text" id="item-title" placeholder="e.g., B.Tech in Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="item-details">Details (one per line)</label>
+                    <textarea id="item-details" placeholder="University Name&#10;Year - Year"></textarea>
+                </div>
+            `;
+            
+            currentEditTarget = 'new-education';
+            editModal.style.display = 'flex';
+        }
+
+        function addNewSection() {
+            const sectionType = prompt('Enter section type (text or education):');
+            if (!sectionType) return;
+            
+            const sectionTitle = prompt('Enter section title:');
+            if (!sectionTitle) return;
+            
+            const activeTab = document.querySelector('.tab-content:not(.hidden)');
+            
+            if (sectionType === 'text') {
+                const content = prompt('Enter section content:');
+                if (!content) return;
+                
+                const newSection = document.createElement('div');
+                newSection.className = 'text-gray-200 space-y-4 edit-section';
+                newSection.innerHTML = `
+                    <button class="edit-btn" data-target="custom"><i class="fas fa-edit"></i></button>
+                    <button class="delete-section-btn"><i class="fas fa-trash"></i></button>
+                    <h2 class="text-xl font-bold text-gray-100">${sectionTitle}</h2>
+                    <p>${content}</p>
+                `;
+                
+                activeTab.insertBefore(newSection, activeTab.querySelector('.add-section-btn'));
+            } else if (sectionType === 'education') {
+                const newSection = document.createElement('div');
+                newSection.className = 'edit-section';
+                newSection.innerHTML = `
+                    <button class="edit-btn" data-target="custom"><i class="fas fa-edit"></i></button>
+                    <button class="delete-section-btn"><i class="fas fa-trash"></i></button>
+                    <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">${sectionTitle}</h2>
+                    <div class="education-list"></div>
+                    <button class="add-item-btn">+ Add Item</button>
+                `;
+                
+                activeTab.insertBefore(newSection, activeTab.querySelector('.add-section-btn'));
+            }
+            
+            // Re-initialize admin mode to attach event listeners to new elements
+            exitAdminMode();
+            enterAdminMode();
+        }
+
+        function editTab(e) {
+            e.stopPropagation();
+            const tab = e.target.closest('.nav-tab');
+            const tabName = tab.textContent.trim();
+            const tabId = tab.dataset.tab;
+            
+            currentTabEditTarget = tab;
+            
+            tabModalTitle.textContent = 'Edit Tab';
+            tabModalBody.innerHTML = `
+                <div class="form-group">
+                    <label for="tab-name">Tab Name</label>
+                    <input type="text" id="tab-name" value="${tabName}">
+                </div>
+                <div class="form-group">
+                    <label for="tab-type">Tab Type</label>
+                    <select id="tab-type">
+                        <option value="text">Text Content</option>
+                        <option value="gallery">Gallery</option>
+                        <option value="custom">Custom Layout</option>
+                    </select>
+                </div>
+            `;
+            
+            tabModal.style.display = 'flex';
+        }
+
+        function addNewTab() {
+            tabModalTitle.textContent = 'Add New Tab';
+            tabModalBody.innerHTML = `
+                <div class="form-group">
+                    <label for="tab-name">Tab Name</label>
+                    <input type="text" id="tab-name" placeholder="Enter tab name">
+                </div>
+                <div class="form-group">
+                    <label for="tab-type">Tab Type</label>
+                    <select id="tab-type">
+                        <option value="text">Text Content</option>
+                        <option value="gallery">Gallery</option>
+                        <option value="custom">Custom Layout</option>
+                    </select>
+                </div>
+            `;
+            
+            currentTabEditTarget = 'new-tab';
+            tabModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            editModal.style.display = 'none';
+            currentEditTarget = null;
+        }
+
+        function closeTabModal() {
+            tabModal.style.display = 'none';
+            currentTabEditTarget = null;
+        }
+
+        function saveModal() {
+            if (!currentEditTarget) return;
+            
+            if (currentEditTarget === 'header') {
+                const name = document.getElementById('name').value;
+                const subtitle = document.getElementById('subtitle').value;
+                
+                document.getElementById('header-name').textContent = name;
+                document.getElementById('header-subtitle').textContent = subtitle;
+            } else if (currentEditTarget === 'education' || currentEditTarget === 'contact' || currentEditTarget === 'interests') {
+                const sectionTitle = document.getElementById('section-title').value;
+                const section = document.querySelector(`[data-target="${currentEditTarget}"]`).closest('.edit-section');
+                section.querySelector('h2').textContent = sectionTitle;
+            } else if (currentEditTarget === 'about') {
+                const aboutContent = document.getElementById('about-content').value;
+                document.querySelector('#about-content .edit-section p').textContent = aboutContent;
+            } else if (currentEditTarget === 'new-education') {
+                const title = document.getElementById('item-title').value;
+                const details = document.getElementById('item-details').value;
+                
+                if (title && details) {
+                    const newItem = document.createElement('div');
+                    newItem.className = 'education-item mb-4';
+                    newItem.setAttribute('data-id', Date.now());
+                    newItem.innerHTML = `
+                        <i class="fas fa-grip-lines drag-handle"></i>
+                        <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">${title}</p>
+                        ${details.split('\n').map(detail => `<p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">${detail}</p>`).join('')}
+                        <div class="move-buttons">
+                            <button class="move-up"><i class="fas fa-arrow-up"></i></button>
+                            <button class="move-down"><i class="fas fa-arrow-down"></i></button>
+                            <button class="edit-item"><i class="fas fa-edit"></i></button>
+                            <button class="delete-item"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    
+                    educationList.appendChild(newItem);
+                    
+                    // Re-initialize admin mode to attach event listeners to new elements
+                    exitAdminMode();
+                    enterAdminMode();
+                }
+            } else if (typeof currentEditTarget === 'object') {
+                // Editing an existing education item
+                const title = document.getElementById('item-title').value;
+                const details = document.getElementById('item-details').value;
+                
+                if (title && details) {
+                    currentEditTarget.querySelector('p.font-bold').textContent = title;
+                    
+                    const detailElements = currentEditTarget.querySelectorAll('p.text-sm');
+                    const detailArray = details.split('\n');
+                    
+                    detailElements.forEach((el, index) => {
+                        if (index < detailArray.length) {
+                            el.textContent = detailArray[index];
+                        }
+                    });
+                }
+            }
+            
+            closeModal();
+        }
+
+        function saveTabModal() {
+            const tabName = document.getElementById('tab-name').value;
+            const tabType = document.getElementById('tab-type').value;
+            
+            if (!tabName) {
+                alert('Please enter a tab name');
+                return;
+            }
+            
+            if (currentTabEditTarget === 'new-tab') {
+                // Create a new tab
+                const tabId = 'tab-' + Date.now();
+                
+                // Create the tab navigation element
+                const newTab = document.createElement('a');
+                newTab.href = '#';
+                newTab.className = 'nav-tab';
+                newTab.dataset.tab = tabId;
+                newTab.innerHTML = `
+                    ${tabName}
+                    <button class="tab-edit-btn" data-tab="${tabId}"><i class="fas fa-edit"></i></button>
+                `;
+                
+                tabsContainer.insertBefore(newTab, addTabBtn);
+                
+                // Create the tab content
+                const newTabContent = document.createElement('div');
+                newTabContent.id = tabId + '-content';
+                newTabContent.className = 'tab-content hidden';
+                
+                // Add default content based on tab type
+                if (tabType === 'text') {
+                    newTabContent.innerHTML = `
+                        <div class="text-gray-200 space-y-4 edit-section">
+                            <button class="edit-btn" data-target="${tabId}"><i class="fas fa-edit"></i></button>
+                            <h2 class="text-xl font-bold text-gray-100">${tabName}</h2>
+                            <p>This is your new ${tabName} section. You can edit this content in admin mode.</p>
+                        </div>
+                        <button class="add-section-btn">+ Add New Section</button>
+                    `;
+                } else if (tabType === 'gallery') {
+                    newTabContent.innerHTML = `
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 1</div>
+                            <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 2</div>
+                            <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 3</div>
+                            <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 4</div>
+                            <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 5</div>
+                            <div class="w-full h-40 bg-gray-700/50 rounded-lg flex items-center justify-center text-gray-400">Image 6</div>
+                        </div>
+                        <button class="add-section-btn">+ Add New Section</button>
+                    `;
+                } else {
+                    newTabContent.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-200">
+                            <div class="edit-section">
+                                <button class="edit-btn" data-target="${tabId}-left"><i class="fas fa-edit"></i></button>
+                                <button class="delete-section-btn"><i class="fas fa-trash"></i></button>
+                                <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Left Section</h2>
+                                <p>This is the left section of your custom layout.</p>
+                            </div>
+                            <div class="edit-section">
+                                <button class="edit-btn" data-target="${tabId}-right"><i class="fas fa-edit"></i></button>
+                                <button class="delete-section-btn"><i class="fas fa-trash"></i></button>
+                                <h2 class="text-xl font-bold border-b border-gray-600 pb-2 mb-4 text-gray-100">Right Section</h2>
+                                <p>This is the right section of your custom layout.</p>
+                            </div>
+                        </div>
+                        <button class="add-section-btn">+ Add New Section</button>
+                    `;
+                }
+                
+                document.getElementById('tab-content-container').appendChild(newTabContent);
+                
+                // Re-initialize admin mode to attach event listeners to new elements
+                exitAdminMode();
+                enterAdminMode();
+                
+                // Re-initialize tab switching
+                setupTabSwitching();
+            } else {
+                // Editing an existing tab
+                currentTabEditTarget.innerHTML = `
+                    ${tabName}
+                    <button class="tab-edit-btn" data-tab="${currentTabEditTarget.dataset.tab}"><i class="fas fa-edit"></i></button>
+                `;
+                
+                // Update the tab content title if it's a text tab
+                const tabContent = document.getElementById(currentTabEditTarget.dataset.tab + '-content');
+                if (tabContent) {
+                    const titleElement = tabContent.querySelector('h2');
+                    if (titleElement) {
+                        titleElement.textContent = tabName;
+                    }
+                }
+            }
+            
+            closeTabModal();
+        }
+
+        function deleteTab() {
+            if (currentTabEditTarget && currentTabEditTarget !== 'new-tab') {
+                if (confirm('Are you sure you want to delete this tab?')) {
+                    // Remove the tab navigation
+                    const tabId = currentTabEditTarget.dataset.tab;
+                    currentTabEditTarget.remove();
+                    
+                    // Remove the tab content
+                    const tabContent = document.getElementById(tabId + '-content');
+                    if (tabContent) {
+                        tabContent.remove();
+                    }
+                    
+                    // Activate the first tab if the deleted tab was active
+                    const firstTab = document.querySelector('.nav-tab');
+                    if (firstTab) {
+                        firstTab.classList.add('active-tab');
+                        const firstTabContent = document.getElementById(firstTab.dataset.tab + '-content');
+                        if (firstTabContent) {
+                            firstTabContent.classList.remove('hidden');
+                        }
+                    }
+                    
+                    closeTabModal();
+                }
+            }
+        }
+
+        function saveChanges() {
+            // In a real application, you would send the data to a server here
+            // For this demo, we'll just show an alert and exit admin mode
+            
+            // Save the order of education items
+            const educationOrder = [];
+            document.querySelectorAll('.education-item').forEach(item => {
+                educationOrder.push(item.dataset.id);
+            });
+            
+            // Save the list of research interests
+            const interests = [];
+            document.querySelectorAll('.research-interest').forEach(interest => {
+                interests.push(interest.textContent.trim());
+            });
+            
+            // Save tab structure
+            const tabs = [];
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tabs.push({
+                    id: tab.dataset.tab,
+                    name: tab.textContent.trim()
+                });
+            });
+            
+            // Show confirmation
+            alert('Changes saved successfully!');
+            exitAdminMode();
+            
+            // In a real application, you would send educationOrder and interests to your backend
+            console.log('Education order:', educationOrder);
+            console.log('Research interests:', interests);
+            console.log('Tabs:', tabs);
+        }
+    });
+    </script>
+</body>
+</html>
