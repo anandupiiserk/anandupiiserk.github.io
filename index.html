@@ -374,6 +374,8 @@
             gap: 8px;
             animation: slideInUp 0.8s ease-out;
             margin-top: 10px;
+            position: relative;
+            overflow: hidden;
         }
 
         @keyframes slideInUp {
@@ -387,16 +389,46 @@
             }
         }
 
+        /* Torchlight effect */
+        .visitor-counter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                        rgba(255, 215, 0, 0.3) 0%, 
+                        rgba(255, 165, 0, 0.2) 30%, 
+                        transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .visitor-counter:hover::before {
+            opacity: 1;
+        }
+
         .visitor-counter:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.4);
             transform: translateY(-3px);
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 40px 0 rgba(255, 165, 0, 0.2);
         }
 
         .counter-icon {
             color: #8b5cf6;
             font-size: 1.1rem;
             animation: pulseIcon 2s infinite;
+            z-index: 2;
+            position: relative;
+        }
+
+        .visitor-counter:hover .counter-icon {
+            color: #ffd700;
+            animation: torchPulse 0.8s infinite alternate;
         }
 
         @keyframes pulseIcon {
@@ -405,10 +437,39 @@
             100% { transform: scale(1); }
         }
 
+        @keyframes torchPulse {
+            0% { 
+                transform: scale(1);
+                color: #ffd700;
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+            }
+            100% { 
+                transform: scale(1.15);
+                color: #ffed4e;
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.5);
+            }
+        }
+
         .counter-number {
             font-weight: 700;
             color: #a78bfa;
             font-size: 1rem;
+            z-index: 2;
+            position: relative;
+        }
+
+        .visitor-counter:hover .counter-number {
+            color: #ffd700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+        }
+
+        .visitor-counter span:not(.counter-number) {
+            z-index: 2;
+            position: relative;
+        }
+
+        .visitor-counter:hover span:not(.counter-number) {
+            color: #ffed4e;
         }
 
         @media (max-width: 768px) {
@@ -501,7 +562,7 @@
                             <div class="education-item mb-4">
                                 <p class="font-bold transition-colors duration-300 hover:text-violet-300 cursor-default">Raman Charpak Fellow</p>
                                 <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Centre d'Écologie Fonctionnelle et Évolutive (CEFE), CNRS</p>
-                                <p class="text-sm text-gray-400 transition-colors duration-300 hover:text-gray-200 cursor-default">Montpellier, Occitanie, France (Jul 2025 - Dec 2025)</p>
+                                <p class="text-sm text-gray-300 transition-colors duration-300 hover:text-gray-200 cursor-default">Montpellier, Occitanie, France (Jul 2025 - Dec 2025)</p>
                             </div>
                         </div>
                     </div>
@@ -596,6 +657,7 @@
         const cutBtn = document.getElementById('cut-btn');
         const printBtn = document.getElementById('print-btn');
         const glassCard = document.getElementById('main-card');
+        const visitorCounter = document.getElementById('visitor-counter');
 
         // 2. Auto-update copyright year
         const copyrightElement = document.getElementById('copyright-year');
@@ -667,7 +729,19 @@
         // Initialize the visitor counter
         initializeVisitorCounter();
 
-        // 4. Custom context menu logic
+        // 4. Torchlight effect for visitor counter
+        if (visitorCounter) {
+            visitorCounter.addEventListener('mousemove', (e) => {
+                const rect = visitorCounter.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                
+                visitorCounter.style.setProperty('--mouse-x', `${x}%`);
+                visitorCounter.style.setProperty('--mouse-y', `${y}%`);
+            });
+        }
+
+        // 5. Custom context menu logic
         document.addEventListener('mouseup', (e) => {
             const selection = window.getSelection().toString();
             // Check if it's a left click and there's a selection
@@ -691,7 +765,7 @@
             }
         });
 
-        // 5. Menu button actions
+        // 6. Menu button actions
         copyBtn.addEventListener('click', () => {
             document.execCommand('copy');
             customMenu.style.display = 'none';
@@ -709,7 +783,7 @@
             customMenu.style.display = 'none';
         });
         
-        // 6. Parallax effect for the glass card - only when hovering over the card
+        // 7. Parallax effect for the glass card - only when hovering over the card
         glassCard.addEventListener('mousemove', (e) => {
             if(!glassCard) return;
             
