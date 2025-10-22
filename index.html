@@ -354,123 +354,6 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
-            margin-bottom: 15px;
-        }
-
-        /* Visitor Counter Styles */
-        .visitor-counter {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            padding: 12px 24px;
-            color: white;
-            font-size: 0.9rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            animation: slideInUp 0.8s ease-out;
-            margin-top: 10px;
-            position: relative;
-            overflow: hidden;
-            cursor: default;
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Torchlight effect */
-        .visitor-counter::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-                        rgba(255, 215, 0, 0.3) 0%, 
-                        rgba(255, 165, 0, 0.2) 30%, 
-                        transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .visitor-counter:hover::before {
-            opacity: 1;
-        }
-
-        .visitor-counter:hover {
-            background: rgba(255, 215, 0, 0.15);
-            border-color: rgba(255, 215, 0, 0.4);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px 0 rgba(255, 165, 0, 0.2);
-        }
-
-        .counter-icon {
-            color: #8b5cf6;
-            font-size: 1.1rem;
-            animation: pulseIcon 2s infinite;
-            z-index: 2;
-            position: relative;
-        }
-
-        .visitor-counter:hover .counter-icon {
-            color: #ffd700;
-            animation: torchPulse 0.8s infinite alternate;
-        }
-
-        @keyframes pulseIcon {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes torchPulse {
-            0% { 
-                transform: scale(1);
-                color: #ffd700;
-                text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
-            }
-            100% { 
-                transform: scale(1.15);
-                color: #ffed4e;
-                text-shadow: 0 0 10px rgba(255, 215, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.5);
-            }
-        }
-
-        .counter-number {
-            font-weight: 700;
-            color: #a78bfa;
-            font-size: 1rem;
-            z-index: 2;
-            position: relative;
-        }
-
-        .visitor-counter:hover .counter-number {
-            color: #ffd700;
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-        }
-
-        .visitor-counter span:not(.counter-number) {
-            z-index: 2;
-            position: relative;
-        }
-
-        .visitor-counter:hover span:not(.counter-number) {
-            color: #ffed4e;
         }
 
         @media (max-width: 768px) {
@@ -487,11 +370,6 @@
             .glass-card {
                 margin: 20px auto;
                 padding: 20px;
-            }
-            
-            .visitor-counter {
-                padding: 10px 20px;
-                font-size: 0.8rem;
             }
         }
         
@@ -630,14 +508,6 @@
                 <i class="far fa-copyright"></i>
                 <span id="copyright-year">2026 Anandu Prabhakaran</span>
             </div>
-            
-            <!-- Visitor Counter - Centered below copyright -->
-            <div class="w-full text-center">
-                <div class="visitor-counter" id="visitor-counter">
-                    <i class="fas fa-eye counter-icon"></i>
-                    <span>Visits: <span class="counter-number" id="visit-count">0</span></span>
-                </div>
-            </div>
         </footer>
     </div>
 
@@ -658,7 +528,6 @@
         const cutBtn = document.getElementById('cut-btn');
         const printBtn = document.getElementById('print-btn');
         const glassCard = document.getElementById('main-card');
-        const visitorCounter = document.getElementById('visitor-counter');
 
         // 2. Auto-update copyright year
         const copyrightElement = document.getElementById('copyright-year');
@@ -667,64 +536,7 @@
             copyrightElement.textContent = `${currentYear} Anandu Prabhakaran`;
         }
 
-        // 3. Improved Visitor Counter Logic
-        function initializeVisitorCounter() {
-            // Use sessionStorage for current session and localStorage for persistent count
-            const sessionKey = 'sessionVisitCounted';
-            const totalVisitsKey = 'totalSiteVisits';
-            
-            // Check if we've already counted this session
-            const sessionCounted = sessionStorage.getItem(sessionKey);
-            let totalVisits = parseInt(localStorage.getItem(totalVisitsKey) || '0');
-            
-            // Only count if this is a new session
-            if (!sessionCounted) {
-                totalVisits++;
-                localStorage.setItem(totalVisitsKey, totalVisits.toString());
-                sessionStorage.setItem(sessionKey, 'true');
-            }
-            
-            // Display the count with animation
-            const visitCountElement = document.getElementById('visit-count');
-            if (visitCountElement) {
-                // Animate the counter
-                let currentCount = parseInt(visitCountElement.textContent);
-                let targetCount = totalVisits;
-                let duration = 1000; // 1 second
-                let stepTime = Math.max(Math.floor(duration / targetCount), 50);
-                
-                let increment = targetCount > currentCount ? 1 : -1;
-                let step = () => {
-                    currentCount += increment;
-                    visitCountElement.textContent = currentCount;
-                    
-                    if (currentCount !== targetCount) {
-                        setTimeout(step, stepTime);
-                    }
-                };
-                
-                setTimeout(step, stepTime);
-            }
-            
-            console.log(`Total visits: ${totalVisits}`);
-        }
-        
-        // Initialize the visitor counter
-        initializeVisitorCounter();
-
-        // 4. Torchlight effect for visitor counter
-        if (visitorCounter) {
-            visitorCounter.addEventListener('mousemove', (e) => {
-                const rect = visitorCounter.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                
-                visitorCounter.style.setProperty('--mouse-x', `${x}%`);
-                visitorCounter.style.setProperty('--mouse-y', `${y}%`);
-            });
-        }
-
-        // 5. Custom context menu logic
+        // 3. Custom context menu logic
         document.addEventListener('mouseup', (e) => {
             const selection = window.getSelection().toString();
             // Check if it's a left click and there's a selection
@@ -748,7 +560,7 @@
             }
         });
 
-        // 6. Menu button actions
+        // 4. Menu button actions
         copyBtn.addEventListener('click', () => {
             document.execCommand('copy');
             customMenu.style.display = 'none';
@@ -766,7 +578,7 @@
             customMenu.style.display = 'none';
         });
         
-        // 7. Parallax effect for the glass card - only when hovering over the card
+        // 5. Parallax effect for the glass card - only when hovering over the card
         glassCard.addEventListener('mousemove', (e) => {
             if(!glassCard) return;
             
