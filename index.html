@@ -354,6 +354,61 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* Visitor Counter Styles */
+        .visitor-counter {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 12px 24px;
+            color: white;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideInUp 0.8s ease-out;
+            margin-top: 10px;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .visitor-counter:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .counter-icon {
+            color: #8b5cf6;
+            font-size: 1.1rem;
+            animation: pulseIcon 2s infinite;
+        }
+
+        @keyframes pulseIcon {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .counter-number {
+            font-weight: 700;
+            color: #a78bfa;
+            font-size: 1rem;
         }
 
         @media (max-width: 768px) {
@@ -370,6 +425,11 @@
             .glass-card {
                 margin: 20px auto;
                 padding: 20px;
+            }
+            
+            .visitor-counter {
+                padding: 10px 20px;
+                font-size: 0.8rem;
             }
         }
         
@@ -502,9 +562,19 @@
                     <i class="fas fa-globe"></i>
                 </a>
             </div>
+            
+            <!-- Copyright -->
             <div class="copyright">
                 <i class="far fa-copyright"></i>
-                <span id="copyright-year"></span>
+                <span id="copyright-year">2026 Anandu Prabhakaran</span>
+            </div>
+            
+            <!-- Visitor Counter - Centered below copyright -->
+            <div class="w-full text-center">
+                <div class="visitor-counter" id="visitor-counter">
+                    <i class="fas fa-eye counter-icon"></i>
+                    <span>Visits: <span class="counter-number" id="visit-count">0</span></span>
+                </div>
             </div>
         </footer>
     </div>
@@ -534,7 +604,70 @@
             copyrightElement.textContent = `${currentYear} Anandu Prabhakaran`;
         }
 
-        // 3. Custom context menu logic
+        // 3. Visitor Counter Logic
+        function initializeVisitorCounter() {
+            // Generate a unique visitor ID
+            function getVisitorId() {
+                let visitorId = localStorage.getItem('visitorId');
+                if (!visitorId) {
+                    visitorId = 'visitor_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('visitorId', visitorId);
+                }
+                return visitorId;
+            }
+
+            // Track visits
+            function trackVisit() {
+                const visitorId = getVisitorId();
+                const today = new Date().toDateString();
+                const lastVisit = localStorage.getItem('lastVisit');
+                
+                let totalVisits = parseInt(localStorage.getItem('totalVisits') || '0');
+                let uniqueVisits = parseInt(localStorage.getItem('uniqueVisits') || '0');
+                
+                // Count as unique visit if first time today or new visitor
+                if (lastVisit !== today || !lastVisit) {
+                    uniqueVisits++;
+                    localStorage.setItem('uniqueVisits', uniqueVisits.toString());
+                    localStorage.setItem('lastVisit', today);
+                }
+                
+                totalVisits++;
+                localStorage.setItem('totalVisits', totalVisits.toString());
+                
+                // Display the count with animation
+                const visitCountElement = document.getElementById('visit-count');
+                if (visitCountElement) {
+                    // Animate the counter
+                    let currentCount = parseInt(visitCountElement.textContent);
+                    let targetCount = totalVisits;
+                    let duration = 1000; // 1 second
+                    let stepTime = Math.max(Math.floor(duration / targetCount), 50);
+                    
+                    let increment = targetCount > currentCount ? 1 : -1;
+                    let step = () => {
+                        currentCount += increment;
+                        visitCountElement.textContent = currentCount;
+                        
+                        if (currentCount !== targetCount) {
+                            setTimeout(step, stepTime);
+                        }
+                    };
+                    
+                    setTimeout(step, stepTime);
+                }
+                
+                // Optional: Log to console for debugging
+                console.log(`Visitor: ${visitorId}, Total: ${totalVisits}, Unique: ${uniqueVisits}`);
+            }
+            
+            trackVisit();
+        }
+        
+        // Initialize the visitor counter
+        initializeVisitorCounter();
+
+        // 4. Custom context menu logic
         document.addEventListener('mouseup', (e) => {
             const selection = window.getSelection().toString();
             // Check if it's a left click and there's a selection
@@ -558,7 +691,7 @@
             }
         });
 
-        // 4. Menu button actions
+        // 5. Menu button actions
         copyBtn.addEventListener('click', () => {
             document.execCommand('copy');
             customMenu.style.display = 'none';
@@ -576,7 +709,7 @@
             customMenu.style.display = 'none';
         });
         
-        // 5. Parallax effect for the glass card - only when hovering over the card
+        // 6. Parallax effect for the glass card - only when hovering over the card
         glassCard.addEventListener('mousemove', (e) => {
             if(!glassCard) return;
             
