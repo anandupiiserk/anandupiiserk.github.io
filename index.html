@@ -376,6 +376,7 @@
             margin-top: 10px;
             position: relative;
             overflow: hidden;
+            cursor: default;
         }
 
         @keyframes slideInUp {
@@ -666,64 +667,46 @@
             copyrightElement.textContent = `${currentYear} Anandu Prabhakaran`;
         }
 
-        // 3. Visitor Counter Logic
+        // 3. Improved Visitor Counter Logic
         function initializeVisitorCounter() {
-            // Generate a unique visitor ID
-            function getVisitorId() {
-                let visitorId = localStorage.getItem('visitorId');
-                if (!visitorId) {
-                    visitorId = 'visitor_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('visitorId', visitorId);
-                }
-                return visitorId;
-            }
-
-            // Track visits
-            function trackVisit() {
-                const visitorId = getVisitorId();
-                const today = new Date().toDateString();
-                const lastVisit = localStorage.getItem('lastVisit');
-                
-                let totalVisits = parseInt(localStorage.getItem('totalVisits') || '0');
-                let uniqueVisits = parseInt(localStorage.getItem('uniqueVisits') || '0');
-                
-                // Count as unique visit if first time today or new visitor
-                if (lastVisit !== today || !lastVisit) {
-                    uniqueVisits++;
-                    localStorage.setItem('uniqueVisits', uniqueVisits.toString());
-                    localStorage.setItem('lastVisit', today);
-                }
-                
+            // Use sessionStorage for current session and localStorage for persistent count
+            const sessionKey = 'sessionVisitCounted';
+            const totalVisitsKey = 'totalSiteVisits';
+            
+            // Check if we've already counted this session
+            const sessionCounted = sessionStorage.getItem(sessionKey);
+            let totalVisits = parseInt(localStorage.getItem(totalVisitsKey) || '0');
+            
+            // Only count if this is a new session
+            if (!sessionCounted) {
                 totalVisits++;
-                localStorage.setItem('totalVisits', totalVisits.toString());
-                
-                // Display the count with animation
-                const visitCountElement = document.getElementById('visit-count');
-                if (visitCountElement) {
-                    // Animate the counter
-                    let currentCount = parseInt(visitCountElement.textContent);
-                    let targetCount = totalVisits;
-                    let duration = 1000; // 1 second
-                    let stepTime = Math.max(Math.floor(duration / targetCount), 50);
-                    
-                    let increment = targetCount > currentCount ? 1 : -1;
-                    let step = () => {
-                        currentCount += increment;
-                        visitCountElement.textContent = currentCount;
-                        
-                        if (currentCount !== targetCount) {
-                            setTimeout(step, stepTime);
-                        }
-                    };
-                    
-                    setTimeout(step, stepTime);
-                }
-                
-                // Optional: Log to console for debugging
-                console.log(`Visitor: ${visitorId}, Total: ${totalVisits}, Unique: ${uniqueVisits}`);
+                localStorage.setItem(totalVisitsKey, totalVisits.toString());
+                sessionStorage.setItem(sessionKey, 'true');
             }
             
-            trackVisit();
+            // Display the count with animation
+            const visitCountElement = document.getElementById('visit-count');
+            if (visitCountElement) {
+                // Animate the counter
+                let currentCount = parseInt(visitCountElement.textContent);
+                let targetCount = totalVisits;
+                let duration = 1000; // 1 second
+                let stepTime = Math.max(Math.floor(duration / targetCount), 50);
+                
+                let increment = targetCount > currentCount ? 1 : -1;
+                let step = () => {
+                    currentCount += increment;
+                    visitCountElement.textContent = currentCount;
+                    
+                    if (currentCount !== targetCount) {
+                        setTimeout(step, stepTime);
+                    }
+                };
+                
+                setTimeout(step, stepTime);
+            }
+            
+            console.log(`Total visits: ${totalVisits}`);
         }
         
         // Initialize the visitor counter
