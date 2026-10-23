@@ -722,15 +722,37 @@ else (function loop() {
     cap.innerHTML = ''; const b = document.createElement('b'); b.textContent = tr(s.cat); cap.append(b, document.createTextNode(s.cap ? tr(s.cap) : ''));
     count.textContent = pad(cur + 1, 2) + ' / ' + pad(slides.length, 2) + (s.n > 1 ? '  ·  ' + (s.k + 1) + '/' + s.n : '');
   }
+  /* Lightbox autoplay: every 6 s the next photo slides in. Any manual action restarts the timer. Off for reduced motion until Play is pressed. */
+  const AUTO_MS = 6000; let auto = !(RM && RM.matches), atimer = 0, moving = false;
+  const prog = document.createElement('div'); prog.className = 'lb-prog'; prog.innerHTML = '<i></i>'; lb.append(prog);
+  const play = document.createElement('button'); play.type = 'button'; play.className = 'lb-play'; lb.append(play);
+  const paintPlay = () => { play.innerHTML = auto ? '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M7 4.5l12 7.5-12 7.5z"/></svg>'; play.setAttribute('aria-label', auto ? 'Pause slideshow' : 'Play slideshow'); play.setAttribute('aria-pressed', auto); };
+  const stopTimer = () => { clearTimeout(atimer); const pi = prog.firstChild; pi.style.transition = 'none'; pi.style.transform = 'scaleX(0)'; };
+  const armTimer = () => {
+    stopTimer(); if (!auto || !lb.classList.contains('open')) return;
+    const pi = prog.firstChild; void pi.offsetWidth; pi.style.transition = `transform ${AUTO_MS}ms linear`; pi.style.transform = 'scaleX(1)';
+    atimer = setTimeout(() => { if (document.hidden) { armTimer(); return; } go(cur + 1, 1); }, AUTO_MS);
+  };
+  async function go(i, dir) {
+    if (!slides.length || moving) return; moving = true; stopTimer();
+    const n = (i + slides.length) % slides.length, nx = new Image(); nx.src = slides[n].src; try { await nx.decode(); } catch (e) { /* show anyway */ }
+    const still = (RM && RM.matches) || !img.animate;
+    if (!still) await img.animate([{ transform: 'translate3d(0,0,0)', opacity: 1 }, { transform: `translate3d(${-dir * 7}%,0,0) scale(.97)`, opacity: 0 }], { duration: 420, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' }).finished.catch(() => {});
+    show(n);
+    if (!still) { const a = img.animate([{ transform: `translate3d(${dir * 7}%,0,0) scale(.97)`, opacity: 0 }, { transform: 'translate3d(0,0,0) scale(1)', opacity: 1 }], { duration: 760, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }); cap.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 700, easing: 'cubic-bezier(.16,1,.3,1)' }); await a.finished.catch(() => {}); img.getAnimations().forEach(x => x.cancel()); }
+    moving = false; armTimer();
+  }
+  play.addEventListener('click', e => { e.stopPropagation(); auto = !auto; paintPlay(); if (auto) armTimer(); else stopTimer(); });
+  paintPlay();
   function wire(it) {
-    const open = () => { slidesNow(); const first = slides.findIndex(s => s.src === it.list[0].src); show(first < 0 ? 0 : first); lb.classList.add('open'); };
+    const open = () => { slidesNow(); const first = slides.findIndex(s => s.src === it.list[0].src); show(first < 0 ? 0 : first); lb.classList.add('open'); paintPlay(); armTimer(); };
     it.el.addEventListener('click', open); it.el.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
   }
   const lkb0 = $('#lb-like'); if (lkb0) lkb0.addEventListener('click', e => { e.stopPropagation(); toggleLike(lkb0.dataset.id, lkb0); });
-  const close = () => lb.classList.remove('open');
-  $('#lb-close').onclick = close; $('#lb-prev').onclick = () => show(cur - 1); $('#lb-next').onclick = () => show(cur + 1);
+  const close = () => { lb.classList.remove('open'); stopTimer(); };
+  $('#lb-close').onclick = close; $('#lb-prev').onclick = () => go(cur - 1, -1); $('#lb-next').onclick = () => go(cur + 1, 1);
   lb.addEventListener('click', e => { if (e.target === lb) close(); });
-  document.addEventListener('keydown', e => { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1); });
+  document.addEventListener('keydown', e => { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') go(cur - 1, -1); if (e.key === 'ArrowRight') go(cur + 1, 1); if (e.key === ' ') { e.preventDefault(); play.click(); } });
   let x0 = null;
   lb.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   lb.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });

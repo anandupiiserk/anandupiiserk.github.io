@@ -745,3 +745,13 @@ html[lang="zh"] .gi figcaption time,html[lang="ja"] .gi figcaption time{letter-s
 .gi figcaption b{font-size:.7rem}
 .gi figcaption time{font-family:var(--mono);font-weight:600;font-size:.74rem;line-height:inherit;letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
 .gi figcaption span{font-size:.92rem}
+
+/* Lightbox autoplay controls */
+.lightbox img{animation:none!important}
+.lb-prog{position:absolute;left:0;right:0;top:0;height:3px;background:transparent;z-index:6;pointer-events:none}
+.lb-prog i{display:block;height:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--a),var(--b))}
+.lb-play{position:absolute;top:22px;right:140px;z-index:5;width:42px;height:42px;border-radius:50%;border:0;padding:0;cursor:pointer;display:grid;place-items:center;background:rgba(10,10,10,.5);color:#fff;backdrop-filter:blur(6px);transition:transform .35s var(--ease),background .3s}
+.lb-play:hover{transform:scale(1.1);background:rgba(10,10,10,.75)}
+.lb-play svg{width:20px;height:20px;fill:currentColor;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.lb-play svg path[d^="M8"]{fill:none}
+.lightbox{overflow:hidden}
