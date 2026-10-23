@@ -52,7 +52,6 @@ WORK_005 | Lecture on WRF-Model, during Hands on Workshop on Weather and Climate
 WORK_006 | Attendees during Hands-on session on WRF Model
 WORK_007 | Lecture on Basics of Origin Pro Software at College of Engineering Roorkee.
 WORK_008 | Lecture on Post-processing of WRF Model.
-Conf_005 | Workshop on Data Assimilation in Weather and Climate models at ICTS Bengaluru
 Field_001 | Visit to the IMD station at Ranichauri, Uttarakhand.
 Field_002 | At Ranichauri IMD Station, Uttarakhand with Prof. Piyush Srivastava
 Field_003 | At Ranichauri Climate Monitoring Station, Uttarakhand. From left, Rajendra, Shiwam, Prof. Piyush, Anandu
