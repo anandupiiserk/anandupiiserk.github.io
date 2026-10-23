@@ -768,3 +768,9 @@ html[lang="zh"] .gi figcaption time,html[lang="ja"] .gi figcaption time{letter-s
 .fstat{font-size:.92rem;color:var(--muted)}.fstat.bad{color:#d9534f}
 .cform .btn:disabled{opacity:.6;cursor:progress}
 html[lang="zh"] .frow label,html[lang="ja"] .frow label{letter-spacing:.02em}
+
+/* Contact: emails on the left, message form on the right */
+.contact-compact{max-width:1100px}
+.cgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:start}
+.cgrid .cform{max-width:none}
+@media (max-width:820px){.cgrid{grid-template-columns:1fr}}
