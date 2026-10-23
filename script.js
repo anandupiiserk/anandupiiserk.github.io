@@ -32,8 +32,6 @@ const SITE = {
     { label: 'ResearchGate', brand: '#00bfae',   icon: 'researchgate', url: 'https://www.researchgate.net/profile/Anandu-Prabhakar' },
     { label: 'ORCID', brand: '#a6ce39',          icon: 'orcid',        url: 'https://orcid.org/0000-0001-6621-2522' },
     { label: 'X', brand: '#000000',              icon: 'x',            url: 'https://twitter.com/anandup10' },
-    { label: 'Facebook', brand: '#1877f2',       icon: 'facebook',     url: 'https://www.facebook.com/anandu.prabhakar' },
-    { label: 'Instagram', brand: 'linear-gradient(45deg,#f09433,#dc2743 50%,#8a3ab9)',      icon: 'instagram',    url: 'https://www.instagram.com/anandu_prabhakar/' },
     { label: 'Blogger', brand: '#ff5722',        icon: 'blogger',      url: 'https://www.blogger.com/profile/03363089627354540732' },
     { label: 'Email', brand: '#d9902a',          icon: 'mail',         url: 'mailto:anandupiiserk@gmail.com' }
   ]
@@ -55,7 +53,7 @@ const LS = { get(k) { try { return localStorage.getItem(k); } catch (e) { return
 const LANGS = [{ c: 'en', n: 'English', s: 'EN' }, { c: 'ml', n: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', s: 'ML' }, { c: 'hi', n: '\u0939\u093f\u0928\u094d\u0926\u0940', s: 'HI' }, { c: 'fr', n: 'Fran\u00e7ais', s: 'FR' }, { c: 'de', n: 'Deutsch', s: 'DE' }, { c: 'ar', n: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', s: 'AR' }, { c: 'es', n: 'Espa\u00f1ol', s: 'ES' }, { c: 'pt', n: 'Portugu\u00eas', s: 'PT' }, { c: 'zh', n: '\u4e2d\u6587', s: 'ZH' }, { c: 'ja', n: '\u65e5\u672c\u8a9e', s: 'JA' }];
 let LANG = 'en'; const DICT = window.I18N || {};
 const norm = s => String(s).replace(/\s+/g, ' ').trim();
-const KEEP = /^(Facebook|Instagram|Blogger|Anandu Prabhakaran|\S+@\S+|anandu|\.fire|LAT|LON|FWI|[a-z.]+\.(com|net|org)|Anandu P\.|anandu\.fire|GitHub|LinkedIn|ORCID|ResearchGate|Google Scholar|X|WRF-SFIRE|CMIP6|CoEDMM, IIT Roorkee|IIT Roorkee|CEFE-CNRS|DOI|you@example\.com)$/;
+const KEEP = /^(Blogger|Anandu Prabhakaran|\S+@\S+|anandu|\.fire|LAT|LON|FWI|[a-z.]+\.(com|net|org)|Anandu P\.|anandu\.fire|GitHub|LinkedIn|ORCID|ResearchGate|Google Scholar|X|WRF-SFIRE|CMIP6|CoEDMM, IIT Roorkee|IIT Roorkee|CEFE-CNRS|DOI|you@example\.com)$/;
 const tr = s => { if (LANG === 'en') return s; const d = DICT[LANG]; const v = d && d[norm(s)]; return v === undefined ? s : v; };
 const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }, del(k) { try { sessionStorage.removeItem(k); } catch (e) {} } };
 
@@ -63,8 +61,6 @@ const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { retu
 const svg = (inner, extra = '') => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${inner}</svg>`;
 const txt = t => svg(`<text x="12" y="16" text-anchor="middle" font-size="10.5" font-weight="700" font-family="Arial, sans-serif" fill="currentColor" stroke="none">${t}</text>`);
 const ICONS = {
-  facebook: svg('<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>'),
-  instagram: svg('<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>'),
   blogger: txt('B'),
   github: svg('<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>'),
   linkedin: svg('<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>'),
