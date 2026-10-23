@@ -1,0 +1,46 @@
+# GALLERY CAPTIONS
+# One line per photo or per event:   ID | caption
+# Lines that start with # are ignored. Blank lines are ignored.
+#
+# Sections and file name prefixes (use the same capital letters as in the file names):
+#   PhD_     PhD: thesis work, presentation, defence
+#   Conf_    Conference: conferences, symposia, seminars, webinars I attended or presented at
+#   WORK_    Workshops: workshops and lectures I conducted
+#   Meet_    Meetings: meetings with other people
+#   Field_   Field: field trips
+#   MSpace_  My Space: other trips, expeditions, random shots
+#
+# One photo:      file  PhD_001.jpg            line  PhD_001 | Caption
+# Event photos:   files Conf_004_01.jpg, Conf_004_02.jpg, ... (up to 20)   line  Conf_004 | Caption for the event
+#                 Optional caption for one photo of the event:  Conf_004_02 | Caption for this photo
+# File types: jpg, jpeg, png, webp. Put the image files in this same folder (gallery/).
+# A photo is shown only if its ID is listed here. A line with no caption is fine:  PhD_002 |
+# Lines below are the captions from the earlier website. They stay hidden until a file with that name is added.
+
+Conf_001 | From Research Scholars Day at CoEDMM, IIT Roorkee
+Conf_002 | Team WeatherXplorers during Research Scholars Day at CoEDMM, IIT Roorkee.
+Conf_003 | CoEDMM team with Prof. Tatsuya Ishikawa at 9th Global Energy and Water EXchanges Open Science Conference, Hokkaido, Japan
+Conf_004 | From left Dr. Pattanaik, Dr. Srivastava and DG India Meteorological Department, Dr. Mohapatra, Anandu Prabhakaran at GEWEX OSC - 2024.
+WORK_001 | Online Lecture + Workshop at CCCES, Kerala Agricultural University, October 2025
+WORK_002 | Workshop at Kannur University - 2025
+WORK_003 | Workshop at School of Environmental Studies, CUSAT
+WORK_004 | Workshop at Department of Environmental Sciences, Sharda University
+WORK_005 | Lecture on WRF-Model, during Hands on Workshop on Weather and Climate Modelling Organised by Dept. of Architecture &amp; Planning, IIT Roorkee.
+WORK_006 | Attendees during Hands-on session on WRF Model
+WORK_007 | Lecture on Basics of Origin Pro Software at College of Engineering Roorkee.
+WORK_008 | Lecture on Post-processing of WRF Model.
+Conf_005 | Workshop on Data Assimilation in Weather and Climate models at ICTS Bengaluru
+Field_001 | Visit to the IMD station at Ranichauri, Uttarakhand.
+Field_002 | At Ranichauri IMD Station, Uttarakhand with Prof. Piyush Srivastava
+Field_003 | At Ranichauri Climate Monitoring Station, Uttarakhand. From left, Rajendra, Shiwam, Prof. Piyush, Anandu
+Field_004 | Balasore beach on the eastern coast of India
+Field_005 | Clinometer in a pose during fieldwork.
+Field_006 | Chandipur during a low tide phenomenon.
+Field_007 | Ripples on the tidal flat of Chandipur
+Field_008 | Clinometer with readings of ripple lee and crust.
+Field_009 | Tidal flat with exposed beauty of aquatic organisms architecture.
+Field_010 | Bonfire before the dispersal of fieldwork.
+MSpace_001 | Top view of other hills in Ponmudi
+MSpace_002 | Ponmudi Hills
+MSpace_003 | Trip to Ponmudi
+MSpace_004 | Kallar Waterfalls Ponmudi
