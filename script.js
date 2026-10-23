@@ -27,7 +27,7 @@ const SITE = {
   ],
   socials: [
     { label: 'GitHub', brand: '#24292f',         icon: 'github',       url: 'https://github.com/anandupiiserk' },
-    { label: 'LinkedIn', brand: '#0a66c2',       icon: 'linkedin',     url: 'https://www.linkedin.com/in/anandu-p-7a353272/' },
+    { label: 'LinkedIn', brand: '#0a66c2',       icon: 'linkedin',     url: 'https://www.linkedin.com/in/anandu-iitr/' },
     { label: 'Google Scholar', brand: '#4285f4', icon: 'scholar',      url: 'https://scholar.google.com/citations?user=0PK5HxYAAAAJ&hl=en' },
     { label: 'ResearchGate', brand: '#00bfae',   icon: 'researchgate', url: 'https://www.researchgate.net/profile/Anandu-Prabhakar' },
     { label: 'ORCID', brand: '#a6ce39',          icon: 'orcid',        url: 'https://orcid.org/0000-0001-6621-2522' },
