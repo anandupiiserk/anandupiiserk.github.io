@@ -732,3 +732,16 @@ html[lang="zh"] .gi figcaption b,html[lang="ja"] .gi figcaption b{letter-spacing
 .gi figcaption span time{display:block;font:600 .76rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text);margin-bottom:2px}
 @media (max-width:960px){.gal{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.gal{grid-template-columns:1fr}}
+
+/* Caption line: CATEGORY | date | text */
+.gi figcaption{display:block;line-height:1.55}
+.gi figcaption b,.gi figcaption time,.gi figcaption span{display:inline}
+.gi figcaption b.cat-phd{text-transform:none;letter-spacing:.06em}
+.gi figcaption time{font:600 .76rem/inherit var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text);margin:0}
+.gi figcaption .sep{font-style:normal;color:var(--line2);margin:0 .6em;font-weight:300}
+.gi figcaption span{color:var(--muted)}
+html[lang="zh"] .gi figcaption time,html[lang="ja"] .gi figcaption time{letter-spacing:.02em}
+.gi figcaption time{line-height:inherit;vertical-align:baseline}
+.gi figcaption b{font-size:.7rem}
+.gi figcaption time{font-family:var(--mono);font-weight:600;font-size:.74rem;line-height:inherit;letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
+.gi figcaption span{font-size:.92rem}
