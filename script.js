@@ -831,9 +831,9 @@ function applyLang(code) {
   const pick = tag => { const c = cands(tag), want = LS.get('voice:' + tag); return c.find(v => v.name === want) || c[0] || null; };
   /* Spoken forms of names and acronyms that Malayalam, Hindi and Arabic voices tend to mispronounce or skip. */
   const SAY = {
-    ml: [[/CoEDMM/g, 'സി ഒ ഇ ഡി എം എം'], [/IIT Roorkee/g, 'ഐഐടി റൂർക്കി'], [/WRF-SFIRE/g, 'ഡബ്ല്യു ആർ എഫ് സ്ഫയർ'], [/WRF/g, 'ഡബ്ല്യു ആർ എഫ്'], [/PMRF/g, 'പി എം ആർ എഫ്'], [/MHRD-JRF/g, 'എം എച്ച് ആർ ഡി ജെ ആർ എഫ്'], [/CMIP6/g, 'സിമിപ് സിക്സ്'], [/GEWEX/g, 'ജിവെക്സ്'], [/IISER Kolkata/g, 'ഐസർ കൊൽക്കത്ത'], [/NWP/g, 'എൻ ഡബ്ല്യു പി'], [/Python/g, 'പൈത്തൺ'], [/Origin Pro/g, 'ഒറിജിൻ പ്രോ']],
-    hi: [[/CoEDMM/g, 'सीओईडीएमएम'], [/IIT Roorkee/g, 'आईआईटी रुड़की'], [/WRF-SFIRE/g, 'डब्ल्यूआरएफ एसफ़ायर'], [/WRF/g, 'डब्ल्यूआरएफ'], [/PMRF/g, 'पीएमआरएफ'], [/MHRD-JRF/g, 'एमएचआरडी जेआरएफ'], [/CMIP6/g, 'सीमिप सिक्स'], [/GEWEX/g, 'जीवेक्स'], [/IISER Kolkata/g, 'आईसर कोलकाता'], [/NWP/g, 'एनडब्ल्यूपी']],
-    ar: [[/CoEDMM/g, 'سي أو إي دي إم إم'], [/IIT Roorkee/g, 'آي آي تي رورقي'], [/WRF-SFIRE/g, 'دبليو آر إف إس فاير'], [/WRF/g, 'دبليو آر إف'], [/PMRF/g, 'بي إم آر إف'], [/MHRD-JRF/g, 'إم إتش آر دي جي آر إف'], [/CMIP6/g, 'سي ميب ستة'], [/GEWEX/g, 'جيويكس'], [/IISER Kolkata/g, 'آيسر كولكاتا'], [/NWP/g, 'إن دبليو بي'], [/Python/g, 'بايثون']]
+    ml: [[/CoEDMM/g, 'സി ഒ ഇ ഡി എം എം'], [/IIT Roorkee/g, 'ഐഐടി റൂർക്കി'], [/WRF-SFIRE/g, 'ഡബ്ല്യു ആർ എഫ് സ്ഫയർ'], [/WRF/g, 'ഡബ്ല്യു ആർ എഫ്'], [/PMRF/g, 'പി എം ആർ എഫ്'], [/MoE JRF/g, 'എം ഒ ഇ ജെ ആർ എഫ്'], [/CMIP6/g, 'സിമിപ് സിക്സ്'], [/GEWEX/g, 'ജിവെക്സ്'], [/IISER Kolkata/g, 'ഐസർ കൊൽക്കത്ത'], [/NWP/g, 'എൻ ഡബ്ല്യു പി'], [/Python/g, 'പൈത്തൺ'], [/Origin Pro/g, 'ഒറിജിൻ പ്രോ']],
+    hi: [[/CoEDMM/g, 'सीओईडीएमएम'], [/IIT Roorkee/g, 'आईआईटी रुड़की'], [/WRF-SFIRE/g, 'डब्ल्यूआरएफ एसफ़ायर'], [/WRF/g, 'डब्ल्यूआरएफ'], [/PMRF/g, 'पीएमआरएफ'], [/MoE JRF/g, 'एमओई जेआरएफ'], [/CMIP6/g, 'सीमिप सिक्स'], [/GEWEX/g, 'जीवेक्स'], [/IISER Kolkata/g, 'आईसर कोलकाता'], [/NWP/g, 'एनडब्ल्यूपी']],
+    ar: [[/CoEDMM/g, 'سي أو إي دي إم إم'], [/IIT Roorkee/g, 'آي آي تي رورقي'], [/WRF-SFIRE/g, 'دبليو آر إف إس فاير'], [/WRF/g, 'دبليو آر إف'], [/PMRF/g, 'بي إم آر إف'], [/MoE JRF/g, 'إم أو إي جي آر إف'], [/CMIP6/g, 'سي ميب ستة'], [/GEWEX/g, 'جيويكس'], [/IISER Kolkata/g, 'آيسر كولكاتا'], [/NWP/g, 'إن دبليو بي'], [/Python/g, 'بايثون']]
   };
   const say = (t, code) => (SAY[code] || []).reduce((x, [r, w]) => x.replace(r, w), t);
   const chunks = text => (text.match(/[^.!?。！？।\n]+[.!?。！？।]?/g) || [text]).map(s => s.trim()).filter(Boolean).flatMap(s => {

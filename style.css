@@ -647,3 +647,12 @@ html[dir="rtl"] .copy .cp{direction:rtl}
 .lightbox img{background:none!important;min-width:0!important;min-height:0!important;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 html[lang="zh"] .gi figcaption b,html[lang="ja"] .gi figcaption b{letter-spacing:.04em}
 @media (max-width:640px){.gal{columns:1}}
+
+/* Milestones timeline: teal instead of amber */
+:root{--tl:#3fb8a6;--tl-soft:rgba(63,184,166,.18)}
+[data-theme="light"]{--tl:#0b6b5e;--tl-soft:rgba(11,107,94,.16)}
+.tl-fill{background:var(--tl)!important}
+.t-item.visible::before{background:var(--tl)!important;border-color:var(--tl)!important;box-shadow:0 0 0 6px var(--tl-soft)!important}
+.dl a,.who a{text-decoration-thickness:1px;text-underline-offset:3px}
+.who a{color:inherit}
+.dl a:hover,.who a:hover{color:var(--a)}

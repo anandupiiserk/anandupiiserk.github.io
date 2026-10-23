@@ -342,7 +342,17 @@ window.I18N = {
 "Field": "ഫീൽഡ്",
 "My Space": "എന്റെ ഇടം",
 "Photographs will appear here soon.": "ഫോട്ടോകൾ ഉടൻ ഇവിടെ വരും.",
-"Social media": "സോഷ്യൽ മീഡിയ"
+"Social media": "സോഷ്യൽ മീഡിയ",
+"Forest fire modelling": "കാട്ടുതീ മോഡലിംഗ്",
+"Numerical weather prediction model": "സംഖ്യാധിഷ്ഠിത കാലാവസ്ഥാ പ്രവചന മോഡൽ",
+"Fire weather severity and indices": "അഗ്നി കാലാവസ്ഥാ തീവ്രതയും സൂചികകളും",
+"Weather and climate change induced disasters": "കാലാവസ്ഥയും കാലാവസ്ഥാ വ്യതിയാനവും മൂലമുള്ള ദുരന്തങ്ങൾ",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "2023 ജനുവരി മുതൽ പ്രൈം മിനിസ്റ്റേഴ്സ് റിസർച്ച് ഫെലോഷിപ്പ് (PMRF). 2022 ജൂലൈ മുതൽ ഡിസംബർ വരെ MoE JRF ഫെലോ. 2025 ജൂലൈ മുതൽ ഡിസംബർ വരെ Raman-Charpak ഫെലോ.",
+"MoE JRF fellow": "MoE JRF ഫെലോ",
+"Raman-Charpak fellow": "Raman-Charpak ഫെലോ",
+"July to December 2025.": "2025 ജൂലൈ മുതൽ ഡിസംബർ വരെ.",
+"Fellowships": "ഫെലോഷിപ്പുകൾ",
+"In chronological order.": "കാലക്രമത്തിൽ."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -686,7 +696,17 @@ window.I18N = {
 "Field": "क्षेत्र",
 "My Space": "मेरा संसार",
 "Photographs will appear here soon.": "छायाचित्र जल्द ही यहाँ दिखेंगे।",
-"Social media": "सोशल मीडिया"
+"Social media": "सोशल मीडिया",
+"Forest fire modelling": "वनाग्नि मॉडलिंग",
+"Numerical weather prediction model": "संख्यात्मक मौसम पूर्वानुमान मॉडल",
+"Fire weather severity and indices": "अग्नि मौसम की गंभीरता और सूचकांक",
+"Weather and climate change induced disasters": "मौसम और जलवायु परिवर्तन से उत्पन्न आपदाएँ",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "जनवरी 2023 से प्रधानमंत्री अनुसंधान अध्येतावृत्ति (PMRF)। जुलाई से दिसंबर 2022 तक MoE JRF फ़ेलो। जुलाई से दिसंबर 2025 तक Raman-Charpak फ़ेलो।",
+"MoE JRF fellow": "MoE JRF फ़ेलो",
+"Raman-Charpak fellow": "Raman-Charpak फ़ेलो",
+"July to December 2025.": "जुलाई से दिसंबर 2025 तक।",
+"Fellowships": "अध्येतावृत्तियाँ",
+"In chronological order.": "कालक्रम के अनुसार।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1030,7 +1050,17 @@ window.I18N = {
 "Field": "Terrain",
 "My Space": "Mon espace",
 "Photographs will appear here soon.": "Les photographies apparaîtront ici prochainement.",
-"Social media": "Réseaux sociaux"
+"Social media": "Réseaux sociaux",
+"Forest fire modelling": "Modélisation des feux de forêt",
+"Numerical weather prediction model": "Modèle de prévision numérique du temps",
+"Fire weather severity and indices": "Sévérité météorologique des incendies et indices",
+"Weather and climate change induced disasters": "Catastrophes induites par la météo et le changement climatique",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "Bourse de recherche du Premier ministre (PMRF) depuis janvier 2023. Boursier MoE JRF de juillet à décembre 2022. Boursier Raman-Charpak de juillet à décembre 2025.",
+"MoE JRF fellow": "Boursier MoE JRF",
+"Raman-Charpak fellow": "Boursier Raman-Charpak",
+"July to December 2025.": "De juillet à décembre 2025.",
+"Fellowships": "Bourses",
+"In chronological order.": "Par ordre chronologique."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -1374,7 +1404,17 @@ window.I18N = {
 "Field": "Feld",
 "My Space": "Mein Raum",
 "Photographs will appear here soon.": "Die Fotos erscheinen hier in Kürze.",
-"Social media": "Soziale Medien"
+"Social media": "Soziale Medien",
+"Forest fire modelling": "Waldbrandmodellierung",
+"Numerical weather prediction model": "Numerisches Wettervorhersagemodell",
+"Fire weather severity and indices": "Waldbrandwetter-Schwere und Indizes",
+"Weather and climate change induced disasters": "Durch Wetter und Klimawandel ausgelöste Katastrophen",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "Prime Minister's Research Fellowship (PMRF) seit Januar 2023. MoE-JRF-Stipendiat von Juli bis Dezember 2022. Raman-Charpak-Stipendiat von Juli bis Dezember 2025.",
+"MoE JRF fellow": "MoE-JRF-Stipendiat",
+"Raman-Charpak fellow": "Raman-Charpak-Stipendiat",
+"July to December 2025.": "Juli bis Dezember 2025.",
+"Fellowships": "Stipendien",
+"In chronological order.": "In chronologischer Reihenfolge."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -1718,7 +1758,17 @@ window.I18N = {
 "Field": "الميدان",
 "My Space": "مساحتي",
 "Photographs will appear here soon.": "ستظهر الصور هنا قريباً.",
-"Social media": "وسائل التواصل الاجتماعي"
+"Social media": "وسائل التواصل الاجتماعي",
+"Forest fire modelling": "نمذجة حرائق الغابات",
+"Numerical weather prediction model": "نموذج التنبؤ العددي بالطقس",
+"Fire weather severity and indices": "شدة طقس الحرائق والمؤشرات",
+"Weather and climate change induced disasters": "الكوارث الناجمة عن الطقس وتغيّر المناخ",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "زمالة رئيس الوزراء للبحث (PMRF) منذ يناير 2023. زميل MoE JRF من يوليو إلى ديسمبر 2022. زميل Raman-Charpak من يوليو إلى ديسمبر 2025.",
+"MoE JRF fellow": "زميل MoE JRF",
+"Raman-Charpak fellow": "زميل Raman-Charpak",
+"July to December 2025.": "من يوليو إلى ديسمبر 2025.",
+"Fellowships": "الزمالات",
+"In chronological order.": "بالترتيب الزمني."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -1939,7 +1989,17 @@ window.I18N = {
 "Field": "Campo",
 "My Space": "Mi espacio",
 "Photographs will appear here soon.": "Las fotografías aparecerán aquí pronto.",
-"Social media": "Redes sociales"
+"Social media": "Redes sociales",
+"Forest fire modelling": "Modelización de incendios forestales",
+"Numerical weather prediction model": "Modelo de predicción numérica del tiempo",
+"Fire weather severity and indices": "Severidad meteorológica de incendios e índices",
+"Weather and climate change induced disasters": "Desastres inducidos por el clima y el cambio climático",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "Prime Minister's Research Fellowship (PMRF) desde enero de 2023. Becario MoE JRF de julio a diciembre de 2022. Becario Raman-Charpak de julio a diciembre de 2025.",
+"MoE JRF fellow": "Becario MoE JRF",
+"Raman-Charpak fellow": "Becario Raman-Charpak",
+"July to December 2025.": "De julio a diciembre de 2025.",
+"Fellowships": "Becas",
+"In chronological order.": "En orden cronológico."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -2160,7 +2220,17 @@ window.I18N = {
 "Field": "野外",
 "My Space": "我的空间",
 "Photographs will appear here soon.": "照片即将在此展示。",
-"Social media": "社交媒体"
+"Social media": "社交媒体",
+"Forest fire modelling": "森林火灾模拟",
+"Numerical weather prediction model": "数值天气预报模式",
+"Fire weather severity and indices": "火险天气严重程度与指数",
+"Weather and climate change induced disasters": "天气和气候变化引发的灾害",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "自 2023 年 1 月起获得 Prime Minister's Research Fellowship (PMRF)。2022 年 7 月至 12 月为 MoE JRF 研究员。2025 年 7 月至 12 月为 Raman-Charpak 研究员。",
+"MoE JRF fellow": "MoE JRF 研究员",
+"Raman-Charpak fellow": "Raman-Charpak 研究员",
+"July to December 2025.": "2025 年 7 月至 12 月。",
+"Fellowships": "奖学金",
+"In chronological order.": "按时间顺序排列。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -2381,7 +2451,17 @@ window.I18N = {
 "Field": "フィールド",
 "My Space": "マイスペース",
 "Photographs will appear here soon.": "写真は近日中にここに表示されます。",
-"Social media": "ソーシャルメディア"
+"Social media": "ソーシャルメディア",
+"Forest fire modelling": "森林火災のモデリング",
+"Numerical weather prediction model": "数値天気予報モデル",
+"Fire weather severity and indices": "火災気象の厳しさと指数",
+"Weather and climate change induced disasters": "気象と気候変動に起因する災害",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "2023年1月より Prime Minister's Research Fellowship (PMRF) を受給。2022年7月から12月までは MoE JRF フェロー、2025年7月から12月までは Raman-Charpak フェロー。",
+"MoE JRF fellow": "MoE JRF フェロー",
+"Raman-Charpak fellow": "Raman-Charpak フェロー",
+"July to December 2025.": "2025年7月から12月まで。",
+"Fellowships": "フェローシップ",
+"In chronological order.": "時系列順です。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -2602,6 +2682,16 @@ window.I18N = {
 "Field": "Campo",
 "My Space": "Meu espaço",
 "Photographs will appear here soon.": "As fotografias aparecerão aqui em breve.",
-"Social media": "Redes sociais"
+"Social media": "Redes sociais",
+"Forest fire modelling": "Modelagem de incêndios florestais",
+"Numerical weather prediction model": "Modelo de previsão numérica do tempo",
+"Fire weather severity and indices": "Severidade meteorológica de incêndios e índices",
+"Weather and climate change induced disasters": "Desastres induzidos pelo clima e pela mudança climática",
+"Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.": "Prime Minister's Research Fellowship (PMRF) desde janeiro de 2023. Bolsista MoE JRF de julho a dezembro de 2022. Bolsista Raman-Charpak de julho a dezembro de 2025.",
+"MoE JRF fellow": "Bolsista MoE JRF",
+"Raman-Charpak fellow": "Bolsista Raman-Charpak",
+"July to December 2025.": "De julho a dezembro de 2025.",
+"Fellowships": "Bolsas",
+"In chronological order.": "Em ordem cronológica."
 }
 };
