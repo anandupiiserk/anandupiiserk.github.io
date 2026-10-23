@@ -25,7 +25,7 @@ WORK_001 | Online Lecture + Workshop at CCCES, Kerala Agricultural University, O
 WORK_002 | Workshop at Kannur University - 2025
 WORK_003 | Workshop at School of Environmental Studies, CUSAT
 WORK_004 | Workshop at Department of Environmental Sciences, Sharda University
-WORK_005 | Lecture on WRF-Model, during Hands on Workshop on Weather and Climate Modelling Organised by Dept. of Architecture &amp; Planning, IIT Roorkee.
+WORK_005 | Lecture on WRF-Model, during Hands on Workshop on Weather and Climate Modelling Organised by Dept. of Architecture & Planning, IIT Roorkee.
 WORK_006 | Attendees during Hands-on session on WRF Model
 WORK_007 | Lecture on Basics of Origin Pro Software at College of Engineering Roorkee.
 WORK_008 | Lecture on Post-processing of WRF Model.
