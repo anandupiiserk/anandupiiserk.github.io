@@ -17,7 +17,7 @@ const SITE = {
   tagline: 'PhD scholar, CoEDMM, IIT Roorkee',
   email: 'anandupiiserk@gmail.com',
   /* Contact form. Leave endpoint empty to open the visitor's email app instead. Formspree: https://formspree.io/f/xxxxxxxx . Web3Forms: https://api.web3forms.com/submit and put the public access key in formKey. */
-  formEndpoint: '', formKey: '',
+  formEndpoint: 'https://formspree.io/f/mdeeoqdz', formKey: '',
   nav: [
     { id: 'home',         href: 'home.html',         label: 'Home',         desc: 'Overview and research focus.' },
     { id: 'about',        href: 'about.html',        label: 'About me',     desc: 'Position, education and research interests.' },
