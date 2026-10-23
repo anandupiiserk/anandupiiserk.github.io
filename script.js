@@ -585,10 +585,23 @@ else (function loop() {
     return list;
   }
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  /* Likes: kept in this browser only (localStorage). There is no server, so counts are not shared between visitors. */
+  const LK = 'gal-likes'; let liked = new Set();
+  try { liked = new Set(JSON.parse(localStorage.getItem(LK) || '[]')); } catch (err) { /* storage unavailable */ }
+  const saveLikes = () => { try { localStorage.setItem(LK, JSON.stringify([...liked])); } catch (err) { /* ignore */ } };
+  const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.1C.9 8.6 2.6 5 6.1 5c2 0 3.3 1 3.9 2.1C10.6 6 11.9 5 13.9 5c3.5 0 5.2 3.6 3.7 6.9C19.5 16.4 12 21 12 21z" transform="translate(1.1 0)"/></svg>';
+  function burst(btn) {
+    const r = btn.getBoundingClientRect(); if (RM && RM.matches) return;
+    for (let i = 0; i < 7; i++) { const h = document.createElement('i'); h.className = 'gfly'; h.textContent = '\u2665'; h.style.left = (r.left + r.width / 2) + 'px'; h.style.top = (r.top + r.height / 2) + 'px'; h.style.setProperty('--dx', (Math.random() * 70 - 35) + 'px'); h.style.setProperty('--dy', -(50 + Math.random() * 60) + 'px'); h.style.setProperty('--d', (Math.random() * .15) + 's'); document.body.append(h); setTimeout(() => h.remove(), 1300); }
+  }
+  function paintLikes() { $$('.glike').forEach(b => { const on = liked.has(b.dataset.id); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); const lk = $('#lb-like'); if (lk && lk.dataset.id) { const on = liked.has(lk.dataset.id); lk.classList.toggle('on', on); lk.setAttribute('aria-pressed', on); } }
+  function toggleLike(id, btn) { if (liked.has(id)) liked.delete(id); else { liked.add(id); burst(btn); } saveLikes(); paintLikes(); }
   function build(e, list) {
     const f = document.createElement('figure'); f.className = 'gi' + (list.length > 1 ? ' multi' : ''); f.dataset.cat = e.cat.id; f.dataset.cursor = 'View'; f.tabIndex = 0; f.hidden = false;
     const cap = e.cap || list[0].cap;
-    f.innerHTML = `<div class="gwrap"><div class="gimg"${list.length > 1 ? ` style="aspect-ratio:${list[0].w}/${list[0].h}"` : ''}><img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.src)}" alt="" loading="lazy" decoding="async">`).join('')}${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b>${esc(e.cat.label)}</b>${cap ? `<span>${esc(cap)}</span>` : ''}</figcaption>`;
+    f.innerHTML = `<div class="gwrap"><div class="gimg"${list.length > 1 ? ` style="aspect-ratio:${list[0].w}/${list[0].h}"` : ''}><img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b>${esc(e.cat.label)}</b>${cap ? `<span>${esc(cap)}</span>` : ''}</figcaption>`;
+    const lb0 = f.querySelector('.glike'); lb0.addEventListener('click', ev => { ev.stopPropagation(); ev.preventDefault(); toggleLike(e.base, lb0); }); lb0.addEventListener('keydown', ev => ev.stopPropagation());
+    paintLikes();
     if (list.length > 1) slideshow(f);
     return f;
   }
@@ -614,16 +627,19 @@ else (function loop() {
       track.style.transition = anim ? '' : 'none'; k = n; track.style.transform = `translate3d(${-k * 100}%,0,0)`; paint();
       if (!anim) { void track.offsetWidth; track.style.transition = ''; }
     };
-    track.addEventListener('transitionend', e => { if (e.target !== track) return; busy = false; if (k >= N) go(0, false); });
+    let fin = 0;
+    const settle = () => { clearTimeout(fin); busy = false; if (k >= N) go(0, false); };
+    track.addEventListener('transitionend', e => { if (e.target === track) settle(); });
     const step = d => {
       if (busy) return;
-      if (d > 0) { busy = true; go(k + 1); }
-      else { if (k === 0) go(N, false); busy = true; requestAnimationFrame(() => go(k - 1)); }
+      busy = true; clearTimeout(fin); fin = setTimeout(settle, 1350); /* fallback if transitionend never fires */
+      if (d > 0) go(k + 1);
+      else { if (k === 0) go(N, false); requestAnimationFrame(() => go(k - 1)); }
     };
     go(0, false);
     const stop = e => { e.stopPropagation(); e.preventDefault(); };
     prev.addEventListener('click', e => { stop(e); step(-1); }); next.addEventListener('click', e => { stop(e); step(1); });
-    dots.addEventListener('click', e => { const j = e.target.dataset && e.target.dataset.j; if (j == null) return; stop(e); if (!busy) { busy = (+j !== k % N); go(+j); } });
+    dots.addEventListener('click', e => { const j = e.target.dataset && e.target.dataset.j; if (j == null) return; stop(e); if (!busy && +j !== k % N) { busy = true; clearTimeout(fin); fin = setTimeout(settle, 1350); go(+j); } });
     let x0 = null; box.addEventListener('pointerdown', e => { x0 = e.clientX; }); box.addEventListener('pointerup', e => { if (x0 != null && Math.abs(e.clientX - x0) > 40) { step(e.clientX < x0 ? 1 : -1); box.dataset.sw = 1; setTimeout(() => delete box.dataset.sw, 50); } x0 = null; });
     box.addEventListener('click', e => { if (box.dataset.sw) { e.stopPropagation(); e.preventDefault(); } }, true);
     const tick = () => { if (!f.isConnected) { clearInterval(t); return; } if (vis && !hov && !document.hidden && !(RM && RM.matches)) step(1); };
@@ -675,10 +691,10 @@ else (function loop() {
 
   /* Lightbox: every photo of the visible items, event photos in order */
   const lb = $('#lb'), img = $('#lb-img'), cap = $('#lb-cap'), count = $('#lb-count'); let slides = [], cur = 0;
-  function slidesNow() { slides = []; items.forEach(it => { if (!it.ok || it.el.hidden) return; it.list.forEach((p, k) => slides.push({ src: p.src, cap: p.cap || it.e.cap, cat: it.e.cat.label, k, n: it.list.length })); }); }
+  function slidesNow() { slides = []; items.forEach(it => { if (!it.ok || it.el.hidden) return; it.list.forEach((p, k) => slides.push({ base: it.e.base, src: p.src, cap: p.cap || it.e.cap, cat: it.e.cat.label, k, n: it.list.length })); }); }
   function show(i) {
     if (!slides.length) return; cur = (i + slides.length) % slides.length; const s = slides[cur];
-    img.src = s.src; img.alt = s.cap || '';
+    img.src = s.src; img.alt = s.cap || ''; const lkb = $('#lb-like'); if (lkb) { lkb.dataset.id = s.base; paintLikes(); }
     cap.innerHTML = ''; const b = document.createElement('b'); b.textContent = tr(s.cat); cap.append(b, document.createTextNode(s.cap ? tr(s.cap) : ''));
     count.textContent = pad(cur + 1, 2) + ' / ' + pad(slides.length, 2) + (s.n > 1 ? '  ·  ' + (s.k + 1) + '/' + s.n : '');
   }
@@ -686,6 +702,7 @@ else (function loop() {
     const open = () => { slidesNow(); const first = slides.findIndex(s => s.src === it.list[0].src); show(first < 0 ? 0 : first); lb.classList.add('open'); };
     it.el.addEventListener('click', open); it.el.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
   }
+  const lkb0 = $('#lb-like'); if (lkb0) lkb0.addEventListener('click', e => { e.stopPropagation(); toggleLike(lkb0.dataset.id, lkb0); });
   const close = () => lb.classList.remove('open');
   $('#lb-close').onclick = close; $('#lb-prev').onclick = () => show(cur - 1); $('#lb-next').onclick = () => show(cur + 1);
   lb.addEventListener('click', e => { if (e.target === lb) close(); });
