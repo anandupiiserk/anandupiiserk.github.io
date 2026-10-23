@@ -387,7 +387,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "പാർട്ട്-ടൈം. വിദ്യാർഥികളുടെ ഭൗമശാസ്ത്ര ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകി.",
 "Part-time. Tutored students in Earth science courses.": "പാർട്ട്-ടൈം. ഭൗമശാസ്ത്ര കോഴ്സുകളിൽ വിദ്യാർഥികളെ പഠിപ്പിച്ചു.",
 "I was born and raised in Kollam district, Kerala.": "ഞാൻ കേരളത്തിലെ കൊല്ലം ജില്ലയിലാണ് ജനിച്ചുവളർന്നത്.",
-"Journal articles published": "പ്രസിദ്ധീകരിച്ച ജേണൽ ലേഖനങ്ങൾ"
+"Journal articles published": "പ്രസിദ്ധീകരിച്ച ജേണൽ ലേഖനങ്ങൾ",
+"Events": "പരിപാടികൾ"
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -776,7 +777,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "अंशकालिक। विद्यार्थियों के पृथ्वी विज्ञान संबंधी प्रश्नों के उत्तर दिए।",
 "Part-time. Tutored students in Earth science courses.": "अंशकालिक। पृथ्वी विज्ञान पाठ्यक्रमों में विद्यार्थियों को पढ़ाया।",
 "I was born and raised in Kollam district, Kerala.": "मेरा जन्म और पालन-पोषण केरल के कोल्लम जिले में हुआ।",
-"Journal articles published": "प्रकाशित पत्रिका लेख"
+"Journal articles published": "प्रकाशित पत्रिका लेख",
+"Events": "आयोजन"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1165,7 +1167,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "Temps partiel. Réponses aux questions d'étudiants en sciences de la Terre.",
 "Part-time. Tutored students in Earth science courses.": "Temps partiel. Tutorat d'étudiants dans des cours de sciences de la Terre.",
 "I was born and raised in Kollam district, Kerala.": "Je suis né et j'ai grandi dans le district de Kollam, au Kerala.",
-"Journal articles published": "Articles de revue publiés"
+"Journal articles published": "Articles de revue publiés",
+"Events": "Événements"
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -1554,7 +1557,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "Teilzeit. Beantwortung von Fragen von Studierenden zu den Geowissenschaften.",
 "Part-time. Tutored students in Earth science courses.": "Teilzeit. Betreuung von Studierenden in geowissenschaftlichen Kursen.",
 "I was born and raised in Kollam district, Kerala.": "Ich wurde im Distrikt Kollam in Kerala geboren und bin dort aufgewachsen.",
-"Journal articles published": "Veröffentlichte Zeitschriftenartikel"
+"Journal articles published": "Veröffentlichte Zeitschriftenartikel",
+"Events": "Veranstaltungen"
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -1943,7 +1947,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "بدوام جزئي. أجبتُ عن أسئلة الطلاب في علوم الأرض.",
 "Part-time. Tutored students in Earth science courses.": "بدوام جزئي. قدّمتُ دروسًا خصوصية للطلاب في مقررات علوم الأرض.",
 "I was born and raised in Kollam district, Kerala.": "وُلدتُ ونشأتُ في مقاطعة كولام بولاية كيرالا.",
-"Journal articles published": "مقالات المجلات المنشورة"
+"Journal articles published": "مقالات المجلات المنشورة",
+"Events": "الفعاليات"
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -2209,7 +2214,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "Tiempo parcial. Respondí preguntas de estudiantes sobre ciencias de la Tierra.",
 "Part-time. Tutored students in Earth science courses.": "Tiempo parcial. Tutoría a estudiantes en cursos de ciencias de la Tierra.",
 "I was born and raised in Kollam district, Kerala.": "Nací y crecí en el distrito de Kollam, en Kerala.",
-"Journal articles published": "Artículos de revista publicados"
+"Journal articles published": "Artículos de revista publicados",
+"Events": "Eventos"
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -2475,7 +2481,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "兼职。解答学生提出的地球科学问题。",
 "Part-time. Tutored students in Earth science courses.": "兼职。为学生辅导地球科学课程。",
 "I was born and raised in Kollam district, Kerala.": "我在喀拉拉邦科拉姆县出生并长大。",
-"Journal articles published": "已发表期刊论文"
+"Journal articles published": "已发表期刊论文",
+"Events": "活动"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -2741,7 +2748,8 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "パートタイム。学生からの地球科学の質問に回答。",
 "Part-time. Tutored students in Earth science courses.": "パートタイム。地球科学の授業で学生を指導。",
 "I was born and raised in Kollam district, Kerala.": "ケーララ州コーラム県で生まれ育ちました。",
-"Journal articles published": "出版済みの学術論文"
+"Journal articles published": "出版済みの学術論文",
+"Events": "イベント"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -3007,6 +3015,7 @@ window.I18N = {
 "Part-time. Answered Earth science questions from students.": "Meio período. Respondi a perguntas de estudantes sobre ciências da Terra.",
 "Part-time. Tutored students in Earth science courses.": "Meio período. Orientei estudantes em disciplinas de ciências da Terra.",
 "I was born and raised in Kollam district, Kerala.": "Nasci e cresci no distrito de Kollam, em Kerala.",
-"Journal articles published": "Artigos de periódicos publicados"
+"Journal articles published": "Artigos de periódicos publicados",
+"Events": "Eventos"
 }
 };
