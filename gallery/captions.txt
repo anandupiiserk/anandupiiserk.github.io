@@ -42,8 +42,8 @@ Conf_002 | Team WeatherXplorers during Research Scholars Day at CoEDMM, IIT Roor
 Conf_003 | CoEDMM team with Prof. Tatsuya Ishikawa at 9th Global Energy and Water EXchanges Open Science Conference, Hokkaido, Japan
 Conf_004 | From left Dr. Pattanaik, Dr. Srivastava and DG India Meteorological Department, Dr. Mohapatra, Anandu Prabhakaran at GEWEX OSC - 2024.
 Conf_005 | Workshop on Data Assimilation in Weather and Climate models, ICTS Bengaluru, 6 to 17 May 2024.
-Conf_005_01 | Workshop on Data Assimilation in Weather and Climate models, ICTS Bengaluru, 6 to 17 May 2024.
-Conf_005_02 | Workshop on Data Assimilation in Weather and Climate models, ICTS Bengaluru, 6 to 17 May 2024.
+Conf_005_01 | Group photo of the workshop participants at ICTS Bengaluru.
+Conf_005_02 | Another group photo of the participants.
 WORK_001 | Online Lecture + Workshop at CCCES, Kerala Agricultural University, October 2025
 WORK_002 | Workshop at Kannur University - 2025
 WORK_003 | Workshop at School of Environmental Studies, CUSAT
