@@ -16,6 +16,8 @@ const SITE = {
   initials: 'AP',
   tagline: 'PhD scholar, CoEDMM, IIT Roorkee',
   email: 'anandupiiserk@gmail.com',
+  /* Contact form. Leave endpoint empty to open the visitor's email app instead. Formspree: https://formspree.io/f/xxxxxxxx . Web3Forms: https://api.web3forms.com/submit and put the public access key in formKey. */
+  formEndpoint: '', formKey: '',
   nav: [
     { id: 'home',         href: 'home.html',         label: 'Home',         desc: 'Overview and research focus.' },
     { id: 'about',        href: 'about.html',        label: 'About me',     desc: 'Position, education and research interests.' },
@@ -241,6 +243,30 @@ buildChrome();
     setOpen(false);
   });
   const fsh = $('#foot-share'); if (fsh) fsh.addEventListener('click', () => { shareMode = 'site'; navigator.share ? nativeShare() : copyLink(); });
+  const cf = $('#cf-send') && $('#cform');
+  if (cf) {
+    const stat = $('#cf-stat'), btn = $('#cf-send'), t0 = Date.now();
+    const say = (m, bad) => { stat.textContent = tr(m); stat.classList.toggle('bad', !!bad); };
+    cf.addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = $('#cf-name').value.trim(), email = $('#cf-email').value.trim(), message = $('#cf-msg').value.trim();
+      if (!name || !email || !message) { say('Please fill in all fields.', true); return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Enter a valid email address.', true); return; }
+      if ($('#cf-web').value || Date.now() - t0 < 2500) { say('Thank you. Your message has been sent.'); cf.reset(); return; }
+      const subject = `Website message from ${name}`;
+      if (!SITE.formEndpoint) {
+        say('Opening your email app.'); location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message + '\n\n' + name + '\n' + email)}`; return;
+      }
+      btn.disabled = true; say('Sending...');
+      try {
+        const body = { name, email, message, subject }; if (SITE.formKey) { body.access_key = SITE.formKey; body.from_name = name; }
+        const r = await fetch(SITE.formEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
+        if (!r.ok) throw new Error('status ' + r.status);
+        say('Thank you. Your message has been sent.'); cf.reset();
+      } catch (err) { say('Something went wrong. Please email me directly.', true); }
+      btn.disabled = false;
+    });
+  }
   $$('[data-copy-email]').forEach(b => b.addEventListener('click', async () => { try { await navigator.clipboard.writeText(SITE.email); toast('Email address copied'); } catch (_) { toast(SITE.email); } }));
   $$('[data-share-page]').forEach(b => b.addEventListener('click', () => { shareMode = 'site'; navigator.share ? nativeShare() : copyLink(); }));
 })();
