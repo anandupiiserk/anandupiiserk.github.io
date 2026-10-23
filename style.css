@@ -657,12 +657,17 @@ html[lang="zh"] .gi figcaption b,html[lang="ja"] .gi figcaption b{letter-spacing
 .who a{color:inherit}
 .dl a:hover,.who a:hover{color:var(--a)}
 
-/* Gallery event slideshow: layered cross-fade with a slow drift (compositor-only properties) */
+/* Gallery event carousel: smooth sliding track (transform only) */
 .gi.multi .gimg{background:var(--bg2)}
-.gi.multi .gimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.001);transition:opacity 1.6s cubic-bezier(.4,0,.2,1),transform 6.5s cubic-bezier(.25,.1,.25,1);will-change:opacity,transform}
-.gi.multi .gimg img.on{opacity:1;transform:scale(1.06);z-index:1}
-.gi.multi:hover .gimg img.on,.gi.multi:focus-visible .gimg img.on{transform:scale(1.075)}
-.gdots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:6px;z-index:2;line-height:0;pointer-events:none}
-.gdots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 1px rgba(0,0,0,.18);transition:width .6s var(--ease),background .6s var(--ease)}
-.gdots i.on{width:16px;border-radius:3px;background:#fff}
-@media (prefers-reduced-motion:reduce){.gi.multi .gimg img{transition:opacity .01s;transform:none!important}}
+.gtrack{display:flex;width:100%;height:100%;position:absolute;inset:0;transition:transform 1.1s cubic-bezier(.65,0,.25,1);will-change:transform}
+.gi.multi .gimg .gtrack img{position:static;flex:0 0 100%;width:100%;height:100%;object-fit:cover;opacity:1;transform:none;transition:none}
+.gi.multi:hover .gimg img{transform:none}
+.gnav{position:absolute;top:50%;width:34px;height:34px;margin-top:-17px;border-radius:50%;border:0;display:grid;place-items:center;background:rgba(10,10,10,.55);color:#fff;cursor:pointer;opacity:0;z-index:3;backdrop-filter:blur(6px);transition:opacity .4s,background .3s}
+.gnav svg{width:16px;height:16px}.gnav.prev{left:10px}.gnav.next{right:10px}
+.gnav:hover{background:rgba(10,10,10,.8)}
+.gi.multi:hover .gnav,.gnav:focus-visible{opacity:1}
+@media (hover:none){.gnav{opacity:.85}}
+.gdots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:6px;z-index:3;line-height:0}
+.gdots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(0,0,0,.2);cursor:pointer;transition:width .6s var(--ease),background .6s var(--ease)}
+.gdots i.on{width:18px;border-radius:3px;background:#fff}
+@media (prefers-reduced-motion:reduce){.gtrack{transition:none}}
