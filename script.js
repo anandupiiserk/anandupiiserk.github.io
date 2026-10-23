@@ -210,17 +210,25 @@ buildChrome();
   addEventListener('load', () => place(active));
 
   const sbtn = $('#share-btn'), smenu = $('#share-menu');
-  const data = () => ({ title: document.title, text: `${SITE.name}: ${document.title}`, url: location.href });
-  const setOpen = o => { smenu.classList.toggle('open', o); sbtn.setAttribute('aria-expanded', o); };
+  /* Shared links never end in .html: the page link is the extensionless path, the site link is the folder root. */
+  const cleanPath = p => p.replace(/index\.html$/, '').replace(/\.html$/, '');
+  const pageUrl = () => location.origin + cleanPath(location.pathname);
+  const siteUrl = () => location.origin + location.pathname.replace(/[^/]*$/, '');
+  let shareMode = 'page';
+  const data = () => ({ title: document.title, text: `${SITE.name}: ${document.title}`, url: shareMode === 'site' ? siteUrl() : pageUrl() });
+  const refreshShare = () => {
+    const d = data(), U = encodeURIComponent(d.url), T = encodeURIComponent(d.text);
+    $('[data-share="x"]').href = `https://twitter.com/intent/tweet?text=${T}&url=${U}`;
+    $('[data-share="linkedin"]').href = `https://www.linkedin.com/sharing/share-offsite/?url=${U}`;
+    $('[data-share="whatsapp"]').href = `https://wa.me/?text=${T}%20${U}`;
+    $('[data-share="mail"]').href = `mailto:?subject=${T}&body=${U}`;
+  };
+  const setOpen = o => { if (o) { shareMode = 'page'; refreshShare(); } smenu.classList.toggle('open', o); sbtn.setAttribute('aria-expanded', o); };
   if (navigator.share) $('[data-share="native"]').hidden = false;
-  const d = data(), U = encodeURIComponent(d.url), T = encodeURIComponent(d.text);
-  $('[data-share="x"]').href = `https://twitter.com/intent/tweet?text=${T}&url=${U}`;
-  $('[data-share="linkedin"]').href = `https://www.linkedin.com/sharing/share-offsite/?url=${U}`;
-  $('[data-share="whatsapp"]').href = `https://wa.me/?text=${T}%20${U}`;
-  $('[data-share="mail"]').href = `mailto:?subject=${T}&body=${U}`;
+  refreshShare();
   async function copyLink() {
-    try { await navigator.clipboard.writeText(location.href); }
-    catch (e) { const t = document.createElement('textarea'); t.value = location.href; document.body.append(t); t.select(); try { document.execCommand('copy'); } catch (_) {} t.remove(); }
+    try { await navigator.clipboard.writeText(data().url); }
+    catch (e) { const t = document.createElement('textarea'); t.value = data().url; document.body.append(t); t.select(); try { document.execCommand('copy'); } catch (_) {} t.remove(); }
     toast('Link copied to clipboard');
   }
   async function nativeShare() { try { await navigator.share(data()); } catch (e) { /* cancelled */ } }
@@ -232,9 +240,9 @@ buildChrome();
     if (it.dataset.share === 'copy') copyLink(); else if (it.dataset.share === 'native') nativeShare();
     setOpen(false);
   });
-  const fsh = $('#foot-share'); if (fsh) fsh.addEventListener('click', () => { navigator.share ? nativeShare() : copyLink(); });
+  const fsh = $('#foot-share'); if (fsh) fsh.addEventListener('click', () => { shareMode = 'site'; navigator.share ? nativeShare() : copyLink(); });
   $$('[data-copy-email]').forEach(b => b.addEventListener('click', async () => { try { await navigator.clipboard.writeText(SITE.email); toast('Email address copied'); } catch (_) { toast(SITE.email); } }));
-  $$('[data-share-page]').forEach(b => b.addEventListener('click', () => { navigator.share ? nativeShare() : copyLink(); }));
+  $$('[data-share-page]').forEach(b => b.addEventListener('click', () => { shareMode = 'site'; navigator.share ? nativeShare() : copyLink(); }));
 })();
 
 /* ---------- Data-driven bits ---------- */
