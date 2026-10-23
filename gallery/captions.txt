@@ -38,6 +38,10 @@ Event_001_06 | At the registration desk. From left: Anandu, Shiwam and Prof. Piy
 Event_001_07 | Registration desk during IDDRR Day.
 Event_001_08 | Anandu and Shiwam at the registration desk.
 Event_001_09 | With Anagha at her poster, Research Scholars' Day.
+Event_002 | [2024-10-13] IDDRR 2024 and Research Scholars' Day, CoEDMM, IIT Roorkee. Theme: Empowering the next generation for a resilient future.
+Event_002_01 | The WCRG team on IDDRR Day.
+Event_002_02 | From left: Shiwam, Rajendra, Saurabh and Anandu.
+Event_002_03 | Poster session at Research Scholars' Day, with Anandu's poster.
 Conf_001 | From Research Scholars Day at CoEDMM, IIT Roorkee
 Conf_002 | Team WeatherXplorers during Research Scholars Day at CoEDMM, IIT Roorkee.
 Conf_003 | CoEDMM team with Prof. Tatsuya Ishikawa at 9th Global Energy and Water EXchanges Open Science Conference, Hokkaido, Japan
