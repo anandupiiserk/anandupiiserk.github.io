@@ -388,7 +388,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "പാർട്ട്-ടൈം. ഭൗമശാസ്ത്ര കോഴ്സുകളിൽ വിദ്യാർഥികളെ പഠിപ്പിച്ചു.",
 "I was born and raised in Kollam district, Kerala.": "ഞാൻ കേരളത്തിലെ കൊല്ലം ജില്ലയിലാണ് ജനിച്ചുവളർന്നത്.",
 "Journal articles published": "പ്രസിദ്ധീകരിച്ച ജേണൽ ലേഖനങ്ങൾ",
-"Events": "പരിപാടികൾ"
+"Events": "പരിപാടികൾ",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "രണ്ടാഴ്ചത്തെ പരിശീലന ശില്പശാലയിൽ പങ്കെടുത്തു, 2024 മെയ് 6 മുതൽ 17 വരെ, ICTS ബെംഗളൂരു."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -778,7 +779,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "अंशकालिक। पृथ्वी विज्ञान पाठ्यक्रमों में विद्यार्थियों को पढ़ाया।",
 "I was born and raised in Kollam district, Kerala.": "मेरा जन्म और पालन-पोषण केरल के कोल्लम जिले में हुआ।",
 "Journal articles published": "प्रकाशित पत्रिका लेख",
-"Events": "आयोजन"
+"Events": "आयोजन",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "दो सप्ताह की प्रशिक्षण कार्यशाला में भाग लिया, 6 से 17 मई 2024, ICTS बेंगलुरु।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1168,7 +1170,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "Temps partiel. Tutorat d'étudiants dans des cours de sciences de la Terre.",
 "I was born and raised in Kollam district, Kerala.": "Je suis né et j'ai grandi dans le district de Kollam, au Kerala.",
 "Journal articles published": "Articles de revue publiés",
-"Events": "Événements"
+"Events": "Événements",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Atelier de formation de deux semaines suivi, du 6 au 17 mai 2024, ICTS Bengaluru."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -1558,7 +1561,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "Teilzeit. Betreuung von Studierenden in geowissenschaftlichen Kursen.",
 "I was born and raised in Kollam district, Kerala.": "Ich wurde im Distrikt Kollam in Kerala geboren und bin dort aufgewachsen.",
 "Journal articles published": "Veröffentlichte Zeitschriftenartikel",
-"Events": "Veranstaltungen"
+"Events": "Veranstaltungen",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Zweiwöchiger Trainingsworkshop, teilgenommen, 6. bis 17. Mai 2024, ICTS Bengaluru."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -1948,7 +1952,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "بدوام جزئي. قدّمتُ دروسًا خصوصية للطلاب في مقررات علوم الأرض.",
 "I was born and raised in Kollam district, Kerala.": "وُلدتُ ونشأتُ في مقاطعة كولام بولاية كيرالا.",
 "Journal articles published": "مقالات المجلات المنشورة",
-"Events": "الفعاليات"
+"Events": "الفعاليات",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "ورشة تدريبية لمدة أسبوعين شاركتُ فيها، من 6 إلى 17 مايو 2024، ICTS بنغالورو."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -2215,7 +2220,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "Tiempo parcial. Tutoría a estudiantes en cursos de ciencias de la Tierra.",
 "I was born and raised in Kollam district, Kerala.": "Nací y crecí en el distrito de Kollam, en Kerala.",
 "Journal articles published": "Artículos de revista publicados",
-"Events": "Eventos"
+"Events": "Eventos",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Taller de formación de dos semanas al que asistí, del 6 al 17 de mayo de 2024, ICTS Bengaluru."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -2482,7 +2488,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "兼职。为学生辅导地球科学课程。",
 "I was born and raised in Kollam district, Kerala.": "我在喀拉拉邦科拉姆县出生并长大。",
 "Journal articles published": "已发表期刊论文",
-"Events": "活动"
+"Events": "活动",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "参加了为期两周的培训研讨会，2024 年 5 月 6 日至 17 日，ICTS 班加罗尔。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -2749,7 +2756,8 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "パートタイム。地球科学の授業で学生を指導。",
 "I was born and raised in Kollam district, Kerala.": "ケーララ州コーラム県で生まれ育ちました。",
 "Journal articles published": "出版済みの学術論文",
-"Events": "イベント"
+"Events": "イベント",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "2週間の研修ワークショップに参加（2024年5月6日から17日、ICTSバンガロール）。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -3016,6 +3024,7 @@ window.I18N = {
 "Part-time. Tutored students in Earth science courses.": "Meio período. Orientei estudantes em disciplinas de ciências da Terra.",
 "I was born and raised in Kollam district, Kerala.": "Nasci e cresci no distrito de Kollam, em Kerala.",
 "Journal articles published": "Artigos de periódicos publicados",
-"Events": "Eventos"
+"Events": "Eventos",
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Oficina de treinamento de duas semanas da qual participei, de 6 a 17 de maio de 2024, ICTS Bengaluru."
 }
 };
