@@ -14,24 +14,25 @@
 # Event photos:   files Conf_004_01.jpg, Conf_004_02.jpg, ... (up to 20)   line  Conf_004 | Caption for the event
 #                 Optional caption for one photo of the event:  Conf_004_02 | Caption for this photo
 # File types: jpg, jpeg, png, webp. Put the image files in this same folder (gallery/).
+# Dates: put [YYYY-MM-DD] (or [YYYY-MM]) first in an event's caption line, e.g.  Event_002 | [2026-11-02] Caption. The gallery shows newest first, left to right. Undated events come last.
 # A photo is shown only if its ID is listed here. A line with no caption is fine:  PhD_002 |
 # Lines below are the captions from the earlier website. They stay hidden until a file with that name is added.
 
 # ---- 22 October 2026: CoEDMM review at IIT Roorkee (newest first) ----
-Meet_075 | CoEDMM review, IIT Roorkee, 22 October 2026
+Meet_075 | [2026-10-22] CoEDMM review, IIT Roorkee
 Meet_075_01 | At the WCRG Lab, CoEDMM, IIT Roorkee. From left: Sachin, Shiwam Singh, Arun Dev Singh, Saurabh Singh, Anandu Prabhakaran, Prof. Dhiman, Dr. Mrutyunjay Mohapatra (Director General, IMD), Dr. Arti Bhatt (Scientist-G, Associate Director, CFEES, DRDO), Viswanandan Kumar Singh and Ayush K. Bondwal. MausamDrishti forecast of WCRG in the background.
 Meet_075_02 | With the lab members. From left: Saurabh, Shiwam, Arun and Anandu.
 Meet_075_03 | With the Centre members and the delegates.
-PhD_025 | Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD, 22 October 2026
+PhD_025 | [2026-10-22] Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD
 PhD_025_01 | Presenting wildfire research to Dr. Mrutyunjay Mohapatra, Director General, IMD.
 PhD_025_02 | Discussing wildfire events over the Indian Himalayan Region with the Director General, IMD.
 PhD_025_03 | At the WCRG Lab, CoEDMM, IIT Roorkee. From left: Sachin, Shiwam Singh, Arun Dev Singh, Saurabh Singh, Anandu Prabhakaran, Prof. Dhiman, Dr. Mrutyunjay Mohapatra (Director General, IMD), Dr. Arti Bhatt (Scientist-G, Associate Director, CFEES, DRDO), Viswanandan Kumar Singh and Ayush K. Bondwal. MausamDrishti forecast of WCRG in the background.
 # ---- 13 October 2026: International Day for Disaster Risk Reduction and Research Scholars' Day ----
-Event_001 | IDDRR 2026 and Research Scholars' Day, CoEDMM, IIT Roorkee, 13 October 2026. Theme: Resilience starts at home.
+Event_001 | [2026-10-13] IDDRR 2026 and Research Scholars' Day, CoEDMM, IIT Roorkee. Theme: Resilience starts at home.
 Event_001_01 | Prof. Piyush Srivastava, team lead, with the WCRG lab members on IDDRR Day.
 Event_001_02 | Group photo of the Research Scholars' Day participants.
 Event_001_03 | Prof. Piyush Srivastava, team lead, and the WCRG lab members with Prof. Dhiman, HOD.
-Event_001_04 | Group photo of the IDDRR Day celebration, 13 October 2026.
+Event_001_04 | Group photo of the IDDRR Day celebration.
 Event_001_05 | The WCRG team at the registration desk.
 Event_001_06 | At the registration desk. From left: Anandu, Shiwam and Prof. Piyush Srivastava.
 Event_001_07 | Registration desk during IDDRR Day.
@@ -41,7 +42,7 @@ Conf_001 | From Research Scholars Day at CoEDMM, IIT Roorkee
 Conf_002 | Team WeatherXplorers during Research Scholars Day at CoEDMM, IIT Roorkee.
 Conf_003 | CoEDMM team with Prof. Tatsuya Ishikawa at 9th Global Energy and Water EXchanges Open Science Conference, Hokkaido, Japan
 Conf_004 | From left Dr. Pattanaik, Dr. Srivastava and DG India Meteorological Department, Dr. Mohapatra, Anandu Prabhakaran at GEWEX OSC - 2024.
-Conf_005 | Workshop on Data Assimilation in Weather and Climate models, ICTS Bengaluru, 6 to 17 May 2024.
+Conf_005 | [2024-05-06] Workshop on Data Assimilation in Weather and Climate models, ICTS Bengaluru, 6 to 17 May 2024.
 Conf_005_01 | Group photo of the workshop participants at ICTS Bengaluru.
 Conf_005_02 | Another group photo of the participants.
 WORK_001 | Online Lecture + Workshop at CCCES, Kerala Agricultural University, October 2025
@@ -66,4 +67,4 @@ MSpace_001 | Top view of other hills in Ponmudi
 MSpace_002 | Ponmudi Hills
 MSpace_003 | Trip to Ponmudi
 MSpace_004 | Kallar Waterfalls Ponmudi
-MSpace_005 | IIT Roorkee on a fine evening, May 2024
+MSpace_005 | [2024-05] IIT Roorkee on a fine evening
