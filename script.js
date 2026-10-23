@@ -17,7 +17,7 @@ const SITE = {
   tagline: 'PhD scholar, CoEDMM, IIT Roorkee',
   email: 'anandupiiserk@gmail.com',
   nav: [
-    { id: 'home',         href: 'index.html',        label: 'Home',         desc: 'Overview and research focus.' },
+    { id: 'home',         href: 'home.html',         label: 'Home',         desc: 'Overview and research focus.' },
     { id: 'about',        href: 'about.html',        label: 'About me',     desc: 'Position, education and research interests.' },
     { id: 'research',     href: 'research.html',     label: 'Research',     desc: 'PhD thesis, MSc thesis and internships.' },
     { id: 'publications', href: 'publications.html', label: 'Publications', desc: 'Journal articles and conference presentations.' },
@@ -125,7 +125,7 @@ function buildChrome() {
   const header = document.createElement('header');
   header.className = 'nav'; header.id = 'nav';
   header.innerHTML = `
-    <a class="brand" href="index.html" aria-label="${SITE.name}, home"><span class="logo">${SITE.initials}</span><span>${SITE.name}</span></a>
+    <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="logo">${SITE.initials}</span><span>${SITE.name}</span></a>
     <nav class="menu" id="menu" aria-label="Main">${SITE.nav.map((n, i) => `<a href="${n.href}" style="--i:${i}" ${n.id === page ? 'aria-current="page"' : ''}><span class="t"><span>${n.label}</span><span aria-hidden="true">${n.label}</span></span></a>`).join('')}</nav>
     <div class="tools">
       <div class="share-wrap">
@@ -211,7 +211,7 @@ buildChrome();
 
   const sbtn = $('#share-btn'), smenu = $('#share-menu');
   /* Shared links never end in .html: the page link is the extensionless path, the site link is the folder root. */
-  const cleanPath = p => p.replace(/index\.html$/, '').replace(/\.html$/, '');
+  const cleanPath = p => p.replace(/\/(index|home)?(\.html)?$/, '/home').replace(/\.html$/, '');
   const pageUrl = () => location.origin + cleanPath(location.pathname);
   const siteUrl = () => location.origin + location.pathname.replace(/[^/]*$/, '');
   let shareMode = 'page';
@@ -308,10 +308,10 @@ if (!reduce && finePointer) {
 const pt = $('#pt');
 /* Address bar shows clean paths (/about, not /about.html). GitHub Pages serves both. Skipped on localhost, where a plain file server needs the .html. */
 const PRETTY = /^https?:$/.test(location.protocol) && !/^(localhost|127\.|\[::1\])/.test(location.hostname);
-const normPath = p => p.replace(/index\.html$/, '').replace(/\.html$/, '');
+const normPath = p => p.replace(/\/(index|home)?(\.html)?$/, '/home').replace(/\.html$/, '');
 const prettyUrl = h => { const u = new URL(h, location.href); return PRETTY ? normPath(u.pathname) + u.search + u.hash : u.pathname + u.search + u.hash; };
 const realUrl = h => { const u = new URL(h, location.href); let p = u.pathname; if (p.endsWith('/')) p += 'index.html'; else if (!/\.[a-z0-9]+$/i.test(p.split('/').pop())) p += '.html'; return u.origin + p + u.search; };
-if (PRETTY && /\.html$/.test(location.pathname)) { try { history.replaceState(null, '', prettyUrl(location.href)); } catch (e) { /* ignore */ } }
+if (PRETTY && (/\.html$/.test(location.pathname) || location.pathname.endsWith('/'))) { try { history.replaceState(null, '', prettyUrl(location.href)); } catch (e) { /* ignore */ } }
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href]');
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
