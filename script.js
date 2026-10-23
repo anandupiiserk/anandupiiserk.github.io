@@ -330,6 +330,35 @@ if (!reduce && finePointer) {
   (function loop(now) { if (GEN !== window.__gen) return; const dt = Math.min(64, now - (loop.p || now)) || 8; loop.p = now; const k = 1 - Math.pow(.82, dt / 16.667); rx += (mx - rx) * k; ry += (my - ry) * k; ring.style.transform = `translate3d(${rx}px,${ry}px,0)`; requestAnimationFrame(loop); })(performance.now());
 }
 
+/* ---------- Quiet gallery preload ----------
+   On every page except the gallery, once the page has finished loading and the browser is idle, the gallery photos are fetched
+   into the browser cache, two at a time. Nothing is shown. Skipped on data saver and slow connections. */
+(function galleryPreload() {
+  if ($('#gallery') || window.__gpre) return; window.__gpre = true;
+  const c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
+  const EX = ['JPG', 'jpg', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'];
+  const load = src => new Promise(r => { const im = new Image(); im.decoding = 'async'; im.onload = () => r(true); im.onerror = () => r(false); im.src = src; });
+  async function run() {
+    let text = ''; try { const r = await fetch('gallery/captions.txt'); if (r.ok) text = await r.text(); } catch (e) { return; }
+    const bases = new Map();
+    text.split(/\r?\n/).forEach(l => { l = l.trim(); if (!l || l[0] === '#') return; const id = l.split(/[|\t]/)[0].trim(), m = id.match(/^([A-Za-z]+_\d+)(?:_(\d{1,2}))?/); if (m) bases.set(m[1], (bases.get(m[1]) || false) || !!m[2]); });
+    let ext = null; try { ext = sessionStorage.getItem('gal-ext'); } catch (e) { /* ignore */ }
+    const find = async name => { for (const x of (ext ? [ext] : EX)) { if (await load('gallery/' + name + '.' + x)) { ext = x; try { sessionStorage.setItem('gal-ext', x); } catch (e) { /* ignore */ } return true; } } return false; };
+    const queue = [...bases.keys()];
+    const quick = find;
+    const worker = async () => {
+      while (queue.length) {
+        const b = queue.shift();
+        if (!bases.get(b) && await find(b)) continue;
+        for (let k = 1; k <= 20; k++) if (!await (k === 1 ? find : quick)(b + '_' + String(k).padStart(2, '0'))) break;
+      }
+    };
+    await Promise.all([worker(), worker()]);
+  }
+  const start = () => { const go = () => run(); (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 6000 }) : setTimeout(go, 3000)); };
+  if (document.readyState === 'complete') setTimeout(start, 2500); else addEventListener('load', () => setTimeout(start, 2500));
+})();
+
 /* ---------- Page transition and boot ---------- */
 const pt = $('#pt');
 /* Address bar shows clean paths (/about, not /about.html). GitHub Pages serves both. Skipped on localhost, where a plain file server needs the .html. */
@@ -595,12 +624,12 @@ else (function loop() {
   window.__segPlace = place; place(); addEventListener('resize', place); addEventListener('load', place);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
 
-  let items = [], filter = 'all', lastExt = null;
+  let items = [], filter = 'all', lastExt = null; try { lastExt = sessionStorage.getItem('gal-ext') || null; } catch (err) { /* ignore */ }
   const pad = (n, w) => String(n).padStart(w, '0');
   const load = src => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
   async function find(base, hint) {
     const order = hint ? [hint] : [...new Set([lastExt, ...EXTS].filter(Boolean))];
-    for (const ext of order) { const im = await load(DIR + base + '.' + ext); if (im) { lastExt = ext; return im; } }
+    for (const ext of order) { const im = await load(DIR + base + '.' + ext); if (im) { lastExt = ext; try { sessionStorage.setItem('gal-ext', ext); } catch (err) { /* ignore */ } return im; } }
     return null;
   }
   /* Line format:  ID | caption.   ID is PhD_001 for one photo, or PhD_001_01, PhD_001_02 ... for the photos of one event. */
