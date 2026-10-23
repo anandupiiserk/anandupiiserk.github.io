@@ -306,13 +306,19 @@ if (!reduce && finePointer) {
 
 /* ---------- Page transition and boot ---------- */
 const pt = $('#pt');
+/* Address bar shows clean paths (/about, not /about.html). GitHub Pages serves both. Skipped on localhost, where a plain file server needs the .html. */
+const PRETTY = /^https?:$/.test(location.protocol) && !/^(localhost|127\.|\[::1\])/.test(location.hostname);
+const normPath = p => p.replace(/index\.html$/, '').replace(/\.html$/, '');
+const prettyUrl = h => { const u = new URL(h, location.href); return PRETTY ? normPath(u.pathname) + u.search + u.hash : u.pathname + u.search + u.hash; };
+const realUrl = h => { const u = new URL(h, location.href); let p = u.pathname; if (p.endsWith('/')) p += 'index.html'; else if (!/\.[a-z0-9]+$/i.test(p.split('/').pop())) p += '.html'; return u.origin + p + u.search; };
+if (PRETTY && /\.html$/.test(location.pathname)) { try { history.replaceState(null, '', prettyUrl(location.href)); } catch (e) { /* ignore */ } }
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href]');
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   const href = a.getAttribute('href');
   if (a.target || a.hasAttribute('download') || /^(#|mailto:|tel:|https?:|javascript:)/i.test(href)) return;
   const url = new URL(a.href, location.href);
-  if (url.pathname === location.pathname) return;
+  if (normPath(url.pathname) === normPath(location.pathname)) return;
   if (fsOn()) { e.preventDefault(); softNav(a.href, true); return; }
   if (reduce) return;
   e.preventDefault(); ss.set('pt', '1'); pt.className = 'pt entering';
@@ -326,7 +332,7 @@ async function softNav(href, push) {
   try {
     if (!reduce) pt.className = 'pt entering';
     const [res, srcText] = await Promise.all([
-      fetch(href, { credentials: 'same-origin' }),
+      fetch(realUrl(href), { credentials: 'same-origin' }),
       window.__srcText ? Promise.resolve(window.__srcText) : fetch(window.__srcUrl).then(r => r.text()),
       new Promise(r => setTimeout(r, reduce ? 0 : 460))
     ]);
@@ -336,7 +342,7 @@ async function softNav(href, push) {
     doc.querySelectorAll('script').forEach(n => n.remove());
     try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {}
     window.__reg.forEach(([t, a, b, c]) => t.removeEventListener(a, b, c)); window.__reg.length = 0;
-    if (push) history.pushState(null, '', href);
+    if (push) history.pushState(null, '', PRETTY ? prettyUrl(href) : href);
     document.title = doc.title;
     const md = $('meta[name="description"]'), nd = doc.querySelector('meta[name="description"]'); if (md && nd) md.content = nd.content;
     document.body.className = doc.body.className; document.body.dataset.page = doc.body.dataset.page;
