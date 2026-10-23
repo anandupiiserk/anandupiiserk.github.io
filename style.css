@@ -694,3 +694,9 @@ html[lang="zh"] .gi figcaption b,html[lang="ja"] .gi figcaption b{letter-spacing
 .gi.multi .gimg{box-shadow:0 14px 34px rgba(0,0,0,.28)}
 [data-theme="light"] .gi.multi .gimg,[data-theme="light"] .gi .gimg{box-shadow:0 14px 34px rgba(15,30,55,.16)}
 @media (prefers-reduced-motion:reduce){.gi .gimg,.gtrack img.on{animation:none}}
+
+/* Footer name: clearly visible but calm shimmer and glow */
+.copy .cp .nt{background:linear-gradient(100deg,var(--a) 0%,var(--a) 30%,var(--text) 50%,var(--a) 70%,var(--a) 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700;letter-spacing:.01em;animation:ntshine 4.2s ease-in-out infinite,cpglow2 3.2s ease-in-out infinite;filter:drop-shadow(0 0 0 transparent)}
+@keyframes ntshine{0%{background-position:130% 0}60%,100%{background-position:-30% 0}}
+@keyframes cpglow2{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 9px color-mix(in srgb,var(--a) 70%,transparent))}}
+@media (prefers-reduced-motion:reduce){.copy .cp .nt{animation:none;background:none;-webkit-text-fill-color:currentColor;color:var(--a);filter:none}}
