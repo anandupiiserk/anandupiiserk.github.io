@@ -1,6 +1,6 @@
 /* =====================================================
    Design system
-   Palette: warm amber + slate on dark charcoal (light theme: deep amber + navy).
+   Palette: warm amber + slate on dark charcoal (light theme: cool white + deep blue).
    Checked for WCAG AA text contrast and for protan, deutan
    and tritan separation. Meaning is never carried by colour
    alone: shapes, dashes, hatching, labels and fills back it up.
@@ -19,10 +19,10 @@
   --shadow: 0 24px 60px rgba(0,0,0,.45);
 }
 [data-theme="light"] {
-  --bg: #f3efe9; --bg2: #ebe6de; --surface: #fbf9f6;
-  --line: rgba(40,25,10,.14); --line2: rgba(40,25,10,.26); --cline: rgba(40,28,16,.16);
-  --text: #17130f; --muted: #4d453c; --a: #7a4400; --b: #2f4d73; --n: #5a5148; --on-a: #ffffff; --hover: rgba(40,25,10,.06);
-  --shadow: 0 24px 60px rgba(40,25,10,.16);
+  --bg: #f4f7fa; --bg2: #e9eef4; --surface: #ffffff;
+  --line: rgba(15,30,55,.14); --line2: rgba(15,30,55,.26); --cline: rgba(15,30,55,.16);
+  --text: #0f1722; --muted: #435062; --a: #1b4f9c; --b: #4a6382; --n: #526071; --on-a: #ffffff; --hover: rgba(15,30,55,.06);
+  --shadow: 0 24px 60px rgba(15,30,55,.14);
 }
 :root { --a-soft: color-mix(in srgb, var(--a) 14%, transparent); --b-soft: color-mix(in srgb, var(--b) 22%, transparent); }
 
@@ -671,3 +671,26 @@ html[lang="zh"] .gi figcaption b,html[lang="ja"] .gi figcaption b{letter-spacing
 .gdots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(0,0,0,.2);cursor:pointer;transition:width .6s var(--ease),background .6s var(--ease)}
 .gdots i.on{width:18px;border-radius:3px;background:#fff}
 @media (prefers-reduced-motion:reduce){.gtrack{transition:none}}
+
+/* Gallery: loading bar, skeleton tiles, refined reveal and settle animation */
+.gload{margin:0 0 30px;max-width:420px;transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.gload.done{opacity:0;transform:translateY(-6px)}
+.gl-top{display:flex;justify-content:space-between;font:600 .74rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.gl-p{color:var(--a);font-variant-numeric:tabular-nums}
+.gl-bar{height:3px;border-radius:3px;background:var(--line);overflow:hidden}
+.gl-bar i{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--a),var(--b));border-radius:3px;transition:transform .5s var(--ease)}
+.gi .gimg{background:linear-gradient(100deg,var(--bg2) 30%,var(--surface) 50%,var(--bg2) 70%) 0 0/250% 100%;animation:gsk 1.6s linear infinite}
+.gi.ready .gimg{animation:none;background:var(--bg2)}
+.gi:not(.ready) .gimg img{opacity:0}
+.gi.ready .gimg>img,.gi.ready .gtrack{animation:gimg 1.2s var(--ease) both}
+@keyframes gsk{to{background-position:-150% 0}}
+@keyframes gimg{from{opacity:0;filter:blur(10px);transform:scale(1.04)}}
+.gi.pop{animation:gpop .9s var(--ease) both}
+@keyframes gpop{from{opacity:0;transform:translateY(28px)}}
+.gi figcaption{transition:opacity .8s var(--ease) .15s,transform .8s var(--ease) .15s}
+.gi:not(.ready) figcaption{opacity:0;transform:translateY(6px)}
+.gtrack img.on{animation:gsettle 5.6s cubic-bezier(.2,.6,.2,1) both}
+@keyframes gsettle{from{transform:scale(1.09)}to{transform:scale(1)}}
+.gi.multi .gimg{box-shadow:0 14px 34px rgba(0,0,0,.28)}
+[data-theme="light"] .gi.multi .gimg,[data-theme="light"] .gi .gimg{box-shadow:0 14px 34px rgba(15,30,55,.16)}
+@media (prefers-reduced-motion:reduce){.gi .gimg,.gtrack img.on{animation:none}}
