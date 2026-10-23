@@ -700,3 +700,19 @@ html[lang="zh"] .gi figcaption b,html[lang="ja"] .gi figcaption b{letter-spacing
 @keyframes ntshine{0%{background-position:130% 0}60%,100%{background-position:-30% 0}}
 @keyframes cpglow2{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 9px color-mix(in srgb,var(--a) 70%,transparent))}}
 @media (prefers-reduced-motion:reduce){.copy .cp .nt{animation:none;background:none;-webkit-text-fill-color:currentColor;color:var(--a);filter:none}}
+
+/* Like (heart) buttons: tile and lightbox */
+.glike,.lb-like{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:0;padding:0;cursor:pointer;background:rgba(10,10,10,.5);color:#fff;backdrop-filter:blur(6px);transition:transform .35s var(--ease),background .3s,opacity .4s}
+.glike{position:absolute;left:10px;top:10px;z-index:4;opacity:0}
+.gi:hover .glike,.glike:focus-visible,.glike.on{opacity:1}
+@media (hover:none){.glike{opacity:.9}}
+.glike svg,.lb-like svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linejoin:round;transition:fill .3s,stroke .3s}
+.glike:hover,.lb-like:hover{transform:scale(1.1);background:rgba(10,10,10,.75)}
+.glike.on svg,.lb-like.on svg{fill:#ef4466;stroke:#ef4466}
+.glike.on,.lb-like.on{animation:glpop .5s var(--ease)}
+@keyframes glpop{0%{transform:scale(.8)}45%{transform:scale(1.28)}100%{transform:scale(1)}}
+.lb-like{position:absolute;top:22px;right:84px;z-index:5;width:42px;height:42px}
+.lb-like svg{width:22px;height:22px}
+.gfly{position:fixed;z-index:3000;pointer-events:none;color:#ef4466;font-style:normal;font-size:16px;line-height:1;transform:translate(-50%,-50%);animation:gfly 1.1s cubic-bezier(.2,.7,.3,1) var(--d,0s) forwards}
+@keyframes gfly{from{opacity:1;transform:translate(-50%,-50%) scale(.6)}to{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.3)}}
+@media (prefers-reduced-motion:reduce){.glike.on,.lb-like.on{animation:none}}
