@@ -721,3 +721,14 @@ html[lang="zh"] .gi figcaption b,html[lang="ja"] .gi figcaption b{letter-spacing
 .gslide{position:relative;flex:0 0 100%;height:100%;overflow:hidden;background:var(--bg2)}
 .gslide i{position:absolute;inset:-8%;background-size:cover;background-position:center;filter:blur(22px) saturate(1.1);opacity:.7;transform:scale(1.05)}
 .gi.multi .gimg .gtrack .gslide img.ct{position:relative;width:100%;height:100%;object-fit:contain;z-index:1}
+
+/* Gallery grid: strict left-to-right, row by row, newest first. Uniform 3:2 tiles. */
+.gal{columns:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px 28px}
+.gi{margin:0;break-inside:auto}
+.gimg{aspect-ratio:3/2}
+.gimg>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gimg.fillbox>img{object-fit:contain;z-index:1}
+.gfill{position:absolute;inset:-8%;background-size:cover;background-position:center;filter:blur(22px) saturate(1.1);opacity:.7}
+.gi figcaption span time{display:block;font:600 .76rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text);margin-bottom:2px}
+@media (max-width:960px){.gal{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.gal{grid-template-columns:1fr}}

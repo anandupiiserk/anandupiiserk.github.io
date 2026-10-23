@@ -588,9 +588,13 @@ else (function loop() {
       const base = m[1] + '_' + m[2];
       if (!map.has(base)) { map.set(base, { base, cat, cap: '', caps: {}, ext: null }); order.push(base); }
       const e = map.get(base);
-      if (m[3]) e.caps[+m[3]] = cap; else { e.cap = cap; if (m[4]) e.ext = m[4]; }
+      const dm = cap.match(/^\[(\d{4}-\d{2}(?:-\d{2})?)\]\s*/); let c2 = cap; if (dm) { e.date = dm[1]; c2 = cap.slice(dm[0].length); }
+      if (m[3]) e.caps[+m[3]] = c2; else { e.cap = c2; if (m[4]) e.ext = m[4]; }
     });
-    return order.map(b => map.get(b));
+    const list = order.map(b => map.get(b));
+    /* Newest first across all sections; undated events keep their order in captions.txt after the dated ones. */
+    const key = e => e.date ? Date.parse(e.date.length === 7 ? e.date + '-01' : e.date) : null;
+    return list.map((e, i) => ({ e, i, t: key(e) })).sort((a, b) => (a.t == null) - (b.t == null) || (b.t - a.t) || (a.i - b.i)).map(x => x.e);
   }
   async function resolve(e) {
     let im = await find(e.base, e.ext), list = [];
@@ -610,10 +614,11 @@ else (function loop() {
   }
   function paintLikes() { $$('.glike').forEach(b => { const on = liked.has(b.dataset.id); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); const lk = $('#lb-like'); if (lk && lk.dataset.id) { const on = liked.has(lk.dataset.id); lk.classList.toggle('on', on); lk.setAttribute('aria-pressed', on); } }
   function toggleLike(id, btn) { if (liked.has(id)) liked.delete(id); else { liked.add(id); burst(btn); } saveLikes(); paintLikes(); }
+  const fmtDate = d => { try { const dt = new Date(d.length === 7 ? d + '-01T12:00:00' : d + 'T12:00:00'), l = (document.documentElement.lang || 'en'); if (l === 'en') l = 'en-GB'; return dt.toLocaleDateString(l, d.length === 7 ? { month: 'long', year: 'numeric' } : { day: 'numeric', month: 'long', year: 'numeric' }); } catch (err) { return d; } };
   function build(e, list) {
     const f = document.createElement('figure'); f.className = 'gi' + (list.length > 1 ? ' multi' : ''); f.dataset.cat = e.cat.id; f.dataset.cursor = 'View'; f.tabIndex = 0; f.hidden = false;
     const cap = e.cap || list[0].cap;
-    f.innerHTML = `<div class="gwrap"><div class="gimg"${list.length > 1 ? ` style="aspect-ratio:${list[0].w}/${list[0].h}"` : ''}><img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b>${esc(e.cat.label)}</b>${cap ? `<span>${esc(cap)}</span>` : ''}</figcaption>`;
+    f.innerHTML = `<div class="gwrap"><div class="gimg${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? ' fillbox' : ''}">${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? `<i class="gfill" style="background-image:url('${esc(list[0].src)}')"></i>` : ''}<img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b>${esc(e.cat.label)}</b><span>${e.date ? `<time datetime="${e.date}" data-i18n-skip>${fmtDate(e.date)}</time>` : ''}${cap ? esc(cap) : ''}</span></figcaption>`;
     const lb0 = f.querySelector('.glike'); lb0.addEventListener('click', ev => { ev.stopPropagation(); ev.preventDefault(); toggleLike(e.base, lb0); }); lb0.addEventListener('keydown', ev => ev.stopPropagation());
     paintLikes();
     if (list.length > 1) slideshow(f, list);
@@ -626,7 +631,7 @@ else (function loop() {
   function slideshow(f, list) {
     const box = f.querySelector('.gimg'), imgs = [...box.querySelectorAll('img')]; const N = imgs.length; if (N < 2) return;
     const track = document.createElement('div'); track.className = 'gtrack';
-    const r0 = list[0].w / list[0].h;
+    const r0 = 1.5;
     imgs.forEach((im, j) => {
       im.classList.remove('gx'); const p = list[j], odd = p && Math.abs(p.w / p.h / r0 - 1) > .12;
       if (!odd) { track.append(im); return; }
