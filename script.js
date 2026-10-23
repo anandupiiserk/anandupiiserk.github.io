@@ -604,7 +604,9 @@ else (function loop() {
 
   let done = false;
   (async function init() {
-    let text = ''; try { const r = await fetch(DIR + 'captions.txt', { cache: 'no-cache' }); if (r.ok) text = await r.text(); } catch (err) {}
+    let text = '';
+    try { const r = await fetch(DIR + 'captions.txt', { cache: 'no-cache' }); if (r.ok) text = await r.text(); else console.warn('[gallery] gallery/captions.txt not found (HTTP ' + r.status + ')'); } catch (err) { console.warn('[gallery] could not read gallery/captions.txt', err); }
+    if (!text && location.protocol === 'file:') { empty.hidden = false; empty.textContent = 'Preview note: browsers block reading captions.txt when the page is opened by double-clicking the file. Open the site through GitHub Pages, or run "python -m http.server" in this folder and visit http://localhost:8000.'; }
     const entries = parse(text);
     items = entries.map(e => { const el = document.createElement('figure'); el.hidden = true; host.append(el); return { e, el, ok: false, list: [] }; });
     let next = 0;
