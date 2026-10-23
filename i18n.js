@@ -389,7 +389,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "ഞാൻ കേരളത്തിലെ കൊല്ലം ജില്ലയിലാണ് ജനിച്ചുവളർന്നത്.",
 "Journal articles published": "പ്രസിദ്ധീകരിച്ച ജേണൽ ലേഖനങ്ങൾ",
 "Events": "പരിപാടികൾ",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "രണ്ടാഴ്ചത്തെ പരിശീലന ശില്പശാലയിൽ പങ്കെടുത്തു, 2024 മെയ് 6 മുതൽ 17 വരെ, ICTS ബെംഗളൂരു."
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "രണ്ടാഴ്ചത്തെ പരിശീലന ശില്പശാലയിൽ പങ്കെടുത്തു, 2024 മെയ് 6 മുതൽ 17 വരെ, ICTS ബെംഗളൂരു.",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "മെഡിറ്ററേനിയനിലെയും ഇന്ത്യൻ ഹിമാലയത്തിലെയും തീ കാലാവസ്ഥാ സൂചികകൾ, 2025 ജൂലൈ മുതൽ ഡിസംബർ വരെ."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -780,7 +781,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "मेरा जन्म और पालन-पोषण केरल के कोल्लम जिले में हुआ।",
 "Journal articles published": "प्रकाशित पत्रिका लेख",
 "Events": "आयोजन",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "दो सप्ताह की प्रशिक्षण कार्यशाला में भाग लिया, 6 से 17 मई 2024, ICTS बेंगलुरु।"
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "दो सप्ताह की प्रशिक्षण कार्यशाला में भाग लिया, 6 से 17 मई 2024, ICTS बेंगलुरु।",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "भूमध्यसागर और भारतीय हिमालय में अग्नि मौसम सूचकांक, जुलाई से दिसंबर 2025।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1171,7 +1173,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "Je suis né et j'ai grandi dans le district de Kollam, au Kerala.",
 "Journal articles published": "Articles de revue publiés",
 "Events": "Événements",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Atelier de formation de deux semaines suivi, du 6 au 17 mai 2024, ICTS Bengaluru."
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Atelier de formation de deux semaines suivi, du 6 au 17 mai 2024, ICTS Bengaluru.",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Indices météorologiques de feu en Méditerranée et dans l'Himalaya indien, de juillet à décembre 2025."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -1562,7 +1565,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "Ich wurde im Distrikt Kollam in Kerala geboren und bin dort aufgewachsen.",
 "Journal articles published": "Veröffentlichte Zeitschriftenartikel",
 "Events": "Veranstaltungen",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Zweiwöchiger Trainingsworkshop, teilgenommen, 6. bis 17. Mai 2024, ICTS Bengaluru."
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Zweiwöchiger Trainingsworkshop, teilgenommen, 6. bis 17. Mai 2024, ICTS Bengaluru.",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Waldbrandwetterindizes für den Mittelmeerraum und den indischen Himalaya, Juli bis Dezember 2025."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -1953,7 +1957,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "وُلدتُ ونشأتُ في مقاطعة كولام بولاية كيرالا.",
 "Journal articles published": "مقالات المجلات المنشورة",
 "Events": "الفعاليات",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "ورشة تدريبية لمدة أسبوعين شاركتُ فيها، من 6 إلى 17 مايو 2024، ICTS بنغالورو."
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "ورشة تدريبية لمدة أسبوعين شاركتُ فيها، من 6 إلى 17 مايو 2024، ICTS بنغالورو.",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "مؤشرات الطقس الحريقي فوق البحر المتوسط وهيمالايا الهند، من يوليو إلى ديسمبر 2025."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -2221,7 +2226,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "Nací y crecí en el distrito de Kollam, en Kerala.",
 "Journal articles published": "Artículos de revista publicados",
 "Events": "Eventos",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Taller de formación de dos semanas al que asistí, del 6 al 17 de mayo de 2024, ICTS Bengaluru."
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Taller de formación de dos semanas al que asistí, del 6 al 17 de mayo de 2024, ICTS Bengaluru.",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Índices meteorológicos de incendio en el Mediterráneo y el Himalaya indio, de julio a diciembre de 2025."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -2489,7 +2495,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "我在喀拉拉邦科拉姆县出生并长大。",
 "Journal articles published": "已发表期刊论文",
 "Events": "活动",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "参加了为期两周的培训研讨会，2024 年 5 月 6 日至 17 日，ICTS 班加罗尔。"
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "参加了为期两周的培训研讨会，2024 年 5 月 6 日至 17 日，ICTS 班加罗尔。",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "地中海和印度喜马拉雅地区的火险天气指数，2025 年 7 月至 12 月。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -2757,7 +2764,8 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "ケーララ州コーラム県で生まれ育ちました。",
 "Journal articles published": "出版済みの学術論文",
 "Events": "イベント",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "2週間の研修ワークショップに参加（2024年5月6日から17日、ICTSバンガロール）。"
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "2週間の研修ワークショップに参加（2024年5月6日から17日、ICTSバンガロール）。",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "地中海とインド・ヒマラヤにおける火災気象指数（2025年7月から12月）。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -3025,6 +3033,7 @@ window.I18N = {
 "I was born and raised in Kollam district, Kerala.": "Nasci e cresci no distrito de Kollam, em Kerala.",
 "Journal articles published": "Artigos de periódicos publicados",
 "Events": "Eventos",
-"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Oficina de treinamento de duas semanas da qual participei, de 6 a 17 de maio de 2024, ICTS Bengaluru."
+"Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Oficina de treinamento de duas semanas da qual participei, de 6 a 17 de maio de 2024, ICTS Bengaluru.",
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Índices meteorológicos de incêndio no Mediterrâneo e no Himalaia indiano, de julho a dezembro de 2025."
 }
 };
