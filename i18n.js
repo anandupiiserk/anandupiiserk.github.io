@@ -390,7 +390,18 @@ window.I18N = {
 "Journal articles published": "പ്രസിദ്ധീകരിച്ച ജേണൽ ലേഖനങ്ങൾ",
 "Events": "പരിപാടികൾ",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "രണ്ടാഴ്ചത്തെ പരിശീലന ശില്പശാലയിൽ പങ്കെടുത്തു, 2024 മെയ് 6 മുതൽ 17 വരെ, ICTS ബെംഗളൂരു.",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "മെഡിറ്ററേനിയനിലെയും ഇന്ത്യൻ ഹിമാലയത്തിലെയും തീ കാലാവസ്ഥാ സൂചികകൾ, 2025 ജൂലൈ മുതൽ ഡിസംബർ വരെ."
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "മെഡിറ്ററേനിയനിലെയും ഇന്ത്യൻ ഹിമാലയത്തിലെയും തീ കാലാവസ്ഥാ സൂചികകൾ, 2025 ജൂലൈ മുതൽ ഡിസംബർ വരെ.",
+"Send a message": "സന്ദേശം അയയ്ക്കുക",
+"Your name": "നിങ്ങളുടെ പേര്",
+"Your email": "നിങ്ങളുടെ ഇമെയിൽ",
+"Your query": "നിങ്ങളുടെ ചോദ്യം",
+"Send message": "സന്ദേശം അയയ്ക്കുക",
+"Sending...": "അയയ്ക്കുന്നു...",
+"Please fill in all fields.": "എല്ലാ ഫീൽഡുകളും പൂരിപ്പിക്കുക.",
+"Enter a valid email address.": "സാധുവായ ഒരു ഇമെയിൽ വിലാസം നൽകുക.",
+"Thank you. Your message has been sent.": "നന്ദി. നിങ്ങളുടെ സന്ദേശം അയച്ചിരിക്കുന്നു.",
+"Something went wrong. Please email me directly.": "എന്തോ പിഴവ് സംഭവിച്ചു. ദയവായി നേരിട്ട് ഇമെയിൽ അയയ്ക്കുക.",
+"Opening your email app.": "നിങ്ങളുടെ ഇമെയിൽ ആപ്പ് തുറക്കുന്നു."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -782,7 +793,18 @@ window.I18N = {
 "Journal articles published": "प्रकाशित पत्रिका लेख",
 "Events": "आयोजन",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "दो सप्ताह की प्रशिक्षण कार्यशाला में भाग लिया, 6 से 17 मई 2024, ICTS बेंगलुरु।",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "भूमध्यसागर और भारतीय हिमालय में अग्नि मौसम सूचकांक, जुलाई से दिसंबर 2025।"
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "भूमध्यसागर और भारतीय हिमालय में अग्नि मौसम सूचकांक, जुलाई से दिसंबर 2025।",
+"Send a message": "संदेश भेजें",
+"Your name": "आपका नाम",
+"Your email": "आपका ईमेल",
+"Your query": "आपका प्रश्न",
+"Send message": "संदेश भेजें",
+"Sending...": "भेजा जा रहा है...",
+"Please fill in all fields.": "कृपया सभी फ़ील्ड भरें।",
+"Enter a valid email address.": "कृपया एक मान्य ईमेल पता दर्ज करें।",
+"Thank you. Your message has been sent.": "धन्यवाद। आपका संदेश भेज दिया गया है।",
+"Something went wrong. Please email me directly.": "कुछ गलत हो गया। कृपया मुझे सीधे ईमेल करें।",
+"Opening your email app.": "आपका ईमेल ऐप खुल रहा है।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1174,7 +1196,18 @@ window.I18N = {
 "Journal articles published": "Articles de revue publiés",
 "Events": "Événements",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Atelier de formation de deux semaines suivi, du 6 au 17 mai 2024, ICTS Bengaluru.",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Indices météorologiques de feu en Méditerranée et dans l'Himalaya indien, de juillet à décembre 2025."
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Indices météorologiques de feu en Méditerranée et dans l'Himalaya indien, de juillet à décembre 2025.",
+"Send a message": "Envoyer un message",
+"Your name": "Votre nom",
+"Your email": "Votre e-mail",
+"Your query": "Votre question",
+"Send message": "Envoyer le message",
+"Sending...": "Envoi en cours...",
+"Please fill in all fields.": "Veuillez remplir tous les champs.",
+"Enter a valid email address.": "Saisissez une adresse e-mail valide.",
+"Thank you. Your message has been sent.": "Merci. Votre message a été envoyé.",
+"Something went wrong. Please email me directly.": "Un problème est survenu. Écrivez-moi directement par e-mail.",
+"Opening your email app.": "Ouverture de votre application de messagerie."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -1566,7 +1599,18 @@ window.I18N = {
 "Journal articles published": "Veröffentlichte Zeitschriftenartikel",
 "Events": "Veranstaltungen",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Zweiwöchiger Trainingsworkshop, teilgenommen, 6. bis 17. Mai 2024, ICTS Bengaluru.",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Waldbrandwetterindizes für den Mittelmeerraum und den indischen Himalaya, Juli bis Dezember 2025."
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Waldbrandwetterindizes für den Mittelmeerraum und den indischen Himalaya, Juli bis Dezember 2025.",
+"Send a message": "Nachricht senden",
+"Your name": "Ihr Name",
+"Your email": "Ihre E-Mail",
+"Your query": "Ihre Anfrage",
+"Send message": "Nachricht absenden",
+"Sending...": "Wird gesendet...",
+"Please fill in all fields.": "Bitte füllen Sie alle Felder aus.",
+"Enter a valid email address.": "Geben Sie eine gültige E-Mail-Adresse ein.",
+"Thank you. Your message has been sent.": "Vielen Dank. Ihre Nachricht wurde gesendet.",
+"Something went wrong. Please email me directly.": "Etwas ist schiefgelaufen. Bitte schreiben Sie mir direkt eine E-Mail.",
+"Opening your email app.": "Ihre E-Mail-App wird geöffnet."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -1958,7 +2002,18 @@ window.I18N = {
 "Journal articles published": "مقالات المجلات المنشورة",
 "Events": "الفعاليات",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "ورشة تدريبية لمدة أسبوعين شاركتُ فيها، من 6 إلى 17 مايو 2024، ICTS بنغالورو.",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "مؤشرات الطقس الحريقي فوق البحر المتوسط وهيمالايا الهند، من يوليو إلى ديسمبر 2025."
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "مؤشرات الطقس الحريقي فوق البحر المتوسط وهيمالايا الهند، من يوليو إلى ديسمبر 2025.",
+"Send a message": "أرسل رسالة",
+"Your name": "اسمك",
+"Your email": "بريدك الإلكتروني",
+"Your query": "استفسارك",
+"Send message": "إرسال الرسالة",
+"Sending...": "جارٍ الإرسال...",
+"Please fill in all fields.": "يرجى ملء جميع الحقول.",
+"Enter a valid email address.": "أدخل عنوان بريد إلكتروني صالحًا.",
+"Thank you. Your message has been sent.": "شكرًا لك. تم إرسال رسالتك.",
+"Something went wrong. Please email me directly.": "حدث خطأ ما. يرجى مراسلتي مباشرة عبر البريد الإلكتروني.",
+"Opening your email app.": "جارٍ فتح تطبيق البريد الإلكتروني."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -2227,7 +2282,18 @@ window.I18N = {
 "Journal articles published": "Artículos de revista publicados",
 "Events": "Eventos",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Taller de formación de dos semanas al que asistí, del 6 al 17 de mayo de 2024, ICTS Bengaluru.",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Índices meteorológicos de incendio en el Mediterráneo y el Himalaya indio, de julio a diciembre de 2025."
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Índices meteorológicos de incendio en el Mediterráneo y el Himalaya indio, de julio a diciembre de 2025.",
+"Send a message": "Enviar un mensaje",
+"Your name": "Su nombre",
+"Your email": "Su correo electrónico",
+"Your query": "Su consulta",
+"Send message": "Enviar mensaje",
+"Sending...": "Enviando...",
+"Please fill in all fields.": "Complete todos los campos.",
+"Enter a valid email address.": "Introduzca un correo electrónico válido.",
+"Thank you. Your message has been sent.": "Gracias. Su mensaje ha sido enviado.",
+"Something went wrong. Please email me directly.": "Algo salió mal. Escríbame directamente por correo.",
+"Opening your email app.": "Abriendo su aplicación de correo."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -2496,7 +2562,18 @@ window.I18N = {
 "Journal articles published": "已发表期刊论文",
 "Events": "活动",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "参加了为期两周的培训研讨会，2024 年 5 月 6 日至 17 日，ICTS 班加罗尔。",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "地中海和印度喜马拉雅地区的火险天气指数，2025 年 7 月至 12 月。"
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "地中海和印度喜马拉雅地区的火险天气指数，2025 年 7 月至 12 月。",
+"Send a message": "发送消息",
+"Your name": "您的姓名",
+"Your email": "您的电子邮箱",
+"Your query": "您的问题",
+"Send message": "发送",
+"Sending...": "发送中...",
+"Please fill in all fields.": "请填写所有字段。",
+"Enter a valid email address.": "请输入有效的电子邮箱地址。",
+"Thank you. Your message has been sent.": "谢谢。您的消息已发送。",
+"Something went wrong. Please email me directly.": "出了点问题。请直接给我发邮件。",
+"Opening your email app.": "正在打开您的邮件应用。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -2765,7 +2842,18 @@ window.I18N = {
 "Journal articles published": "出版済みの学術論文",
 "Events": "イベント",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "2週間の研修ワークショップに参加（2024年5月6日から17日、ICTSバンガロール）。",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "地中海とインド・ヒマラヤにおける火災気象指数（2025年7月から12月）。"
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "地中海とインド・ヒマラヤにおける火災気象指数（2025年7月から12月）。",
+"Send a message": "メッセージを送る",
+"Your name": "お名前",
+"Your email": "メールアドレス",
+"Your query": "お問い合わせ内容",
+"Send message": "送信",
+"Sending...": "送信中...",
+"Please fill in all fields.": "すべての項目を入力してください。",
+"Enter a valid email address.": "有効なメールアドレスを入力してください。",
+"Thank you. Your message has been sent.": "ありがとうございます。メッセージを送信しました。",
+"Something went wrong. Please email me directly.": "問題が発生しました。直接メールでご連絡ください。",
+"Opening your email app.": "メールアプリを開いています。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -3034,6 +3122,17 @@ window.I18N = {
 "Journal articles published": "Artigos de periódicos publicados",
 "Events": "Eventos",
 "Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.": "Oficina de treinamento de duas semanas da qual participei, de 6 a 17 de maio de 2024, ICTS Bengaluru.",
-"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Índices meteorológicos de incêndio no Mediterrâneo e no Himalaia indiano, de julho a dezembro de 2025."
+"Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.": "Índices meteorológicos de incêndio no Mediterrâneo e no Himalaia indiano, de julho a dezembro de 2025.",
+"Send a message": "Enviar uma mensagem",
+"Your name": "Seu nome",
+"Your email": "Seu e-mail",
+"Your query": "Sua dúvida",
+"Send message": "Enviar mensagem",
+"Sending...": "Enviando...",
+"Please fill in all fields.": "Preencha todos os campos.",
+"Enter a valid email address.": "Digite um e-mail válido.",
+"Thank you. Your message has been sent.": "Obrigado. Sua mensagem foi enviada.",
+"Something went wrong. Please email me directly.": "Algo deu errado. Envie-me um e-mail diretamente.",
+"Opening your email app.": "Abrindo seu aplicativo de e-mail."
 }
 };

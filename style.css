@@ -755,3 +755,16 @@ html[lang="zh"] .gi figcaption time,html[lang="ja"] .gi figcaption time{letter-s
 .lb-play svg{width:20px;height:20px;fill:currentColor;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .lb-play svg path[d^="M8"]{fill:none}
 .lightbox{overflow:hidden}
+
+/* Contact form */
+.cform{display:grid;gap:14px;max-width:560px;margin-top:6px}
+.frow{display:grid;gap:6px}
+.frow label{font:600 .74rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cform input,.cform textarea{width:100%;font:inherit;font-size:1rem;color:var(--text);background:var(--surface);border:1px solid var(--line2);border-radius:8px;padding:11px 14px;transition:border-color .3s,box-shadow .3s}
+.cform textarea{resize:vertical;min-height:120px}
+.cform input:focus,.cform textarea:focus{outline:none;border-color:var(--a);box-shadow:0 0 0 3px var(--a-soft)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.fact{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.fstat{font-size:.92rem;color:var(--muted)}.fstat.bad{color:#d9534f}
+.cform .btn:disabled{opacity:.6;cursor:progress}
+html[lang="zh"] .frow label,html[lang="ja"] .frow label{letter-spacing:.02em}
