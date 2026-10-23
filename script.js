@@ -592,8 +592,27 @@ else (function loop() {
   function build(e, list) {
     const f = document.createElement('figure'); f.className = 'gi' + (list.length > 1 ? ' multi' : ''); f.dataset.cat = e.cat.id; f.dataset.cursor = 'View'; f.tabIndex = 0; f.hidden = false;
     const cap = e.cap || list[0].cap;
-    f.innerHTML = `<div class="gwrap"><div class="gimg"><img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b>${esc(e.cat.label)}</b>${cap ? `<span>${esc(cap)}</span>` : ''}</figcaption>`;
+    f.innerHTML = `<div class="gwrap"><div class="gimg"${list.length > 1 ? ` style="aspect-ratio:${list[0].w}/${list[0].h}"` : ''}><img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.src)}" alt="" loading="lazy" decoding="async">`).join('')}${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b>${esc(e.cat.label)}</b>${cap ? `<span>${esc(cap)}</span>` : ''}</figcaption>`;
+    if (list.length > 1) slideshow(f);
     return f;
+  }
+  /* Auto slideshow for events with several photos: slow cross-fade plus a gentle drift,
+     paused when off screen, hovered, tab hidden, or when the user prefers reduced motion. */
+  const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)');
+  const seed = { n: 0 };
+  function slideshow(f) {
+    const box = f.querySelector('.gimg'), imgs = [...box.querySelectorAll('img')]; if (imgs.length < 2) return;
+    const dots = document.createElement('div'); dots.className = 'gdots'; dots.setAttribute('aria-hidden', 'true');
+    dots.innerHTML = imgs.map(() => '<i></i>').join(''); box.append(dots);
+    const di = [...dots.children]; let k = 0, vis = false, hov = false, t = 0;
+    const set = n => { k = n; imgs.forEach((im, j) => im.classList.toggle('on', j === k)); di.forEach((d, j) => d.classList.toggle('on', j === k)); };
+    set(0);
+    const delay = 4600, offset = (seed.n++ % 4) * 900;
+    const tick = () => { if (!f.isConnected) { clearInterval(t); return; } if (vis && !hov && !document.hidden && !(RM && RM.matches)) set((k + 1) % imgs.length); };
+    const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => { vis = en.isIntersecting; })) : null;
+    if (io) io.observe(f); else vis = true;
+    f.addEventListener('mouseenter', () => { hov = true; }); f.addEventListener('mouseleave', () => { hov = false; });
+    setTimeout(() => { if (f.isConnected) t = setInterval(tick, delay); }, offset);
   }
   function apply() {
     let shown = 0;
