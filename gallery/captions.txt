@@ -26,6 +26,15 @@ PhD_025 | Explaining research on wildfire events over the Indian Himalayan Regio
 PhD_025_01 | Presenting wildfire research to Dr. Mrutyunjay Mohapatra, Director General, IMD.
 PhD_025_02 | Discussing wildfire events over the Indian Himalayan Region with the Director General, IMD.
 PhD_025_03 | At the WCRG Lab, CoEDMM, IIT Roorkee. From left: Sachin, Shiwam Singh, Arun Dev Singh, Saurabh Singh, Anandu Prabhakaran, Prof. Dhiman, Dr. Mrutyunjay Mohapatra (Director General, IMD), Dr. Arti Bhatt (Scientist-G, Associate Director, CFEES, DRDO), Viswanandan Kumar Singh and Ayush K. Bondwal. MausamDrishti forecast of WCRG in the background.
+# ---- 13 October 2026: International Day for Disaster Risk Reduction and Research Scholars' Day ----
+Event_001 | IDDRR 2026 and Research Scholars' Day, CoEDMM, IIT Roorkee, 13 October 2026. Theme: Resilience starts at home.
+Event_001_01 | The WCRG team at the CoEDMM entrance on IDDRR Day.
+Event_001_02 | The WCRG team with HOD Prof. Dhiman and guests.
+Event_001_03 | The WCRG team at the registration desk.
+Event_001_04 | At the registration desk. From left: Anandu, Shiwam and Prof. Piyush Srivastava.
+Event_001_05 | Registration desk during IDDRR Day.
+Event_001_06 | Anandu and Shiwam at the registration desk.
+Event_001_07 | With Anagha at her poster, Research Scholars' Day.
 Conf_001 | From Research Scholars Day at CoEDMM, IIT Roorkee
 Conf_002 | Team WeatherXplorers during Research Scholars Day at CoEDMM, IIT Roorkee.
 Conf_003 | CoEDMM team with Prof. Tatsuya Ishikawa at 9th Global Energy and Water EXchanges Open Science Conference, Hokkaido, Japan
@@ -53,3 +62,4 @@ MSpace_001 | Top view of other hills in Ponmudi
 MSpace_002 | Ponmudi Hills
 MSpace_003 | Trip to Ponmudi
 MSpace_004 | Kallar Waterfalls Ponmudi
+MSpace_005 | IIT Roorkee on a fine evening, May 2024

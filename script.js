@@ -554,7 +554,7 @@ else (function loop() {
   const host = $('#gallery'); if (!host) return;
   const CATS = [
     { id: 'phd', prefix: 'PhD', label: 'PhD' }, { id: 'conf', prefix: 'Conf', label: 'Conference' }, { id: 'work', prefix: 'WORK', label: 'Workshops' },
-    { id: 'meet', prefix: 'Meet', label: 'Meetings' }, { id: 'field', prefix: 'Field', label: 'Field' }, { id: 'myspace', prefix: 'MSpace', label: 'My Space' }
+    { id: 'meet', prefix: 'Meet', label: 'Meetings' }, { id: 'events', prefix: 'Event', label: 'Events' }, { id: 'field', prefix: 'Field', label: 'Field' }, { id: 'myspace', prefix: 'MSpace', label: 'My Space' }
   ];
   const DIR = 'gallery/', EXTS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'], MAXG = 20;
   const seg = $('.seg'), btns = $$('button', seg), empty = $('#gal-empty');
@@ -610,17 +610,22 @@ else (function loop() {
     f.innerHTML = `<div class="gwrap"><div class="gimg"${list.length > 1 ? ` style="aspect-ratio:${list[0].w}/${list[0].h}"` : ''}><img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b>${esc(e.cat.label)}</b>${cap ? `<span>${esc(cap)}</span>` : ''}</figcaption>`;
     const lb0 = f.querySelector('.glike'); lb0.addEventListener('click', ev => { ev.stopPropagation(); ev.preventDefault(); toggleLike(e.base, lb0); }); lb0.addEventListener('keydown', ev => ev.stopPropagation());
     paintLikes();
-    if (list.length > 1) slideshow(f);
+    if (list.length > 1) slideshow(f, list);
     return f;
   }
   /* Carousel for events with several photos: photos slide in from the right on a loop,
      autoplay pauses on hover, off screen, hidden tab or reduced motion; arrows, dots and swipe work too. */
   const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)');
   const seed = { n: 0 };
-  function slideshow(f) {
+  function slideshow(f, list) {
     const box = f.querySelector('.gimg'), imgs = [...box.querySelectorAll('img')]; const N = imgs.length; if (N < 2) return;
     const track = document.createElement('div'); track.className = 'gtrack';
-    imgs.forEach(im => { im.classList.remove('gx'); track.append(im); });
+    const r0 = list[0].w / list[0].h;
+    imgs.forEach((im, j) => {
+      im.classList.remove('gx'); const p = list[j], odd = p && Math.abs(p.w / p.h / r0 - 1) > .12;
+      if (!odd) { track.append(im); return; }
+      const w = document.createElement('div'); w.className = 'gslide'; const bg = document.createElement('i'); bg.style.backgroundImage = `url("${p.src}")`; im.classList.add('ct'); w.append(bg, im); track.append(w);
+    });
     track.append(imgs[0].cloneNode(true)); track.lastChild.setAttribute('alt', ''); track.lastChild.removeAttribute('loading');
     box.prepend(track);
     const mk = (cls, label, svg) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'gnav ' + cls; b.setAttribute('aria-label', label); b.innerHTML = svg; return b; };
@@ -629,7 +634,7 @@ else (function loop() {
     const dots = document.createElement('div'); dots.className = 'gdots'; dots.innerHTML = imgs.map((_, j) => `<i data-j="${j}"></i>`).join('');
     box.append(prev, next, dots);
     const di = [...dots.children]; let k = 0, vis = false, hov = false, busy = false, t = 0;
-    const all = () => [...track.children];
+    const all = () => [...track.children].map(c => c.tagName === 'IMG' ? c : c.querySelector('img'));
     const paint = () => { di.forEach((d, j) => d.classList.toggle('on', j === k % N)); all().forEach((im, j) => im.classList.toggle('on', j === k)); };
     const go = (n, anim = true) => {
       track.style.transition = anim ? '' : 'none'; k = n; track.style.transform = `translate3d(${-k * 100}%,0,0)`; paint();
