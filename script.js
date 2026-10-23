@@ -596,23 +596,44 @@ else (function loop() {
     if (list.length > 1) slideshow(f);
     return f;
   }
-  /* Auto slideshow for events with several photos: slow cross-fade plus a gentle drift,
-     paused when off screen, hovered, tab hidden, or when the user prefers reduced motion. */
+  /* Carousel for events with several photos: photos slide in from the right on a loop,
+     autoplay pauses on hover, off screen, hidden tab or reduced motion; arrows, dots and swipe work too. */
   const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)');
   const seed = { n: 0 };
   function slideshow(f) {
-    const box = f.querySelector('.gimg'), imgs = [...box.querySelectorAll('img')]; if (imgs.length < 2) return;
-    const dots = document.createElement('div'); dots.className = 'gdots'; dots.setAttribute('aria-hidden', 'true');
-    dots.innerHTML = imgs.map(() => '<i></i>').join(''); box.append(dots);
-    const di = [...dots.children]; let k = 0, vis = false, hov = false, t = 0;
-    const set = n => { k = n; imgs.forEach((im, j) => im.classList.toggle('on', j === k)); di.forEach((d, j) => d.classList.toggle('on', j === k)); };
-    set(0);
-    const delay = 4600, offset = (seed.n++ % 4) * 900;
-    const tick = () => { if (!f.isConnected) { clearInterval(t); return; } if (vis && !hov && !document.hidden && !(RM && RM.matches)) set((k + 1) % imgs.length); };
+    const box = f.querySelector('.gimg'), imgs = [...box.querySelectorAll('img')]; const N = imgs.length; if (N < 2) return;
+    const track = document.createElement('div'); track.className = 'gtrack';
+    imgs.forEach(im => { im.classList.remove('gx'); track.append(im); });
+    track.append(imgs[0].cloneNode(true)); track.lastChild.setAttribute('alt', ''); track.lastChild.removeAttribute('loading');
+    box.prepend(track);
+    const mk = (cls, label, svg) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'gnav ' + cls; b.setAttribute('aria-label', label); b.innerHTML = svg; return b; };
+    const prev = mk('prev', 'Previous photo', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>');
+    const next = mk('next', 'Next photo', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>');
+    const dots = document.createElement('div'); dots.className = 'gdots'; dots.innerHTML = imgs.map((_, j) => `<i data-j="${j}"></i>`).join('');
+    box.append(prev, next, dots);
+    const di = [...dots.children]; let k = 0, vis = false, hov = false, busy = false, t = 0;
+    const paint = () => di.forEach((d, j) => d.classList.toggle('on', j === k % N));
+    const go = (n, anim = true) => {
+      track.style.transition = anim ? '' : 'none'; k = n; track.style.transform = `translate3d(${-k * 100}%,0,0)`; paint();
+      if (!anim) { void track.offsetWidth; track.style.transition = ''; }
+    };
+    track.addEventListener('transitionend', e => { if (e.target !== track) return; busy = false; if (k >= N) go(0, false); });
+    const step = d => {
+      if (busy) return;
+      if (d > 0) { busy = true; go(k + 1); }
+      else { if (k === 0) go(N, false); busy = true; requestAnimationFrame(() => go(k - 1)); }
+    };
+    go(0, false);
+    const stop = e => { e.stopPropagation(); e.preventDefault(); };
+    prev.addEventListener('click', e => { stop(e); step(-1); }); next.addEventListener('click', e => { stop(e); step(1); });
+    dots.addEventListener('click', e => { const j = e.target.dataset && e.target.dataset.j; if (j == null) return; stop(e); if (!busy) { busy = (+j !== k % N); go(+j); } });
+    let x0 = null; box.addEventListener('pointerdown', e => { x0 = e.clientX; }); box.addEventListener('pointerup', e => { if (x0 != null && Math.abs(e.clientX - x0) > 40) { step(e.clientX < x0 ? 1 : -1); box.dataset.sw = 1; setTimeout(() => delete box.dataset.sw, 50); } x0 = null; });
+    box.addEventListener('click', e => { if (box.dataset.sw) { e.stopPropagation(); e.preventDefault(); } }, true);
+    const tick = () => { if (!f.isConnected) { clearInterval(t); return; } if (vis && !hov && !document.hidden && !(RM && RM.matches)) step(1); };
     const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => { vis = en.isIntersecting; })) : null;
     if (io) io.observe(f); else vis = true;
     f.addEventListener('mouseenter', () => { hov = true; }); f.addEventListener('mouseleave', () => { hov = false; });
-    setTimeout(() => { if (f.isConnected) t = setInterval(tick, delay); }, offset);
+    setTimeout(() => { if (f.isConnected) t = setInterval(tick, 4200); }, (seed.n++ % 4) * 900);
   }
   function apply() {
     let shown = 0;
