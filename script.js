@@ -90,7 +90,7 @@ const ICONS = {
 /* ---------- Pointer (real cursor, themed, shape-coded) ---------- */
 function cursorSvg(theme, kind) {
   const dark = theme === 'dark';
-  const a = dark ? '#e8a33d' : '#7a4400', b = dark ? '#86a9c2' : '#2f4d73';
+  const a = dark ? '#e8a33d' : '#1b4f9c', b = dark ? '#86a9c2' : '#4a6382';
   const fill = kind === 'ptr' ? b : a;
   const ring = kind === 'ptr' ? `<circle cx="6" cy="4" r="6" fill="none" stroke="${b}" stroke-width="1.5"/>` : '';
   const d = 'M6 4 L6 25 L11.5 20 L15.5 29 L19 27.5 L15 18.5 L22.5 18.5 Z';
@@ -110,7 +110,7 @@ const SUN_MOON = `<svg class="sm" viewBox="0 0 24 24" aria-hidden="true"><mask i
 function applyTheme(t) {
   root.dataset.theme = t;
   try { localStorage.setItem('theme', t); } catch (e) {}
-  const m = $('meta[name="theme-color"]'); if (m) m.content = t === 'dark' ? '#0c0a09' : '#f3efe9';
+  const m = $('meta[name="theme-color"]'); if (m) m.content = t === 'dark' ? '#0c0a09' : '#f4f7fa';
   const b = $('#theme'); if (b) { const l = tr(t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'); b.setAttribute('aria-label', l); b.title = l; }
   dispatchEvent(new Event('themechange'));
 }
@@ -612,7 +612,8 @@ else (function loop() {
     const dots = document.createElement('div'); dots.className = 'gdots'; dots.innerHTML = imgs.map((_, j) => `<i data-j="${j}"></i>`).join('');
     box.append(prev, next, dots);
     const di = [...dots.children]; let k = 0, vis = false, hov = false, busy = false, t = 0;
-    const paint = () => di.forEach((d, j) => d.classList.toggle('on', j === k % N));
+    const all = () => [...track.children];
+    const paint = () => { di.forEach((d, j) => d.classList.toggle('on', j === k % N)); all().forEach((im, j) => im.classList.toggle('on', j === k)); };
     const go = (n, anim = true) => {
       track.style.transition = anim ? '' : 'none'; k = n; track.style.transform = `translate3d(${-k * 100}%,0,0)`; paint();
       if (!anim) { void track.offsetWidth; track.style.transition = ''; }
@@ -649,15 +650,30 @@ else (function loop() {
     if (!text && location.protocol === 'file:') { empty.hidden = false; empty.textContent = 'Preview note: browsers block reading captions.txt when the page is opened by double-clicking the file. Open the site through GitHub Pages, or run "python -m http.server" in this folder and visit http://localhost:8000.'; }
     const entries = parse(text);
     items = entries.map(e => { const el = document.createElement('figure'); el.hidden = true; host.append(el); return { e, el, ok: false, list: [] }; });
-    let next = 0;
+    let next = 0, proc = 0, loaded = 0, okN = 0, shownP = 0;
+    const bar = document.createElement('div'); bar.className = 'gload'; bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-label', 'Loading photos');
+    bar.innerHTML = '<div class="gl-top"><span class="gl-t" data-i18n-skip>Loading photos</span><span class="gl-p" data-i18n-skip>0%</span></div><div class="gl-bar"><i></i></div>';
+    host.before(bar);
+    const upd = fin => {
+      const tot = items.length + okN, p = fin ? 1 : Math.min(.99, (proc + loaded) / Math.max(1, tot)); shownP = Math.max(shownP, p);
+      const v = Math.round(shownP * 100); bar.querySelector('i').style.transform = `scaleX(${shownP})`; bar.querySelector('.gl-p').textContent = v + '%'; bar.setAttribute('aria-valuenow', v);
+      if (fin) setTimeout(() => { bar.classList.add('done'); setTimeout(() => bar.remove(), 700); }, 450);
+    };
+    upd();
     const worker = async () => {
       while (next < items.length) {
         const it = items[next++], list = await resolve(it.e);
-        if (list.length) { const el = build(it.e, list); it.el.replaceWith(el); it.el = el; it.list = list; it.ok = true; if (window.__i18nAdd) window.__i18nAdd(el); wire(it); apply(); }
+        if (list.length) {
+          const el = build(it.e, list); it.el.replaceWith(el); it.el = el; it.list = list; it.ok = true; okN++;
+          const im = el.querySelector('img'), ok = () => { if (im.dataset.d) return; im.dataset.d = 1; loaded++; el.classList.add('ready'); upd(done && loaded >= okN); };
+          if (im.complete && im.naturalWidth) ok(); else { im.addEventListener('load', ok); im.addEventListener('error', ok); }
+          if (window.__i18nAdd) window.__i18nAdd(el); wire(it); apply();
+        }
+        proc++; upd();
       }
     };
     await Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]);
-    done = true; apply();
+    done = true; apply(); upd(loaded >= okN);
     items.filter(it => !it.ok).forEach(it => it.el.remove());
   })();
 
