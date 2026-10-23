@@ -204,9 +204,9 @@ buildChrome();
   const menu = $('#menu'), ind = document.createElement('i'); ind.className = 'ind'; menu.append(ind);
   /* phone menu: text size and voice live here, the header keeps only language, share, theme and menu */
   const mt = document.createElement('div'); mt.className = 'mtools';
-  mt.innerHTML = `<button type="button" data-p="#sz-dec" data-i18n-skip aria-label="Decrease text size">A&minus;</button><button type="button" data-p="#sz-inc" data-i18n-skip aria-label="Increase text size">A+</button><button type="button" data-p="#voice-btn" class="mv">Voice assistant</button>`;
+  mt.innerHTML = `<button type="button" data-p="#sz-dec" data-i18n-skip aria-label="Decrease text size">A&minus;</button><button type="button" data-p="#sz-inc" data-i18n-skip aria-label="Increase text size">A+</button><button type="button" data-p="#fs-btn" class="mv mf" data-i18n-skip>Full screen</button><button type="button" data-p="#voice-btn" class="mv">Voice assistant</button>`;
   menu.append(mt);
-  mt.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const o = $(b.dataset.p); if (o && !o.disabled) { o.click(); if (b.dataset.p === '#voice-btn') document.body.classList.remove('menu-open'); } });
+  mt.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const o = $(b.dataset.p); if (o && !o.disabled) { o.click(); if (b.dataset.p !== '#sz-dec' && b.dataset.p !== '#sz-inc') document.body.classList.remove('menu-open'); } });
   const links = $$('a', menu), active = $('a[aria-current]', menu);
   const place = a => { if (!a) { ind.style.opacity = 0; return; } ind.style.opacity = 1; ind.style.width = a.offsetWidth + 'px'; ind.style.transform = `translateX(${a.offsetLeft}px)`; };
   place(active);
@@ -903,9 +903,9 @@ function toggleFS() {
 }
 function fsSync() {
   const on = !!fsOn(); root.classList.toggle('is-fs', on); fsBtn.setAttribute('aria-pressed', on);
-  const l = tr(on ? 'Exit full screen (F)' : 'Full screen (F)'); fsBtn.setAttribute('aria-label', l); fsBtn.title = l; setTimeout(fitNav, 60);
+  const l = tr(on ? 'Exit full screen (F)' : 'Full screen (F)'); fsBtn.setAttribute('aria-label', l); fsBtn.title = l; const mf = $('.mtools .mf'); if (mf) mf.textContent = tr(on ? 'Exit full screen' : 'Full screen'); setTimeout(fitNav, 60);
 }
-if (!fsOK) fsBtn.style.display = 'none';
+if (!fsOK) { fsBtn.style.display = 'none'; const mf = $('.mtools .mf'); if (mf) mf.style.display = 'none'; }
 fsBtn.addEventListener('click', toggleFS);
 document.addEventListener('fullscreenchange', fsSync); document.addEventListener('webkitfullscreenchange', fsSync);
 document.addEventListener('keydown', e => {
