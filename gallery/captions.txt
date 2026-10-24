@@ -87,5 +87,6 @@ MSpace_011 | [2024-03-31] Fit India Half Marathon 2024 (Sangram 2024) at IIT Roo
 MSpace_012 | [2025-07-29] Gare de Strasbourg, the SNCF railway station in Strasbourg, France.
 MSpace_013 | [2025-07-23] Montpellier vibes: a scorching Mediterranean summer day at 35 °C, with the view from the balcony at 8 pm.
 MSpace_014 | [2025-07-19] Heart of Montpellier, Place de la Comédie, under a canopy of yellow umbrellas.
+MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
 Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
