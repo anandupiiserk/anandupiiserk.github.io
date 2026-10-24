@@ -209,3 +209,7 @@ MSpace_021_14 | The Jardins de la Fontaine, with a palm tree, stone staircases a
 MSpace_021_15 | The basin of the Jardins de la Fontaine seen from above, with fountains, terraces and a swan on the water.
 MSpace_021_16 | Gardens at the foot of the hill: the trek up to the heights was worth it for this view over the Jardins de la Fontaine.
 MSpace_021_17 | A short coffee break at a motorway service area with a Starbucks, on the way back to Montpellier.
+MSpace_022 | [2025-09-06] Trip to Marseille, France: a trek through the limestone hills near the city.
+MSpace_022_01 | 6 September 2025, 11:54 am: the trek begins, with pine-covered slopes and white limestone ridges under a deep blue sky.
+MSpace_022_02 | A rocky limestone peak rising above the pines on the trail.
+MSpace_022_03 | A white dog stopping to look over the valley on the trek.
