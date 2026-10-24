@@ -93,10 +93,11 @@ MSpace_014_03 | An evening at Place de la Comédie, with a green ice cream.
 MSpace_014_04 | Montpellier Cathedral.
 MSpace_014_05 | Montpellier Cathedral, another view.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
-MSpace_016 | [2025-07] My self-cooking diary: Kerala puttu and egg curry.
+MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
 MSpace_016_02 | Another plate of puttu and egg curry.
 MSpace_016_03 | Puttu and egg curry with a banana and tea.
+MSpace_016_04 | French toast, cooked in France. Very original of me 🙄
 MSpace_017 | [2025-07] A view over the rooftops of Strasbourg, France.
 MSpace_018 | [2025-07] Evening and sunset in Strasbourg under a cloudy sky, a contrast with the sunny weather in Montpellier.
 MSpace_018_01 | Sunset over Strasbourg.
