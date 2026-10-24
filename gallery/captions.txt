@@ -92,6 +92,7 @@ MSpace_012_04 | Strasbourg Cathedral.
 MSpace_012_05 | A view over the rooftops of Strasbourg.
 MSpace_012_06 | Sunset over Strasbourg, under a cloudy sky that contrasted with the sunny weather in Montpellier.
 MSpace_012_07 | Evening light near Esplanade.
+MSpace_012_08 | University of Strasbourg campus, with modern glass buildings under a cloudy blue sky.
 MSpace_013 | [2025-07] Montpellier vibes: the view from my apartment balcony in the evening, in the Mediterranean summer.
 MSpace_013_01 | 1 July 2025: balcony view at about 6:30 pm.
 MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
