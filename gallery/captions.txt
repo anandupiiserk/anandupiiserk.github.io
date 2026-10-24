@@ -138,6 +138,8 @@ MSpace_014_12 | L'Arbre Blanc (The White Tree) in Montpellier, a 17-storey resid
 MSpace_014_13 | L'Arbre Blanc again, with its cantilevered balconies and rooftop shades, seen from the road near the Lez river.
 MSpace_014_14 | A large ring-shaped canopy of wooden slats over a fountain roundabout with tram tracks, on a cloudy day in Montpellier, believed to be near the Philippidès stadium.
 MSpace_014_15 | The Philippidès athletics stadium in Montpellier, with its blue synthetic track and covered grandstand. The stadium was inaugurated in 1988.
+MSpace_014_16 | 15 November 2025: a night-time light show projected on the Opéra Comédie at Place de la Comédie, with vintage trams and street scenes and crowds filming with their phones.
+MSpace_014_17 | 15 November 2025: the same event on the Arc de Triomphe of Montpellier (Porte du Peyrou), lit red, with the projected text "Gare de Montpellier Saint-Roch".
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
