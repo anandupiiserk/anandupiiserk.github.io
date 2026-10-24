@@ -109,6 +109,7 @@ MSpace_016_02 | Another plate of puttu and egg curry.
 MSpace_016_03 | Puttu and egg curry with a banana and tea.
 MSpace_016_04 | French toast, cooked in France. Very original of me 🙄
 MSpace_016_05 | Kerala palappam with boiled egg and potato korma.
+MSpace_016_06 | Tortilla with soya curry.
 MSpace_017 | [2025-06-30] Trip to Paris, France, as part of the Raman-Charpak Fellowship: I reached Paris on 30 June 2025.
 MSpace_017_01 | Desserts at the lounge of Trivandrum domestic airport, on the way to Paris.
 MSpace_017_02 | Snacks at the lounge of Trivandrum domestic airport.
