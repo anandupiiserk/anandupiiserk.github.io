@@ -101,7 +101,12 @@ MSpace_022 | [2025-07-10] The Arc de Triomphe in Paris, France.
 MSpace_023 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret, under blue skies.
 MSpace_024 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou).
 MSpace_024_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
-MSpace_024_02 | A tree-lined garden walk nearby.
-MSpace_024_03 | Wide-angle view across the Peyrou towards the Arc de Triomphe.
+MSpace_024_02 | Close-up of the equestrian statue of Louis XIV, installed in 1718.
+MSpace_024_03 | A tree-lined garden walk nearby.
+MSpace_024_04 | Wide-angle view across the Peyrou towards the Arc de Triomphe.
+MSpace_025 | [2025-07-06] Montpellier historical monuments: the Palais de Justice (law courts), completed in 1853, with its Corinthian portico and sculpted pediment.
+MSpace_026 | [2025-07-06] Montpellier historical monuments: Carré Sainte-Anne, hosting JR's exhibition Adventice, with a tree sculpture made of thousands of hand scans.
+MSpace_026_01 | Carré Sainte-Anne from the square.
+MSpace_026_02 | Inside, JR's Adventice: a tree of hand scans under the vault.
 Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
 Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
