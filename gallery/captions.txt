@@ -117,6 +117,7 @@ MSpace_017_05 | 30 June 2025: passport and boarding pass for flight LH2228 from 
 MSpace_017_06 | Mighty Paris from the air, on the flight from Munich.
 MSpace_017_07 | 10 July 2025: the Arc de Triomphe in Paris.
 MSpace_017_08 | 10 July 2025: another view of the Arc de Triomphe.
+MSpace_017_09 | Shopping at Carrefour Saint-Eloi, Montpellier, after three flights and a long SNCF train ride to Montpellier.
 MSpace_018 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret, under blue skies.
 MSpace_019 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou), the Palais de Justice, and Carré Sainte-Anne.
 MSpace_019_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
