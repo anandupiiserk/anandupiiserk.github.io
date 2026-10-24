@@ -138,4 +138,5 @@ MSpace_020 | [2025-07] Lunch at the CNRS campus restaurant in Montpellier, open 
 MSpace_020_01 | Fried calamari on pasta, my favourite dish during the stay.
 MSpace_020_02 | Another day, another meal: breaded fish with couscous and vegetables, with chocolate cake and fruit for dessert.
 MSpace_020_03 | Another meal: fish with potatoes and mixed vegetables, with fruit for dessert.
+MSpace_020_04 | Another meal: fish in a light sauce with green beans and broccoli, with chocolate cake and fruit for dessert.
 Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
