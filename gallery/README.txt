@@ -6,6 +6,7 @@ File names (the numbers have 3 digits, so you can go past 999 as 1000, 1001 and 
   WORK_001.jpg     Workshops section
   Meet_001.jpg     Meetings section
   Field_001.jpg    Field section
+  Visit_001.jpg    Visit section (research visits)
   MSpace_001.jpg   My Space section
 
 Several photos of one event: Conf_012_01.jpg, Conf_012_02.jpg, ... up to _20.
