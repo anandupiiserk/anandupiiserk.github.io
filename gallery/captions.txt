@@ -109,9 +109,13 @@ MSpace_012_21 | A gilded altarpiece with carved panels and a central statue in a
 MSpace_012_22 | The organ in the nave, mounted high on the wall like a swallow's nest, below stained glass windows.
 MSpace_012_23 | The Palais du Rhin on Place de la République, built as the Kaiserpalast (Imperial Palace) between 1884 and 1889 in neo-Renaissance style.
 MSpace_012_24 | Hey mate, nice reflections! A mute swan gliding through the colourful water.
+MSpace_012_25 | A colourfully decorated bus passing in front of the glass facade of Gare de Strasbourg at dusk.
+MSpace_012_26 | The street along the glass-fronted Gare de Strasbourg in the evening light.
+MSpace_012_27 | The station square in front of Gare de Strasbourg, with the tram entrance for lines A and D.
 MSpace_013 | [2025-07] Montpellier vibes: the view from my apartment balcony in the evening, in the Mediterranean summer.
 MSpace_013_01 | 1 July 2025: balcony view at about 6:30 pm.
 MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
+MSpace_013_03 | 21 August 2025: balcony view at 8:25 pm, with clouds over the rooftops.
 MSpace_014 | [2025-07-19] Heart of Montpellier, France: Place de la Comédie, the cathedral and the Saint-Éloi district.
 MSpace_014_01 | Place de la Comédie, under a canopy of yellow umbrellas.
 MSpace_014_02 | Place de la Comédie, the main square of Montpellier.
@@ -163,4 +167,5 @@ MSpace_020_03 | Another meal: fish with potatoes and mixed vegetables, with frui
 MSpace_020_04 | Another meal: fish in a light sauce with green beans and broccoli, with chocolate cake and fruit for dessert.
 MSpace_020_05 | Another lunch: roast chicken leg in tomato sauce with penne and broccoli, and fruit for dessert.
 MSpace_020_06 | Another lunch: glazed carrots with a baked meat dish and cream, with fruit and an orange layered cake for dessert.
+MSpace_020_07 | A vegetarian lunch: couscous salad with boiled egg, feta, corn and melon, with fruit and a choux pastry ring for dessert.
 Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
