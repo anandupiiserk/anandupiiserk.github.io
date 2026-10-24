@@ -891,3 +891,15 @@ html.nc body.menu-open { overflow: hidden; }
 }
 @media (min-width: 901px) { .two:has(> .bio) > .bio .eyebrow { margin: 0 0 16px; } .two:has(> .bio) > .bio h2 { margin: 0 0 24px; } }
 .sec:has(> .wrap > .two > .bio) { padding-top: clamp(56px, 6vw, 84px); }
+
+/* ---------- Gallery: use the full width on large screens ---------- */
+@media (min-width: 1100px) {
+  main:has(#gallery) .wrap { max-width: min(1920px, 100%); }
+}
+@media (min-width: 1280px) {
+  .gal { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 24px; }
+}
+@media (min-width: 1600px) {
+  .gal { grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 26px; }
+  .gi figcaption span { font-size: .88rem; }
+}
