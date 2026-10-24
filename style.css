@@ -777,7 +777,7 @@ html[lang="zh"] .frow label,html[lang="ja"] .frow label{letter-spacing:.02em}
 
 /* ---------- Mobile layer (phones and small tablets, same URL) ---------- */
 .mtools { display: none; }
-html.nc .nav .sz, html.nc .nav .voice-btn, html.nc .nav .fs-btn { display: none !important; }
+html.nc .nav .sz, html.nc .nav .fs-btn { display: none !important; }
 html.nc .mtools { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 18px; }
 html.nc .mtools button { min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--line2); background: transparent; color: var(--text); font: 600 .95rem var(--sans); cursor: pointer; }
 html.nc .mtools button:active, html.nc .mtools button:hover { background: var(--hover); }
@@ -793,6 +793,7 @@ html.nc body.menu-open { overflow: hidden; }
   .tools { gap: 6px; margin-inline-start: auto; }
   .icon-btn, .burger, .lang-btn { height: 42px; min-width: 42px; }
   .icon-btn:not(.lang-btn), .burger { width: 42px; }
+  .voice-btn { width: 42px; height: 42px; }
   .brand .logo { width: 42px; height: 42px; }
   .share-menu { position: fixed; left: 12px; right: 12px; top: 64px; width: auto; max-height: 70vh; overflow: auto; }
   .share-menu .it { min-height: 48px; }

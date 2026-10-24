@@ -204,7 +204,7 @@ buildChrome();
   const menu = $('#menu'), ind = document.createElement('i'); ind.className = 'ind'; menu.append(ind);
   /* phone menu: text size and voice live here, the header keeps only language, share, theme and menu */
   const mt = document.createElement('div'); mt.className = 'mtools';
-  mt.innerHTML = `<button type="button" data-p="#sz-dec" data-i18n-skip aria-label="Decrease text size">A&minus;</button><button type="button" data-p="#sz-inc" data-i18n-skip aria-label="Increase text size">A+</button><button type="button" data-p="#fs-btn" class="mv mf" data-i18n-skip>Full screen</button><button type="button" data-p="#voice-btn" class="mv">Voice assistant</button>`;
+  mt.innerHTML = `<button type="button" data-p="#sz-dec" data-i18n-skip aria-label="Decrease text size">A&minus;</button><button type="button" data-p="#sz-inc" data-i18n-skip aria-label="Increase text size">A+</button><button type="button" data-p="#fs-btn" class="mv mf" data-i18n-skip>Full screen</button>`;
   menu.append(mt);
   mt.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const o = $(b.dataset.p); if (o && !o.disabled) { o.click(); if (b.dataset.p !== '#sz-dec' && b.dataset.p !== '#sz-inc') document.body.classList.remove('menu-open'); } });
   const links = $$('a', menu), active = $('a[aria-current]', menu);
