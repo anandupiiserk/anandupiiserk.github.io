@@ -95,5 +95,6 @@ MSpace_019 | [2025-07] Sunset in Strasbourg under a cloudy sky, a contrast with 
 MSpace_020 | [2025-07] Evening light in Strasbourg, near Esplanade.
 MSpace_021 | [2025-07] Strasbourg Cathedral.
 MSpace_022 | [2025-07-10] The Arc de Triomphe in Paris, France.
+MSpace_023 | [2025-07] Montpellier, a view near the CNRS campus at Zoo de Lunaret.
 Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
 Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
