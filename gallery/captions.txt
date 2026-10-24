@@ -97,6 +97,7 @@ MSpace_012_09 | Exploring the canals of Strasbourg: half-timbered houses along t
 MSpace_012_10 | A restaurant in Strasbourg, its facade covered in ivy and flowers; the sign reads L'Ami Schutz.
 MSpace_012_11 | The Ponts Couverts (Covered Bridges) of Strasbourg, with their towers and the cathedral spire in the background.
 MSpace_012_12 | A pair of mallards, male and female, swimming in a Strasbourg canal.
+MSpace_012_13 | 17 August 2025: the west facade and spire of Strasbourg Cathedral, with crowds in the square below.
 MSpace_013 | [2025-07] Montpellier vibes: the view from my apartment balcony in the evening, in the Mediterranean summer.
 MSpace_013_01 | 1 July 2025: balcony view at about 6:30 pm.
 MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
