@@ -127,7 +127,7 @@ function buildChrome() {
   const header = document.createElement('header');
   header.className = 'nav'; header.id = 'nav';
   header.innerHTML = `
-    <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="prompt" aria-hidden="true"><i>$</i>Anandu<em>.</em><u class="sur">Prabhakaran</u><b class="caret"></b></span></a>
+    <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="prompt" aria-hidden="true"><i>$</i><span class="tx"></span><b class="caret"></b></span></a>
     <nav class="menu" id="menu" aria-label="Main">${SITE.nav.map((n, i) => `<a href="${n.href}" style="--i:${i}" ${n.id === page ? 'aria-current="page"' : ''}><span class="t"><span>${n.label}</span><span aria-hidden="true">${n.label}</span></span></a>`).join('')}</nav>
     <div class="tools">
       <div class="share-wrap">
@@ -177,6 +177,27 @@ function buildChrome() {
   toastEl = $('#toast');
 }
 buildChrome();
+/* terminal-style header: type the name slowly, hold, backspace slowly, retype, loop */
+(function typedBrand() {
+  const tx = document.querySelector('.brand .tx'); if (!tx) return;
+  const caret = document.querySelector('.brand .caret');
+  const full = () => (window.matchMedia('(max-width: 400px)').matches ? 'Anandu.P' : 'Anandu.Prabhakaran');
+  const html = t => t.replace('.', '<em>.</em>');
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { tx.innerHTML = html(full()); return; }
+  let n = 0, dir = 1;
+  const TYPE = 170, DEL = 140, HOLD = 3200, EMPTY = 900;
+  function tick() {
+    const t = full(); if (n > t.length) n = t.length;
+    tx.innerHTML = html(t.slice(0, n));
+    const busy = (dir === 1 && n < t.length) || (dir === -1 && n > 0);
+    caret.classList.toggle('busy', busy);
+    let wait;
+    if (dir === 1) { if (n < t.length) { n++; wait = TYPE; } else { dir = -1; wait = HOLD; } }
+    else { if (n > 0) { n--; wait = DEL; } else { dir = 1; wait = EMPTY; } }
+    setTimeout(tick, wait);
+  }
+  tick();
+})();
 
 /* ---------- Theme button, menu, share, nav indicator ---------- */
 (function () {

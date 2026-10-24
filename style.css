@@ -943,3 +943,7 @@ html.nc body.menu-open { overflow: hidden; }
 @media (max-width: 560px) { .brand span.prompt:last-child { display: inline-flex; } }
 .brand .prompt u { text-decoration: none; }
 @media (max-width: 400px) { .brand .prompt .sur { font-size: 0; } .brand .prompt .sur::after { content: "P"; font-size: .9rem; } .brand .caret { width: .5em; margin-inline-start: 2px; } }
+.brand .tx { display: inline; min-height: 1em; }
+.brand .tx em { font-style: normal; color: var(--a); }
+.brand .caret.busy { animation: none; opacity: 1; }
+.brand .prompt { min-width: 11.5ch; }
