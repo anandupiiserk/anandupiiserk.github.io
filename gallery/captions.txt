@@ -171,6 +171,7 @@ MSpace_019_05 | The Palais de Justice (law courts), completed in 1853, with its 
 MSpace_019_06 | Carré Sainte-Anne, hosting JR's exhibition Adventice.
 MSpace_019_07 | Inside, JR's Adventice: a tree made of thousands of hand scans under the vault.
 MSpace_019_08 | 5 September 2025, 8:17 pm: the Saint-Clément Aqueduct (Aqueduc Saint-Clément) in Montpellier at sunset. Built between 1753 and 1765, its two tiers of stone arches carry water from the Saint-Clément springs to the Peyrou water tower.
+MSpace_019_09 | The Saint-Clément Aqueduct ending at the Château d'eau (water tower) of the Promenade du Peyrou in Montpellier, under a deep blue sky.
 Visit_001 | [2025-08-07] Montpellier, France: my host institute CEFE-CNRS during the Raman-Charpak Fellowship (31 July to 31 December 2025), and the University of Montpellier campus nearby.
 Visit_001_01 | Entrance of CEFE-CNRS in Montpellier.
 Visit_001_02 | The picnic area on the CEFE-CNRS campus.
