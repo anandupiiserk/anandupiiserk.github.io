@@ -127,7 +127,7 @@ function buildChrome() {
   const header = document.createElement('header');
   header.className = 'nav'; header.id = 'nav';
   header.innerHTML = `
-    <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="logo">${SITE.initials}</span><span>${SITE.name}</span></a>
+    <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="prompt" aria-hidden="true"><i>$</i>Anandu<em>.</em><u class="sur">Prabhakaran</u><b class="caret"></b></span></a>
     <nav class="menu" id="menu" aria-label="Main">${SITE.nav.map((n, i) => `<a href="${n.href}" style="--i:${i}" ${n.id === page ? 'aria-current="page"' : ''}><span class="t"><span>${n.label}</span><span aria-hidden="true">${n.label}</span></span></a>`).join('')}</nav>
     <div class="tools">
       <div class="share-wrap">
