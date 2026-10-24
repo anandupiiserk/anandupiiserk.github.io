@@ -82,4 +82,4 @@ MSpace_006 | [2026-09-26] Fit India Cyclothon 2026 at IIT Roorkee, a 50 km ride 
 MSpace_007 | [2026-08-13] WCRG workspace at CoEDMM, IIT Roorkee.
 MSpace_008 | [2026-08-23] Group dinner at Balu's home.
 MSpace_009 | [2026-09-27] A rainy evening at IIT Roorkee.
-MSpace_010 | [2024-03-01] Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shivam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.
+MSpace_010 | [2024-03-01] Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.
