@@ -13,3 +13,7 @@ List the event once in captions.txt as:  Conf_012 | Caption
 
 Keep the capital letters exactly as above: GitHub Pages treats PhD_001.jpg and phd_001.jpg as different files.
 After you upload the files and the edited captions.txt to GitHub, the gallery updates by itself. No other file needs to change.
+
+SPEED NOTE
+gallery/t/ holds light WebP copies used for the tiles and gallery/manifest.json lists every photo.
+After adding or renaming photos, both must be regenerated (python3 build_gallery.py), otherwise new photos will not appear.

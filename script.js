@@ -343,7 +343,14 @@ if (!reduce && finePointer) {
   const c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
   const EX = ['JPG', 'jpg', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'];
   const load = src => new Promise(r => { const im = new Image(); im.decoding = 'async'; im.onload = () => r(true); im.onerror = () => r(false); im.src = src; });
+  async function runFast() {
+    let man = null; try { const r = await fetch('gallery/manifest.json'); if (r.ok) man = await r.json(); } catch (e) { return false; }
+    if (!man) return false;
+    const q = Object.keys(man).sort(); const w = async () => { while (q.length) await load('gallery/t/' + q.shift() + '.webp'); };
+    await Promise.all([w(), w(), w()]); return true;
+  }
   async function run() {
+    if (await runFast()) return;
     let text = ''; try { const r = await fetch('gallery/captions.txt'); if (r.ok) text = await r.text(); } catch (e) { return; }
     const bases = new Map();
     text.split(/\r?\n/).forEach(l => { l = l.trim(); if (!l || l[0] === '#') return; const id = l.split(/[|\t]/)[0].trim(), m = id.match(/^([A-Za-z]+_\d+)(?:_(\d{1,2}))?/); if (m) bases.set(m[1], (bases.get(m[1]) || false) || !!m[2]); });
@@ -360,8 +367,8 @@ if (!reduce && finePointer) {
     };
     await Promise.all([worker(), worker()]);
   }
-  const start = () => { const go = () => run(); (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 6000 }) : setTimeout(go, 3000)); };
-  if (document.readyState === 'complete') setTimeout(start, 2500); else addEventListener('load', () => setTimeout(start, 2500));
+  const start = () => { const go = () => run(); (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 1000)); };
+  if (document.readyState === 'complete') setTimeout(start, 600); else addEventListener('load', () => setTimeout(start, 600));
 })();
 
 /* ---------- Page transition and boot ---------- */
@@ -632,7 +639,11 @@ else (function loop() {
   let items = [], filter = 'all', lastExt = null; try { lastExt = sessionStorage.getItem('gal-ext') || null; } catch (err) { /* ignore */ }
   const pad = (n, w) => String(n).padStart(w, '0');
   const load = src => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+  /* gallery/manifest.json lists every photo (extension and size) and gallery/t/ holds light WebP copies for the tiles. */
+  const manifestP = fetch(DIR + 'manifest.json').then(r => r.ok ? r.json() : null).catch(() => null); let MAN = null;
   async function find(base, hint) {
+    if (MAN === null) MAN = await manifestP || false;
+    if (MAN) { const m = MAN[base]; if (!m) return null; const im = await load(DIR + 't/' + base + '.webp'); if (im) { im._full = DIR + base + '.' + m.e; im._w = m.w; im._h = m.h; return im; } hint = m.e; }
     const order = hint ? [hint] : [...new Set([lastExt, ...EXTS].filter(Boolean))];
     for (const ext of order) { const im = await load(DIR + base + '.' + ext); if (im) { lastExt = ext; try { sessionStorage.setItem('gal-ext', ext); } catch (err) { /* ignore */ } return im; } }
     return null;
@@ -658,8 +669,8 @@ else (function loop() {
   }
   async function resolve(e) {
     let im = await find(e.base, e.ext), list = [];
-    if (im) list = [{ src: im.src, w: im.naturalWidth, h: im.naturalHeight, cap: e.caps[1] || '' }];
-    else for (let k = 1; k <= MAXG; k++) { const g = await find(e.base + '_' + pad(k, 2)); if (!g) break; list.push({ src: g.src, w: g.naturalWidth, h: g.naturalHeight, cap: e.caps[k] || '' }); }
+    if (im) list = [{ src: im._full || im.src, th: im._full ? im.src : '', w: im._w || im.naturalWidth, h: im._h || im.naturalHeight, cap: e.caps[1] || '' }];
+    else for (let k = 1; k <= MAXG; k++) { const g = await find(e.base + '_' + pad(k, 2)); if (!g) break; list.push({ src: g._full || g.src, th: g._full ? g.src : '', w: g._w || g.naturalWidth, h: g._h || g.naturalHeight, cap: e.caps[k] || '' }); }
     return list;
   }
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
@@ -678,7 +689,7 @@ else (function loop() {
   function build(e, list) {
     const f = document.createElement('figure'); f.className = 'gi' + (list.length > 1 ? ' multi' : ''); f.dataset.cat = e.cat.id; f.dataset.cursor = 'View'; f.tabIndex = 0; f.hidden = false;
     const cap = e.cap || list[0].cap;
-    f.innerHTML = `<div class="gwrap"><div class="gimg${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? ' fillbox' : ''}">${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? `<i class="gfill" style="background-image:url('${esc(list[0].src)}')"></i>` : ''}<img src="${esc(list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b class="cat-${e.cat.id}">${esc(e.cat.label)}</b>${e.date ? `<i class="sep" aria-hidden="true">|</i><time datetime="${e.date}" data-i18n-skip>${fmtDate(e.date)}</time>` : ''}${cap ? `<i class="sep" aria-hidden="true">|</i><span>${esc(cap)}</span>` : ''}</figcaption>`;
+    f.innerHTML = `<div class="gwrap"><div class="gimg${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? ' fillbox' : ''}">${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? `<i class="gfill" style="background-image:url('${esc(list[0].th || list[0].src)}')"></i>` : ''}<img src="${esc(list[0].th || list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.th || p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><b class="cat-${e.cat.id}">${esc(e.cat.label)}</b>${e.date ? `<i class="sep" aria-hidden="true">|</i><time datetime="${e.date}" data-i18n-skip>${fmtDate(e.date)}</time>` : ''}${cap ? `<i class="sep" aria-hidden="true">|</i><span>${esc(cap)}</span>` : ''}</figcaption>`;
     const lb0 = f.querySelector('.glike'); lb0.addEventListener('click', ev => { ev.stopPropagation(); ev.preventDefault(); toggleLike(e.base, lb0); }); lb0.addEventListener('keydown', ev => ev.stopPropagation());
     paintLikes();
     if (list.length > 1) slideshow(f, list);
@@ -695,7 +706,7 @@ else (function loop() {
     imgs.forEach((im, j) => {
       im.classList.remove('gx'); const p = list[j], odd = p && Math.abs(p.w / p.h / r0 - 1) > .12;
       if (!odd) { track.append(im); return; }
-      const w = document.createElement('div'); w.className = 'gslide'; const bg = document.createElement('i'); bg.style.backgroundImage = `url("${p.src}")`; im.classList.add('ct'); w.append(bg, im); track.append(w);
+      const w = document.createElement('div'); w.className = 'gslide'; const bg = document.createElement('i'); bg.style.backgroundImage = `url("${p.th || p.src}")`; im.classList.add('ct'); w.append(bg, im); track.append(w);
     });
     track.append(imgs[0].cloneNode(true)); track.lastChild.setAttribute('alt', ''); track.lastChild.removeAttribute('loading');
     box.prepend(track);
@@ -774,11 +785,13 @@ else (function loop() {
   })();
 
   /* Lightbox: every photo of the visible items, event photos in order */
-  const lb = $('#lb'), img = $('#lb-img'), cap = $('#lb-cap'), count = $('#lb-count'); let slides = [], cur = 0;
-  function slidesNow() { slides = []; items.forEach(it => { if (!it.ok || it.el.hidden) return; it.list.forEach((p, k) => slides.push({ base: it.e.base, src: p.src, cap: p.cap || it.e.cap, cat: it.e.cat.label, k, n: it.list.length })); }); }
+  const lb = $('#lb'), img = $('#lb-img'), cap = $('#lb-cap'), count = $('#lb-count'); let slides = [], cur = 0; const warm = new Set();
+  function slidesNow() { slides = []; items.forEach(it => { if (!it.ok || it.el.hidden) return; it.list.forEach((p, k) => slides.push({ base: it.e.base, src: p.src, th: p.th, cap: p.cap || it.e.cap, cat: it.e.cat.label, k, n: it.list.length })); }); }
   function show(i) {
     if (!slides.length) return; cur = (i + slides.length) % slides.length; const s = slides[cur];
-    img.src = s.src; img.alt = s.cap || ''; const lkb = $('#lb-like'); if (lkb) { lkb.dataset.id = s.base; paintLikes(); }
+    if (s.th && !warm.has(s.src)) { img.src = s.th; const fl = new Image(); fl.src = s.src; fl.decode().then(() => { warm.add(s.src); if (slides[cur] === s) img.src = s.src; }).catch(() => {}); } else img.src = s.src;
+    img.alt = s.cap || '';
+    [1, 2].forEach(d => { const nb = slides[(cur + d) % slides.length]; if (nb && !warm.has(nb.src)) { const x = new Image(); x.src = nb.src; x.decode().then(() => warm.add(nb.src)).catch(() => {}); } }); const lkb = $('#lb-like'); if (lkb) { lkb.dataset.id = s.base; paintLikes(); }
     cap.innerHTML = ''; const b = document.createElement('b'); b.textContent = tr(s.cat); cap.append(b, document.createTextNode(s.cap ? tr(s.cap) : ''));
     count.textContent = pad(cur + 1, 2) + ' / ' + pad(slides.length, 2) + (s.n > 1 ? '  ·  ' + (s.k + 1) + '/' + s.n : '');
   }
@@ -795,7 +808,7 @@ else (function loop() {
   };
   async function go(i, dir) {
     if (!slides.length || moving) return; moving = true; stopTimer();
-    const n = (i + slides.length) % slides.length, nx = new Image(); nx.src = slides[n].src; try { await nx.decode(); } catch (e) { /* show anyway */ }
+    const n = (i + slides.length) % slides.length, nx = new Image(); nx.src = slides[n].src; try { await nx.decode(); warm.add(slides[n].src); } catch (e) { /* show anyway */ }
     const still = (RM && RM.matches) || !img.animate;
     if (!still) await img.animate([{ transform: 'translate3d(0,0,0)', opacity: 1 }, { transform: `translate3d(${-dir * 7}%,0,0) scale(.97)`, opacity: 0 }], { duration: 420, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' }).finished.catch(() => {});
     show(n);
