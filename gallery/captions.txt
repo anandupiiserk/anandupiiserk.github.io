@@ -86,27 +86,30 @@ MSpace_010 | [2024-03-01] Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 M
 MSpace_011 | [2024-03-31] Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.
 MSpace_012 | [2025-07-29] Gare de Strasbourg, the SNCF railway station in Strasbourg, France.
 MSpace_013 | [2025-07-23] Montpellier vibes: a scorching Mediterranean summer day at 35 °C, with the view from the balcony at 8 pm.
-MSpace_014 | [2025-07-19] Heart of Montpellier, France.
+MSpace_014 | [2025-07-19] Heart of Montpellier, France: Place de la Comédie and the cathedral.
 MSpace_014_01 | Place de la Comédie, under a canopy of yellow umbrellas.
-MSpace_014_02 | Montpellier Cathedral.
-MSpace_014_03 | Montpellier Cathedral, another view.
+MSpace_014_02 | An evening at Place de la Comédie, with a green ice cream.
+MSpace_014_03 | Montpellier Cathedral.
+MSpace_014_04 | Montpellier Cathedral, another view.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary: Kerala puttu and egg curry.
-MSpace_017 | [2025-07] My self-cooking diary: Kerala puttu and egg curry.
-MSpace_018 | [2025-07] A view over the rooftops of Strasbourg, France.
-MSpace_019 | [2025-07] Sunset in Strasbourg under a cloudy sky, a contrast with the sunny weather in Montpellier.
-MSpace_020 | [2025-07] Evening light in Strasbourg, near Esplanade.
-MSpace_021 | [2025-07] Strasbourg Cathedral.
-MSpace_022 | [2025-07-10] The Arc de Triomphe in Paris, France.
-MSpace_023 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret, under blue skies.
-MSpace_024 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou).
-MSpace_024_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
-MSpace_024_02 | Close-up of the equestrian statue of Louis XIV, installed in 1718.
-MSpace_024_03 | A tree-lined garden walk nearby.
-MSpace_024_04 | Wide-angle view across the Peyrou towards the Arc de Triomphe.
-MSpace_025 | [2025-07-06] Montpellier historical monuments: the Palais de Justice (law courts), completed in 1853, with its Corinthian portico and sculpted pediment.
-MSpace_026 | [2025-07-06] Montpellier historical monuments: Carré Sainte-Anne, hosting JR's exhibition Adventice, with a tree sculpture made of thousands of hand scans.
-MSpace_026_01 | Carré Sainte-Anne from the square.
-MSpace_026_02 | Inside, JR's Adventice: a tree of hand scans under the vault.
+MSpace_016_01 | Puttu and egg curry, cooked at home.
+MSpace_016_02 | Another plate of puttu and egg curry.
+MSpace_017 | [2025-07] A view over the rooftops of Strasbourg, France.
+MSpace_018 | [2025-07] Evening and sunset in Strasbourg under a cloudy sky, a contrast with the sunny weather in Montpellier.
+MSpace_018_01 | Sunset over Strasbourg.
+MSpace_018_02 | Evening light near Esplanade.
+MSpace_019 | [2025-07] Strasbourg Cathedral.
+MSpace_020 | [2025-07-10] The Arc de Triomphe in Paris, France.
+MSpace_021 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret, under blue skies.
+MSpace_022 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou).
+MSpace_022_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
+MSpace_022_02 | Close-up of the equestrian statue of Louis XIV, installed in 1718.
+MSpace_022_03 | A tree-lined garden walk nearby.
+MSpace_022_04 | Wide-angle view across the Peyrou towards the Arc de Triomphe.
+MSpace_023 | [2025-07-06] Montpellier historical monuments: the Palais de Justice (law courts), completed in 1853, with its Corinthian portico and sculpted pediment.
+MSpace_024 | [2025-07-06] Montpellier historical monuments: Carré Sainte-Anne, hosting JR's exhibition Adventice, with a tree sculpture made of thousands of hand scans.
+MSpace_024_01 | Carré Sainte-Anne from the square.
+MSpace_024_02 | Inside, JR's Adventice: a tree of hand scans under the vault.
 Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
 Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
