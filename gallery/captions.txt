@@ -107,6 +107,8 @@ MSpace_012_19 | A statue of the Virgin and Child surrounded by votive candles.
 MSpace_012_20 | The astronomical clock inside the cathedral, with visitors gathered in front of it.
 MSpace_012_21 | A gilded altarpiece with carved panels and a central statue in a side chapel.
 MSpace_012_22 | The organ in the nave, mounted high on the wall like a swallow's nest, below stained glass windows.
+MSpace_012_23 | The Palais du Rhin on Place de la République, built as the Kaiserpalast (Imperial Palace) between 1884 and 1889 in neo-Renaissance style.
+MSpace_012_24 | Hey mate, nice reflections! A mute swan gliding through the colourful water.
 MSpace_013 | [2025-07] Montpellier vibes: the view from my apartment balcony in the evening, in the Mediterranean summer.
 MSpace_013_01 | 1 July 2025: balcony view at about 6:30 pm.
 MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
