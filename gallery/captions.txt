@@ -184,12 +184,18 @@ Visit_002_01 | Entrance of the CNRS campus in Montpellier.
 Visit_002_02 | A building on the CNRS campus in Montpellier, with signs for four research institutes: infectiology, cell biology, molecular genetics, and infectious diseases and anti-infective pharmacology.
 Visit_002_03 | 28 August 2025, 5:06 pm: a CEFE-CNRS building on the campus, among pines and oaks.
 MSpace_021 | [2025-08-30] Trip to Nîmes, in southern France, starting with breakfast: an americano with a palmier and a croissant.
-MSpace_021_01 | Breakfast: an americano with a palmier and a croissant.
-MSpace_021_02 | The Musée des Beaux-Arts de Nîmes, with its neoclassical facade and the inscription Sculpture, Architecture, Peinture.
-MSpace_021_03 | The Musée de la Romanité in Nîmes, in its rippled glass and tile facade, standing opposite the Roman arena.
-MSpace_021_04 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the city's main attraction, seen from the upper tiers.
-MSpace_021_05 | Rooftops of Nîmes seen from the top of the arena, with terracotta tiles under a deep blue sky.
-MSpace_021_06 | Inside the Arena of Nîmes: the oval sand arena ringed by tiers of stone seating, set up with chairs and a stage.
-MSpace_021_07 | The Église Saint-Paul in Nîmes, a 19th-century church with a rose window and three arched portals.
-MSpace_021_08 | The Maison Carrée in Nîmes, a Roman temple from the 1st century with its Corinthian columns.
-MSpace_021_09 | The Maison Carrée again, seen from the steps of the temple.
+MSpace_021_01 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the main attraction of the city.
+MSpace_021_02 | Breakfast: an americano with a palmier and a croissant.
+MSpace_021_03 | The Musée des Beaux-Arts de Nîmes, with its neoclassical facade and the inscription Sculpture, Architecture, Peinture.
+MSpace_021_04 | The Musée de la Romanité in Nîmes, in its rippled glass and tile facade, standing opposite the Roman arena.
+MSpace_021_05 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the city's main attraction, seen from the upper tiers.
+MSpace_021_06 | Rooftops of Nîmes seen from the top of the arena, with terracotta tiles under a deep blue sky.
+MSpace_021_07 | Inside the Arena of Nîmes: the oval sand arena ringed by tiers of stone seating, set up with chairs and a stage.
+MSpace_021_08 | The Église Saint-Paul in Nîmes, a 19th-century church with a rose window and three arched portals.
+MSpace_021_09 | The Maison Carrée in Nîmes, a Roman temple from the 1st century with its Corinthian columns.
+MSpace_021_10 | The Maison Carrée again, seen from the steps of the temple.
+MSpace_021_11 | The Carré d'Art in Nîmes, designed by Norman Foster and opened in 1993, which houses the municipal library and a contemporary art museum, facing the Maison Carrée.
+MSpace_021_12 | A historic garden in Nîmes, the Jardins de la Fontaine: stone bridges with arches over a canal, framed by balustrades and stone urns.
+MSpace_021_13 | The Jardins de la Fontaine, with a palm tree, stone staircases and the water basin beyond.
+MSpace_021_14 | The basin of the Jardins de la Fontaine seen from above, with fountains, terraces and a swan on the water.
+MSpace_021_15 | Gardens at the foot of the hill: the trek up to the heights was worth it for this view over the Jardins de la Fontaine.
