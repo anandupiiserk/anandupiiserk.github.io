@@ -90,5 +90,6 @@ MSpace_014 | [2025-07-19] Heart of Montpellier, Place de la Comédie, under a ca
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary: Kerala puttu and egg curry.
 MSpace_017 | [2025-07] My self-cooking diary: Kerala puttu and egg curry.
+MSpace_018 | [2025-07] A view over the rooftops of Strasbourg, France.
 Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
 Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
