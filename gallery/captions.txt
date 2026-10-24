@@ -209,7 +209,12 @@ MSpace_021_14 | The Jardins de la Fontaine, with a palm tree, stone staircases a
 MSpace_021_15 | The basin of the Jardins de la Fontaine seen from above, with fountains, terraces and a swan on the water.
 MSpace_021_16 | Gardens at the foot of the hill: the trek up to the heights was worth it for this view over the Jardins de la Fontaine.
 MSpace_021_17 | A short coffee break at a motorway service area with a Starbucks, on the way back to Montpellier.
-MSpace_022 | [2025-09-06] Trip to Marseille, France: a trek through the limestone hills near the city.
+MSpace_022 | [2025-09-06] Trip to Marseille, France: a trek through the limestone hills to the Calanques.
 MSpace_022_01 | 6 September 2025, 11:54 am: the trek begins, with pine-covered slopes and white limestone ridges under a deep blue sky.
 MSpace_022_02 | A rocky limestone peak rising above the pines on the trail.
 MSpace_022_03 | A white dog stopping to look over the valley on the trek.
+MSpace_022_04 | The trek ends at a viewpoint above the Calanques of Marseille, in Calanques National Park: white limestone cliffs dropping into the deep blue Mediterranean.
+MSpace_022_05 | An information panel, "La naissance des Calanques" (The birth of the Calanques). It explains that the Grande Candelle, 454 m high, is separated from the Candelon by a fault, and that rivers cut deep valleys into the limestone during the ice ages, when the sea was over 100 m lower. Rising seas after the last glaciation flooded these valleys and created the calanques.
+MSpace_022_06 | View from the top: limestone pinnacles above a calanque, with boats on the water below.
+MSpace_022_07 | Another view from the top, with the narrow inlet opening into the open sea.
+MSpace_022_08 | The small harbour at the head of the calanque, seen from above: fishing and pleasure boats moored along the quays, with kayaks and small boats pulled up on the shore.
