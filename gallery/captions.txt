@@ -188,3 +188,8 @@ MSpace_021_01 | Breakfast: an americano with a palmier and a croissant.
 MSpace_021_02 | The Musée des Beaux-Arts de Nîmes, with its neoclassical facade and the inscription Sculpture, Architecture, Peinture.
 MSpace_021_03 | The Musée de la Romanité in Nîmes, in its rippled glass and tile facade, standing opposite the Roman arena.
 MSpace_021_04 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the city's main attraction, seen from the upper tiers.
+MSpace_021_05 | Rooftops of Nîmes seen from the top of the arena, with terracotta tiles under a deep blue sky.
+MSpace_021_06 | Inside the Arena of Nîmes: the oval sand arena ringed by tiers of stone seating, set up with chairs and a stage.
+MSpace_021_07 | The Église Saint-Paul in Nîmes, a 19th-century church with a rose window and three arched portals.
+MSpace_021_08 | The Maison Carrée in Nîmes, a Roman temple from the 1st century with its Corinthian columns.
+MSpace_021_09 | The Maison Carrée again, seen from the steps of the temple.
