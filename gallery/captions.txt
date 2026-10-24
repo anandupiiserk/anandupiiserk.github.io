@@ -108,6 +108,7 @@ MSpace_016_01 | Puttu and egg curry, cooked at home.
 MSpace_016_02 | Another plate of puttu and egg curry.
 MSpace_016_03 | Puttu and egg curry with a banana and tea.
 MSpace_016_04 | French toast, cooked in France. Very original of me 🙄
+MSpace_016_05 | Kerala palappam with boiled egg and potato korma.
 MSpace_017 | [2025-06-30] Trip to Paris, France, as part of the Raman-Charpak Fellowship: I reached Paris on 30 June 2025.
 MSpace_017_01 | Desserts at the lounge of Trivandrum domestic airport, on the way to Paris.
 MSpace_017_02 | Snacks at the lounge of Trivandrum domestic airport.
@@ -134,9 +135,11 @@ Visit_001_03 | Leisure time on the CEFE-CNRS campus with my colleague Dr. Georgi
 Visit_001_04 | A covered walkway on the University of Montpellier campus.
 Visit_001_05 | Colourful pillars along a path on the University of Montpellier campus.
 Visit_001_06 | University of Montpellier, Triolet campus.
+Visit_001_07 | After lunch, roaming the campus with Dr. Georgie Elias, who calls this place the Viking space.
 MSpace_020 | [2025-07] Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.
 MSpace_020_01 | Fried calamari on pasta, my favourite dish during the stay.
 MSpace_020_02 | Another day, another meal: breaded fish with couscous and vegetables, with chocolate cake and fruit for dessert.
 MSpace_020_03 | Another meal: fish with potatoes and mixed vegetables, with fruit for dessert.
 MSpace_020_04 | Another meal: fish in a light sauce with green beans and broccoli, with chocolate cake and fruit for dessert.
+MSpace_020_05 | Another lunch: roast chicken leg in tomato sauce with penne and broccoli, and fruit for dessert.
 Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
