@@ -76,3 +76,4 @@ MSpace_002 | Ponmudi Hills
 MSpace_003 | Trip to Ponmudi
 MSpace_004 | Kallar Waterfalls Ponmudi
 MSpace_005 | [2024-05] IIT Roorkee on a fine evening
+MSpace_006 | [2026-09-26] Fit India Cyclothon 2026 at IIT Roorkee, a 50 km ride from the Main Campus to the Saharanpur Campus.
