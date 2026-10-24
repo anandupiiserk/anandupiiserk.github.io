@@ -344,7 +344,7 @@ if (!reduce && finePointer) {
   const EX = ['JPG', 'jpg', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'];
   const load = src => new Promise(r => { const im = new Image(); im.decoding = 'async'; im.onload = () => r(true); im.onerror = () => r(false); im.src = src; });
   async function runFast() {
-    let man = null; try { const r = await fetch('gallery/manifest.json'); if (r.ok) man = await r.json(); } catch (e) { return false; }
+    let man = null; try { const r = await fetch('gallery/manifest.json', { cache: 'no-cache' }); if (r.ok) man = await r.json(); } catch (e) { return false; }
     if (!man) return false;
     const q = Object.keys(man).sort(); const w = async () => { while (q.length) await load('gallery/t/' + q.shift() + '.webp'); };
     await Promise.all([w(), w(), w()]); return true;
@@ -640,7 +640,7 @@ else (function loop() {
   const pad = (n, w) => String(n).padStart(w, '0');
   const load = src => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
   /* gallery/manifest.json lists every photo (extension and size) and gallery/t/ holds light WebP copies for the tiles. */
-  const manifestP = fetch(DIR + 'manifest.json').then(r => r.ok ? r.json() : null).catch(() => null); let MAN = null;
+  const manifestP = fetch(DIR + 'manifest.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null); let MAN = null;
   async function find(base, hint) {
     if (MAN === null) MAN = await manifestP || false;
     if (MAN) { const m = MAN[base]; if (!m) return null; const im = await load(DIR + 't/' + base + '.webp'); if (im) { im._full = DIR + base + '.' + m.e; im._w = m.w; im._h = m.h; return im; } hint = m.e; }
