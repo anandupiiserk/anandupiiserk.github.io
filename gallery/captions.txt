@@ -145,10 +145,12 @@ MSpace_017_06 | Mighty Paris from the air, on the flight from Munich.
 MSpace_017_07 | 10 July 2025: the Arc de Triomphe in Paris.
 MSpace_017_08 | 10 July 2025: another view of the Arc de Triomphe.
 MSpace_017_09 | Shopping at Carrefour Saint-Eloi, Montpellier, after three flights and a long SNCF train ride to Montpellier.
-MSpace_018 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret and Vert Bois.
-MSpace_018_01 | Near the CNRS campus at Zoo de Lunaret, under blue skies.
+MSpace_018 | [2025-07] Montpellier, views near the CNRS campus, close to the Parc Zoologique de Lunaret (Lunaret Zoo) and Vert Bois.
+MSpace_018_01 | Near the CNRS campus and the Parc Zoologique de Lunaret, under blue skies.
 MSpace_018_02 | Near the CNRS campus again, with blue skies.
 MSpace_018_03 | 25 August 2025: a cloudy evening at Vert Bois, at 5:26 pm.
+MSpace_018_04 | The CNRS building with signs for four research institutes, seen from across the road.
+MSpace_018_05 | 28 August 2025, around 5 pm: dark storm clouds over Vert Bois, near the CNRS campus.
 MSpace_019 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou), the Palais de Justice, and Carré Sainte-Anne.
 MSpace_019_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
 MSpace_019_02 | Close-up of the equestrian statue of Louis XIV, installed in 1718.
@@ -177,3 +179,4 @@ MSpace_020_07 | A vegetarian lunch: couscous salad with boiled egg, feta, corn a
 Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
 Visit_002_01 | Entrance of the CNRS campus in Montpellier.
 Visit_002_02 | A building on the CNRS campus in Montpellier, with signs for four research institutes: infectiology, cell biology, molecular genetics, and infectious diseases and anti-infective pharmacology.
+Visit_002_03 | 28 August 2025, 5:06 pm: a CEFE-CNRS building on the campus, among pines and oaks.
