@@ -132,6 +132,7 @@ MSpace_014_09 | An evening at Vert Bois, Montpellier, with heavy clouds over the
 MSpace_014_10 | 28 August 2025, 5:46 pm: Place de la Comédie under grey clouds, with the Opéra Comédie at the far end of the square.
 MSpace_014_11 | L'Arbre Blanc (The White Tree) in Montpellier, a 17-storey residential tower with large cantilevered balconies, designed by Sou Fujimoto, Nicolas Laisné, Dimitri Roussel and OXO Architectes and completed around 2019.
 MSpace_014_12 | L'Arbre Blanc again, with its cantilevered balconies and rooftop shades, seen from the road near the Lez river.
+MSpace_014_13 | A large ring-shaped canopy of wooden slats over a fountain roundabout with tram tracks, on a cloudy day in Montpellier, believed to be near the Philippidès stadium.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
