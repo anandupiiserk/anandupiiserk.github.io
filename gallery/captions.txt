@@ -116,6 +116,7 @@ MSpace_013 | [2025-07] Montpellier vibes: the view from my apartment balcony in 
 MSpace_013_01 | 1 July 2025: balcony view at about 6:30 pm.
 MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
 MSpace_013_03 | 21 August 2025: balcony view at 8:25 pm, with clouds over the rooftops.
+MSpace_013_04 | 24 August 2025: the Saint-Éloi neighbourhood near my apartment, at 7:48 pm.
 MSpace_014 | [2025-07-19] Heart of Montpellier, France: Place de la Comédie, the cathedral and the Saint-Éloi district.
 MSpace_014_01 | Place de la Comédie, under a canopy of yellow umbrellas.
 MSpace_014_02 | Place de la Comédie, the main square of Montpellier.
