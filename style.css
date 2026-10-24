@@ -903,3 +903,10 @@ html.nc body.menu-open { overflow: hidden; }
   .gal { grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 26px; }
   .gi figcaption span { font-size: .88rem; }
 }
+
+/* ---------- Gallery: centred filter bar, tighter space under the heading ---------- */
+@media (min-width: 701px) {
+  main:has(#gallery) .phero { padding-bottom: clamp(48px, 5vw, 64px); }
+  main:has(#gallery) .sec:has(#gallery) { padding-top: clamp(36px, 3.4vw, 52px); }
+  main:has(#gallery) .seg { display: flex; width: fit-content; margin: 0 auto 36px; justify-content: center; }
+}
