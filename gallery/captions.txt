@@ -84,5 +84,6 @@ MSpace_008 | [2026-08-23] Group dinner at Balu's home.
 MSpace_009 | [2026-09-27] A rainy evening at IIT Roorkee.
 MSpace_010 | [2024-03-01] Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.
 MSpace_011 | [2024-03-31] Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.
+MSpace_012 | [2025-07-29] Gare de Strasbourg, the SNCF railway station in Strasbourg, France.
 Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
 Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
