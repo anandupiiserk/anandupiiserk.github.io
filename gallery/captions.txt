@@ -142,4 +142,5 @@ MSpace_020_02 | Another day, another meal: breaded fish with couscous and vegeta
 MSpace_020_03 | Another meal: fish with potatoes and mixed vegetables, with fruit for dessert.
 MSpace_020_04 | Another meal: fish in a light sauce with green beans and broccoli, with chocolate cake and fruit for dessert.
 MSpace_020_05 | Another lunch: roast chicken leg in tomato sauce with penne and broccoli, and fruit for dessert.
+MSpace_020_06 | Another lunch: glazed carrots with a baked meat dish and cream, with fruit and an orange layered cake for dessert.
 Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
