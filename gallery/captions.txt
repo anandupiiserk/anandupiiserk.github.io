@@ -88,13 +88,15 @@ MSpace_012 | [2025-07-29] Gare de Strasbourg, the SNCF railway station in Strasb
 MSpace_013 | [2025-07-23] Montpellier vibes: a scorching Mediterranean summer day at 35 °C, with the view from the balcony at 8 pm.
 MSpace_014 | [2025-07-19] Heart of Montpellier, France: Place de la Comédie and the cathedral.
 MSpace_014_01 | Place de la Comédie, under a canopy of yellow umbrellas.
-MSpace_014_02 | An evening at Place de la Comédie, with a green ice cream.
-MSpace_014_03 | Montpellier Cathedral.
-MSpace_014_04 | Montpellier Cathedral, another view.
+MSpace_014_02 | Place de la Comédie, the main square of Montpellier.
+MSpace_014_03 | An evening at Place de la Comédie, with a green ice cream.
+MSpace_014_04 | Montpellier Cathedral.
+MSpace_014_05 | Montpellier Cathedral, another view.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary: Kerala puttu and egg curry.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
 MSpace_016_02 | Another plate of puttu and egg curry.
+MSpace_016_03 | Puttu and egg curry with a banana and tea.
 MSpace_017 | [2025-07] A view over the rooftops of Strasbourg, France.
 MSpace_018 | [2025-07] Evening and sunset in Strasbourg under a cloudy sky, a contrast with the sunny weather in Montpellier.
 MSpace_018_01 | Sunset over Strasbourg.
