@@ -118,6 +118,7 @@ MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
 MSpace_013_03 | 21 August 2025: balcony view at 8:25 pm, with clouds over the rooftops.
 MSpace_013_04 | 24 August 2025: the Saint-Éloi neighbourhood near my apartment, at 7:48 pm.
 MSpace_013_05 | 29 August 2025: balcony view at 8 pm, with the sun breaking through the clouds at sunset.
+MSpace_013_06 | 2 September 2025: balcony view at 8:28 pm, with a fiery red sunset sky.
 MSpace_014 | [2025-07-19] Heart of Montpellier, France: Place de la Comédie, the cathedral and the Saint-Éloi district.
 MSpace_014_01 | Place de la Comédie, under a canopy of yellow umbrellas.
 MSpace_014_02 | Place de la Comédie, the main square of Montpellier.
@@ -130,6 +131,7 @@ MSpace_014_08 | Pines and cypresses near Saint-Éloi at dusk.
 MSpace_014_09 | An evening at Vert Bois, Montpellier, with heavy clouds over the street and a bus shelter.
 MSpace_014_10 | 28 August 2025, 5:46 pm: Place de la Comédie under grey clouds, with the Opéra Comédie at the far end of the square.
 MSpace_014_11 | L'Arbre Blanc (The White Tree) in Montpellier, a 17-storey residential tower with large cantilevered balconies, designed by Sou Fujimoto, Nicolas Laisné, Dimitri Roussel and OXO Architectes and completed around 2019.
+MSpace_014_12 | L'Arbre Blanc again, with its cantilevered balconies and rooftop shades, seen from the road near the Lez river.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
