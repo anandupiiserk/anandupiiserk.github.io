@@ -98,6 +98,15 @@ MSpace_012_10 | A restaurant in Strasbourg, its facade covered in ivy and flower
 MSpace_012_11 | The Ponts Couverts (Covered Bridges) of Strasbourg, with their towers and the cathedral spire in the background.
 MSpace_012_12 | A pair of mallards, male and female, swimming in a Strasbourg canal.
 MSpace_012_13 | 17 August 2025: the west facade and spire of Strasbourg Cathedral, with crowds in the square below.
+MSpace_012_14 | The west facade of Strasbourg Cathedral, with its rose window and three portals, under a clear blue sky.
+MSpace_012_15 | The facade again, a closer view of the portals and the carved sandstone.
+MSpace_012_16 | The north tower and the entrance, with the queue of visitors waiting outside.
+MSpace_012_17 | Inside the cathedral: the nave looking towards the choir, with the organ on the left.
+MSpace_012_18 | The nave from the entrance, with stained glass windows and rows of chairs.
+MSpace_012_19 | A statue of the Virgin and Child surrounded by votive candles.
+MSpace_012_20 | The astronomical clock inside the cathedral, with visitors gathered in front of it.
+MSpace_012_21 | A gilded altarpiece with carved panels and a central statue in a side chapel.
+MSpace_012_22 | The organ in the nave, mounted high on the wall like a swallow's nest, below stained glass windows.
 MSpace_013 | [2025-07] Montpellier vibes: the view from my apartment balcony in the evening, in the Mediterranean summer.
 MSpace_013_01 | 1 July 2025: balcony view at about 6:30 pm.
 MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
