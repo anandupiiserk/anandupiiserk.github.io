@@ -121,6 +121,7 @@ MSpace_013_05 | 29 August 2025: balcony view at 8 pm, with the sun breaking thro
 MSpace_013_06 | 2 September 2025: balcony view at 8:28 pm, with a fiery red sunset sky.
 MSpace_013_07 | 18 September 2025: balcony view at 8:21 pm, with the last orange light of dusk. The days are getting shorter.
 MSpace_013_08 | 21 September 2025: a cloudy evening at 6:56 pm, with heavy clouds over the rooftops.
+MSpace_013_09 | 23 September 2025, 7:52 am: a double rainbow arching over the rooftops after rain, seen from my apartment balcony.
 MSpace_014 | [2025-07-19] Heart of Montpellier, France: Place de la Comédie, the cathedral and the Saint-Éloi district.
 MSpace_014_01 | Place de la Comédie, under a canopy of yellow umbrellas.
 MSpace_014_02 | Place de la Comédie, the main square of Montpellier.
@@ -195,6 +196,7 @@ Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
 Visit_002_01 | Entrance of the CNRS campus in Montpellier.
 Visit_002_02 | A building on the CNRS campus in Montpellier, with signs for four research institutes: infectiology, cell biology, molecular genetics, and infectious diseases and anti-infective pharmacology.
 Visit_002_03 | 28 August 2025, 5:06 pm: a CEFE-CNRS building on the campus, among pines and oaks.
+Visit_002_04 | 26 September 2025, 4:46 pm: the CNRS building on the Montpellier campus, beside the tram line, with signs for the research institutes on its wall.
 MSpace_021 | [2025-08-30] Trip to Nîmes, in southern France, starting with breakfast: an americano with a palmier and a croissant.
 MSpace_021_01 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the main attraction of the city.
 MSpace_021_02 | The square in front of the Arena of Nîmes, with a bronze statue of a bullfighter on the left.
