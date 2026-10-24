@@ -174,6 +174,10 @@ Visit_001_06 | University of Montpellier, Triolet campus.
 Visit_001_07 | After lunch, roaming the campus with Dr. Georgie Elias, who calls this place the Viking space.
 Visit_001_08 | A CEFE-CNRS building on the Montpellier campus, among pines and oaks.
 Visit_001_09 | Campus Triolet of the University of Montpellier: a large red sculpture on the roundabout in front of the white perforated building.
+Visit_001_10 | 5 September 2025, 2:15 pm: the lecture hall before Dr. Georgie Elias's doctoral thesis defence at the CNRS campus in Montpellier.
+Visit_001_11 | Dr. Georgie Elias presenting his doctoral thesis defence, pointing to his slide.
+Visit_001_12 | Georgie Elias at the start of his defence, "Functional Geography of Drought in Lebanon for the Study of the Vulnerability of Agro-Ecosystems to Climate Change", 5 September 2025, Montpellier.
+Visit_001_13 | The defence under way: the session is introduced at the CNRS lectern, while jury members also join remotely on the side screen.
 MSpace_020 | [2025-07] Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.
 MSpace_020_01 | Fried calamari on pasta, my favourite dish during the stay.
 MSpace_020_02 | Another day, another meal: breaded fish with couscous and vegetables, with chocolate cake and fruit for dessert.
