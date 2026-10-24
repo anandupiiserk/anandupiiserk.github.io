@@ -99,5 +99,8 @@ MSpace_020 | [2025-07] Evening light in Strasbourg, near Esplanade.
 MSpace_021 | [2025-07] Strasbourg Cathedral.
 MSpace_022 | [2025-07-10] The Arc de Triomphe in Paris, France.
 MSpace_023 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret, under blue skies.
+MSpace_024 | [2025-07] Montpellier, near its Arc de Triomphe (Porte du Peyrou).
+MSpace_024_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
+MSpace_024_02 | A tree-lined garden walk nearby.
 Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
 Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
