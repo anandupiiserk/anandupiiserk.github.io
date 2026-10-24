@@ -116,5 +116,10 @@ MSpace_019_04 | Wide-angle view across the Peyrou towards the Arc de Triomphe.
 MSpace_019_05 | The Palais de Justice (law courts), completed in 1853, with its Corinthian portico and sculpted pediment.
 MSpace_019_06 | Carré Sainte-Anne, hosting JR's exhibition Adventice.
 MSpace_019_07 | Inside, JR's Adventice: a tree made of thousands of hand scans under the vault.
-Visit_001 | [2025-08-07] Entrance of CEFE-CNRS in Montpellier, France, my host institute during the Raman-Charpak Fellowship, 31 July to 31 December 2025.
-Visit_002 | [2025-08-07] Leisure time on the CEFE-CNRS campus in Montpellier, with my colleague Dr. Georgie Elias.
+Visit_001 | [2025-08-07] Montpellier, France: my host institute CEFE-CNRS during the Raman-Charpak Fellowship (31 July to 31 December 2025), and the University of Montpellier campus nearby.
+Visit_001_01 | Entrance of CEFE-CNRS in Montpellier.
+Visit_001_02 | The picnic area on the CEFE-CNRS campus.
+Visit_001_03 | Leisure time on the CEFE-CNRS campus with my colleague Dr. Georgie Elias.
+Visit_001_04 | A covered walkway on the University of Montpellier campus.
+Visit_001_05 | Colourful pillars along a path on the University of Montpellier campus.
+Visit_001_06 | University of Montpellier, Triolet campus.
