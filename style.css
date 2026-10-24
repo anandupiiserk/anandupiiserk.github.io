@@ -885,7 +885,6 @@ html.nc body.menu-open { overflow: hidden; }
 @media (min-width: 901px) {
   .two:has(> .bio) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: stretch; gap: clamp(36px, 5vw, 80px); }
   .two:has(> .bio) > .bio { display: flex; flex-direction: column; justify-content: flex-start; }
-  .two:has(> .bio) > .bio p { font-size: 1.06rem; margin-bottom: 1.1em; }
   .two:has(> .bio) > .bio .socials { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--line2); }
   .two:has(> .bio) .dl-row { grid-template-columns: minmax(104px, 150px) minmax(0, 1fr); gap: 22px; padding: 18px 0; }
 }
@@ -910,9 +909,14 @@ html.nc body.menu-open { overflow: hidden; }
   main:has(#gallery) .sec:has(#gallery) { padding-top: clamp(36px, 3.4vw, 52px); }
   main:has(#gallery) .seg { display: flex; width: fit-content; margin: 0 auto 36px; justify-content: center; }
 }
-/* About: spread the bio paragraphs and the icons evenly so the column ends level with the details column */
+
+/* About: interests under the bio */
+.bio-int { margin-top: 26px; }
+.bio-int .lbl { display: block; margin-bottom: 14px; font-size: .82rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--a); }
+.bio-int .chips { gap: 10px; }
+@media (min-width: 901px) { .two:has(> .bio) > .bio .socials { margin-top: auto; } .two:has(> .bio) > .bio .bio-int { margin-bottom: 28px; } }
 @media (min-width: 901px) {
-  .two:has(> .bio) > .bio p { margin: auto 0 0; }
-  .two:has(> .bio) > .bio h2 + p { margin-top: 0; }
-  .two:has(> .bio) > .bio .socials { margin-top: auto; }
+  .two:has(> .bio) > div:last-child { display: flex; flex-direction: column; }
+  .two:has(> .bio) .dl { flex: 1; display: flex; flex-direction: column; }
+  .two:has(> .bio) .dl-row { flex: 1 1 auto; align-items: center; }
 }
