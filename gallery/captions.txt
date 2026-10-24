@@ -126,7 +126,7 @@ MSpace_014_05 | Montpellier Cathedral.
 MSpace_014_06 | Montpellier Cathedral, another view.
 MSpace_014_07 | Early morning, still dark, near Place de la Comédie: a floodlit building.
 MSpace_014_08 | Pines and cypresses near Saint-Éloi at dusk.
-MSpace_014_09 | An evening in Montpellier, with heavy clouds over the street and a bus shelter.
+MSpace_014_09 | An evening at Vert Bois, Montpellier, with heavy clouds over the street and a bus shelter.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
@@ -145,7 +145,10 @@ MSpace_017_06 | Mighty Paris from the air, on the flight from Munich.
 MSpace_017_07 | 10 July 2025: the Arc de Triomphe in Paris.
 MSpace_017_08 | 10 July 2025: another view of the Arc de Triomphe.
 MSpace_017_09 | Shopping at Carrefour Saint-Eloi, Montpellier, after three flights and a long SNCF train ride to Montpellier.
-MSpace_018 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret, under blue skies.
+MSpace_018 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret and Vert Bois.
+MSpace_018_01 | Near the CNRS campus at Zoo de Lunaret, under blue skies.
+MSpace_018_02 | Near the CNRS campus again, with blue skies.
+MSpace_018_03 | 25 August 2025: a cloudy evening at Vert Bois, at 5:26 pm.
 MSpace_019 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou), the Palais de Justice, and Carré Sainte-Anne.
 MSpace_019_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
 MSpace_019_02 | Close-up of the equestrian statue of Louis XIV, installed in 1718.
