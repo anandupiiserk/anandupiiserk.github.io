@@ -108,7 +108,10 @@ MSpace_016_01 | Puttu and egg curry, cooked at home.
 MSpace_016_02 | Another plate of puttu and egg curry.
 MSpace_016_03 | Puttu and egg curry with a banana and tea.
 MSpace_016_04 | French toast, cooked in France. Very original of me 🙄
-MSpace_017 | [2025-07-10] The Arc de Triomphe in Paris, France.
+MSpace_017 | [2025-06-30] Trip to Paris, France, as part of the Raman-Charpak Fellowship: I reached Paris on 30 June 2025.
+MSpace_017_01 | 30 June 2025: passport and boarding pass for flight LH2228 from Munich to Paris Charles de Gaulle.
+MSpace_017_02 | 10 July 2025: the Arc de Triomphe in Paris.
+MSpace_017_03 | 10 July 2025: another view of the Arc de Triomphe.
 MSpace_018 | [2025-07] Montpellier, views near the CNRS campus at Zoo de Lunaret, under blue skies.
 MSpace_019 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou), the Palais de Justice, and Carré Sainte-Anne.
 MSpace_019_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
