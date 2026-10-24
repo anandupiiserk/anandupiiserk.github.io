@@ -26,7 +26,7 @@ Meet_075_03 | With the Centre members and the delegates.
 PhD_025 | [2026-10-22] Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD
 PhD_025_01 | Presenting wildfire research to Dr. Mrutyunjay Mohapatra, Director General, IMD.
 PhD_025_02 | Discussing wildfire events over the Indian Himalayan Region with the Director General, IMD.
-PhD_025_03 | At the WCRG Lab, CoEDMM, IIT Roorkee. From left: Sachin, Shiwam Singh, Arun Dev Singh, Saurabh Singh, Anandu Prabhakaran, Prof. Dhiman, Dr. Mrutyunjay Mohapatra (Director General, IMD), Dr. Arti Bhatt (Scientist-G, Associate Director, CFEES, DRDO), Viswanandan Kumar Singh and Ayush K. Bondwal. MausamDrishti forecast of WCRG in the background.
+PhD_025_03 | Discussing my work at the WCRG Lab, CoEDMM, IIT Roorkee, with Dr. Mrutyunjay Mohapatra, Director General, IMD.
 # ---- 13 October 2026: International Day for Disaster Risk Reduction and Research Scholars' Day ----
 Event_001 | [2026-10-13] IDDRR 2026 and Research Scholars' Day, CoEDMM, IIT Roorkee. Theme: Resilience starts at home.
 Event_001_01 | Prof. Piyush Srivastava, team lead, with the WCRG lab members on IDDRR Day.
