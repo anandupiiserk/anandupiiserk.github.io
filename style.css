@@ -777,13 +777,19 @@ html[lang="zh"] .frow label,html[lang="ja"] .frow label{letter-spacing:.02em}
 
 /* ---------- Mobile layer (phones and small tablets, same URL) ---------- */
 .mtools { display: none; }
+html.nc .nav .sz, html.nc .nav .voice-btn, html.nc .nav .fs-btn { display: none !important; }
+html.nc .mtools { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 18px; }
+html.nc .mtools button { min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--line2); background: transparent; color: var(--text); font: 600 .95rem var(--sans); cursor: pointer; }
+html.nc .mtools button:active, html.nc .mtools button:hover { background: var(--hover); }
+html.nc .mtools .mv { flex: 1 1 100%; }
+html.nc .menu { max-height: calc(100dvh - 72px); overflow-y: auto; }
+html.nc body.menu-open { overflow: hidden; }
 @media (max-width: 700px) {
   html { -webkit-text-size-adjust: 100%; }
   body { -webkit-tap-highlight-color: transparent; }
   .wrap, .w-pad { padding-inline: 18px; }
   /* header: logo, language, share, theme, menu only */
   .nav { gap: 6px; padding-inline: 12px; }
-  .nav .sz, .nav .voice-btn, .nav .fs-btn { display: none !important; }
   .tools { gap: 6px; margin-inline-start: auto; }
   .icon-btn, .burger, .lang-btn { height: 42px; min-width: 42px; }
   .icon-btn:not(.lang-btn), .burger { width: 42px; }
@@ -836,12 +842,40 @@ html[lang="zh"] .frow label,html[lang="ja"] .frow label{letter-spacing:.02em}
 /* ---------- About: portrait ---------- */
 .portrait { display: none; }
 .portrait-m { display: none; }
-@media (min-width: 981px) {
-  .portrait { display: block; position: absolute; z-index: 2; right: clamp(40px, 7vw, 120px); top: 50%; width: clamp(240px, 22vw, 330px); margin: 0; transform: translateY(-46%); }
+@media (min-width: 700px) {
+  .portrait { display: block; position: absolute; z-index: 2; right: clamp(36px, 6vw, 120px); top: 50%; width: clamp(200px, 24vw, 330px); margin: 0; transform: translateY(-46%); }
   .portrait::before { content: ""; position: absolute; inset: 14px -14px -14px 14px; border: 1px solid var(--a); border-radius: 4px; z-index: -1; opacity: .8; }
   .portrait img { display: block; width: 100%; height: auto; aspect-ratio: 1122 / 1292; object-fit: cover; border-radius: 4px; border: 1px solid var(--line2); box-shadow: 0 24px 60px -24px rgba(0,0,0,.55); }
-  .phero .tag { right: clamp(20px, 5vw, 56px); }
+  .phero:has(.portrait) .lead { max-width: min(640px, calc(100% - clamp(250px, 30vw, 400px))); }
+  .phero:has(.portrait) h1 { max-width: calc(100% - clamp(250px, 30vw, 400px)); }
 }
-@media (max-width: 980px) {
-  .portrait-m { display: block; width: min(260px, 70%); height: auto; aspect-ratio: 1122 / 1292; object-fit: cover; border-radius: 4px; border: 1px solid var(--line2); margin: 0 0 22px; }
+@media (max-width: 699px) {
+  .portrait-m { display: block; width: 100%; height: auto; aspect-ratio: 4 / 4.2; object-fit: cover; object-position: 50% 20%; border-radius: 6px; border: 1px solid var(--line2); margin: 0 0 24px; }
+}
+
+/* ---------- Tablet layer (701px to 1100px; iPad portrait and landscape) ---------- */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .wrap { padding-inline: clamp(28px, 4.5vw, 48px); }
+  .nav { padding-inline: 24px; gap: 10px; }
+  .tools { margin-inline-start: auto; gap: 8px; }
+  html.nc .menu a { font-size: 1.7rem; padding: 14px 0; }
+  html.nc .menu { padding-inline: clamp(28px, 4.5vw, 48px); }
+  .mtools button { min-height: 48px; }
+  .hero { min-height: 86vh; }
+  .hero h1 { font-size: clamp(3.4rem, 9vw, 5.2rem); }
+  .phero { padding: clamp(130px, 17vw, 170px) 0 70px; }
+  .phero h1 { font-size: clamp(3rem, 8.4vw, 4.8rem); }
+  .btn { min-height: 48px; }
+  .seg button { min-height: 44px; }
+  .pager a { padding: 26px 28px; }
+  .cform input, .cform textarea, .cform select { font-size: 16px; min-height: 48px; }
+}
+@media (max-width: 900px) { .two { grid-template-columns: minmax(0, 1fr); } }
+@media (min-width: 701px) and (max-width: 1100px) and (pointer: coarse) {
+  .icon-btn, .burger, .lang-btn { height: 44px; min-width: 44px; }
+  .glike, .lb-like { width: 44px; height: 44px; }
+  .gnav { width: 42px; height: 42px; margin-top: -21px; opacity: .9; }
+  .gdots i { width: 8px; height: 8px; } .gdots i.on { width: 22px; }
+  .lb-btn { width: 52px; height: 52px; }
+  .lb-close { width: 52px; height: 52px; }
 }
