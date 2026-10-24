@@ -223,3 +223,7 @@ MSpace_022_10 | A Croisières Marseille Calanques boat at the Vieux-Port, the ki
 MSpace_022_11 | Adios, Marseille: Saint-Charles metro station, on the way back to the train to Montpellier.
 MSpace_023 | [2025-09] Food in Montpellier, France.
 MSpace_023_01 | Turkish food at Grill House (Falafel & Kebab) in Montpellier: doner meat with salad, fries and sauces.
+MSpace_024 | [2025-09-07] Onam 2025 in Montpellier, France: a Kerala breakfast and a festive lunch.
+MSpace_024_01 | Onam breakfast: idli served with egg curry and a vegetable curry.
+MSpace_024_02 | Onam lunch: the full spread laid out on the table, with rice, curries, thoran, pickles, banana chips, papadam and bananas, and a banana-leaf-print plate ready to serve.
+MSpace_024_03 | Onam lunch: a plate served on a banana-leaf-print plate with rice, curries, a bean thoran, pickle and papadam.
