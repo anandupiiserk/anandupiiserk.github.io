@@ -910,3 +910,9 @@ html.nc body.menu-open { overflow: hidden; }
   main:has(#gallery) .sec:has(#gallery) { padding-top: clamp(36px, 3.4vw, 52px); }
   main:has(#gallery) .seg { display: flex; width: fit-content; margin: 0 auto 36px; justify-content: center; }
 }
+/* About: spread the bio paragraphs and the icons evenly so the column ends level with the details column */
+@media (min-width: 901px) {
+  .two:has(> .bio) > .bio p { margin: auto 0 0; }
+  .two:has(> .bio) > .bio h2 + p { margin-top: 0; }
+  .two:has(> .bio) > .bio .socials { margin-top: auto; }
+}
