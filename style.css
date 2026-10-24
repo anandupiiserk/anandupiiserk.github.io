@@ -880,3 +880,14 @@ html.nc body.menu-open { overflow: hidden; }
   .lb-btn { width: 52px; height: 52px; }
   .lb-close { width: 52px; height: 52px; }
 }
+
+/* ---------- About: bio and details columns start level and end level ---------- */
+@media (min-width: 901px) {
+  .two:has(> .bio) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: stretch; gap: clamp(36px, 5vw, 80px); }
+  .two:has(> .bio) > .bio { display: flex; flex-direction: column; justify-content: flex-start; }
+  .two:has(> .bio) > .bio p { font-size: 1.06rem; margin-bottom: 1.1em; }
+  .two:has(> .bio) > .bio .socials { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--line2); }
+  .two:has(> .bio) .dl-row { grid-template-columns: minmax(104px, 150px) minmax(0, 1fr); gap: 22px; padding: 18px 0; }
+}
+@media (min-width: 901px) { .two:has(> .bio) > .bio .eyebrow { margin: 0 0 16px; } .two:has(> .bio) > .bio h2 { margin: 0 0 24px; } }
+.sec:has(> .wrap > .two > .bio) { padding-top: clamp(56px, 6vw, 84px); }
