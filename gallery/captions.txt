@@ -125,6 +125,7 @@ MSpace_014_05 | Montpellier Cathedral.
 MSpace_014_06 | Montpellier Cathedral, another view.
 MSpace_014_07 | Early morning, still dark, near Place de la Comédie: a floodlit building.
 MSpace_014_08 | Pines and cypresses near Saint-Éloi at dusk.
+MSpace_014_09 | An evening in Montpellier, with heavy clouds over the street and a bus shelter.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
@@ -160,6 +161,7 @@ Visit_001_04 | A covered walkway on the University of Montpellier campus.
 Visit_001_05 | Colourful pillars along a path on the University of Montpellier campus.
 Visit_001_06 | University of Montpellier, Triolet campus.
 Visit_001_07 | After lunch, roaming the campus with Dr. Georgie Elias, who calls this place the Viking space.
+Visit_001_08 | A CEFE-CNRS building on the Montpellier campus, among pines and oaks.
 MSpace_020 | [2025-07] Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.
 MSpace_020_01 | Fried calamari on pasta, my favourite dish during the stay.
 MSpace_020_02 | Another day, another meal: breaded fish with couscous and vegetables, with chocolate cake and fruit for dessert.
@@ -169,3 +171,5 @@ MSpace_020_05 | Another lunch: roast chicken leg in tomato sauce with penne and 
 MSpace_020_06 | Another lunch: glazed carrots with a baked meat dish and cream, with fruit and an orange layered cake for dessert.
 MSpace_020_07 | A vegetarian lunch: couscous salad with boiled egg, feta, corn and melon, with fruit and a choux pastry ring for dessert.
 Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
+Visit_002_01 | Entrance of the CNRS campus in Montpellier.
+Visit_002_02 | A building on the CNRS campus in Montpellier, with signs for four research institutes: infectiology, cell biology, molecular genetics, and infectious diseases and anti-infective pharmacology.
