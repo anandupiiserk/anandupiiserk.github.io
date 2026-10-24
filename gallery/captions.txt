@@ -197,6 +197,7 @@ Visit_002_01 | Entrance of the CNRS campus in Montpellier.
 Visit_002_02 | A building on the CNRS campus in Montpellier, with signs for four research institutes: infectiology, cell biology, molecular genetics, and infectious diseases and anti-infective pharmacology.
 Visit_002_03 | 28 August 2025, 5:06 pm: a CEFE-CNRS building on the campus, among pines and oaks.
 Visit_002_04 | 26 September 2025, 4:46 pm: the CNRS building on the Montpellier campus, beside the tram line, with signs for the research institutes on its wall.
+Visit_002_05 | 8 October 2025, 12:45 pm: a white building on the CNRS campus in Montpellier with an external spiral staircase, under a sky of scattered clouds.
 MSpace_021 | [2025-08-30] Trip to Nîmes, in southern France, starting with breakfast: an americano with a palmier and a croissant.
 MSpace_021_01 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the main attraction of the city.
 MSpace_021_02 | The square in front of the Arena of Nîmes, with a bronze statue of a bullfighter on the left.
