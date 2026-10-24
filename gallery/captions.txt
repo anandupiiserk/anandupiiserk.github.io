@@ -42,7 +42,7 @@ Event_002 | [2024-10-13] IDDRR 2024 and Research Scholars' Day, CoEDMM, IIT Roor
 Event_002_01 | The WCRG team on IDDRR Day.
 Event_002_02 | From left: Shiwam, Rajendra, Saurabh and Anandu.
 Event_002_03 | Poster session at Research Scholars' Day, with Anandu's poster.
-Event_003 | [2026-08-14] IIT Roorkee on the eve of the 80th Independence Day, with the 175 Years of IIT Roorkee installation in front of the James Thomason Building.
+Event_003 | [2026-08-14] IIT Roorkee on the eve of the 80th Independence Day.
 Conf_001 | From Research Scholars Day at CoEDMM, IIT Roorkee
 Conf_002 | Team WeatherXplorers during Research Scholars Day at CoEDMM, IIT Roorkee.
 Conf_003 | CoEDMM team with Prof. Tatsuya Ishikawa at 9th Global Energy and Water EXchanges Open Science Conference, Hokkaido, Japan
