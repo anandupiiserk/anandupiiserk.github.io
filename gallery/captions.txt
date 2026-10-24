@@ -134,4 +134,8 @@ Visit_001_03 | Leisure time on the CEFE-CNRS campus with my colleague Dr. Georgi
 Visit_001_04 | A covered walkway on the University of Montpellier campus.
 Visit_001_05 | Colourful pillars along a path on the University of Montpellier campus.
 Visit_001_06 | University of Montpellier, Triolet campus.
-MSpace_020 | [2025-07] Lunch at the CNRS campus canteen in Montpellier, available to CNRS employees from July to December 2025. Fried calamari on pasta was my favourite dish during the stay.
+MSpace_020 | [2025-07] Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.
+MSpace_020_01 | Fried calamari on pasta, my favourite dish during the stay.
+MSpace_020_02 | Another day, another meal: breaded fish with couscous and vegetables, with chocolate cake and fruit for dessert.
+MSpace_020_03 | Another meal: fish with potatoes and mixed vegetables, with fruit for dessert.
+Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
