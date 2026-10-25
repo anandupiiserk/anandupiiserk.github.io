@@ -215,6 +215,11 @@ about += sec(shead('04', 'Experience', 'Research experience', 'Research projects
 about += sec(shead('05', 'Recognition', 'Honours and awards', 'Fellowships and scholarships held.') + honours)
 about += sec(shead('06', 'Achievements', 'Qualifying examinations', 'National and state eligibility tests cleared.') + achv, 'sec alt')
 about += sec(shead('07', 'Work', 'Work experience', 'Part-time online roles, 2020 to 2022.') + work)
+members = rows([
+    ('Member', 'American Geophysical Union (AGU)', 'International scientific society for Earth and space sciences.', 'https://www.agu.org/'),
+    ('Member', 'International Association of Wildland Fire (IAWF)', 'Worldwide membership association of wildland fire specialists.', 'https://www.iawfonline.org/'),
+    ('Member', 'Association for Fire Ecology (AFE)', 'Professional association for fire ecology and fire science.', 'https://fireecology.org/')])
+about += sec(shead('08', 'Memberships', 'Professional memberships', 'Scientific societies I belong to.') + members, 'sec alt')
 page('about.html', 'about', f'About me | {NAME}', 'About the researcher: position, education and research interests.', about)
 
 # ---------------------------------------------------------------- RESEARCH
