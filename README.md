@@ -1,0 +1,69 @@
+# Portfolio website of Anandu Prabhakaran
+
+Live site: https://anandupiiserk.github.io/ (GitHub Pages, branch `main`, files served from the repository root).
+
+This repository is self-contained. Everything needed to change the site is here: the published files at the root and the build tools in `tools/`. Read this file first, then follow the runbooks below.
+
+## Layout
+
+| Path | What it is | Edit by hand? |
+|---|---|---|
+| `index.html`, `home.html`, `about.html`, `research.html`, `publications.html`, `workshops.html`, `gallery.html`, `contact.html` | Published pages. Generated. `home.html` is a copy of `index.html`. | No. Edit `tools/build_pages.py`, then build. |
+| `style.css`, `script.js` | Shared look and behaviour. | Yes. These are the source. |
+| `i18n.js` | Translations for 9 languages. Generated. | No. Edit `tools/translations*.py`, then build. |
+| `img/` | Site images (portrait). | Yes. |
+| `gallery/` | Photos (`PREFIX_NNN.JPG`, `PREFIX_NNN_NN.JPG`), `captions.txt`, `manifest.json` and `t/` thumbnails (both generated). | Photos via the `photos` command, captions by hand. |
+| `tools/build_pages.py` | Generator. All page text lives here, plus the cache-busting version string and the Last Updated stamping. | Yes. |
+| `tools/page_stamps.json` | Per-page content hash and Last Updated time. Never delete it. | No. |
+| `tools/translations.py`, `translations_content.py`, `translations_extra.py` | Source of the translations. | Yes. |
+| `tools/build_gallery.py`, `tools/build_i18n.py` | Helpers run by the build. | Rarely. |
+| `tools/site.py` | The single command-line tool (below). | Rarely. |
+
+## Commands
+
+Run from any folder. Needs Python 3 and Pillow; `test` also needs Playwright with Chromium.
+
+```
+python3 tools/site.py build                       # regenerate i18n.js, thumbnails, manifest, all pages
+python3 tools/site.py bump                        # raise the cache version string, then build
+python3 tools/site.py photos MSpace_027 a.jpg b.jpg   # resize and name photos as a carousel (MSpace_027_01.JPG ...)
+python3 tools/site.py photos MSpace_028 one.jpg --single   # one photo, named MSpace_028.JPG
+python3 tools/site.py photos MSpace_027 c.jpg --start 3    # append to an existing carousel from number 03
+python3 tools/site.py check                       # static checks, exit code 1 on errors
+python3 tools/site.py test --shots /tmp/shots     # Chromium test of all pages at 4 widths
+python3 tools/site.py serve                       # http://localhost:8799 for looking by hand
+```
+
+## Runbook for any change
+
+1. Read the request. State in one line how you read it. Search the web for any name or fact you are unsure of.
+2. Make the change in a source file: page text in `tools/build_pages.py`, look and behaviour in `style.css` and `script.js`, captions in `gallery/captions.txt`, translations in `tools/translations*.py`. Never edit a generated HTML page or `i18n.js` by hand.
+3. `python3 tools/site.py bump` (use `build` if only captions or page text changed).
+4. `python3 tools/site.py check` and `python3 tools/site.py test`. Look at screenshots of what changed at 1440, 768, 390 and 320 px.
+5. Commit with a short message and push to `main`. Use the attribution lines your environment specifies.
+6. Tell the owner what changed, what could not be verified, and to hard refresh (Ctrl+Shift+R). GitHub Pages needs 1 to 2 minutes.
+
+## Gallery rules
+
+* Prefixes: `PhD_`, `Conf_`, `WORK_`, `Meet_`, `Event_`, `Field_`, `Visit_`, `MSpace_`. IDs have 3 digits. Read `gallery/captions.txt` for the highest number in a prefix before adding.
+* A carousel is `ID_01.JPG`, `ID_02.JPG` ... with no gaps (up to 40) and one line `ID | [YYYY-MM-DD] caption`. A single photo is `ID.JPG` and one line `ID | [date] caption`. A per-photo caption is `ID_NN | text` and carries exact dates and details. One date per carousel.
+* The gallery sorts by that date, newest first. A photo shows only if its ID has a line in `captions.txt`.
+* Related photos go in one carousel unless the owner says otherwise. To insert in the middle, renumber so there are no gaps.
+* Photos: 2000 px long edge, JPEG quality 85, progressive. The `photos` command does this. Do not commit originals.
+* Check names of places, monuments and events online before writing them. Never guess people's names. The owner's dates and captions are often garbled: say how you read them.
+
+## Standing rules
+
+* Never use the em dash character anywhere (text, captions, code comments). `check` counts it.
+* Write `PhD` (capital P, capital D, lower-case h). For labels styled as upper case use the class `nocaps`; do not wrap words in extra tags because translation is keyed on exact text.
+* No Facebook or Instagram links. Shared or copied links must never end in `.html`.
+* Reply in English, directly, without flattery. Label uncertainty. Never invent names, dates, places or sources.
+* Times are shown in IST.
+
+## Things to know
+
+* Translation works on exact English strings. A changed or new string shows in English until it is added to `tools/translations*.py`.
+* Every change to `style.css`, `script.js` or `i18n.js` needs `bump`, or visitors keep old cached files.
+* Each page has its own Last Updated time in a `last-updated` meta tag. It changes only when that page's own content changes. Gallery photo or caption changes update the Gallery page.
+* `.copy .cp` (the copyright line) uses transparent shimmer text: put new footer elements next to it, not inside it.
+* The boot screen shows once per browser session; use a fresh browser context to see it. The first-visit wave around the theme button uses the localStorage key `thint`.

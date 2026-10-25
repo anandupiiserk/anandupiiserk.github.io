@@ -257,8 +257,7 @@ MSpace_022_08 | The small harbour at the head of the calanque, seen from above: 
 MSpace_022_09 | The Vieux-Port (Old Port) of Marseille, with a Le Bateau ferry on the left and yachts moored along the quays.
 MSpace_022_10 | A Croisières Marseille Calanques boat at the Vieux-Port, the kind of cruise that takes visitors along the calanques.
 MSpace_022_11 | Adios, Marseille: Saint-Charles metro station, on the way back to the train to Montpellier.
-MSpace_023 | [2025-09] Food in Montpellier, France.
-MSpace_023_01 | Turkish food at Grill House (Falafel & Kebab) in Montpellier: doner meat with salad, fries and sauces.
+MSpace_023 | [2025-09] Turkish food at Grill House (Falafel & Kebab) in Montpellier, France: doner meat with salad, fries and sauces.
 MSpace_024 | [2025-09-07] Onam 2025 in Montpellier, France: a Kerala breakfast and a festive lunch.
 MSpace_024_01 | Onam breakfast: idli served with egg curry and a vegetable curry.
 MSpace_024_02 | Onam lunch: the full spread laid out on the table, with rice, curries, thoran, pickles, banana chips, papadam and bananas, and a banana-leaf-print plate ready to serve.
