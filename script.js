@@ -451,8 +451,9 @@ function ready() { document.body.classList.add('ready'); }
   const first = !ss.get('v'); ss.set('v', '1');
   const unlock = () => root.classList.remove('locked');
   if (reduce || !first) { loader.remove(); unlock(); setTimeout(ready, flag && !reduce ? 500 : 100); return; }
-  const pct = $('#l-pct'), bar = $('#l-bar'), out = $('#term-out'), t0 = performance.now(), dur = 2500;
-  const lines = ['anandu@coedmm:~$ ./anandu.fire --boot', '[ ok ] mounting terrain and station data', '[ ok ] loading WRF-SFIRE fire-atmosphere coupling', '[ ok ] computing fire weather indices', '[ ok ] reading CMIP6 scenarios', '[ ok ] early warning ready'];
+  const pct = $('#l-pct'), bar = $('#l-bar'), out = $('#term-out'), t0 = performance.now(), dur = 3300;
+  const lines = ['anandu@iitroorkee:~$ ./anandu.forest.fire --boot', '[ ok ] mounting mesoscale circulation', '[ ok ] mounting terrain and station data', '[ ok ] loading WRF-Fire', '[ ok ] coupling fire and atmosphere'];
+  let wel = null;
   const total = lines.join('\n').length, esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   (function step(t) {
     const k = clamp((t - t0) / dur), n = Math.floor(clamp(k / .85) * total);
@@ -461,6 +462,7 @@ function ready() { document.body.classList.add('ready'); }
     out.innerHTML = html.join('');
     const e = clamp(k / .85), f = Math.round(e * 20);
     bar.textContent = '[' + '#'.repeat(f) + ' '.repeat(20 - f) + ']'; pct.textContent = String(Math.round(e * 100)).padStart(3, '0') + '%';
+    if (e >= 1 && !wel) { wel = document.createElement('div'); wel.className = 'welcome'; wel.setAttribute('data-i18n-skip', ''); wel.textContent = 'Welcome to my website'; bar.parentNode.appendChild(wel); }
     if (k < 1) requestAnimationFrame(step);
     else { loader.classList.add('done'); setTimeout(() => { unlock(); ready(); }, 800); setTimeout(() => loader.remove(), 1900); }
   })(t0);
