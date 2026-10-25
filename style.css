@@ -55,7 +55,7 @@ p { margin: 0 0 1em; }
 .eyebrow::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background-image: linear-gradient(90deg, transparent var(--f1), var(--a) var(--f1), var(--a) var(--f2), transparent var(--f2)); }
 .eyebrow:hover::after, .eyebrow:active::after, .eyebrow:focus-within::after { animation: pipeflow .9s ease-in-out both; }
 @keyframes pipeflow { 0% { --f1: 0%; --f2: 0%; } 50% { --f1: 0%; --f2: 100%; } 62% { --f1: 0%; --f2: 100%; } 100% { --f1: 100%; --f2: 100%; } }
-.em, .hl { font-style: italic; color: var(--a); }
+.em, .hl { color: var(--a); }
 .rule { height: 1px; background: var(--line); transform-origin: left; transform: scaleX(0); transition: transform 1.4s var(--ease); }
 .rule.visible { transform: none; }
 
@@ -207,7 +207,7 @@ canvas.contours { position: absolute; inset: 0; width: 100%; height: 100%; displ
 .ticker { overflow: hidden; border-bottom: 1px solid var(--line); padding: 26px 0; background: var(--bg); }
 .ticker .track { display: flex; align-items: center; gap: 48px; width: max-content; animation: scroll 60s linear infinite; }
 .ticker:hover .track { animation-play-state: paused; }
-.ticker span.t { font-family: var(--serif); font-style: italic; font-size: clamp(1.5rem, 3vw, 2.3rem); color: var(--muted); white-space: nowrap; transition: color .3s; }
+.ticker span.t { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.3rem); color: var(--muted); white-space: nowrap; transition: color .3s; }
 .ticker span.t:hover { color: var(--text); }
 .ticker i.d { width: 9px; height: 9px; background: var(--a); transform: rotate(45deg); flex: none; }
 @keyframes scroll { to { transform: translateX(-50%); } }
@@ -946,5 +946,8 @@ html.nc body.menu-open { overflow: hidden; }
 .brand .tx { display: inline; min-height: 1em; }
 .brand .tx em { font-style: normal; color: var(--a); }
 .brand .caret.busy { animation: none; opacity: 1; }
-.brand .prompt { min-width: 11.5ch; }
+.brand .prompt { min-width: 0; }
+/* reserve the full width of the typed name so the menu never shifts while it types and deletes */
+.brand .tx { display: inline-block; min-width: 18ch; text-align: start; }
+@media (max-width: 400px) { .brand .tx { min-width: 8ch; } }
 .nocaps { text-transform: none !important; }
