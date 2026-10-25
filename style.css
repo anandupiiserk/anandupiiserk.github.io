@@ -947,3 +947,4 @@ html.nc body.menu-open { overflow: hidden; }
 .brand .tx em { font-style: normal; color: var(--a); }
 .brand .caret.busy { animation: none; opacity: 1; }
 .brand .prompt { min-width: 11.5ch; }
+.nocaps { text-transform: none !important; }
