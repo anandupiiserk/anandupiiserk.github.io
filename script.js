@@ -557,20 +557,47 @@ function contours(canvas, o) {
     const m = Math.max(W, H, 1);
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) base[j * cols + i] = noise(i * o.cell / m * o.scale, j * o.cell / m * o.scale) + (i / cols - .5) * .22;
   };
+  /* Marching squares gives short straight pieces. They are joined into continuous lines and drawn as smooth curves
+     (quadratic through the midpoints), so the contours bend gently instead of showing corners. */
+  let N = 0, ex, ey, n1, n2, seen, touched;
+  function alloc() { N = cols * rows * 2; ex = new Float32Array(N); ey = new Float32Array(N); n1 = new Int32Array(N).fill(-2); n2 = new Int32Array(N); seen = new Uint8Array(N); touched = new Int32Array(N); }
   function trace(f, lvl) {
-    const c = o.cell;
+    const c = o.cell; if (!ex || ex.length !== cols * rows * 2) alloc();
+    let nt = 0;
+    const H = (i, j) => j * cols + i, V = (i, j) => cols * rows + j * cols + i;
+    const touch = id => { if (n1[id] === -2) { n1[id] = -1; n2[id] = -1; seen[id] = 0; touched[nt++] = id; } };
+    const link = (a, b) => { if (n1[a] < 0) n1[a] = b; else n2[a] = b; if (n1[b] < 0) n1[b] = a; else n2[b] = a; };
     for (let j = 0; j < rows - 1; j++) for (let i = 0; i < cols - 1; i++) {
       const tl = f[j * cols + i], tr = f[j * cols + i + 1], br = f[(j + 1) * cols + i + 1], bl = f[(j + 1) * cols + i];
       const mn = Math.min(tl, tr, br, bl), mx = Math.max(tl, tr, br, bl); if (lvl < mn || lvl > mx) continue;
       const k = (tl > lvl ? 8 : 0) | (tr > lvl ? 4 : 0) | (br > lvl ? 2 : 0) | (bl > lvl ? 1 : 0), segs = EDGES[k]; if (!segs.length) continue;
-      const pt2 = e => {
-        if (e === 0) return [(i + (lvl - tl) / (tr - tl)) * c, j * c];
-        if (e === 1) return [(i + 1) * c, (j + (lvl - tr) / (br - tr)) * c];
-        if (e === 2) return [(i + (lvl - bl) / (br - bl)) * c, (j + 1) * c];
-        return [i * c, (j + (lvl - tl) / (bl - tl)) * c];
+      const eid = e => {
+        let id;
+        if (e === 0) { id = H(i, j); ex[id] = (i + (lvl - tl) / (tr - tl)) * c; ey[id] = j * c; }
+        else if (e === 1) { id = V(i + 1, j); ex[id] = (i + 1) * c; ey[id] = (j + (lvl - tr) / (br - tr)) * c; }
+        else if (e === 2) { id = H(i, j + 1); ex[id] = (i + (lvl - bl) / (br - bl)) * c; ey[id] = (j + 1) * c; }
+        else { id = V(i, j); ex[id] = i * c; ey[id] = (j + (lvl - tl) / (bl - tl)) * c; }
+        touch(id); return id;
       };
-      for (const s of segs) { const a = pt2(s[0]), b = pt2(s[1]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
+      for (const sg of segs) link(eid(sg[0]), eid(sg[1]));
     }
+    const mid = (a, b) => [(ex[a] + ex[b]) / 2, (ey[a] + ey[b]) / 2];
+    const walk = (start, closed) => {
+      const chain = []; let prev = -1, cur = start;
+      while (cur >= 0 && !seen[cur]) { seen[cur] = 1; chain.push(cur); const nx = n1[cur] !== prev && n1[cur] >= 0 ? n1[cur] : n2[cur]; prev = cur; cur = (nx >= 0 && !seen[nx]) ? nx : -1; }
+      const m = chain.length; if (m < 2) return;
+      if (closed && m > 2) {
+        const p0 = mid(chain[m - 1], chain[0]); ctx.moveTo(p0[0], p0[1]);
+        for (let q = 0; q < m; q++) { const a = chain[q], b = chain[(q + 1) % m], mp = mid(a, b); ctx.quadraticCurveTo(ex[a], ey[a], mp[0], mp[1]); }
+      } else {
+        ctx.moveTo(ex[chain[0]], ey[chain[0]]);
+        for (let q = 1; q < m - 1; q++) { const a = chain[q], b = chain[q + 1], mp = mid(a, b); ctx.quadraticCurveTo(ex[a], ey[a], mp[0], mp[1]); }
+        ctx.lineTo(ex[chain[m - 1]], ey[chain[m - 1]]);
+      }
+    };
+    for (let t = 0; t < nt; t++) { const id = touched[t]; if (!seen[id] && (n1[id] < 0 || n2[id] < 0)) walk(id, false); }
+    for (let t = 0; t < nt; t++) { const id = touched[t]; if (!seen[id]) walk(id, true); }
+    for (let t = 0; t < nt; t++) n1[touched[t]] = -2;
   }
   api.frame = t => {
     if (!W || !col.line) return;
