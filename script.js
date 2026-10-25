@@ -177,7 +177,7 @@ function buildChrome() {
   document.body.append(foot);
   document.body.insertAdjacentHTML('beforeend', `
     <button id="totop" aria-label="Back to top"><svg viewBox="0 0 50 50"><circle class="bg" cx="25" cy="25" r="22"/><circle class="fg" id="totop-fg" cx="25" cy="25" r="22"/></svg>&uarr;</button>
-    <div class="pt" id="pt"></div>
+    <div class="pt" id="pt" aria-hidden="true" translate="no"><div class="ptl"><span class="pd">$</span><span class="ptt"></span><span class="ptc"></span></div></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>`);
   toastEl = $('#toast');
 }
@@ -419,6 +419,17 @@ const normPath = p => p.replace(/\/(index|home)?(\.html)?$/, '/home').replace(/\
 const prettyUrl = h => { const u = new URL(h, location.href); return PRETTY ? normPath(u.pathname) + u.search + u.hash : u.pathname + u.search + u.hash; };
 const realUrl = h => { const u = new URL(h, location.href); let p = u.pathname; if (p.endsWith('/')) p += 'index.html'; else if (!/\.[a-z0-9]+$/i.test(p.split('/').pop())) p += '.html'; return u.origin + p + u.search; };
 if (PRETTY && (/\.html$/.test(location.pathname) || location.pathname.endsWith('/'))) { try { history.replaceState(null, '', prettyUrl(location.href)); } catch (e) { /* ignore */ } }
+/* Transition screen: "$Anandu." stays, the name of the page being opened is typed after the dot. */
+const pageName = u => { const p = normPath(u.pathname).split('/').pop() || 'home'; return p.charAt(0).toUpperCase() + p.slice(1); };
+const ptText = t => { const el = pt.querySelector('.ptt'); if (el) el.innerHTML = 'Anandu<em>.</em>' + t; };
+const ptBusyCaret = on => { const c = pt.querySelector('.ptc'); if (c) c.classList.toggle('busy', on); };
+async function ptType(name) {
+  ptBusyCaret(true); ptText('');
+  await new Promise(r => setTimeout(r, 190));
+  for (let i = 1; i <= name.length; i++) { ptText(name.slice(0, i)); await new Promise(r => setTimeout(r, 75)); }
+  ptBusyCaret(false); await new Promise(r => setTimeout(r, 220));
+}
+let navBusy = false;
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href]');
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -426,22 +437,24 @@ document.addEventListener('click', e => {
   if (a.target || a.hasAttribute('download') || /^(#|mailto:|tel:|https?:|javascript:)/i.test(href)) return;
   const url = new URL(a.href, location.href);
   if (normPath(url.pathname) === normPath(location.pathname)) return;
-  if (fsOn()) { e.preventDefault(); softNav(a.href, true); return; }
+  if (fsOn()) { e.preventDefault(); softNav(a.href, true, pageName(url)); return; }
   if (reduce) return;
-  e.preventDefault(); ss.set('pt', '1'); pt.className = 'pt entering';
-  setTimeout(() => { location.href = a.href; }, 200);
+  e.preventDefault();
+  if (navBusy) return; navBusy = true;
+  const name = pageName(url); ss.set('pt', '1'); ss.set('ptn', name); pt.className = 'pt entering';
+  ptType(name).then(() => { location.href = a.href; });
 });
-addEventListener('pageshow', e => { if (e.persisted) { pt.className = 'pt'; document.body.classList.remove('menu-open'); } });
+addEventListener('pageshow', e => { if (e.persisted) { navBusy = false; pt.className = 'pt'; document.body.classList.remove('menu-open'); } });
 /* In full screen a normal page load would exit full screen, so the next page is fetched and swapped into the same document instead. */
 let softBusy = false;
-async function softNav(href, push) {
+async function softNav(href, push, name) {
   if (softBusy) return; softBusy = true;
   try {
-    if (!reduce) pt.className = 'pt entering';
+    if (!reduce) { pt.className = 'pt entering'; if (name) ss.set('ptn', name); }
     const [res, srcText] = await Promise.all([
       fetch(realUrl(href), { credentials: 'same-origin' }),
       window.__srcText ? Promise.resolve(window.__srcText) : fetch(window.__srcUrl).then(r => r.text()),
-      new Promise(r => setTimeout(r, reduce ? 0 : 200))
+      (reduce ? Promise.resolve() : (name ? ptType(name) : new Promise(r => setTimeout(r, 200))))
     ]);
     if (!res.ok) throw new Error('bad status');
     window.__srcText = srcText;
@@ -474,7 +487,12 @@ function ready() {
 }
 (function boot() {
   const flag = ss.get('pt'); ss.del('pt');
-  if (flag && !reduce) { pt.className = 'pt cover'; void pt.offsetWidth; pt.className = 'pt leaving'; setTimeout(() => { pt.className = 'pt'; }, 500); }
+  const ptn = ss.get('ptn'); ss.del('ptn');
+  if (flag && !reduce) {
+    pt.className = 'pt cover'; if (ptn) ptText(ptn); ptBusyCaret(false);
+    void pt.offsetWidth;
+    setTimeout(() => { pt.className = 'pt leaving'; setTimeout(() => { pt.className = 'pt'; }, 500); }, ptn ? 380 : 0);
+  }
   const loader = $('#loader');
   if (!loader) { setTimeout(ready, flag && !reduce ? 120 : 80); return; }
   const first = !ss.get('v'); ss.set('v', '1');

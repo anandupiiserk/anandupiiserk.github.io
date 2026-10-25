@@ -976,3 +976,10 @@ html.nc body.menu-open { overflow: hidden; }
 .copy .upd { margin-top: 6px; font-family: var(--mono); font-size: .7rem; letter-spacing: .04em; color: var(--muted); }
 .copy .upd:empty { display: none; }
 @media (max-width: 620px) { .copy .cpwrap { margin: 0; text-align: center; } }
+
+/* transition screen text: $Anandu.<page> typed in the middle */
+.pt .ptl { display: inline-flex; align-items: baseline; font-family: "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace; font-weight: 500; font-size: clamp(1.4rem, 5.5vw, 2.6rem); letter-spacing: -.01em; color: var(--text); direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+.pt .ptl .pd, .pt .ptl em { color: var(--a); font-style: normal; }
+.pt .ptl .pd { margin-inline-end: 2px; }
+.pt .ptc { display: inline-block; width: .55em; height: 1.05em; margin-inline-start: 4px; background: var(--a); transform: translateY(.18em); animation: blink 1.1s steps(1) infinite; }
+.pt .ptc.busy { animation: none; opacity: 1; }
