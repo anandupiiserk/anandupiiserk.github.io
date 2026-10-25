@@ -650,7 +650,7 @@ else (function loop() {
     { id: 'phd', prefix: 'PhD', label: 'PhD' }, { id: 'conf', prefix: 'Conf', label: 'Conference' }, { id: 'work', prefix: 'WORK', label: 'Workshops' },
     { id: 'meet', prefix: 'Meet', label: 'Meetings' }, { id: 'events', prefix: 'Event', label: 'Events' }, { id: 'field', prefix: 'Field', label: 'Field' }, { id: 'visit', prefix: 'Visit', label: 'Visit' }, { id: 'myspace', prefix: 'MSpace', label: 'My Space' }
   ];
-  const DIR = 'gallery/', EXTS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'], MAXG = 20;
+  const DIR = 'gallery/', EXTS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'], MAXG = 40;
   const seg = $('.seg'), btns = $$('button', seg), empty = $('#gal-empty');
   const ind = document.createElement('i'); ind.className = 'seg-ind'; seg.prepend(ind);
   const place = () => { const b = $('[aria-pressed="true"]', seg); if (!b) return; ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; };

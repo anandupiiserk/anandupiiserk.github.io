@@ -148,7 +148,7 @@ MSpace_016_03 | Puttu and egg curry with a banana and tea.
 MSpace_016_04 | French toast, cooked in France. Very original of me 🙄
 MSpace_016_05 | Kerala palappam with boiled egg and potato korma.
 MSpace_016_06 | Tortilla with soya curry.
-MSpace_017 | [2025-06-30] Trip to Paris, France, as part of the Raman-Charpak Fellowship: I reached Paris on 30 June 2025.
+MSpace_017 | [2025-06-30] Trips to Paris, France, as part of the Raman-Charpak Fellowship: I reached Paris on 30 June 2025 and visited again in November 2025.
 MSpace_017_01 | Desserts at the lounge of Trivandrum domestic airport, on the way to Paris.
 MSpace_017_02 | Snacks at the lounge of Trivandrum domestic airport.
 MSpace_017_03 | A Lufthansa Airbus A380 at the gate, for the flight from New Delhi to Munich.
@@ -157,7 +157,30 @@ MSpace_017_05 | 30 June 2025: passport and boarding pass for flight LH2228 from 
 MSpace_017_06 | Mighty Paris from the air, on the flight from Munich.
 MSpace_017_07 | 10 July 2025: the Arc de Triomphe in Paris.
 MSpace_017_08 | 10 July 2025: another view of the Arc de Triomphe.
-MSpace_017_09 | Shopping at Carrefour Saint-Eloi, Montpellier, after three flights and a long SNCF train ride to Montpellier.
+MSpace_017_09 | November 2025: A street artist blowing giant soap bubbles for children in the Tuileries Garden, with the Ferris wheel behind.
+MSpace_017_10 | November 2025: Children chasing the bubbles in the Tuileries Garden, with the Ferris wheel behind.
+MSpace_017_11 | November 2025: The Arc de Triomphe du Carrousel, built from 1806 to 1808 to commemorate Napoleon's 1805 victories, with the Louvre Pyramid visible through the arch.
+MSpace_017_12 | November 2025: Another view of the Arc de Triomphe du Carrousel and its bronze quadriga. The original Horses of Saint Mark were returned to Venice in 1815, and the present group is by François-Joseph Bosio.
+MSpace_017_13 | November 2025: The Louvre Pyramid held between two fingers, a forced-perspective shot in the Cour Napoléon.
+MSpace_017_14 | November 2025: The Louvre Pyramid and the palace wings around the Cour Napoléon, with queue barriers in front.
+MSpace_017_15 | November 2025: In front of the Pavillon Richelieu of the Louvre, whose name is carved above the arch.
+MSpace_017_16 | November 2025: Sitting by the Louvre Pyramid.
+MSpace_017_17 | November 2025: The Pavillon Richelieu of the Louvre, seen across the pools and fountain jets of the courtyard.
+MSpace_017_18 | November 2025: The Louvre Pyramid seen from close to its base, with the palace wings behind.
+MSpace_017_19 | November 2025: Detail of the Wall of Love (Mur des je t'aime) in Montmartre, with "I love you" written in many scripts.
+MSpace_017_20 | November 2025: The Wall of Love, created in 2000 by Frédéric Baron and Claire Kito: "I love you" appears 311 times in 250 languages, and the red pieces are fragments of a broken heart.
+MSpace_017_21 | November 2025: Inside Notre-Dame de Paris, which reopened to the public in December 2024 after the 2019 fire: gilded chandeliers hang in the nave, and a rose window is visible on the right.
+MSpace_017_22 | November 2025: A side chapel in Notre-Dame, with a golden disc and votive candles in front of stained glass.
+MSpace_017_23 | November 2025: A gilded chandelier in Notre-Dame, seen up close with stained glass windows behind.
+MSpace_017_24 | November 2025: The west facade of Notre-Dame de Paris, with its two towers, rose window and three portals, and a construction crane still on the square.
+MSpace_017_25 | November 2025: The Arc de Triomphe at night, with French and European Union flags at its base.
+MSpace_017_26 | November 2025: The Eiffel Tower lit at night, with the beam of light from its top and a bare tree in front.
+MSpace_017_27 | November 2025: The Eiffel Tower in the dusk, seen through the trees with its lights on.
+MSpace_017_28 | November 2025: The Eiffel Tower seen from a street near Rue de la Fédération, under a cloudy sky.
+MSpace_017_29 | November 2025: Gare du Nord, designed by Jacques Ignace Hittorff and built from 1861 to 1865. The statues on the facade represent cities served by the Chemin de Fer du Nord, and an orange winged sculpture stands near the entrance.
+MSpace_017_30 | November 2025: Another view of the Gare du Nord facade, with the clock in the large arch above the entrance.
+MSpace_017_31 | November 2025: Under the neo-Byzantine glass dome of the Galeries Lafayette Haussmann, completed in 1912 and designed by Ferdinand Chanut, with a large red festive ribbon hanging below.
+MSpace_017_32 | Shopping at Carrefour Saint-Eloi, Montpellier, after three flights and a long SNCF train ride to Montpellier.
 MSpace_018 | [2025-07] Montpellier, views near the CNRS campus, close to the Parc Zoologique de Lunaret (Lunaret Zoo) and Vert Bois.
 MSpace_018_01 | Near the CNRS campus and the Parc Zoologique de Lunaret, under blue skies.
 MSpace_018_02 | Near the CNRS campus again, with blue skies.
