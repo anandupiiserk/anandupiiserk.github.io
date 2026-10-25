@@ -240,3 +240,7 @@ MSpace_024 | [2025-09-07] Onam 2025 in Montpellier, France: a Kerala breakfast a
 MSpace_024_01 | Onam breakfast: idli served with egg curry and a vegetable curry.
 MSpace_024_02 | Onam lunch: the full spread laid out on the table, with rice, curries, thoran, pickles, banana chips, papadam and bananas, and a banana-leaf-print plate ready to serve.
 MSpace_024_03 | Onam lunch: a plate served on a banana-leaf-print plate with rice, curries, a bean thoran, pickle and papadam.
+MSpace_025 | [2026-09-27] Onam 2026 at IIT Roorkee, on the Sunday after the Fit India Cyclothon.
+MSpace_025_01 | The pookalam (flower carpet) at the entrance of the Onam celebration, with the letters M.I.I.T.R.A in rose petals.
+MSpace_025_02 | Onam in a mundu and kurta, with an umbrella in the rain in front of the Main Building of IIT Roorkee.
+MSpace_025_03 | The Onasadhya on a banana-leaf-style mat, with the guest coupon dated 27 September 2026: curries, thoran, pickles, banana chips, papadam and a banana.
