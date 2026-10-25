@@ -105,9 +105,9 @@ html[data-theme="${t}"] :is(input[type="text"], input[type="email"], textarea) {
 
 /* ---------- Theme (sun and moon) ---------- */
 const SUN_MOON = `<svg class="sm" viewBox="0 0 24 24" aria-hidden="true"><mask id="sm-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><circle class="cut" cx="30" cy="2" r="6.5" fill="#000"/></mask><g mask="url(#sm-mask)"><circle class="core" cx="12" cy="12" r="5" fill="currentColor"/></g><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a => `<line x1="12" y1="1.5" x2="12" y2="3.8" transform="rotate(${a} 12 12)"/>`).join('')}</g></svg>`;
-function applyTheme(t) {
+function applyTheme(t, persist) {
   root.dataset.theme = t;
-  try { localStorage.setItem('theme', t); } catch (e) {}
+  if (persist) { try { localStorage.setItem('theme', t); } catch (e) {} }
   const m = $('meta[name="theme-color"]'); if (m) m.content = t === 'dark' ? '#0c0a09' : '#f4f7fa';
   const b = $('#theme'); if (b) { const l = tr(t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'); b.setAttribute('aria-label', l); b.title = l; }
   dispatchEvent(new Event('themechange'));
@@ -168,7 +168,7 @@ function buildChrome() {
     document.body.append(pg);
   }
   const foot = document.createElement('footer');
-  foot.innerHTML = `<div class="copy"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="socials" aria-label="Social media">${socialsHTML()}</div></div>`;
+  foot.innerHTML = `<div class="copy"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="socials" aria-label="Social media">${socialsHTML()}</div></div><p class="ainote">This website was partially developed and is maintained with the help of Claude, an AI assistant made by Anthropic.</p>`;
   document.body.append(foot);
   document.body.insertAdjacentHTML('beforeend', `
     <button id="totop" aria-label="Back to top"><svg viewBox="0 0 50 50"><circle class="bg" cx="25" cy="25" r="22"/><circle class="fg" id="totop-fg" cx="25" cy="25" r="22"/></svg>&uarr;</button>
@@ -183,6 +183,18 @@ buildChrome();
   const caret = document.querySelector('.brand .caret');
   const full = () => (window.matchMedia('(max-width: 400px)').matches ? 'Anandu.P' : 'Anandu.Prabhakaran');
   const html = t => t.replace('.', '<em>.</em>');
+  /* Lock the slot to the width of the full name in the font actually in use, so typing and deleting can never move the menu. */
+  const slot = document.querySelector('.brand .slot');
+  function lockSlot() {
+    if (!slot) return;
+    const m = document.createElement('span'); m.className = 'tx'; m.setAttribute('aria-hidden', 'true');
+    m.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;top:0';
+    m.textContent = full(); slot.appendChild(m);
+    const w = m.getBoundingClientRect().width; m.remove();
+    const cw = caret ? caret.getBoundingClientRect().width + (parseFloat(getComputedStyle(caret).marginInlineStart) || 0) : 0;
+    slot.style.width = Math.ceil(w + cw + 1) + 'px';
+  }
+  lockSlot(); addEventListener('resize', lockSlot); if (document.fonts && document.fonts.ready) document.fonts.ready.then(lockSlot);
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { tx.innerHTML = html(full()); return; }
   let n = 0, dir = 1;
   const TYPE = 170, DEL = 140, HOLD = 3200, EMPTY = 900;
@@ -202,17 +214,19 @@ buildChrome();
 /* ---------- Theme button, menu, share, nav indicator ---------- */
 (function () {
   const btn = $('#theme');
-  applyTheme(root.dataset.theme || 'dark');
+  applyTheme(root.dataset.theme || 'dark', false);
+  /* Until the visitor picks a theme, follow the system setting live. */
+  try { matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => { if (!LS.get('theme')) applyTheme(e.matches ? 'light' : 'dark', false); }); } catch (e) {}
   btn.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     const r = btn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
     if (document.startViewTransition && !reduce) {
-      const t = document.startViewTransition(() => applyTheme(next));
+      const t = document.startViewTransition(() => applyTheme(next, true));
       t.ready.then(() => {
         const rad = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
         root.animate({ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] }, { duration: 900, easing: 'cubic-bezier(.65,0,.35,1)', pseudoElement: '::view-transition-new(root)' });
       }).catch(() => {});
-    } else { root.classList.add('theme-anim'); applyTheme(next); setTimeout(() => root.classList.remove('theme-anim'), 700); }
+    } else { root.classList.add('theme-anim'); applyTheme(next, true); setTimeout(() => root.classList.remove('theme-anim'), 700); }
   });
 
   const burger = $('#burger');
@@ -442,7 +456,17 @@ async function softNav(href, push) {
   } catch (err) { softBusy = false; location.href = href; }
 }
 window.__soft = (h, push) => softNav(h, push);
-function ready() { document.body.classList.add('ready'); }
+function ready() {
+  document.body.classList.add('ready');
+  /* First-time visitors only: a wave around the theme button for 5 seconds. Pressing the button stops it at once. */
+  const b = $('#theme');
+  if (b && !reduce && !window.__hinted && !LS.get('thint')) {
+    window.__hinted = true; LS.set('thint', '1');
+    b.classList.add('hint');
+    const off = () => b.classList.remove('hint');
+    b.addEventListener('click', off, { once: true }); setTimeout(off, 5000);
+  }
+}
 (function boot() {
   const flag = ss.get('pt'); ss.del('pt');
   if (flag && !reduce) { pt.className = 'pt cover'; void pt.offsetWidth; pt.className = 'pt leaving'; setTimeout(() => { pt.className = 'pt'; }, 500); }

@@ -960,3 +960,14 @@ html.nc body.menu-open { overflow: hidden; }
 .pt.entering, .pt.cover { opacity: 1; visibility: visible; transition: opacity .18s ease; pointer-events: all; }
 .pt.leaving { opacity: 0; visibility: visible; transition: opacity .3s ease, visibility 0s .3s; pointer-events: none; }
 @media (max-width: 560px) { .brand .prompt .slot { display: inline-block; } }
+
+.brand .slot { flex: none; overflow: visible; }
+.nav .brand { flex: none; }
+
+/* first-visit wave around the theme button (same ring as the voice button) */
+.theme-toggle { position: relative; }
+.theme-toggle.hint::before, .theme-toggle.hint::after { content: ""; position: absolute; inset: -1px; border-radius: 50%; border: 2px solid var(--a); animation: vring 1.6s var(--ease) infinite; pointer-events: none; }
+.theme-toggle.hint::after { animation-delay: .8s; }
+/* disclosure line under the footer */
+.ainote { margin: 0; padding: 0 clamp(20px, 5vw, 56px) 22px; background: var(--bg2); text-align: center; font-family: var(--mono); font-size: .68rem; letter-spacing: .04em; line-height: 1.6; color: var(--muted); }
+@media (max-width: 560px) { .ainote { padding-bottom: 84px; } }
