@@ -948,8 +948,15 @@ html.nc body.menu-open { overflow: hidden; }
 .brand .caret.busy { animation: none; opacity: 1; }
 .brand .prompt { min-width: 0; }
 /* reserve the full width of the typed name so the menu never shifts while it types and deletes */
-.brand .tx { display: inline-block; min-width: 18ch; text-align: start; }
-@media (max-width: 400px) { .brand .tx { min-width: 8ch; } }
+.brand .slot { display: inline-block; white-space: nowrap; min-width: calc(18ch + .55em + 3px); text-align: start; }
+@media (max-width: 400px) { .brand .slot { min-width: calc(8ch + .5em + 2px); } }
 .nocaps { text-transform: none !important; }
 
 .tprog .welcome{margin-top:10px;color:#f0eae2;font-weight:600;letter-spacing:.02em}
+
+/* page transition: a short plain fade, no wordmark and no sliding panel */
+.pt { transform: none !important; opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility 0s .2s; }
+.pt b, .pt i { display: none !important; }
+.pt.entering, .pt.cover { opacity: 1; visibility: visible; transition: opacity .18s ease; pointer-events: all; }
+.pt.leaving { opacity: 0; visibility: visible; transition: opacity .3s ease, visibility 0s .3s; pointer-events: none; }
+@media (max-width: 560px) { .brand .prompt .slot { display: inline-block; } }
