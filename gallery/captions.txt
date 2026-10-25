@@ -140,6 +140,7 @@ MSpace_014_14 | A large ring-shaped canopy of wooden slats over a fountain round
 MSpace_014_15 | The Philippidès athletics stadium in Montpellier, with its blue synthetic track and covered grandstand. The stadium was inaugurated in 1988.
 MSpace_014_16 | 15 November 2025: a night-time light show projected on the Opéra Comédie at Place de la Comédie, with vintage trams and street scenes and crowds filming with their phones.
 MSpace_014_17 | 15 November 2025: the same event on the Arc de Triomphe of Montpellier (Porte du Peyrou), lit red, with the projected text "Gare de Montpellier Saint-Roch".
+MSpace_014_18 | September 2025 (exact date not given): Turkish food at Grill House (Falafel & Kebab) in Montpellier, with doner meat, salad, fries and sauces.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
@@ -257,21 +258,20 @@ MSpace_022_08 | The small harbour at the head of the calanque, seen from above: 
 MSpace_022_09 | The Vieux-Port (Old Port) of Marseille, with a Le Bateau ferry on the left and yachts moored along the quays.
 MSpace_022_10 | A Croisières Marseille Calanques boat at the Vieux-Port, the kind of cruise that takes visitors along the calanques.
 MSpace_022_11 | Adios, Marseille: Saint-Charles metro station, on the way back to the train to Montpellier.
-MSpace_023 | [2025-09] Turkish food at Grill House (Falafel & Kebab) in Montpellier, France: doner meat with salad, fries and sauces.
-MSpace_024 | [2025-09-07] Onam 2025 in Montpellier, France: a Kerala breakfast and a festive lunch.
-MSpace_024_01 | Onam breakfast: idli served with egg curry and a vegetable curry.
-MSpace_024_02 | Onam lunch: the full spread laid out on the table, with rice, curries, thoran, pickles, banana chips, papadam and bananas, and a banana-leaf-print plate ready to serve.
-MSpace_024_03 | Onam lunch: a plate served on a banana-leaf-print plate with rice, curries, a bean thoran, pickle and papadam.
-MSpace_025 | [2026-09-27] Onam 2026 at IIT Roorkee, on the Sunday after the Fit India Cyclothon.
-MSpace_025_01 | The pookalam (flower carpet) at the entrance of the Onam celebration, with the letters M.I.I.T.R.A in rose petals.
-MSpace_025_02 | Onam in a mundu and kurta, with an umbrella in the rain in front of the Main Building of IIT Roorkee.
-MSpace_025_03 | The Onasadhya on a banana-leaf-style mat, with the guest coupon dated 27 September 2026: curries, thoran, pickles, banana chips, papadam and a banana.
-MSpace_026 | [2026-03-04] Holi 2026 at IIT Roorkee, a day of colours with friends and colleagues on the campus.
-MSpace_026_01 | Holi at IIT Roorkee: covered in colour in front of the Main Building, with the lawn and the crowd behind.
-MSpace_026_02 | With two friends, all three of us thoroughly coloured, next to a tree on the campus.
-MSpace_026_03 | A moment of calm in the middle of the colour, meditating on the road in front of the Main Building.
-MSpace_026_04 | Holi with a friend, with a blue-painted arm and faces covered in pink and red.
-MSpace_026_05 | Sitting cross-legged on the road, with colour on my face and arms and friends celebrating behind.
-MSpace_026_06 | With a friend by the low wall, the colours fully spread over clothes and hands.
-MSpace_026_07 | Relaxing on the road after the colours, with the Main Building and the celebrating crowd behind.
-MSpace_026_08 | Colour all over, a thoughtful pose in front of the Main Building.
+MSpace_023 | [2025-09-07] Onam 2025 in Montpellier, France: a Kerala breakfast and a festive lunch.
+MSpace_023_01 | Onam breakfast: idli served with egg curry and a vegetable curry.
+MSpace_023_02 | Onam lunch: the full spread laid out on the table, with rice, curries, thoran, pickles, banana chips, papadam and bananas, and a banana-leaf-print plate ready to serve.
+MSpace_023_03 | Onam lunch: a plate served on a banana-leaf-print plate with rice, curries, a bean thoran, pickle and papadam.
+MSpace_024 | [2026-09-27] Onam 2026 at IIT Roorkee, on the Sunday after the Fit India Cyclothon.
+MSpace_024_01 | The pookalam (flower carpet) at the entrance of the Onam celebration, with the letters M.I.I.T.R.A in rose petals.
+MSpace_024_02 | Onam in a mundu and kurta, with an umbrella in the rain in front of the Main Building of IIT Roorkee.
+MSpace_024_03 | The Onasadhya on a banana-leaf-style mat, with the guest coupon dated 27 September 2026: curries, thoran, pickles, banana chips, papadam and a banana.
+MSpace_025 | [2026-03-04] Holi 2026 at IIT Roorkee, a day of colours with friends and colleagues on the campus.
+MSpace_025_01 | Holi at IIT Roorkee: covered in colour in front of the Main Building, with the lawn and the crowd behind.
+MSpace_025_02 | With two friends, all three of us thoroughly coloured, next to a tree on the campus.
+MSpace_025_03 | A moment of calm in the middle of the colour, meditating on the road in front of the Main Building.
+MSpace_025_04 | Holi with a friend, with a blue-painted arm and faces covered in pink and red.
+MSpace_025_05 | Sitting cross-legged on the road, with colour on my face and arms and friends celebrating behind.
+MSpace_025_06 | With a friend by the low wall, the colours fully spread over clothes and hands.
+MSpace_025_07 | Relaxing on the road after the colours, with the Main Building and the celebrating crowd behind.
+MSpace_025_08 | Colour all over, a thoughtful pose in front of the Main Building.
