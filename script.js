@@ -127,7 +127,7 @@ function buildChrome() {
   const header = document.createElement('header');
   header.className = 'nav'; header.id = 'nav';
   header.innerHTML = `
-    <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="prompt" aria-hidden="true"><i>$</i><span class="tx"></span><b class="caret"></b></span></a>
+    <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="prompt" aria-hidden="true"><i>$</i><span class="slot"><span class="tx"></span><b class="caret"></b></span></span></a>
     <nav class="menu" id="menu" aria-label="Main">${SITE.nav.map((n, i) => `<a href="${n.href}" style="--i:${i}" ${n.id === page ? 'aria-current="page"' : ''}><span class="t"><span>${n.label}</span><span aria-hidden="true">${n.label}</span></span></a>`).join('')}</nav>
     <div class="tools">
       <div class="share-wrap">
@@ -172,7 +172,7 @@ function buildChrome() {
   document.body.append(foot);
   document.body.insertAdjacentHTML('beforeend', `
     <button id="totop" aria-label="Back to top"><svg viewBox="0 0 50 50"><circle class="bg" cx="25" cy="25" r="22"/><circle class="fg" id="totop-fg" cx="25" cy="25" r="22"/></svg>&uarr;</button>
-    <div class="pt" id="pt"><b class="wm"><span class="pr">~$</span> anandu<em>.fire</em><span class="cur"></span></b><i></i></div>
+    <div class="pt" id="pt"></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>`);
   toastEl = $('#toast');
 }
@@ -410,7 +410,7 @@ document.addEventListener('click', e => {
   if (fsOn()) { e.preventDefault(); softNav(a.href, true); return; }
   if (reduce) return;
   e.preventDefault(); ss.set('pt', '1'); pt.className = 'pt entering';
-  setTimeout(() => { location.href = a.href; }, 460);
+  setTimeout(() => { location.href = a.href; }, 200);
 });
 addEventListener('pageshow', e => { if (e.persisted) { pt.className = 'pt'; document.body.classList.remove('menu-open'); } });
 /* In full screen a normal page load would exit full screen, so the next page is fetched and swapped into the same document instead. */
@@ -422,7 +422,7 @@ async function softNav(href, push) {
     const [res, srcText] = await Promise.all([
       fetch(realUrl(href), { credentials: 'same-origin' }),
       window.__srcText ? Promise.resolve(window.__srcText) : fetch(window.__srcUrl).then(r => r.text()),
-      new Promise(r => setTimeout(r, reduce ? 0 : 460))
+      new Promise(r => setTimeout(r, reduce ? 0 : 200))
     ]);
     if (!res.ok) throw new Error('bad status');
     window.__srcText = srcText;
@@ -445,12 +445,12 @@ window.__soft = (h, push) => softNav(h, push);
 function ready() { document.body.classList.add('ready'); }
 (function boot() {
   const flag = ss.get('pt'); ss.del('pt');
-  if (flag && !reduce) { pt.className = 'pt cover'; void pt.offsetWidth; pt.className = 'pt leaving'; setTimeout(() => { pt.className = 'pt'; }, 1200); }
+  if (flag && !reduce) { pt.className = 'pt cover'; void pt.offsetWidth; pt.className = 'pt leaving'; setTimeout(() => { pt.className = 'pt'; }, 500); }
   const loader = $('#loader');
-  if (!loader) { setTimeout(ready, flag && !reduce ? 500 : 80); return; }
+  if (!loader) { setTimeout(ready, flag && !reduce ? 120 : 80); return; }
   const first = !ss.get('v'); ss.set('v', '1');
   const unlock = () => root.classList.remove('locked');
-  if (reduce || !first) { loader.remove(); unlock(); setTimeout(ready, flag && !reduce ? 500 : 100); return; }
+  if (reduce || !first) { loader.remove(); unlock(); setTimeout(ready, flag && !reduce ? 120 : 100); return; }
   const pct = $('#l-pct'), bar = $('#l-bar'), out = $('#term-out'), t0 = performance.now(), dur = 3300;
   const lines = ['anandu@iitroorkee:~$ ./anandu.forest.fire --boot', '[ ok ] mounting mesoscale circulation', '[ ok ] mounting terrain and station data', '[ ok ] loading WRF-Fire', '[ ok ] coupling fire and atmosphere'];
   let wel = null;
