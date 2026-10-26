@@ -983,3 +983,6 @@ html.nc body.menu-open { overflow: hidden; }
 .pt .ptl .pd { margin-inline-end: 2px; }
 .pt .ptc { display: inline-block; width: .55em; height: 1.05em; margin-inline-start: 4px; background: var(--a); transform: translateY(.18em); animation: blink 1.1s steps(1) infinite; }
 .pt .ptc.busy { animation: none; opacity: 1; }
+
+.postal { display: block; font-style: normal; line-height: 1.75; margin-top: 12px; color: var(--muted); }
+.postal b { color: var(--text); font-weight: 600; }

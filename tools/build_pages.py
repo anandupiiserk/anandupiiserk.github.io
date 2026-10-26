@@ -42,15 +42,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261026i">
+<link rel="stylesheet" href="style.css?v=20261026j">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261026i"></script>
-<script src="script.js?v=20261026i"></script>
+<script src="i18n.js?v=20261026j"></script>
+<script src="script.js?v=20261026j"></script>
 </body>
 </html>
 '''
@@ -325,9 +325,11 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
   <button class="btn ghost cbtn" data-copy-email>Copy email</button>
   <button class="btn ghost cbtn" data-share-page>Share this site</button>
 </div>
+<div class="eyebrow reveal" style="margin-top:34px"><span class="n">02</span> Postal address</div>
+<address class="postal reveal" translate="no"><b>Anandu Prabhakaran</b><br>DM12 Weather and Climate Research Lab<br>CoEDMM, Third Floor, New Bioscience Building<br>Indian Institute of Technology Roorkee<br>Roorkee, Uttarakhand 247667, India</address>
 </div>
 <div class="ccol">
-<div class="eyebrow reveal"><span class="n">02</span> Send a message</div>
+<div class="eyebrow reveal"><span class="n">03</span> Send a message</div>
 <form class="cform reveal" id="cform" novalidate>
   <div class="frow"><label for="cf-name">Your name</label><input id="cf-name" name="name" type="text" autocomplete="name" required></div>
   <div class="frow"><label for="cf-email">Your email</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
@@ -337,7 +339,7 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 </form>
 </div>
 </div>
-<div class="eyebrow reveal" style="margin-top:36px"><span class="n">03</span> Profiles</div>
+<div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Profiles</div>
 <div data-social-rows></div>
 </div>''')
 page('contact.html', 'contact', f'Contact | {NAME}', 'Email and profiles on other platforms.', contact)
