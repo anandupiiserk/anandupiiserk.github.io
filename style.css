@@ -986,3 +986,9 @@ html.nc body.menu-open { overflow: hidden; }
 
 .postal { display: block; font-style: normal; line-height: 1.75; margin-top: 12px; color: var(--muted); }
 .postal b { color: var(--text); font-weight: 600; }
+
+/* content protection: no selection, no touch callout, no image dragging, blank print */
+html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea, select { -webkit-user-select: text; user-select: text; }
+img, a { -webkit-user-drag: none; }
+@media print { body * { display: none !important; } body::before { content: "Printing is disabled on this site."; display: block; font: 16px sans-serif; color: #000; padding: 24px; } }
