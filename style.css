@@ -1048,3 +1048,7 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 /* workshop photos: equal tiles, up to three per row */
 .wk-pics { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; max-width: 800px; }
 .wk-pics img { width: 100%; max-width: none; aspect-ratio: 16 / 9; object-fit: cover; }
+
+.wk-pics img[data-full] { cursor: zoom-in; transition: transform .3s var(--ease), box-shadow .3s; } .wk-pics img[data-full]:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,.18); }
+#wk-lb img { max-height: 86vh; max-width: 92vw; }
+#wk-lb [hidden] { display: none; }
