@@ -338,6 +338,8 @@ buildChrome();
   $$('[data-copy]').forEach(b => b.addEventListener('click', () => copyText(b.dataset.copy, b.dataset.msg)));
   $$('[data-share-addr]').forEach(b => {
     const wrap = b.parentElement, text = b.dataset.text, url = b.dataset.url;
+    /* The device share sheet gets the address and the link as separate fields; the copied text already ends with the link, so it is left out here to avoid a double link. */
+    const shareText = text.split('\n\nSource:')[0];
     const pop = document.createElement('div'); pop.className = 'share-menu pop'; pop.setAttribute('role', 'menu');
     const T = encodeURIComponent(text), U = encodeURIComponent(url);
     pop.innerHTML = `<p>Share postal address</p>
@@ -349,12 +351,12 @@ buildChrome();
     const open = o => { pop.classList.toggle('open', o); b.setAttribute('aria-expanded', o); };
     b.addEventListener('click', async e => {
       e.stopPropagation();
-      if (navigator.share) { try { await navigator.share({ title: 'Postal address', text, url }); return; } catch (err) { if (err && err.name === 'AbortError') return; } }
+      if (navigator.share) { try { await navigator.share({ title: 'Postal address', text: shareText, url }); return; } catch (err) { if (err && err.name === 'AbortError') return; } }
       open(!pop.classList.contains('open'));
     });
     pop.addEventListener('click', async e => {
       const it = e.target.closest('.it'); if (!it) return;
-      if (it.dataset.a === 'native') { try { await navigator.share({ title: 'Postal address', text, url }); } catch (err) {} }
+      if (it.dataset.a === 'native') { try { await navigator.share({ title: 'Postal address', text: shareText, url }); } catch (err) {} }
       else if (it.dataset.a === 'link') copyText(url, 'Link copied to clipboard');
       open(false);
     });
