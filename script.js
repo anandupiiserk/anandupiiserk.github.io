@@ -216,6 +216,21 @@ buildChrome();
   tick();
 })();
 
+/* Content protection: no right-click menu, text selection, copy, cut, select all or print. Form fields keep normal behaviour. The copy-link and share buttons use the clipboard directly and are unaffected. */
+(function protect() {
+  if (window.__prot) return; window.__prot = true;
+  const field = t => !!(t && t.closest && t.closest('input,textarea,select,[contenteditable="true"]'));
+  document.addEventListener('contextmenu', e => { if (!field(e.target)) e.preventDefault(); });
+  document.addEventListener('selectstart', e => { if (!field(e.target)) e.preventDefault(); });
+  ['copy', 'cut'].forEach(ev => document.addEventListener(ev, e => { if (!field(e.target)) e.preventDefault(); }));
+  document.addEventListener('dragstart', e => { if (!field(e.target)) e.preventDefault(); });
+  document.addEventListener('keydown', e => {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+    const k = (e.key || '').toLowerCase();
+    if (k === 'p' || (!field(e.target) && (k === 'c' || k === 'x' || k === 'a'))) e.preventDefault();
+  }, true);
+})();
+
 /* ---------- Theme button, menu, share, nav indicator ---------- */
 (function () {
   const btn = $('#theme');

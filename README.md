@@ -67,3 +67,4 @@ python3 tools/site.py serve                       # http://localhost:8799 for lo
 * Each page has its own Last Updated time in a `last-updated` meta tag. It changes only when that page's own content changes. Gallery photo or caption changes update the Gallery page.
 * `.copy .cp` (the copyright line) uses transparent shimmer text: put new footer elements next to it, not inside it.
 * The boot screen shows once per browser session; use a fresh browser context to see it. The first-visit wave around the theme button uses the localStorage key `thint`.
+* Content protection is on: right-click, text selection, copy, cut, select all (Ctrl/Cmd+A) and print (Ctrl/Cmd+P and the print dialog) are disabled outside form fields. See `protect()` in `script.js` and the last block of `style.css`. The copy-link, copy-email and share buttons still work. It only deters casual copying; anyone can still read the page source or take screenshots.
