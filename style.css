@@ -992,3 +992,12 @@ html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout
 input, textarea, select { -webkit-user-select: text; user-select: text; }
 img, a { -webkit-user-drag: none; }
 @media print { body * { display: none !important; } body::before { content: "Printing is disabled on this site."; display: block; font: 16px sans-serif; color: #000; padding: 24px; } }
+
+/* right-click shortcut menu */
+.ctxm { position: fixed; z-index: 960; min-width: 250px; padding: 6px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line2); box-shadow: var(--shadow); opacity: 0; transform: scale(.97); transform-origin: top left; transition: opacity .12s ease, transform .12s ease; -webkit-user-select: none; user-select: none; }
+.ctxm.open { opacity: 1; transform: none; }
+.ctxm button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 9px 10px; border: 0; border-radius: 7px; background: none; color: var(--text); font-family: var(--sans); font-size: .9rem; text-align: left; cursor: pointer; }
+.ctxm button:hover, .ctxm button:focus-visible { background: var(--a-soft); outline: none; }
+.ctxm kbd { flex: none; min-width: 66px; font-family: var(--mono); font-size: .74rem; letter-spacing: .04em; color: var(--a); }
+.ctxm .cl { flex: 1; }
+.ctxm .cs { font-family: var(--mono); font-size: .7rem; color: var(--muted); }
