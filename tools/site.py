@@ -6,6 +6,7 @@ Run it from any folder:   python3 tools/site.py <command> [options]
 Commands
   build            Regenerate everything: i18n.js, gallery thumbnails and manifest, all HTML pages.
   bump             Raise the cache-busting version string (the ?v=... on style.css, script.js, i18n.js), then build.
+  touch PAGES      Set the Last Updated time of pages to now (about contact ... or all). For visible changes made only in script.js or style.css, which the automatic stamp cannot see.
   photos ID files  Resize photos to the site standard and name them for a gallery carousel or single photo.
   check            Static checks: em dash, PhD spelling, captions versus files, version strings, sizes.
   test             Browser smoke test with Chromium (needs Playwright): errors, failed requests, overflow.
@@ -69,6 +70,21 @@ def cmd_bump(a):
     open(p, 'w', encoding='utf-8').write(s)
     print('version', m.group(1) + m.group(2), '->', new)
     cmd_build()
+
+
+# ---------------------------------------------------------------- touch
+def cmd_touch(a):
+    """The automatic Last Updated stamp follows each page's own HTML (and gallery files). A visible change made only in script.js or style.css
+    (for example the footer buttons) does not change any HTML, so it is recorded by hand with this command."""
+    keys = ['index', 'about', 'research', 'publications', 'workshops', 'gallery', 'contact']
+    want = keys if 'all' in a.pages else [('index' if n == 'home' else n) for n in a.pages]
+    bad = [n for n in want if n not in keys]
+    if bad: print('unknown page(s):', ', '.join(bad), '(use', ', '.join(keys), 'or all)'); return 1
+    p = os.path.join(HERE, 'page_stamps.json'); db = json.load(open(p))
+    now = datetime.datetime.now(IST).strftime('%d-%B-%Y|%H:%M:%S')
+    for n in want: db[n + '.html']['t'] = now
+    json.dump(db, open(p, 'w'), indent=1)
+    print('Last Updated set to', now.replace('|', ' '), 'for', ', '.join(want)); cmd_build()
 
 
 # ---------------------------------------------------------------- photos
@@ -227,6 +243,7 @@ def main():
     sub = ap.add_subparsers(dest='cmd', required=True)
     sub.add_parser('build').set_defaults(f=cmd_build)
     sub.add_parser('bump').set_defaults(f=cmd_bump)
+    tc = sub.add_parser('touch'); tc.set_defaults(f=cmd_touch); tc.add_argument('pages', nargs='+', help='page names (home, about, research, publications, workshops, gallery, contact) or all')
     ph = sub.add_parser('photos'); ph.set_defaults(f=cmd_photos)
     ph.add_argument('id'); ph.add_argument('files', nargs='+')
     ph.add_argument('--single', action='store_true', help='one photo named ID.JPG, not a carousel')
