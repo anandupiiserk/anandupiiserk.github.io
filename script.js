@@ -28,7 +28,6 @@ const SITE = {
     { id: 'contact',      href: 'contact.html',      label: 'Contact',      desc: 'Email and profiles on other platforms.' }
   ],
   socials: [
-    { label: 'GitHub', brand: '#24292f',         icon: 'github',       url: 'https://github.com/anandupiiserk' },
     { label: 'LinkedIn', brand: '#0a66c2',       icon: 'linkedin',     url: 'https://www.linkedin.com/in/anandu-iitr/' },
     { label: 'Google Scholar', brand: '#4285f4', icon: 'scholar',      url: 'https://scholar.google.com/citations?user=0PK5HxYAAAAJ&hl=en' },
     { label: 'ResearchGate', brand: '#00bfae',   icon: 'researchgate', url: 'https://www.researchgate.net/profile/Anandu-Prabhakar' },
@@ -119,8 +118,8 @@ let toastEl, toastTimer;
 function toast(msg, ms) { toastEl.textContent = tr(msg); toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms || 2200); }
 
 /* ---------- Shared chrome ---------- */
-function socialsHTML() {
-  return SITE.socials.map(s => `<a class="soc" href="${s.url}" target="${s.url.startsWith('mailto') ? '_self' : '_blank'}" rel="noopener noreferrer" aria-label="${s.label}" data-label="${s.label}" style="--bc:${s.brand}">${ICONS[s.icon]}</a>`).join('');
+function socialsHTML(noMail) {
+  return SITE.socials.filter(s => !(noMail && s.icon === 'mail')).map(s => `<a class="soc" href="${s.url}" target="${s.url.startsWith('mailto') ? '_self' : '_blank'}" rel="noopener noreferrer" aria-label="${s.label}" data-label="${s.label}" style="--bc:${s.brand}">${ICONS[s.icon]}</a>`).join('');
 }
 function buildChrome() {
   const idx = SITE.nav.findIndex(n => n.id === page);
@@ -174,7 +173,7 @@ function buildChrome() {
     return v && v.length === 2 ? 'Last Updated : ' + v[0] + ' | Time : ' + v[1] + ' (IST)' : '';
   }
   const foot = document.createElement('footer');
-  foot.innerHTML = `<div class="copy"><div class="cpwrap"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="upd" data-i18n-skip>${updatedText()}</div></div><div class="socials" aria-label="Social media">${socialsHTML()}</div></div><p class="ainote">This website was partially developed and is maintained with the help of Claude, an AI assistant made by Anthropic.</p>`;
+  foot.innerHTML = `<div class="copy"><div class="cpwrap"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="upd" data-i18n-skip>${updatedText()}</div></div><div class="socials" aria-label="Social media">${socialsHTML(true)}</div></div><p class="ainote">This website was partially developed and is maintained with the help of Claude, an AI assistant made by Anthropic.</p>`;
   document.body.append(foot);
   document.body.insertAdjacentHTML('beforeend', `
     <button id="totop" aria-label="Back to top"><svg viewBox="0 0 50 50"><circle class="bg" cx="25" cy="25" r="22"/><circle class="fg" id="totop-fg" cx="25" cy="25" r="22"/></svg>&uarr;</button>
