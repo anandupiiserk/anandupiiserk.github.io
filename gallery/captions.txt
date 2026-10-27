@@ -64,6 +64,13 @@ WORK_005 | Lecture on WRF-Model, during Hands on Workshop on Weather and Climate
 WORK_006 | Attendees during Hands-on session on WRF Model
 WORK_007 | Lecture on Basics of Origin Pro Software at College of Engineering Roorkee.
 WORK_008 | Lecture on Post-processing of WRF Model.
+WORK_009 | [2024-09-24] Workshop Python Essentials: Foundations of Programming, Data Structures, and Analysis, School of Environmental Studies, Cochin University of Science and Technology (CUSAT), Cochin, 24 and 25 September 2024.
+WORK_009_01 | The lecture hall during the hands-on session, with the Jupyter notebook on the screen.
+WORK_009_02 | Another view of the hall during the session.
+WORK_009_03 | A slide on the ASCII data format, with its advantages and weaknesses for climate data.
+WORK_009_04 | The Jupyter file browser in the CUSAT / DAY01 folder, with the notebooks used in the workshop (Python_basics, NetCDF, Temperature_data and others).
+WORK_009_05 | Explaining the Temperature_data notebook: building a daily date range from 2001 to 2021 with pandas.
+WORK_009_06 | The same notebook further down: a function that generates synthetic temperatures for the winter, summer, monsoon and remaining months, and a data frame built from it.
 Field_001 | Visit to the IMD station at Ranichauri, Uttarakhand.
 Field_002 | At Ranichauri IMD Station, Uttarakhand with Prof. Piyush Srivastava
 Field_003 | At Ranichauri Climate Monitoring Station, Uttarakhand. From left, Rajendra, Shiwam, Prof. Piyush, Anandu
