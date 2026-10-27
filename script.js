@@ -224,8 +224,10 @@ buildChrome();
   ['copy', 'cut'].forEach(ev => document.addEventListener(ev, e => { if (!field(e.target)) e.preventDefault(); }));
   document.addEventListener('dragstart', e => { if (!field(e.target)) e.preventDefault(); });
   document.addEventListener('keydown', e => {
-    if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
     const k = (e.key || '').toLowerCase();
+    /* F12, Ctrl/Cmd+Shift+I, J, C, Cmd+Option+I and Ctrl/Cmd+U (view source) */
+    if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && 'ijc'.includes(k) && k.length === 1) || (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && k === 'u')) { e.preventDefault(); e.stopPropagation(); return; }
+    if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
     if (k === 'p' || (!field(e.target) && (k === 'c' || k === 'x' || k === 'a'))) e.preventDefault();
   }, true);
 })();
