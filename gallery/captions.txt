@@ -57,7 +57,7 @@ Conf_006_02 | Anandu with his poster at the symposium.
 Conf_006_03 | Anandu with his poster at the symposium.
 Conf_007 | [2023-09] My presentation on forest fire events over the northwest Himalayan region and the Hawaii forest fires at the 13th International Conference of the International Society for Integrated Disaster Risk Management (IDRiM 2023), IIT Roorkee, 28 to 30 September 2023.
 WORK_001 | Online Lecture + Workshop at CCCES, Kerala Agricultural University, October 2025
-WORK_002 | Workshop at Kannur University - 2025
+WORK_002 | [2025-02-03] Lecture series on Climate Change, Department of Environmental Studies, Kannur University, 3 to 7 February 2025.
 WORK_003 | Workshop at School of Environmental Studies, CUSAT
 WORK_004 | Workshop at Department of Environmental Sciences, Sharda University
 WORK_005 | Lecture on WRF-Model, during Hands on Workshop on Weather and Climate Modelling Organised by Dept. of Architecture & Planning, IIT Roorkee.
