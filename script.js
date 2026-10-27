@@ -72,6 +72,7 @@ const ICONS = {
   globe: svg('<circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.8 2.7 4.2 5.9 4.2 9.5s-1.4 6.8-4.2 9.5c-2.8-2.7-4.2-5.9-4.2-9.5S9.2 5.2 12 2.5z"/>'),
   fsin: svg('<polyline points="4 9 4 4 9 4"/><polyline points="20 9 20 4 15 4"/><polyline points="4 15 4 20 9 20"/><polyline points="20 15 20 20 15 20"/>'),
   fsout: svg('<polyline points="9 4 9 9 4 9"/><polyline points="15 4 15 9 20 9"/><polyline points="9 20 9 15 4 15"/><polyline points="15 20 15 15 20 15"/>'),
+  copy: svg('<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>'),
   share: svg('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>'),
   link: svg('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'),
   chat: svg('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>'),
@@ -115,7 +116,7 @@ function applyTheme(t, persist) {
 
 /* ---------- Toast ---------- */
 let toastEl, toastTimer;
-function toast(msg) { toastEl.textContent = tr(msg); toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200); }
+function toast(msg, ms) { toastEl.textContent = tr(msg); toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms || 2200); }
 
 /* ---------- Shared chrome ---------- */
 function socialsHTML() {
@@ -326,6 +327,40 @@ buildChrome();
     });
   }
   $$('[data-copy-email]').forEach(b => b.addEventListener('click', async () => { try { await navigator.clipboard.writeText(SITE.email); toast('Email address copied'); } catch (_) { toast(SITE.email); } }));
+  /* Copy buttons next to the emails and the postal address; Share address opens the device share sheet or a small menu. */
+  const copyText = async (text, msg) => {
+    try { await navigator.clipboard.writeText(text); }
+    catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); try { document.execCommand('copy'); } catch (_) {} t.remove(); }
+    toast(msg || 'Copied');
+  };
+  $$('.cpy').forEach(b => { b.innerHTML = ICONS.copy; const l = tr('Copy'); b.setAttribute('aria-label', l); b.title = l; });
+  $$('.bi[data-ic]').forEach(el => { el.innerHTML = ICONS[el.dataset.ic] || ''; });
+  $$('[data-copy]').forEach(b => b.addEventListener('click', () => copyText(b.dataset.copy, b.dataset.msg)));
+  $$('[data-share-addr]').forEach(b => {
+    const wrap = b.parentElement, text = b.dataset.text, url = b.dataset.url;
+    const pop = document.createElement('div'); pop.className = 'share-menu pop'; pop.setAttribute('role', 'menu');
+    const T = encodeURIComponent(text), U = encodeURIComponent(url);
+    pop.innerHTML = `<p>Share postal address</p>
+      ${navigator.share ? `<button class="it" data-a="native" role="menuitem">${ICONS.share}<span>Share via device</span></button>` : ''}
+      <a class="it" href="https://wa.me/?text=${T}" target="_blank" rel="noopener" role="menuitem">${ICONS.chat}<span>Send on WhatsApp</span></a>
+      <a class="it" href="mailto:?subject=${encodeURIComponent('Postal address: Anandu Prabhakaran')}&body=${T}" role="menuitem">${ICONS.mail}<span>Send by email</span></a>
+      <button class="it" data-a="link" role="menuitem">${ICONS.link}<span>Copy link</span></button>`;
+    wrap.appendChild(pop);
+    const open = o => { pop.classList.toggle('open', o); b.setAttribute('aria-expanded', o); };
+    b.addEventListener('click', async e => {
+      e.stopPropagation();
+      if (navigator.share) { try { await navigator.share({ title: 'Postal address', text, url }); return; } catch (err) { if (err && err.name === 'AbortError') return; } }
+      open(!pop.classList.contains('open'));
+    });
+    pop.addEventListener('click', async e => {
+      const it = e.target.closest('.it'); if (!it) return;
+      if (it.dataset.a === 'native') { try { await navigator.share({ title: 'Postal address', text, url }); } catch (err) {} }
+      else if (it.dataset.a === 'link') copyText(url, 'Link copied to clipboard');
+      open(false);
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.apwrap')) open(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') open(false); });
+  });
   $$('[data-share-page]').forEach(b => b.addEventListener('click', () => { shareMode = 'site'; navigator.share ? nativeShare() : copyLink(); }));
 })();
 
@@ -1192,7 +1227,7 @@ function applyLang(code) {
   btn.addEventListener('click', () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      if (state === 'idle') { toast('Voice started'); start(); }
+      if (state === 'idle') { toast('Voice started. Press L to change language and R to reset to English.', 5000); start(); }
       else if (state === 'speaking') pause(); else resume();
     }, 230);
   });
@@ -1218,7 +1253,7 @@ function applyLang(code) {
   window.__voiceLang = () => { pickerLabel(); if (state === 'speaking') start(); else if (state === 'paused') stopAll(); };
   window.__voiceLabel = () => { pickerLabel(); const l = tr('Read this page aloud. Click to pause or resume, double click to restart.'); btn.setAttribute('aria-label', l); btn.title = l; };
   window.__voiceLabel(); pickerLabel();
-  window.__voiceToggle = () => { if (state === 'idle') { toast('Voice started'); start(); } else if (state === 'speaking') pause(); else resume(); };
+  window.__voiceToggle = () => { if (state === 'idle') { toast('Voice started. Press L to change language and R to reset to English.', 5000); start(); } else if (state === 'speaking') pause(); else resume(); };
   window.__voiceState = () => state;
 })();
 
@@ -1232,6 +1267,7 @@ function applyLang(code) {
     if (!voiceOn()) { toast(tr('Turn on the voice assistant (V) to change language with L. Otherwise use the language button.')); return; }
     const n = nextLang(); applyLang(n.c); toast(n.n);
   }
+  function resetLang() { if (LANG === 'en') { toast('Already in English'); return; } applyLang('en'); toast('English'); }
   let menu = null;
   const close = () => { if (menu) { menu.remove(); menu = null; } };
   function openAt(x, y) {
@@ -1241,6 +1277,7 @@ function applyLang(code) {
     if (fsOK) rows.push(['F / F11', tr(fsOn() ? 'Exit full screen' : 'Full screen'), '', toggleFS]);
     if (voiceOK()) rows.push(['V', tr(st === 'speaking' ? 'Pause voice assistant' : st === 'paused' ? 'Resume voice assistant' : 'Voice assistant'), '', () => window.__voiceToggle()]);
     if (voiceOn()) rows.push(['L', tr('Language change'), (LANGS.find(l => l.c === LANG) || LANGS[0]).s + ' > ' + nextLang().s, cycleLang]);
+    if (LANG !== 'en') rows.push(['R', tr('Reset language to English'), (LANGS.find(l => l.c === LANG) || LANGS[0]).s + ' > EN', resetLang]);
     if (!rows.length) return;
     menu = document.createElement('div'); menu.className = 'ctxm'; menu.setAttribute('role', 'menu'); menu.setAttribute('translate', 'no');
     rows.forEach(([k, label, sub, fn]) => {
@@ -1267,6 +1304,7 @@ function applyLang(code) {
     const k = (e.key || '').toLowerCase();
     if (k === 'v' && voiceOK()) { e.preventDefault(); window.__voiceToggle(); }
     else if (k === 'l') { e.preventDefault(); cycleLang(); }
+    else if (k === 'r') { e.preventDefault(); resetLang(); }
   });
 })();
 
