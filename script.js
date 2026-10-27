@@ -983,6 +983,38 @@ else (function loop() {
   lb.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
 })();
 
+/* ---------- Workshops page: click a photo to enlarge (full-quality original, arrows within the same workshop) ---------- */
+(function () {
+  const groups = $$('.wk-pics'); if (!groups.length) return;
+  let box = $('#wk-lb');
+  if (!box) {
+    box = document.createElement('div'); box.id = 'wk-lb'; box.className = 'lightbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    box.innerHTML = '<button type="button" class="lb-btn lb-close" aria-label="Close">&times;</button><button type="button" class="lb-btn lb-prev" aria-label="Previous photo">&#8249;</button><img alt=""><button type="button" class="lb-btn lb-next" aria-label="Next photo">&#8250;</button><div class="lb-count"></div>';
+    document.body.appendChild(box);
+  }
+  const im = box.querySelector('img'), cnt = box.querySelector('.lb-count'), pv = box.querySelector('.lb-prev'), nx = box.querySelector('.lb-next');
+  let list = [], cur = 0;
+  const show = i => {
+    cur = (i + list.length) % list.length; const el = list[cur];
+    im.src = el.currentSrc || el.src; im.alt = el.alt;
+    const f = new Image(); f.src = el.dataset.full; f.decode().then(() => { if (list[cur] === el) im.src = f.src; }).catch(() => { if (list[cur] === el) im.src = el.dataset.full; });
+    cnt.textContent = list.length > 1 ? (cur + 1) + ' / ' + list.length : '';
+    pv.hidden = nx.hidden = list.length < 2;
+  };
+  const close = () => box.classList.remove('open');
+  groups.forEach(g => {
+    const imgs = $$('img[data-full]', g);
+    imgs.forEach(el => {
+      const open = () => { list = imgs; show(imgs.indexOf(el)); box.classList.add('open'); };
+      el.addEventListener('click', open); el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
+  });
+  box.querySelector('.lb-close').onclick = close; pv.onclick = () => show(cur - 1); nx.onclick = () => show(cur + 1);
+  box.addEventListener('click', e => { if (e.target === box) close(); });
+  document.addEventListener('keydown', e => { if (!box.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1); });
+  addEventListener('pagehide', close);
+})();
+
 /* ---------- Compare slider and spotlight ---------- */
 (function () {
   const s = $('#slider'), b = $('#layer-b'), h = $('#handle');
