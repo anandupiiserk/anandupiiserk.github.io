@@ -49,15 +49,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261028d">
+<link rel="stylesheet" href="style.css?v=20261028f">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261028d"></script>
-<script src="script.js?v=20261028d"></script>
+<script src="i18n.js?v=20261028f"></script>
+<script src="script.js?v=20261028f"></script>
 </body>
 </html>
 '''
@@ -211,7 +211,7 @@ about = phero('01 / About me', 'About me', 'PhD researcher working on forest fir
     <p class="reveal">I am a PhD researcher at the Centre of Excellence in Disaster Mitigation and Management (CoEDMM), Indian Institute of Technology Roorkee. My PhD thesis is titled <span translate="no">&ldquo;Modelling and Analysis of Atmospheric Conditions Conducive to the Spread of Wildfires over Mountainous Region in India&rdquo;</span>.</p>
     <p class="reveal">The work combines numerical weather prediction models with observational and reanalysis datasets. I also work on tropical cyclones and on disasters induced by climate change.</p>
     <p class="reveal">I was born and raised in Kollam district, Kerala.</p>
-    <p class="reveal">I conduct workshops and give lectures on the WRF model, Python, R and Origin Pro at universities and colleges across India.</p>
+    <p class="reveal">As part of my PMRF deliverables and science communication, I conduct and organise workshops, science communication lectures and other lectures at universities and colleges across India. The topics include the application of numerical weather prediction models, including the WRF model, followed by programming and data analysis with Python, R and Origin Pro, disaster mitigation and management, climate change, and wildfire spread and analysis using geospatial and other computational tools.</p>
     <div class="bio-int reveal"><span class="lbl">Interests</span>{chips}</div>
     <div class="socials reveal" data-socials></div>
   </div>
