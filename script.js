@@ -216,11 +216,9 @@ buildChrome();
   tick();
 })();
 
-/* Content protection: no right-click menu, text selection, copy, cut, select all or print. Form fields keep normal behaviour. The copy-link and share buttons use the clipboard directly and are unaffected. */
+/* Content protection: no browser right-click menu (a small shortcut menu replaces it, see ctxMenu), text selection, copy, cut, select all or print. Form fields keep normal behaviour. The copy-link and share buttons use the clipboard directly and are unaffected. */
 (function protect() {
-  if (window.__prot) return; window.__prot = true;
   const field = t => !!(t && t.closest && t.closest('input,textarea,select,[contenteditable="true"]'));
-  document.addEventListener('contextmenu', e => { if (!field(e.target)) e.preventDefault(); });
   document.addEventListener('selectstart', e => { if (!field(e.target)) e.preventDefault(); });
   ['copy', 'cut'].forEach(ev => document.addEventListener(ev, e => { if (!field(e.target)) e.preventDefault(); }));
   document.addEventListener('dragstart', e => { if (!field(e.target)) e.preventDefault(); });
@@ -1220,6 +1218,56 @@ function applyLang(code) {
   window.__voiceLang = () => { pickerLabel(); if (state === 'speaking') start(); else if (state === 'paused') stopAll(); };
   window.__voiceLabel = () => { pickerLabel(); const l = tr('Read this page aloud. Click to pause or resume, double click to restart.'); btn.setAttribute('aria-label', l); btn.title = l; };
   window.__voiceLabel(); pickerLabel();
+  window.__voiceToggle = () => { if (state === 'idle') { toast('Voice started'); start(); } else if (state === 'speaking') pause(); else resume(); };
+  window.__voiceState = () => state;
+})();
+
+/* ---------- Right-click shortcut menu and keys: F / F11 full screen, V voice assistant, L language (only while the voice assistant is on) ---------- */
+(function ctxMenu() {
+  const field = t => !!(t && t.closest && t.closest('input,textarea,select,[contenteditable="true"]'));
+  const voiceOK = () => !!window.speechSynthesis && typeof SpeechSynthesisUtterance !== 'undefined' && !!$('#voice-btn');
+  const voiceOn = () => voiceOK() && window.__voiceState && window.__voiceState() !== 'idle';
+  const nextLang = () => { const i = LANGS.findIndex(l => l.c === LANG); return LANGS[(i + 1) % LANGS.length]; };
+  function cycleLang() {
+    if (!voiceOn()) { toast(tr('Turn on the voice assistant (V) to change language with L. Otherwise use the language button.')); return; }
+    const n = nextLang(); applyLang(n.c); toast(n.n);
+  }
+  let menu = null;
+  const close = () => { if (menu) { menu.remove(); menu = null; } };
+  function openAt(x, y) {
+    close();
+    const st = window.__voiceState ? window.__voiceState() : 'idle';
+    const rows = [];
+    if (fsOK) rows.push(['F / F11', tr(fsOn() ? 'Exit full screen' : 'Full screen'), '', toggleFS]);
+    if (voiceOK()) rows.push(['V', tr(st === 'speaking' ? 'Pause voice assistant' : st === 'paused' ? 'Resume voice assistant' : 'Voice assistant'), '', () => window.__voiceToggle()]);
+    if (voiceOn()) rows.push(['L', tr('Language change'), (LANGS.find(l => l.c === LANG) || LANGS[0]).s + ' > ' + nextLang().s, cycleLang]);
+    if (!rows.length) return;
+    menu = document.createElement('div'); menu.className = 'ctxm'; menu.setAttribute('role', 'menu'); menu.setAttribute('translate', 'no');
+    rows.forEach(([k, label, sub, fn]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'menuitem');
+      b.innerHTML = '<kbd></kbd><span class="cl"></span><span class="cs"></span>';
+      b.querySelector('kbd').textContent = k; b.querySelector('.cl').textContent = label; b.querySelector('.cs').textContent = sub;
+      b.addEventListener('click', e => { e.stopPropagation(); close(); fn(); });
+      menu.appendChild(b);
+    });
+    document.body.appendChild(menu);
+    const r = menu.getBoundingClientRect();
+    menu.style.left = Math.max(8, Math.min(x, innerWidth - r.width - 8)) + 'px';
+    menu.style.top = Math.max(8, Math.min(y, innerHeight - r.height - 8)) + 'px';
+    requestAnimationFrame(() => menu && menu.classList.add('open'));
+  }
+  document.addEventListener('contextmenu', e => { if (field(e.target)) return; e.preventDefault(); openAt(e.clientX, e.clientY); });
+  document.addEventListener('mousedown', e => { if (menu && !e.target.closest('.ctxm')) close(); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  addEventListener('scroll', close, true); addEventListener('resize', close); addEventListener('blur', close);
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented) return;
+    if (e.key === 'F11') { if (fsOK) { e.preventDefault(); toggleFS(); } return; }
+    if (field(e.target)) return;
+    const k = (e.key || '').toLowerCase();
+    if (k === 'v' && voiceOK()) { e.preventDefault(); window.__voiceToggle(); }
+    else if (k === 'l') { e.preventDefault(); cycleLang(); }
+  });
 })();
 
 setSize(si, false);
