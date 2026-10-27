@@ -42,15 +42,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261027b">
+<link rel="stylesheet" href="style.css?v=20261027d">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261027b"></script>
-<script src="script.js?v=20261027b"></script>
+<script src="i18n.js?v=20261027d"></script>
+<script src="script.js?v=20261027d"></script>
 </body>
 </html>
 '''
@@ -157,7 +157,7 @@ dl_about = f'''<dl class="dl">
   <div class="dl-row reveal"><dt>Scholarship</dt><dd>INSPIRE-SHE Scholarship, Department of Science and Technology, 2015 to 2020.</dd></div>
   <div class="dl-row reveal"><dt>Education</dt><dd><span translate="no">BS-MS in Geological Sciences, IISER Kolkata</span></dd></div>
   <div class="dl-row reveal"><dt>Supervisor</dt><dd><a href="https://www.weatherxplorers.com/piyush-srivastava" target="_blank" rel="noopener noreferrer" translate="no">Prof. Piyush Srivastava</a><span translate="no">, Assistant Professor, Centre of Excellence in Disaster Mitigation &amp; Management, Indian Institute of Technology Roorkee</span></dd></div>
-  <div class="dl-row reveal"><dt>Email</dt><dd><a href="mailto:anandu_p@dm.iitr.ac.in" translate="no">anandu_p@dm.iitr.ac.in</a></dd></div>
+  <div class="dl-row reveal"><dt>Email</dt><dd><a href="mailto:anandu_p@dm.iitr.ac.in" translate="no">anandu_p@dm.iitr.ac.in</a><button class="cpy" type="button" data-copy="anandu_p@dm.iitr.ac.in" data-msg="Email address copied"></button></dd></div>
 </dl>'''
 tl_items = ''.join(f'<div class="t-item"><div class="yr">{y}</div><div><h3>{t}</h3><p>{d}</p></div></div>' for y, t, d in [
     ('2015', 'INSPIRE-SHE scholar', 'Scholarship from the Department of Science and Technology, 2015 to 2020.'),
@@ -311,22 +311,33 @@ gallery = phero('05 / Gallery', 'Gallery', GL, 'PHOTOGRAPHS') + sec('''
 page('gallery.html', 'gallery', f'Gallery | {NAME}', GL, gallery)
 
 # ---------------------------------------------------------------- CONTACT
+import html as _h
+CONTACT_URL = 'https://anandupiiserk.github.io/contact'
+ADDR = ['Anandu Prabhakaran', 'DM12 Weather and Climate Research Lab', 'CoEDMM, Third Floor, New Bioscience Building', 'Indian Institute of Technology Roorkee', 'Roorkee, Uttarakhand 247667, India']
+ADDR_COPY = _h.escape('Postal address\n' + '\n'.join(ADDR) + '\n\nSource: Contact page of Anandu Prabhakaran, ' + CONTACT_URL, quote=True).replace('\n', '&#10;')
+ADDR_HTML = '<b>' + ADDR[0] + '</b><br>' + '<br>'.join(ADDR[1:])
+ADDR_BLOCK = '''<address class="postal reveal" translate="no">@@H@@</address>
+<div class="cta-row reveal postal-act" style="margin-top:12px">
+  <button class="btn ghost cbtn" type="button" data-copy="@@C@@" data-msg="Postal address copied"><span class="bi" data-ic="copy"></span>Copy address</button>
+  <div class="apwrap"><button class="btn ghost cbtn" type="button" data-share-addr data-text="@@C@@" data-url="@@U@@" aria-haspopup="true" aria-expanded="false"><span class="bi" data-ic="share"></span>Share address</button></div>
+</div>'''
+ADDR_BLOCK = ADDR_BLOCK.replace('@@H@@', ADDR_HTML).replace('@@C@@', ADDR_COPY).replace('@@U@@', CONTACT_URL)
 contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on the platforms below.', 'GET IN TOUCH') + sec('''
 <div class="contact-compact">
 <div class="cgrid">
 <div class="ccol">
 <div class="eyebrow reveal"><span class="n">01</span> Email</div>
 <dl class="dl cdl">
-  <div class="dl-row reveal"><dt>Personal</dt><dd><a href="mailto:anandupiiserk@gmail.com" translate="no">anandupiiserk@gmail.com</a></dd></div>
-  <div class="dl-row reveal"><dt>IIT Roorkee</dt><dd><a href="mailto:anandu_p@dm.iitr.ac.in" translate="no">anandu_p@dm.iitr.ac.in</a></dd></div>
-  <div class="dl-row reveal"><dt>CEFE-CNRS</dt><dd><a href="mailto:anandu.prabhakaran@cefe.cnrs.fr" translate="no">anandu.prabhakaran@cefe.cnrs.fr</a></dd></div>
+  <div class="dl-row reveal"><dt>Personal</dt><dd><a href="mailto:anandupiiserk@gmail.com" translate="no">anandupiiserk@gmail.com</a><button class="cpy" type="button" data-copy="anandupiiserk@gmail.com" data-msg="Email address copied"></button></dd></div>
+  <div class="dl-row reveal"><dt>IIT Roorkee</dt><dd><a href="mailto:anandu_p@dm.iitr.ac.in" translate="no">anandu_p@dm.iitr.ac.in</a><button class="cpy" type="button" data-copy="anandu_p@dm.iitr.ac.in" data-msg="Email address copied"></button></dd></div>
+  <div class="dl-row reveal"><dt>CEFE-CNRS</dt><dd><a href="mailto:anandu.prabhakaran@cefe.cnrs.fr" translate="no">anandu.prabhakaran@cefe.cnrs.fr</a><button class="cpy" type="button" data-copy="anandu.prabhakaran@cefe.cnrs.fr" data-msg="Email address copied"></button></dd></div>
 </dl>
 <div class="cta-row reveal" style="margin-top:14px">
   <button class="btn ghost cbtn" data-copy-email>Copy email</button>
   <button class="btn ghost cbtn" data-share-page>Share this site</button>
 </div>
 <div class="eyebrow reveal" style="margin-top:34px"><span class="n">02</span> Postal address</div>
-<address class="postal reveal" translate="no"><b>Anandu Prabhakaran</b><br>DM12 Weather and Climate Research Lab<br>CoEDMM, Third Floor, New Bioscience Building<br>Indian Institute of Technology Roorkee<br>Roorkee, Uttarakhand 247667, India</address>
+@@ADDRBLOCK@@
 </div>
 <div class="ccol">
 <div class="eyebrow reveal"><span class="n">03</span> Send a message</div>
@@ -341,7 +352,7 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 </div>
 <div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Profiles</div>
 <div data-social-rows></div>
-</div>''')
+</div>'''.replace('@@ADDRBLOCK@@', ADDR_BLOCK))
 page('contact.html', 'contact', f'Contact | {NAME}', 'Email and profiles on other platforms.', contact)
 
 print('written:', sorted(f for f in os.listdir(OUT)))

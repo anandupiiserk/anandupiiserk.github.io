@@ -1001,3 +1001,13 @@ img, a { -webkit-user-drag: none; }
 .ctxm kbd { flex: none; min-width: 66px; font-family: var(--mono); font-size: .74rem; letter-spacing: .04em; color: var(--a); }
 .ctxm .cl { flex: 1; }
 .ctxm .cs { font-family: var(--mono); font-size: .7rem; color: var(--muted); }
+
+/* copy and share buttons on the contact page */
+.cpy { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-inline-start: 10px; vertical-align: middle; border-radius: 50%; border: 1px solid var(--line2); background: none; color: var(--muted); cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+.cpy svg { width: 15px; height: 15px; }
+.cpy:hover, .cpy:focus-visible { color: var(--a); border-color: var(--a); background: var(--a-soft); outline: none; }
+.cbtn .bi { display: inline-flex; margin-inline-end: 8px; } .cbtn .bi svg { width: 16px; height: 16px; }
+.apwrap { position: relative; display: inline-block; }
+.share-menu.pop { top: calc(100% + 8px); right: auto; left: 0; transform-origin: top left; z-index: 60; }
+
+.toast { width: max-content; max-width: min(92vw, 540px); text-align: center; line-height: 1.5; }
