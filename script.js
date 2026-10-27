@@ -546,7 +546,7 @@ function ready() {
   const first = !ss.get('v'); ss.set('v', '1');
   const unlock = () => root.classList.remove('locked');
   if (reduce || !first) { loader.remove(); unlock(); setTimeout(ready, flag && !reduce ? 120 : 100); return; }
-  const pct = $('#l-pct'), bar = $('#l-bar'), out = $('#term-out'), t0 = performance.now(), dur = 3300;
+  const pct = $('#l-pct'), bar = $('#l-bar'), out = $('#term-out'), now0 = performance.now(), t0 = now0 - Math.min(now0, 450), dur = 1500; /* the clock counts from up to 450 ms before this point, so slow script start-up does not stretch the boot */
   const lines = ['anandu@iitroorkee:~$ ./anandu.forest.fire --boot', '[ ok ] mounting mesoscale circulation', '[ ok ] mounting terrain and station data', '[ ok ] loading WRF-Fire', '[ ok ] coupling fire and atmosphere'];
   let wel = null;
   const total = lines.join('\n').length, esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -559,7 +559,7 @@ function ready() {
     bar.textContent = '[' + '#'.repeat(f) + ' '.repeat(20 - f) + ']'; pct.textContent = String(Math.round(e * 100)).padStart(3, '0') + '%';
     if (e >= 1 && !wel) { wel = document.createElement('div'); wel.className = 'welcome'; wel.setAttribute('data-i18n-skip', ''); wel.textContent = 'Welcome to my website'; bar.parentNode.appendChild(wel); }
     if (k < 1) requestAnimationFrame(step);
-    else { loader.classList.add('done'); setTimeout(() => { unlock(); ready(); }, 800); setTimeout(() => loader.remove(), 1900); }
+    else setTimeout(() => { loader.classList.add('done'); setTimeout(() => { unlock(); ready(); }, 250); setTimeout(() => loader.remove(), 800); }, 280);
   })(t0);
 })();
 
