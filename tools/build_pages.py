@@ -49,15 +49,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261028a">
+<link rel="stylesheet" href="style.css?v=20261028c">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261028a"></script>
-<script src="script.js?v=20261028a"></script>
+<script src="i18n.js?v=20261028c"></script>
+<script src="script.js?v=20261028c"></script>
 </body>
 </html>
 '''
@@ -285,10 +285,10 @@ def wk(role, when, title, inst, place, mode=None, note=None, pics=None):
     pc = ('<div class="wk-pics">' + ''.join(f'<img src="gallery/t/{f}.webp" alt="{a}" loading="lazy" width="480" height="360">' for f, a in pics) + '</div>') if pics else ''
     return f'<article class="wk reveal"><div class="when"><span class="badge">{glyph}{role}</span><span translate="no">{when}</span></div><div><h3 translate="no">{title}</h3><p translate="no"><b>{inst}</b></p><p translate="no">{place}</p>{(m and "<p>"+m+"</p>")}{n}{pc}</div></article>'
 y2025 = wk('Conducted', '10-16 October 2025', 'Introduction to Numerical Weather Prediction Models and Weather Research and Forecasting Model as a tool for Extreme Event Analysis', 'College of Climate Change and Environmental Studies, Kerala Agricultural University', 'Vellanikkara, Thrissur, Kerala', 'Online') + \
-        wk('Conducted', '03-07 February 2025', 'Introduction to Disaster Mitigation &amp; Management, Climate Change and California Wildfire Analysis', 'Department of Environmental Studies, Kannur University', 'Mangattuparamba Campus', 'Offline')
+        wk('Conducted', '03-07 February 2025', 'Introduction to Disaster Mitigation &amp; Management, Climate Change and California Wildfire Analysis', 'Department of Environmental Studies, Kannur University', 'Mangattuparamba Campus', 'Offline', None, [('WORK_002_01', 'Blackboard announcing the lecture series on climate change at Kannur University'), ('WORK_002_02', 'Classroom during the lecture series at Kannur University'), ('WORK_002_04', 'Lecture during the series at Kannur University')])
 y2024 = wk('Conducted', '21-25 October 2024', 'Python Essentials: Foundations of Programming, Data Structures, and Analysis', 'Department of Environmental Sciences, School of Basic Sciences and Research, Sharda University', 'Greater Noida, Uttar Pradesh, India') + \
         wk('Conducted', '14-20 October 2024', 'System for Unprecedented Rainfall-induced Landslide Early Warning Techniques (SURE-ALERT), Day 02, Hands-on Session on WRF Model', 'Department of Earth and Environmental Sciences, Indian Institute of Science Education and Research (IISER) Mohali', 'Mohali, Punjab, India') + \
-        wk('Conducted', '24-25 September 2024', 'Python Essentials: Foundations of Programming, Data Structures, and Analysis', 'School of Environmental Studies, Cochin University of Science and Technology (CUSAT)', 'Cochin, Kerala, India', None, None, [('WORK_009_01', 'Lecture hall during the Python Essentials workshop at CUSAT'), ('WORK_009_06', 'Presenting during the Python Essentials workshop at CUSAT')]) + \
+        wk('Conducted', '24-25 September 2024', 'Python Essentials: Foundations of Programming, Data Structures, and Analysis', 'School of Environmental Studies, Cochin University of Science and Technology (CUSAT)', 'Cochin, Kerala, India', None, None, [('WORK_009_01', 'Lecture hall during the Python Essentials workshop at CUSAT'), ('WORK_009_06', 'Presenting during the Python Essentials workshop at CUSAT'), ('WORK_009_04', 'Stage and lectern during the Python Essentials workshop at CUSAT')]) + \
         wk('Conducted', '31 January - 08 February 2024', 'R language and Origin Pro', 'School of Environmental Studies, CUSAT', 'Cochin, Kerala, India')
 y2023 = wk('Conducted', '16-20 October 2023', 'Hands-on Workshop on Weather Prediction and Climate Model', 'Department of Architecture and Planning, IIT Roorkee', 'IIT Roorkee, Uttarakhand, India', None, 'Five-hour lecture with a hands-on session on the WRF model, organised and funded by the Department of Architecture and Planning under the project "Gender oriented adaptive transformation cross-learning for climate change and disaster risk resilience among India, Nepal, Sri Lanka, and Japan".') + \
         wk('Conducted', '7 August - 01 November 2023', 'Origin Pro &amp; PLAXIS 2D', 'Department of Civil Engineering, College of Engineering Roorkee', 'Haridwar, Uttarakhand, India') + \

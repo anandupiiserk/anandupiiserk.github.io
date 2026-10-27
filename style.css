@@ -1044,3 +1044,7 @@ html[data-theme="light"] #term-out .ln b { color: #15803d; }
 html[data-theme="light"] .tprog { color: #166534; } html[data-theme="light"] .tprog #l-pct { color: #0f172a; }
 html[data-theme="light"] .cur { background: #15803d; }
 html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
+
+/* workshop photos: equal tiles, up to three per row */
+.wk-pics { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; max-width: 800px; }
+.wk-pics img { width: 100%; max-width: none; aspect-ratio: 16 / 9; object-fit: cover; }
