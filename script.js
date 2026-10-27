@@ -11,6 +11,7 @@ const GEN = ++window.__gen;
    EDIT THIS BLOCK FIRST: your name, links and pages.
    Every page reads from here, so you change things once.
    ========================================================= */
+/* @stamp: site data (menu, social links) counts for the Last Updated time of every page */
 const SITE = {
   name: 'Anandu P.',
   initials: 'AP',
@@ -37,6 +38,7 @@ const SITE = {
     { label: 'Email', brand: '#d9902a',          icon: 'mail',         url: 'mailto:anandupiiserk@gmail.com' }
   ]
 };
+/* @endstamp */
 
 
 (function () {
@@ -118,6 +120,7 @@ let toastEl, toastTimer;
 function toast(msg, ms) { toastEl.textContent = tr(msg); toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms || 2200); }
 
 /* ---------- Shared chrome ---------- */
+/* @stamp: header and footer */
 function socialsHTML(noMail) {
   return SITE.socials.filter(s => !(noMail && s.icon === 'mail')).map(s => `<a class="soc" href="${s.url}" target="${s.url.startsWith('mailto') ? '_self' : '_blank'}" rel="noopener noreferrer" aria-label="${s.label}" data-label="${s.label}" style="--bc:${s.brand}">${ICONS[s.icon]}</a>`).join('');
 }
@@ -181,6 +184,7 @@ function buildChrome() {
     <div class="toast" id="toast" role="status" aria-live="polite"></div>`);
   toastEl = $('#toast');
 }
+/* @endstamp */
 buildChrome();
 /* terminal-style header: type the name slowly, hold, backspace slowly, retype, loop */
 (function typedBrand() {

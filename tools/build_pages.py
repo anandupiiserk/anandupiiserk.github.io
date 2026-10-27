@@ -12,12 +12,19 @@ import hashlib, json, re, datetime
 STAMPS = os.path.join(HERE, 'page_stamps.json')
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 def stamp(file, html):
-    """Last-updated time of one page (IST). It changes only when that page's own content changes: the hash ignores the cache-busting ?v= strings, and the gallery page also hashes its captions and photo list."""
+    """Last-updated time of one page (IST). It changes when the page's own content changes, or when the shared header, footer or menu text in script.js changes (that shows on every page). Styling, behaviour code and translations do not count. The hash ignores the cache-busting ?v= strings, and the gallery page also hashes its captions and photo list."""
     h = re.sub(r'\?v=[0-9a-z]+', '', html)
     if file == 'gallery.html':
         for extra in ('captions.txt', 'manifest.json'):
             try: h += open(os.path.join(ROOT, 'gallery', extra), encoding='utf-8').read()
             except OSError: pass
+    # Header, footer, menu and social buttons are written by script.js. The parts between "@stamp" and "@endstamp" comments count for every page:
+    # change one letter there and every page gets a new time. Styling, behaviour code and translations do not count.
+    try:
+        js = open(os.path.join(ROOT, 'script.js'), encoding='utf-8').read()
+        parts = re.findall(r'/\* @stamp[^*]*\*/(.*?)/\* @endstamp \*/', js, flags=re.S)
+        h += ''.join(parts) if parts else js
+    except OSError: pass
     digest = hashlib.sha256(h.encode('utf-8')).hexdigest()
     try: db = json.load(open(STAMPS))
     except (OSError, ValueError): db = {}
