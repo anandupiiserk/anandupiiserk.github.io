@@ -1021,3 +1021,26 @@ img, a { -webkit-user-drag: none; }
 /* photos under a workshop entry */
 .wk-pics { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
 .wk-pics img { display: block; width: min(100%, 250px); height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+
+/* boot screen follows the theme: black with green terminal text in dark, white with dark text in light */
+#loader .panel { background: #040704; }
+#loader .l-content { color: #d6f5df; }
+.term { background: #020502; border-color: rgba(80,255,150,.28); box-shadow: 0 30px 80px rgba(0,0,0,.65), 0 0 40px rgba(60,220,130,.08); }
+.tbar { border-bottom-color: rgba(80,255,150,.2); color: #8fcba6; }
+.tbody { color: #43d98a; }
+#term-out .cmd { color: #8dffbc; }
+#term-out .ln b { color: #b6ff9a; }
+.tprog { color: #43d98a; } .tprog #l-pct { color: #d6f5df; }
+.cur { background: #43d98a; }
+.tprog .welcome { color: #fff; text-shadow: 0 0 18px rgba(67,217,138,.55); }
+
+html[data-theme="light"] #loader .panel { background: #f4f7fa; }
+html[data-theme="light"] #loader .l-content { color: #14301f; }
+html[data-theme="light"] .term { background: #ffffff; border-color: rgba(15,30,55,.28); box-shadow: 0 24px 60px rgba(15,30,55,.16); }
+html[data-theme="light"] .tbar { border-bottom-color: rgba(15,30,55,.14); color: #475569; }
+html[data-theme="light"] .tbody { color: #14532d; }
+html[data-theme="light"] #term-out .cmd { color: #0b2a17; font-weight: 600; }
+html[data-theme="light"] #term-out .ln b { color: #15803d; }
+html[data-theme="light"] .tprog { color: #166534; } html[data-theme="light"] .tprog #l-pct { color: #0f172a; }
+html[data-theme="light"] .cur { background: #15803d; }
+html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
