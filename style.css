@@ -1052,3 +1052,17 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 .wk-pics img[data-full] { cursor: zoom-in; transition: transform .3s var(--ease), box-shadow .3s; } .wk-pics img[data-full]:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,.18); }
 #wk-lb img { max-height: 86vh; max-width: 92vw; }
 #wk-lb [hidden] { display: none; }
+
+/* appointment request */
+.appt { margin-top: 12px; } .appt-note { color: var(--muted); max-width: 760px; margin: 0 0 18px; }
+.appt-cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.appt-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; } .appt-nav b { font-weight: 600; letter-spacing: .04em; } .appt-nav .btn { padding: 6px 14px; min-width: 0; }
+.appt-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.appt-cal .wd { text-align: center; font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; color: var(--muted); padding: 4px 0; }
+.ad, .as { border: 1px solid var(--line2); background: var(--surface); color: var(--text); border-radius: 8px; font: inherit; cursor: pointer; transition: .2s; }
+.ad { aspect-ratio: 1; font-size: .92rem; } .ad:hover:not(:disabled), .as:hover { border-color: var(--text); background: var(--hover); }
+.ad.off { opacity: .32; cursor: not-allowed; background: none; } .ad.on, .as.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+.apd { margin: 18px 0 8px; font-weight: 600; } .apt { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; } .as { padding: 9px 0; font-family: var(--mono); font-size: .86rem; }
+.appt-sel { font-weight: 600; margin-bottom: 14px; padding: 10px 12px; border: 1px dashed var(--line2); border-radius: 8px; }
+@media (max-width: 820px) { .appt-cols { grid-template-columns: 1fr; gap: 24px; } }
+.appt-len { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-bottom: 18px; } .appt-len .lbl-s { font-weight: 600; } .rd { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; } .rd input { width: auto; accent-color: var(--text); }

@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#0c0a09">
 <title>Contact | Anandu P.</title>
 <meta name="description" content="Email and profiles on other platforms.">
-<meta name="last-updated" content="27-October-2026|18:23:33">
+<meta name="last-updated" content="29-October-2026|11:47:23">
 <script>try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}catch(e){}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='o' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ff9a1f'/%3E%3Cstop offset='1' stop-color='%23e8310f'/%3E%3C/linearGradient%3E%3ClinearGradient id='i' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ffe76a'/%3E%3Cstop offset='1' stop-color='%23ffa400'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23o)' d='M16 1.5C17 7 22.5 9.5 24 15.5C25.5 21.5 21.8 29.5 16 30C10 30 6.3 24.6 7.8 18.6C8.4 16.2 9.8 14.6 11 12.4C12 15 13.2 15.9 14.3 15.6C15.5 12.4 14 6 16 1.5Z'/%3E%3Cpath fill='url(%23i)' d='M16.6 16.2C17.6 19.2 20.2 20.8 20 24.2C19.8 26.8 18.2 28.4 16 28.4C13.5 28.4 12 26.3 12.5 23.8C12.9 22 14.4 21.2 15.1 19.4C15.5 18.4 16.2 17.6 16.6 16.2Z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Malayalam:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261029b">
+<link rel="stylesheet" href="style.css?v=20261029f">
 </head>
 <body data-page="contact">
 <main>
@@ -54,12 +54,31 @@
 </form>
 </div>
 </div>
-<div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Profiles</div>
+<div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Request an appointment</div>
+<div class="appt reveal" id="appt" data-to="anandupiiserk@gmail.com" data-days="1,2,3,4,5" data-start="10:00" data-end="18:00" data-step="30" data-lens="30,60" data-months="2" data-lead="2" data-blocked="2026-10-31/2026-11-06,2026-11-08,2026-11-24,2026-12-25,2027-01-26,2027-03-10,2027-03-23,2027-03-26,2027-04-15,2027-04-19,2027-05-17,2027-05-20,2027-06-16,2027-08-25">
+  <p class="appt-note">Appointments of 30 or 60 minutes, Monday to Friday, 10:00 to 18:00 Indian Standard Time (IST), over the next two months. Weekends, public holidays and Kerala holidays such as Onam are not available. Choose a length, a day and a time, add your details and send the request. The slot is confirmed by email once I reply.</p>
+  <div class="frow appt-len"><span class="lbl-s">Length</span><label class="rd"><input type="radio" name="aplen" value="30" checked> 30 minutes</label><label class="rd"><input type="radio" name="aplen" value="60"> 60 minutes</label></div>
+  <div class="appt-cols">
+    <div class="appt-pick">
+      <div class="appt-nav"><button type="button" class="btn ghost" id="ap-prev" aria-label="Previous month">&lsaquo;</button><b id="ap-month" data-i18n-skip></b><button type="button" class="btn ghost" id="ap-next" aria-label="Next month">&rsaquo;</button></div>
+      <div class="appt-cal" id="ap-cal" role="grid" aria-label="Choose a day"></div>
+      <div class="appt-slots" id="ap-slots" aria-live="polite"></div>
+    </div>
+    <form class="cform appt-form" id="ap-form" novalidate>
+      <div class="appt-sel" id="ap-sel" data-i18n-skip>No slot chosen yet</div>
+      <div class="frow"><label for="ap-name">Your name</label><input id="ap-name" type="text" autocomplete="name" required></div>
+      <div class="frow"><label for="ap-email">Your email</label><input id="ap-email" type="email" autocomplete="email" required></div>
+      <div class="frow"><label for="ap-topic">What would you like to discuss?</label><textarea id="ap-topic" rows="3" required></textarea></div>
+      <div class="fact"><button class="btn" type="submit" id="ap-send">Request appointment</button><span class="fstat" id="ap-stat" role="status" aria-live="polite"></span></div>
+    </form>
+  </div>
+</div>
+<div class="eyebrow reveal" style="margin-top:36px"><span class="n">05</span> Profiles</div>
 <div data-social-rows></div>
 </div></div></section>
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261029b"></script>
-<script src="script.js?v=20261029b"></script>
+<script src="i18n.js?v=20261029f"></script>
+<script src="script.js?v=20261029f"></script>
 </body>
 </html>

@@ -774,6 +774,7 @@ else (function loop() {
   $$('.chart-card').forEach(c => cio.observe(c));
 })();
 
+/* @pagestamp gallery.html */
 /* ---------- Gallery: reads gallery/captions.txt, finds the image files, filters by section, lightbox ---------- */
 (function () {
   const host = $('#gallery'); if (!host) return;
@@ -982,7 +983,9 @@ else (function loop() {
   lb.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
   lb.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
 })();
+/* @endpagestamp */
 
+/* @pagestamp workshops.html */
 /* ---------- Workshops page: click a photo to enlarge (full-quality original, arrows within the same workshop) ---------- */
 (function () {
   const groups = $$('.wk-pics'); if (!groups.length) return;
@@ -1014,6 +1017,63 @@ else (function loop() {
   document.addEventListener('keydown', e => { if (!box.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1); });
   addEventListener('pagehide', close);
 })();
+/* @endpagestamp */
+
+/* @pagestamp contact.html */
+/* ---------- Contact: appointment request (30-minute slots, rolling window, IST). Busy dates come from data-blocked on the page. ---------- */
+(function () {
+  const root = $('#appt'); if (!root) return;
+  const D = root.dataset, DAYS = D.days.split(',').map(Number), STEP = +D.step || 30, hm = t => { const x = t.split(':').map(Number); return x[0] * 60 + x[1]; }, T0 = hm(D.start), T1 = hm(D.end);
+  let LEN = 30; const lenNow = () => { const r = $('input[name="aplen"]:checked', root); return r ? +r.value : 30; };
+  const BLK = (D.blocked || '').split(',').filter(Boolean).map(r => r.split('/'));
+  const pad2 = n => String(n).padStart(2, '0'), ymd = d => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  /* "today" in IST regardless of the visitor's own time zone */
+  const nowIST = () => new Date(Date.now() + 330 * 60000 + new Date().getTimezoneOffset() * 60000);
+  const today = nowIST(), first = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (+D.lead || 0)), last = new Date(today.getFullYear(), today.getMonth() + (+D.months || 2), today.getDate());
+  const blocked = d => BLK.some(([a, b]) => ymd(d) >= a && ymd(d) <= (b || a));
+  const open = d => d >= first && d <= last && DAYS.includes(d.getDay()) && !blocked(d);
+  const cal = $('#ap-cal'), slots = $('#ap-slots'), mon = $('#ap-month'), sel = $('#ap-sel'), stat = $('#ap-stat');
+  const loc = () => { let l = document.documentElement.lang || 'en'; return l === 'en' ? 'en-GB' : l; };
+  let chosen = null, day = null, fo = new Date(first); while (fo <= last && !open(fo)) fo.setDate(fo.getDate() + 1); /* start on the month of the first bookable day */
+  let view = new Date(fo.getFullYear(), fo.getMonth(), 1);
+  const fmtD = d => { try { return d.toLocaleDateString(loc(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ymd(d); } };
+  function drawCal() {
+    const y = view.getFullYear(), m = view.getMonth(); let h = '';
+    try { mon.textContent = view.toLocaleDateString(loc(), { month: 'long', year: 'numeric' }); } catch (e) { mon.textContent = (m + 1) + '/' + y; }
+    for (let k = 0; k < 7; k++) { const wd = new Date(2024, 0, 7 + k); let n; try { n = wd.toLocaleDateString(loc(), { weekday: 'short' }); } catch (e) { n = 'SMTWTFS'[k]; } h += `<span class="wd">${n}</span>`; }
+    const lead = new Date(y, m, 1).getDay(); for (let k = 0; k < lead; k++) h += '<span></span>';
+    const nd = new Date(y, m + 1, 0).getDate();
+    for (let n = 1; n <= nd; n++) { const d = new Date(y, m, n), ok = open(d); h += `<button type="button" class="ad${ok ? '' : ' off'}${day && ymd(day) === ymd(d) ? ' on' : ''}" data-d="${ymd(d)}" ${ok ? '' : 'disabled'}>${n}</button>`; }
+    cal.innerHTML = h;
+    $('#ap-prev').disabled = view <= new Date(first.getFullYear(), first.getMonth(), 1); $('#ap-next').disabled = view >= new Date(last.getFullYear(), last.getMonth(), 1);
+  }
+  function drawSlots() {
+    if (!day) { slots.innerHTML = ''; return; }
+    let h = `<div class="apd">${fmtD(day)}</div><div class="apt">`;
+    for (let t = T0; t + LEN <= T1; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
+    slots.innerHTML = h + '</div>';
+  }
+  cal.addEventListener('click', e => { const b = e.target.closest('.ad'); if (!b || b.disabled) return; const [y, m, n] = b.dataset.d.split('-').map(Number); day = new Date(y, m - 1, n); chosen = null; sel.textContent = tr('No slot chosen yet'); drawCal(); drawSlots(); });
+  slots.addEventListener('click', e => {
+    const b = e.target.closest('.as'); if (!b) return; chosen = ymd(day) + ' ' + b.dataset.t;
+    const t = b.dataset.t.split(':').map(Number), end = t[0] * 60 + t[1] + LEN; sel.textContent = fmtD(day) + ', ' + b.dataset.t + ' to ' + pad2(Math.floor(end / 60)) + ':' + pad2(end % 60) + ' IST'; drawSlots();
+  });
+  $$('input[name="aplen"]', root).forEach(r => r.addEventListener('change', () => { LEN = lenNow(); chosen = null; sel.textContent = tr('No slot chosen yet'); drawSlots(); }));
+  $('#ap-prev').addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); drawCal(); });
+  $('#ap-next').addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); drawCal(); });
+  $('#ap-form').addEventListener('submit', e => {
+    e.preventDefault(); const say = (m, bad) => { stat.textContent = tr(m); stat.classList.toggle('bad', !!bad); };
+    const name = $('#ap-name').value.trim(), email = $('#ap-email').value.trim(), topic = $('#ap-topic').value.trim();
+    if (!chosen) { say('Please choose a day and a time.', true); return; }
+    if (!name || !email || !topic) { say('Please fill in all fields.', true); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Enter a valid email address.', true); return; }
+    const t = chosen.split(' ')[1].split(':').map(Number), end = t[0] * 60 + t[1] + LEN, when = chosen.split(' ')[0] + ', ' + chosen.split(' ')[1] + ' to ' + pad2(Math.floor(end / 60)) + ':' + pad2(end % 60) + ' IST';
+    const subject = `Appointment request: ${when}`, body = `Requested slot (${LEN} minutes): ${when}\nName: ${name}\nEmail: ${email}\n\nTopic:\n${topic}`;
+    say('Opening your email app.'); location.href = `mailto:${D.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+  drawCal();
+})();
+/* @endpagestamp */
 
 /* ---------- Compare slider and spotlight ---------- */
 (function () {
