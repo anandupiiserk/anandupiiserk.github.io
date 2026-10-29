@@ -52,15 +52,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261029g">
+<link rel="stylesheet" href="style.css?v=20261029h">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261029g"></script>
-<script src="script.js?v=20261029g"></script>
+<script src="i18n.js?v=20261029h"></script>
+<script src="script.js?v=20261029h"></script>
 </body>
 </html>
 '''
@@ -343,6 +343,8 @@ ADDR_BLOCK = ADDR_BLOCK.replace('@@H@@', ADDR_HTML).replace('@@C@@', ADDR_COPY).
 # Holidays the appointment picker never offers (weekends are excluded by the picker itself). Days away are kept in tools/unavailable.json (python3 tools/site.py block ...). Sources: Kerala Government holiday list 2026 (Onmanorama, Hono),
 # Central Government gazetted holidays 2027 (DoPT list via StaffNews). Guru Nanak Jayanti 2026 (24 Nov) is blocked as a precaution, not confirmed in the sources.
 # Kerala holidays for 2027 (Onam, Vishu and others) are not published yet: ADD THEM when the Kerala list is out. The build prints a reminder after 31 Dec 2026.
+# Web app URL of tools/google/appointments.gs after deployment (ends with /exec). Empty = visitors' email app opens instead.
+APPT_ENDPOINT = ''
 APPT_BLOCKED = [
     '2026-11-08', '2026-11-24', '2026-12-25',  # Deepavali, Guru Nanak Jayanti, Christmas
     '2027-01-26', '2027-03-10', '2027-03-23', '2027-03-26', '2027-04-15', '2027-04-19', '2027-05-17', '2027-05-20', '2027-06-16', '2027-08-25',
@@ -379,7 +381,7 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 </div>
 </div>
 <div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Request an appointment</div>
-<div class="appt reveal" id="appt" data-to="anandupiiserk@gmail.com" data-days="1,2,3,4,5" data-start="10:00" data-end="18:00" data-step="30" data-lens="30,60" data-months="2" data-lead="2" data-blocked="@@BLOCKED@@">
+<div class="appt reveal" id="appt" data-to="anandupiiserk@gmail.com" data-endpoint="@@APPTEP@@" data-days="1,2,3,4,5" data-start="10:00" data-end="18:00" data-step="30" data-lens="30,60" data-months="2" data-lead="2" data-blocked="@@BLOCKED@@">
   <p class="appt-note">Appointments of 30 or 60 minutes, Monday to Friday, 10:00 to 18:00 Indian Standard Time (IST), over the next two months. Weekends, public holidays and days when I am away are not available. Choose a length, a day and a time, add your details and send the request. The slot is confirmed by email once I reply.</p>
   <div class="frow appt-len"><span class="lbl-s">Length</span><label class="rd"><input type="radio" name="aplen" value="30" checked> 30 minutes</label><label class="rd"><input type="radio" name="aplen" value="60"> 60 minutes</label></div>
   <div class="appt-cols">
@@ -399,7 +401,7 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 </div>
 <div class="eyebrow reveal" style="margin-top:36px"><span class="n">05</span> Profiles</div>
 <div data-social-rows></div>
-</div>'''.replace('@@ADDRBLOCK@@', ADDR_BLOCK).replace('@@BLOCKED@@', ','.join(APPT_BLOCKED + [x['range'] for x in json.load(open(os.path.join(ROOT, 'tools', 'unavailable.json')))])))
+</div>'''.replace('@@ADDRBLOCK@@', ADDR_BLOCK).replace('@@APPTEP@@', APPT_ENDPOINT).replace('@@BLOCKED@@', ','.join(APPT_BLOCKED + [x['range'] for x in json.load(open(os.path.join(ROOT, 'tools', 'unavailable.json')))])))
 page('contact.html', 'contact', f'Contact | {NAME}', 'Email and profiles on other platforms.', contact)
 
 print('written:', sorted(f for f in os.listdir(OUT)))
