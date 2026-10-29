@@ -6,6 +6,7 @@ Run it from any folder:   python3 tools/site.py <command> [options]
 Commands
   build            Regenerate everything: i18n.js, gallery thumbnails and manifest, all HTML pages.
   bump             Raise the cache-busting version string (the ?v=... on style.css, script.js, i18n.js), then build.
+  block START [END]  Block appointment days when I am away (YYYY-MM-DD, optional --note). unblock START [END] removes it; blocked lists them.
   touch PAGES      Set the Last Updated time of pages to now (about contact ... or all). For visible changes made only in script.js or style.css, which the automatic stamp cannot see.
   photos ID files  Resize photos to the site standard and name them for a gallery carousel or single photo.
   check            Static checks: em dash, PhD spelling, captions versus files, version strings, sizes.
@@ -71,6 +72,24 @@ def cmd_bump(a):
     print('version', m.group(1) + m.group(2), '->', new)
     cmd_build()
 
+
+# ---------------------------------------------------------------- block / unblock / blocked
+UNAV = os.path.join(HERE, 'unavailable.json')
+def _unav(): return json.load(open(UNAV))
+def _date(x): datetime.date.fromisoformat(x); return x
+def cmd_block(a):
+    """Days when the appointment picker offers nothing (travel, leave). block 2026-12-10 [2026-12-14] [--note "Conference"]."""
+    s, e = _date(a.start), _date(a.end or a.start)
+    if e < s: print('end date is before start date'); return 1
+    db = _unav(); db.append({'range': s if s == e else s + '/' + e, 'note': a.note or ''}); json.dump(db, open(UNAV, 'w'), indent=1)
+    print('Blocked', s if s == e else s + ' to ' + e); cmd_build()
+def cmd_unblock(a):
+    r = a.start if not a.end else a.start + '/' + a.end; db = _unav(); new = [x for x in db if x['range'] != r]
+    if len(new) == len(db): print('no such blocked range:', r, '(see: python3 tools/site.py blocked)'); return 1
+    json.dump(new, open(UNAV, 'w'), indent=1); print('Unblocked', r); cmd_build()
+def cmd_blocked(a):
+    for x in _unav(): print(x['range'], '  ', x.get('note', ''))
+    print('(public holidays are listed in tools/build_pages.py under APPT_BLOCKED)')
 
 # ---------------------------------------------------------------- touch
 def cmd_touch(a):
@@ -243,6 +262,9 @@ def main():
     sub = ap.add_subparsers(dest='cmd', required=True)
     sub.add_parser('build').set_defaults(f=cmd_build)
     sub.add_parser('bump').set_defaults(f=cmd_bump)
+    bl = sub.add_parser('block'); bl.set_defaults(f=cmd_block); bl.add_argument('start'); bl.add_argument('end', nargs='?'); bl.add_argument('--note', default='')
+    ub = sub.add_parser('unblock'); ub.set_defaults(f=cmd_unblock); ub.add_argument('start'); ub.add_argument('end', nargs='?')
+    sub.add_parser('blocked').set_defaults(f=cmd_blocked)
     tc = sub.add_parser('touch'); tc.set_defaults(f=cmd_touch); tc.add_argument('pages', nargs='+', help='page names (home, about, research, publications, workshops, gallery, contact) or all')
     ph = sub.add_parser('photos'); ph.set_defaults(f=cmd_photos)
     ph.add_argument('id'); ph.add_argument('files', nargs='+')
