@@ -1030,12 +1030,17 @@ else (function loop() {
   /* "today" in IST regardless of the visitor's own time zone */
   const nowIST = () => new Date(Date.now() + 330 * 60000 + new Date().getTimezoneOffset() * 60000);
   const today = nowIST(), first = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (+D.lead || 0)), last = new Date(today.getFullYear(), today.getMonth() + (+D.months || 2), today.getDate());
-  const blocked = d => BLK.some(([a, b]) => ymd(d) >= a && ymd(d) <= (b || a));
+  const EP = D.endpoint || ''; let BUSY = [], OFF = new Set(), live = false;   /* live = availability and booking go through the Google Calendar script */
+  const blocked = d => BLK.some(([a, b]) => ymd(d) >= a && ymd(d) <= (b || a)) || OFF.has(ymd(d));
   const open = d => d >= first && d <= last && DAYS.includes(d.getDay()) && !blocked(d);
+  const stamp = (d, lab) => Date.parse(ymd(d) + 'T' + lab + ':00+05:30');
+  const free = (d, lab, len) => { const s = stamp(d, lab), e = s + len * 60000; return s > Date.now() + 24 * 3600e3 && !BUSY.some(([a, b]) => s < b && e > a); };
+  const anyFree = d => { if (!live) return true; for (let t = T0; t + 30 <= T1; t += STEP) if (free(d, pad2(Math.floor(t / 60)) + ':' + pad2(t % 60), 30)) return true; return false; };
   const cal = $('#ap-cal'), slots = $('#ap-slots'), mon = $('#ap-month'), sel = $('#ap-sel'), stat = $('#ap-stat');
   const loc = () => { let l = document.documentElement.lang || 'en'; return l === 'en' ? 'en-GB' : l; };
-  let chosen = null, day = null, fo = new Date(first); while (fo <= last && !open(fo)) fo.setDate(fo.getDate() + 1); /* start on the month of the first bookable day */
-  let view = new Date(fo.getFullYear(), fo.getMonth(), 1);
+  let chosen = null, day = null, view = new Date(first.getFullYear(), first.getMonth(), 1);
+  const pickView = () => { const fo = new Date(first); while (fo <= last && !(open(fo) && anyFree(fo))) fo.setDate(fo.getDate() + 1); view = new Date(fo.getFullYear(), fo.getMonth(), 1); }; /* start on the month of the first bookable day */
+  pickView();
   const fmtD = d => { try { return d.toLocaleDateString(loc(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ymd(d); } };
   function drawCal() {
     const y = view.getFullYear(), m = view.getMonth(); let h = '';
@@ -1043,14 +1048,14 @@ else (function loop() {
     for (let k = 0; k < 7; k++) { const wd = new Date(2024, 0, 7 + k); let n; try { n = wd.toLocaleDateString(loc(), { weekday: 'short' }); } catch (e) { n = 'SMTWTFS'[k]; } h += `<span class="wd">${n}</span>`; }
     const lead = new Date(y, m, 1).getDay(); for (let k = 0; k < lead; k++) h += '<span></span>';
     const nd = new Date(y, m + 1, 0).getDate();
-    for (let n = 1; n <= nd; n++) { const d = new Date(y, m, n), ok = open(d); h += `<button type="button" class="ad${ok ? '' : ' off'}${day && ymd(day) === ymd(d) ? ' on' : ''}" data-d="${ymd(d)}" ${ok ? '' : 'disabled'}>${n}</button>`; }
+    for (let n = 1; n <= nd; n++) { const d = new Date(y, m, n), ok = open(d) && anyFree(d); h += `<button type="button" class="ad${ok ? '' : ' off'}${day && ymd(day) === ymd(d) ? ' on' : ''}" data-d="${ymd(d)}" ${ok ? '' : 'disabled'}>${n}</button>`; }
     cal.innerHTML = h;
     $('#ap-prev').disabled = view <= new Date(first.getFullYear(), first.getMonth(), 1); $('#ap-next').disabled = view >= new Date(last.getFullYear(), last.getMonth(), 1);
   }
   function drawSlots() {
     if (!day) { slots.innerHTML = ''; return; }
     let h = `<div class="apd">${fmtD(day)}</div><div class="apt">`;
-    for (let t = T0; t + LEN <= T1; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
+    for (let t = T0; t + LEN <= T1; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); if (live && !free(day, lab, LEN)) continue; h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
     slots.innerHTML = h + '</div>';
   }
   cal.addEventListener('click', e => { const b = e.target.closest('.ad'); if (!b || b.disabled) return; const [y, m, n] = b.dataset.d.split('-').map(Number); day = new Date(y, m - 1, n); chosen = null; sel.textContent = tr('No slot chosen yet'); drawCal(); drawSlots(); });
@@ -1068,10 +1073,26 @@ else (function loop() {
     if (!name || !email || !topic) { say('Please fill in all fields.', true); return; }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Enter a valid email address.', true); return; }
     const t = chosen.split(' ')[1].split(':').map(Number), end = t[0] * 60 + t[1] + LEN, when = chosen.split(' ')[0] + ', ' + chosen.split(' ')[1] + ' to ' + pad2(Math.floor(end / 60)) + ':' + pad2(end % 60) + ' IST';
+    if (live) {
+      const btn = $('#ap-send'); btn.disabled = true; say('Sending...');
+      fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ name, email, topic, len: LEN, start: stamp(day, chosen.split(' ')[1]), website: '' }) })
+        .then(r => r.json()).then(r => {
+          if (r.ok) { say('Thank you. Your request has been sent. I will reply by email to confirm.'); chosen = null; sel.textContent = tr('No slot chosen yet'); $('#ap-form').reset(); loadLive(); }
+          else if (r.error === 'taken' || r.error === 'too_soon' || r.error === 'hours') { say('That time is no longer available. Please choose another.', true); chosen = null; sel.textContent = tr('No slot chosen yet'); loadLive(); }
+          else say('Something went wrong. Please email me directly.', true);
+        }).catch(() => say('Something went wrong. Please email me directly.', true)).finally(() => { btn.disabled = false; });
+      return;
+    }
     const subject = `Appointment request: ${when}`, body = `Requested slot (${LEN} minutes): ${when}\nName: ${name}\nEmail: ${email}\n\nTopic:\n${topic}`;
     say('Opening your email app.'); location.href = `mailto:${D.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
-  drawCal();
+  function loadLive() {
+    if (!EP) return;
+    fetch(EP, { cache: 'no-store' }).then(r => r.json()).then(r => {
+      BUSY = (r.busy || []).map(x => [+x[0], +x[1]]); OFF = new Set(r.daysOff || []); live = true; pickView(); drawCal(); drawSlots();
+    }).catch(() => { live = false; });
+  }
+  drawCal(); loadLive();
 })();
 /* @endpagestamp */
 
