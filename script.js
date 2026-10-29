@@ -897,12 +897,12 @@ else (function loop() {
   }
   function apply() {
     let shown = 0;
-    items.forEach(it => { const hide = !it.ok || (filter !== 'all' && it.e.cat.id !== filter); it.el.hidden = hide; if (!hide) { it.el.classList.remove('pop'); void it.el.offsetWidth; it.el.style.animationDelay = Math.min(shown, 14) * 55 + 'ms'; it.el.classList.add('pop'); shown++; } });
+    items.forEach(it => { const hide = !revealed || !it.ok || (filter !== 'all' && it.e.cat.id !== filter); it.el.hidden = hide; if (!hide) { it.el.classList.remove('pop'); void it.el.offsetWidth; it.el.style.animationDelay = Math.min(shown, 14) * 55 + 'ms'; it.el.classList.add('pop'); shown++; } });
     empty.hidden = shown > 0 || !done;
   }
   btns.forEach(b => b.addEventListener('click', () => { btns.forEach(x => x.setAttribute('aria-pressed', x === b)); filter = b.dataset.f; place(); apply(); }));
 
-  let done = false;
+  let done = false, revealed = false; /* tiles stay hidden until every thumbnail is ready, then appear together (no pop-in while loading) */
   (async function init() {
     let text = '';
     try { const r = await fetch(DIR + 'captions.txt', { cache: 'no-cache' }); if (r.ok) text = await r.text(); else console.warn('[gallery] gallery/captions.txt not found (HTTP ' + r.status + ')'); } catch (err) { console.warn('[gallery] could not read gallery/captions.txt', err); }
@@ -923,16 +923,16 @@ else (function loop() {
       while (next < items.length) {
         const it = items[next++], list = await resolve(it.e);
         if (list.length) {
-          const el = build(it.e, list); it.el.replaceWith(el); it.el = el; it.list = list; it.ok = true; okN++;
+          const el = build(it.e, list); el.hidden = !revealed; it.el.replaceWith(el); it.el = el; it.list = list; it.ok = true; okN++;
           const im = el.querySelector('img'), ok = () => { if (im.dataset.d) return; im.dataset.d = 1; loaded++; el.classList.add('ready'); upd(done && loaded >= okN); };
           if (im.complete && im.naturalWidth) ok(); else { im.addEventListener('load', ok); im.addEventListener('error', ok); }
-          if (window.__i18nAdd) window.__i18nAdd(el); wire(it); apply();
+          if (window.__i18nAdd) window.__i18nAdd(el); wire(it);
         }
         proc++; upd();
       }
     };
     await Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]);
-    done = true; apply(); upd(loaded >= okN);
+    done = true; revealed = true; apply(); upd(loaded >= okN);
     items.filter(it => !it.ok).forEach(it => it.el.remove());
   })();
 
