@@ -52,15 +52,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261029h">
+<link rel="stylesheet" href="style.css?v=20261029i">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261029h"></script>
-<script src="script.js?v=20261029h"></script>
+<script src="i18n.js?v=20261029i"></script>
+<script src="script.js?v=20261029i"></script>
 </body>
 </html>
 '''
@@ -344,7 +344,7 @@ ADDR_BLOCK = ADDR_BLOCK.replace('@@H@@', ADDR_HTML).replace('@@C@@', ADDR_COPY).
 # Central Government gazetted holidays 2027 (DoPT list via StaffNews). Guru Nanak Jayanti 2026 (24 Nov) is blocked as a precaution, not confirmed in the sources.
 # Kerala holidays for 2027 (Onam, Vishu and others) are not published yet: ADD THEM when the Kerala list is out. The build prints a reminder after 31 Dec 2026.
 # Web app URL of tools/google/appointments.gs after deployment (ends with /exec). Empty = visitors' email app opens instead.
-APPT_ENDPOINT = ''
+APPT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx4ftUvQ0G2ctvXvvkhwiodbX87pfrSjky8RF_oZxzTygKLmODBvLh-PF8OyzW5EcTk/exec'
 APPT_BLOCKED = [
     '2026-11-08', '2026-11-24', '2026-12-25',  # Deepavali, Guru Nanak Jayanti, Christmas
     '2027-01-26', '2027-03-10', '2027-03-23', '2027-03-26', '2027-04-15', '2027-04-19', '2027-05-17', '2027-05-20', '2027-06-16', '2027-08-25',

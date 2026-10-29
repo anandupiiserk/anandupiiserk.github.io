@@ -71,3 +71,13 @@ python3 tools/site.py serve                       # http://localhost:8799 for lo
 * Content protection is on: right-click, text selection, copy, cut, select all (Ctrl/Cmd+A) and print (Ctrl/Cmd+P and the print dialog) are disabled outside form fields. See `protect()` in `script.js` and the last block of `style.css`. The copy-link, copy-email and share buttons still work. It only deters casual copying; anyone can still read the page source or take screenshots.
 * Right-click opens a small shortcut menu instead of the browser menu (`ctxMenu()` in `script.js`): F / F11 full screen, V voice assistant, and L language change (shown and working only while the voice assistant is on; otherwise the language button is used), and R reset to English (shown whenever the language is not English). The voice start notice also tells the visitor about L and R. The same keys work without the menu, except inside form fields.
 * The keyboard shortcuts for developer tools (F12, Ctrl/Cmd+Shift+I, J, C, Cmd+Option+I) and view source (Ctrl/Cmd+U) are blocked in `protect()`. The browser menu still opens developer tools; this cannot be prevented.
+
+
+## Appointment booking (Contact page)
+
+The picker reads busy times from the Google Calendar of anandupiiserk@gmail.com and adds requests to it, through the Apps Script web app in `tools/google/appointments.gs` (project "Website appointments" in that Google account, deployed as a web app, execute as owner, access anyone). The web app URL is `APPT_ENDPOINT` in `tools/build_pages.py`. If it is empty or unreachable the picker falls back to opening the visitor's email app.
+
+- Block a day: add an all-day event to the Google Calendar (any title). Timed events block only their own time. Google's Indian holiday calendar is also read.
+- Weekends, 10:00 to 18:00 IST, 30 or 60 minutes, the holidays in `APPT_BLOCKED` and the ranges in `tools/unavailable.json` (`python3 tools/site.py block|unblock|blocked`) are enforced on the page.
+- Changing the script: edit it in script.google.com, then Deploy, Manage deployments, edit, New version (the URL stays the same). Keep `tools/google/appointments.gs` in step.
+- Requests appear on the calendar as "REQUEST (pending): name" (orange) and an email goes to the owner and the visitor.

@@ -34,7 +34,7 @@ function doGet(e) {
       if (ev.isAllDayEvent()) {
         // all-day events block every day they cover (end date is exclusive)
         var s = ev.getAllDayStartDate(), t = ev.getAllDayEndDate();
-        for (var d = new Date(s); d < t; d = new Date(d.getTime() + 86400000)) daysOff[Utilities.formatDate(d, 'UTC', 'yyyy-MM-dd')] = 1;
+        for (var d = new Date(s); d < t; d = new Date(d.getTime() + 86400000)) daysOff[Utilities.formatDate(d, TZ, 'yyyy-MM-dd')] = 1;
       } else busy.push([ev.getStartTime().getTime(), ev.getEndTime().getTime()]);
     });
   });
@@ -42,7 +42,7 @@ function doGet(e) {
     var h = CalendarApp.getCalendarById(HOLIDAY_CAL);
     if (h) h.getEvents(now, end).forEach(function (ev) {
       var s = ev.getAllDayStartDate(), t = ev.getAllDayEndDate();
-      for (var d = new Date(s); d < t; d = new Date(d.getTime() + 86400000)) daysOff[Utilities.formatDate(d, 'UTC', 'yyyy-MM-dd')] = 1;
+      for (var d = new Date(s); d < t; d = new Date(d.getTime() + 86400000)) daysOff[Utilities.formatDate(d, TZ, 'yyyy-MM-dd')] = 1;
     });
   } catch (err) { /* holiday calendar not available: ignore */ }
   return json_({ busy: busy, daysOff: Object.keys(daysOff), now: now.getTime() });
