@@ -23,7 +23,10 @@ def stamp(file, html):
     try:
         js = open(os.path.join(ROOT, 'script.js'), encoding='utf-8').read()
         parts = re.findall(r'/\* @stamp[^*]*\*/(.*?)/\* @endstamp \*/', js, flags=re.S)
-        h += ''.join(parts) if parts else js
+        h += ''.join(parts) if parts else re.sub(r'/\* @pagestamp.*?@endpagestamp \*/', '', js, flags=re.S)
+        # Code that belongs to one page (its gallery, photo viewer or appointment picker) counts only for that page: /* @pagestamp gallery.html */ ... /* @endpagestamp */
+        for nm, body in re.findall(r'/\* @pagestamp ([\w.]+) \*/(.*?)/\* @endpagestamp \*/', js, flags=re.S):
+            if nm == file: h += body
     except OSError: pass
     digest = hashlib.sha256(h.encode('utf-8')).hexdigest()
     try: db = json.load(open(STAMPS))
@@ -49,15 +52,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261029b">
+<link rel="stylesheet" href="style.css?v=20261029f">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261029b"></script>
-<script src="script.js?v=20261029b"></script>
+<script src="i18n.js?v=20261029f"></script>
+<script src="script.js?v=20261029f"></script>
 </body>
 </html>
 '''
@@ -336,6 +339,18 @@ ADDR_BLOCK = '''<address class="postal reveal" translate="no">@@H@@</address>
   <div class="apwrap"><button class="btn ghost cbtn" type="button" data-share-addr data-text="@@C@@" data-url="@@U@@" aria-haspopup="true" aria-expanded="false"><span class="bi" data-ic="share"></span>Share address</button></div>
 </div>'''
 ADDR_BLOCK = ADDR_BLOCK.replace('@@H@@', ADDR_HTML).replace('@@C@@', ADDR_COPY).replace('@@U@@', CONTACT_URL)
+
+# Dates the appointment picker never offers (weekends are excluded by the picker itself). Sources: Kerala Government holiday list 2026 (Onmanorama, Hono),
+# Central Government gazetted holidays 2027 (DoPT list via StaffNews). Guru Nanak Jayanti 2026 (24 Nov) is blocked as a precaution, not confirmed in the sources.
+# Kerala holidays for 2027 (Onam, Vishu and others) are not published yet: ADD THEM when the Kerala list is out. The build prints a reminder after 31 Dec 2026.
+APPT_BLOCKED = [
+    '2026-10-31/2026-11-06',  # 10th International Conference on Forest Fire Research, Coimbra (from the calendar)
+    '2026-11-08', '2026-11-24', '2026-12-25',  # Deepavali, Guru Nanak Jayanti, Christmas
+    '2027-01-26', '2027-03-10', '2027-03-23', '2027-03-26', '2027-04-15', '2027-04-19', '2027-05-17', '2027-05-20', '2027-06-16', '2027-08-25',
+]
+import datetime as _dt
+if _dt.date.today() > _dt.date(2026, 12, 31): print('REMINDER: update APPT_BLOCKED with the Kerala 2027 holidays (Onam, Vishu, etc.)')
+
 contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on the platforms below.', 'GET IN TOUCH') + sec('''
 <div class="contact-compact">
 <div class="cgrid">
@@ -364,9 +379,28 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 </form>
 </div>
 </div>
-<div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Profiles</div>
+<div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Request an appointment</div>
+<div class="appt reveal" id="appt" data-to="anandupiiserk@gmail.com" data-days="1,2,3,4,5" data-start="10:00" data-end="18:00" data-step="30" data-lens="30,60" data-months="2" data-lead="2" data-blocked="@@BLOCKED@@">
+  <p class="appt-note">Appointments of 30 or 60 minutes, Monday to Friday, 10:00 to 18:00 Indian Standard Time (IST), over the next two months. Weekends, public holidays and Kerala holidays such as Onam are not available. Choose a length, a day and a time, add your details and send the request. The slot is confirmed by email once I reply.</p>
+  <div class="frow appt-len"><span class="lbl-s">Length</span><label class="rd"><input type="radio" name="aplen" value="30" checked> 30 minutes</label><label class="rd"><input type="radio" name="aplen" value="60"> 60 minutes</label></div>
+  <div class="appt-cols">
+    <div class="appt-pick">
+      <div class="appt-nav"><button type="button" class="btn ghost" id="ap-prev" aria-label="Previous month">&lsaquo;</button><b id="ap-month" data-i18n-skip></b><button type="button" class="btn ghost" id="ap-next" aria-label="Next month">&rsaquo;</button></div>
+      <div class="appt-cal" id="ap-cal" role="grid" aria-label="Choose a day"></div>
+      <div class="appt-slots" id="ap-slots" aria-live="polite"></div>
+    </div>
+    <form class="cform appt-form" id="ap-form" novalidate>
+      <div class="appt-sel" id="ap-sel" data-i18n-skip>No slot chosen yet</div>
+      <div class="frow"><label for="ap-name">Your name</label><input id="ap-name" type="text" autocomplete="name" required></div>
+      <div class="frow"><label for="ap-email">Your email</label><input id="ap-email" type="email" autocomplete="email" required></div>
+      <div class="frow"><label for="ap-topic">What would you like to discuss?</label><textarea id="ap-topic" rows="3" required></textarea></div>
+      <div class="fact"><button class="btn" type="submit" id="ap-send">Request appointment</button><span class="fstat" id="ap-stat" role="status" aria-live="polite"></span></div>
+    </form>
+  </div>
+</div>
+<div class="eyebrow reveal" style="margin-top:36px"><span class="n">05</span> Profiles</div>
 <div data-social-rows></div>
-</div>'''.replace('@@ADDRBLOCK@@', ADDR_BLOCK))
+</div>'''.replace('@@ADDRBLOCK@@', ADDR_BLOCK).replace('@@BLOCKED@@', ','.join(APPT_BLOCKED)))
 page('contact.html', 'contact', f'Contact | {NAME}', 'Email and profiles on other platforms.', contact)
 
 print('written:', sorted(f for f in os.listdir(OUT)))
