@@ -44,7 +44,20 @@ def stamp(file, html):
         db[file] = cur; json.dump(db, open(STAMPS, 'w'), indent=1)
     return cur['t']
 
+LITE = True   # True = only the home page is built as a real page; every other page becomes a tiny static notice. Set False and run build to restore.
+
+
 def page(file, pid, title, desc, body, html_class=''):
+    if LITE and file not in ('home.html', 'index.html'):
+        stub = ('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+                '<meta name="robots" content="noindex"><title>Anandu P.</title></head>'
+                '<body style="margin:0;background:#0c0a09;color:#f4efe9;font-family:Arial,Helvetica,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:24px">'
+                '<div><h1 style="font-weight:600;font-size:1.6rem;margin:0 0 10px">This page is temporarily unavailable</h1>'
+                '<p style="color:#b9b0a6;margin:0 0 22px">Please visit the home page.</p>'
+                '<a href="home.html" style="color:#e8a33d">Go to home</a></div></body></html>')
+        with open(os.path.join(OUT, file), 'w', encoding='utf-8') as f:
+            f.write(stub)
+        return
     cls = f' class="{html_class}"' if html_class else ''
     html = f'''<!DOCTYPE html>
 <html lang="en" data-theme="dark"{cls}>
@@ -58,15 +71,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261030j">
+<link rel="stylesheet" href="style.css?v=20261030k">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261030j"></script>
-<script src="script.js?v=20261030j"></script>
+<script src="i18n.js?v=20261030k"></script>
+<script src="script.js?v=20261030k"></script>
 </body>
 </html>
 '''

@@ -21,6 +21,8 @@ const SITE = {
   formEndpoint: 'https://formspree.io/f/mdeeoqdz', formKey: '',
   /* Gallery switch. false = the gallery page shows a short notice and no photo is fetched anywhere on the site (also stops the quiet background preload). */
   galleryOn: false,
+  /* Lite mode (matches LITE in tools/build_pages.py): only the home page is live, so the menu lists Home only. */
+  lite: true,
   nav: [
     { id: 'home',         href: 'home.html',         label: 'Home',         desc: 'Overview and research focus.' },
     { id: 'about',        href: 'about.html',        label: 'About me',     desc: 'Position, education and research interests.' },
@@ -40,6 +42,7 @@ const SITE = {
     { label: 'Email', brand: '#d9902a',          icon: 'mail',         url: 'mailto:anandupiiserk@gmail.com' }
   ]
 };
+if (SITE.lite) SITE.nav = SITE.nav.filter(n => n.id === 'home');
 /* @endstamp */
 
 

@@ -86,3 +86,6 @@ The picker reads busy times from the Google Calendar of anandupiiserk@gmail.com 
 
 ### Composing emails from the admin portal
 Every contact-message notification has a Reply button (rich editor with attachments) and a Write a new email button. The new-email page starts a fresh conversation with any address, sent as Anandu Prabhakaran; bookmark that page for later use.
+
+### Lite mode (temporary)
+`LITE = True` in tools/build_pages.py and `lite: true` plus `galleryOn: false` in script.js keep only the home page live (other pages become a small notice, no gallery downloads). To restore everything: set LITE = False, lite: false, galleryOn: true, then `python3 tools/site.py bump` and `build`.
