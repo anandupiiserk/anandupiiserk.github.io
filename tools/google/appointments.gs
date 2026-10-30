@@ -81,7 +81,7 @@ var PORTAL_CSS = 'body{margin:0;background:#eef2f8}*{box-sizing:border-box}'
   + 'label.l{display:block;font-weight:bold;font-size:13px;margin:0 0 6px;color:#33415c}.hint{color:#7a8594;font-size:12px;font-weight:normal}'
   + 'input.tx,textarea.tx{width:100%;padding:12px 14px;font:inherit;font-size:15px;border:1.5px solid #d3dbe8;border-radius:10px;background:#fff;color:#1c2430;outline:none;transition:border-color .2s,box-shadow .2s}'
   + 'input.tx:focus,textarea.tx:focus,.ed:focus{border-color:#3b82c4;box-shadow:0 0 0 3px rgba(59,130,196,.18)}textarea.tx{resize:vertical;min-height:130px;line-height:1.5}'
-  + '.acts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}@media(max-width:620px){.acts{grid-template-columns:1fr}}'
+  + '.acts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}@media(max-width:620px){.acts,.cc2{grid-template-columns:1fr !important}}'
   + '.act{border:1.5px solid #e1e8f3;border-radius:14px;padding:16px;background:#fbfcfe}.act h3{margin:0 0 4px;font-size:15px}.act p{margin:0 0 12px;color:#5b6675;font-size:13px;line-height:1.5}'
   + '.b{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 18px;border:0;border-radius:999px;font:inherit;font-weight:bold;font-size:14px;color:#fff;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s,opacity .2s,filter .2s}'
   + '.b:hover{filter:brightness(1.08)}.b:active{transform:scale(.98)}.b:disabled{opacity:.6;cursor:progress}.b.red{background:#c5221f}.b.blue{background:#1f4e9c}.b.auto{width:auto;padding:13px 30px}'
@@ -255,9 +255,9 @@ function editorPage_(mode, p, r) {
   var inner = (reply
       ? '<div class="chips"><span class="chip"><b>' + esc_(r.n) + '</b></span><span class="chip">' + esc_(r.e) + '</span><span class="chip">Sending as Anandu Prabhakaran</span></div>'
         + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
-        + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
+        + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>' + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
       : '<div class="chips"><span class="chip">Sending as <b>Anandu Prabhakaran</b></span><span class="chip">New conversation</span></div>'
-        + '<label class="l" for="to">To</label><input id="to" class="tx" type="email" placeholder="name@example.com" autocomplete="off" style="margin-bottom:14px">'
+        + '<label class="l" for="to">To</label><input id="to" class="tx" placeholder="name@example.com" autocomplete="off" style="margin-bottom:14px">' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
         + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
     + '<label class="l">' + (reply ? 'Your reply' : 'Message') + '</label>'
     + '<div class="tb">'
@@ -290,8 +290,8 @@ function editorPage_(mode, p, r) {
     + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
     + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
-    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out);};'
-      : '.sendNew(' + JSON.stringify(p.sig) + ',document.getElementById("to").value,document.getElementById("sub").value,ed.innerHTML,out);};')
+    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value);};'
+      : '.sendNew(' + JSON.stringify(p.sig) + ',document.getElementById("to").value,document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value);};')
     + '})();<\/script>';
   return reply
     ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner), 'Reply to ' + r.n)
@@ -299,7 +299,14 @@ function editorPage_(mode, p, r) {
 }
 
 // Shared by reply and new-email: builds the styled HTML email and sends it as Anandu Prabhakaran.
-function deliver_(to, subject, bodyHtml, files, quoted) {
+function addrs_(v, label) {
+  var list = String(v || '').split(/[,;\s]+/).filter(function (x) { return x; });
+  list.forEach(function (x) { if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x)) throw new Error(label + ': "' + x + '" is not a valid email address.'); });
+  if (list.length > 20) throw new Error(label + ': too many addresses (max 20).');
+  return list.join(',');
+}
+function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc) {
+  cc = addrs_(cc, 'Cc'); bcc = addrs_(bcc, 'Bcc');
   var blobs = [], total = 0;
   (files || []).forEach(function (f) {
     var bytes = Utilities.base64Decode(f.data); total += bytes.length;
@@ -316,6 +323,8 @@ function deliver_(to, subject, bodyHtml, files, quoted) {
     + '<div style="background:#f7f9fc;padding:14px 28px;text-align:center;color:#7a8594;font-size:12px;border-top:1px solid #e6ebf2">Created with <span style="color:#e0245e;font-size:14px">&#10084;</span> by Anandu Prabhakaran</div></div></div>';
   var opts = { to: to, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: subject, body: plain + (quoted ? '\n\n---\nYour message:\n' + quoted : ''), htmlBody: html };
   if (blobs.length) opts.attachments = blobs;
+  if (cc) opts.cc = cc;
+  if (bcc) opts.bcc = bcc;
   MailApp.sendEmail(opts);
   return blobs.length;
 }
@@ -324,21 +333,21 @@ function sentHtml_(n, to, nb) {
 }
 
 // Called from the reply editor.
-function sendReply(id, sig, subject, bodyHtml, files) {
+function sendReply(id, sig, subject, bodyHtml, files, cc, bcc) {
   if (!id || sign_('reply', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return statusHtml_('Not found', 'This message is no longer stored.', 'info');
   var r = JSON.parse(raw);
-  return sentHtml_(r.n, r.e, deliver_(r.e, subject || 'Re: your message', bodyHtml, files, r.m));
+  return sentHtml_(r.n, r.e, deliver_(r.e, subject || 'Re: your message', bodyHtml, files, r.m, cc, bcc));
 }
 
 // Called from the new-email editor (fresh conversation).
-function sendNew(sig, to, subject, bodyHtml, files) {
+function sendNew(sig, to, subject, bodyHtml, files, cc, bcc) {
   if (sign_('compose', 'new') !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   to = String(to || '').trim();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
-  return sentHtml_('', to, deliver_(to, subject, bodyHtml, files, ''));
+  return sentHtml_('', to, deliver_(to, subject, bodyHtml, files, '', cc, bcc));
 }
 
 /* ---- new request (POST) ---- */
