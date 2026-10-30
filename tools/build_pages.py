@@ -44,11 +44,12 @@ def stamp(file, html):
         db[file] = cur; json.dump(db, open(STAMPS, 'w'), indent=1)
     return cur['t']
 
-LITE = True   # True = only the home page is built as a real page; every other page becomes a tiny static notice. Set False and run build to restore.
+LITE = True   # True = only the pages in LIVE_PAGES are built as real pages; every other page becomes a tiny static notice. Set False and run build to restore.
+LIVE_PAGES = ('home.html', 'index.html', 'about.html')
 
 
 def page(file, pid, title, desc, body, html_class=''):
-    if LITE and file not in ('home.html', 'index.html'):
+    if LITE and file not in LIVE_PAGES:
         stub = ('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
                 '<meta name="robots" content="noindex"><title>Anandu P.</title></head>'
                 '<body style="margin:0;background:#0c0a09;color:#f4efe9;font-family:Arial,Helvetica,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:24px">'
@@ -71,15 +72,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261030l">
+<link rel="stylesheet" href="style.css?v=20261030m">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261030l"></script>
-<script src="script.js?v=20261030l"></script>
+<script src="i18n.js?v=20261030m"></script>
+<script src="script.js?v=20261030m"></script>
 </body>
 </html>
 '''
