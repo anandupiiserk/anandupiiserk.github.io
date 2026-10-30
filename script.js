@@ -1149,7 +1149,7 @@ else (function loop() {
     sendB.textContent = tr('Send OTP'); okB.textContent = tr('Verify'); reB.textContent = tr('Resend');
     let tok = '', exp = 0, vEmail = '', vName = '', timer = 0, cool = 0;
     const lock = on => {
-      [...form.elements].forEach(el => { if (el === emailEl || el === nameEl || box.contains(el)) return; el.disabled = on; });
+      [...form.elements].forEach(el => { if (el === emailEl || el === nameEl || box.contains(el)) return; if (el.type === 'submit') { el.disabled = false; el.classList.toggle('otp-locked', on); el.setAttribute('aria-disabled', on ? 'true' : 'false'); return; } el.disabled = on; });
       emailEl.readOnly = nameEl.readOnly = !on; emailEl.classList.toggle('otp-fixed', !on); nameEl.classList.toggle('otp-fixed', !on);
     };
     const say = (m, cls) => { note.textContent = tr(m); note.className = 'otp-note' + (cls ? ' ' + cls : ''); };
@@ -1201,6 +1201,7 @@ else (function loop() {
       if (err || !r) say('Could not check the OTP. Please try again.', 'bad');
       else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
     }
+    form.addEventListener('click', e => { const sb = e.target.closest && e.target.closest('button[type="submit"]'); if (sb && form.contains(sb) && !live()) { e.preventDefault(); e.stopImmediatePropagation(); toast(key === 'ap' ? 'Verify email to proceed with Appointment - Anandu' : 'Verify email to proceed with Message - Anandu', 4200); } }, true);
     okB.addEventListener('click', verify); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
     inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
     emailEl.addEventListener('input', () => {
