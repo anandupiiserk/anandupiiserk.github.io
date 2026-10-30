@@ -1066,3 +1066,6 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 .appt-sel { font-weight: 600; margin-bottom: 14px; padding: 10px 12px; border: 1px dashed var(--line2); border-radius: 8px; }
 @media (max-width: 820px) { .appt-cols { grid-template-columns: 1fr; gap: 24px; } }
 .appt-len { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-bottom: 18px; } .appt-len .lbl-s { font-weight: 600; } .rd { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; } .rd input { width: auto; accent-color: var(--text); }
+
+.appt-note, .appt-sel { text-align: justify; text-justify: inter-word; hyphens: auto; } .appt-note { max-width: none; }
+.apd { text-align: left; }
