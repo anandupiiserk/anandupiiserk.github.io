@@ -68,9 +68,44 @@ function mail_(heading, intro, rows, buttons, footer) {
     + '</div></div>';
   return h;
 }
-function page_(title, msg) {
-  return HtmlService.createHtmlOutput('<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:48px auto;padding:0 20px;color:#1c2430"><h2>' + esc_(title) + '</h2><p style="line-height:1.6">' + msg + '</p></div>').setTitle(title);
+/* ---- admin portal pages (decline, reply, results) ---- */
+var PORTAL_CSS = 'body{margin:0;background:#eef2f8}*{box-sizing:border-box}'
+  + '.pt{background:#1f4e9c;background-image:linear-gradient(135deg,#183f80,#3b82c4);color:#fff;padding:18px 20px 70px;font-family:Arial,Helvetica,sans-serif}'
+  + '.pt .in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:12px}.pt .lg{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:15px}'
+  + '.pt .t1{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85}.pt .t2{font-size:16px;font-weight:bold;margin-top:2px}'
+  + '.pw{max-width:800px;margin:-48px auto 40px;padding:0 14px;font-family:Arial,Helvetica,sans-serif;color:#1c2430}'
+  + '.cd{background:#fff;border-radius:16px;box-shadow:0 6px 24px rgba(31,78,156,.15);padding:28px}'
+  + '.cd h1{font-size:23px;margin:0 0 4px}.sub{color:#5b6675;font-size:14px;margin:0 0 20px;line-height:1.5}'
+  + '.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}.chip{background:#f1f5fb;border:1px solid #e1e8f3;border-radius:999px;padding:6px 12px;font-size:13px;color:#33415c}.chip b{color:#1c2430}'
+  + '.q{background:#f7f9fc;border-left:4px solid #1f4e9c;border-radius:10px;padding:12px 16px;margin:0 0 20px;font-size:14px;line-height:1.6;max-height:160px;overflow:auto;white-space:normal}.q small{display:block;color:#5b6675;margin-bottom:4px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;font-size:11px}'
+  + 'label.l{display:block;font-weight:bold;font-size:13px;margin:0 0 6px;color:#33415c}.hint{color:#7a8594;font-size:12px;font-weight:normal}'
+  + 'input.tx,textarea.tx{width:100%;padding:12px 14px;font:inherit;font-size:15px;border:1.5px solid #d3dbe8;border-radius:10px;background:#fff;color:#1c2430;outline:none;transition:border-color .2s,box-shadow .2s}'
+  + 'input.tx:focus,textarea.tx:focus,.ed:focus{border-color:#3b82c4;box-shadow:0 0 0 3px rgba(59,130,196,.18)}textarea.tx{resize:vertical;min-height:130px;line-height:1.5}'
+  + '.acts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}@media(max-width:620px){.acts{grid-template-columns:1fr}}'
+  + '.act{border:1.5px solid #e1e8f3;border-radius:14px;padding:16px;background:#fbfcfe}.act h3{margin:0 0 4px;font-size:15px}.act p{margin:0 0 12px;color:#5b6675;font-size:13px;line-height:1.5}'
+  + '.b{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 18px;border:0;border-radius:999px;font:inherit;font-weight:bold;font-size:14px;color:#fff;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s,opacity .2s,filter .2s}'
+  + '.b:hover{filter:brightness(1.08)}.b:active{transform:scale(.98)}.b:disabled{opacity:.6;cursor:progress}.b.red{background:#c5221f}.b.blue{background:#1f4e9c}.b.auto{width:auto;padding:13px 30px}'
+  + '.tb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:#f1f5fb;border:1.5px solid #d3dbe8;border-bottom:0;border-radius:10px 10px 0 0;padding:8px}'
+  + '.tg{display:flex;gap:3px;padding-right:8px;margin-right:2px;border-right:1px solid #d3dbe8}.tg:last-child{border:0}'
+  + '.tb button{border:1px solid transparent;background:transparent;border-radius:6px;min-width:32px;height:32px;padding:0 8px;font-size:14px;cursor:pointer;color:#33415c}.tb button:hover{background:#fff;border-color:#d3dbe8}'
+  + '.tb select{height:32px;border:1px solid #d3dbe8;border-radius:6px;background:#fff;padding:0 6px;font:inherit;font-size:13px;color:#33415c}.tb input[type=color]{width:34px;height:32px;border:1px solid #d3dbe8;border-radius:6px;padding:2px;background:#fff;cursor:pointer}'
+  + '.ed{min-height:260px;border:1.5px solid #d3dbe8;border-radius:0 0 10px 10px;padding:16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;outline:none;background:#fff}'
+  + '.dz{border:2px dashed #c3cfe2;border-radius:12px;padding:18px;text-align:center;color:#5b6675;font-size:14px;cursor:pointer;background:#fbfcfe;transition:.2s}.dz.on{border-color:#3b82c4;background:#eef5fd}.dz b{color:#1f4e9c}'
+  + '.fl{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.fc{display:flex;align-items:center;gap:8px;background:#f1f5fb;border:1px solid #e1e8f3;border-radius:999px;padding:6px 8px 6px 12px;font-size:13px}.fc i{font-style:normal;color:#7a8594}.fc button{border:0;background:#dbe4f2;border-radius:50%;width:20px;height:20px;cursor:pointer;line-height:1;color:#33415c}'
+  + '.msg{margin-top:14px;font-size:14px;line-height:1.5;min-height:20px}.msg.bad{color:#c5221f}'
+  + '.st{text-align:center;padding:14px 4px}.ic{width:68px;height:68px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;background:#2e9d57}.ic.info{background:#3b82c4}.ic.bad{background:#c5221f}'
+  + '.ft{text-align:center;color:#7a8594;font-size:12px;margin-top:18px}.ft span{color:#e0245e;font-size:14px}';
+function shell_(title, sub, inner) {
+  return '<style>' + PORTAL_CSS + '</style><div class="pt"><div class="in"><div class="lg">AP</div><div><div class="t1">Website admin</div><div class="t2">Anandu Prabhakaran</div></div></div></div>'
+    + '<div class="pw"><div class="cd">' + (title ? '<h1>' + title + '</h1>' : '') + (sub ? '<p class="sub">' + sub + '</p>' : '') + inner + '</div>'
+    + '<div class="ft">Created with <span>&#10084;</span> by Anandu Prabhakaran</div></div>';
 }
+function statusHtml_(title, msg, kind) {
+  var sym = kind === 'bad' ? '!' : (kind === 'info' ? 'i' : '&#10003;');
+  return shell_('', '', '<div class="st"><div class="ic ' + (kind || 'ok') + '">' + sym + '</div><h1 style="margin:0 0 8px;font-size:22px">' + esc_(title) + '</h1><p class="sub" style="margin:0">' + msg + '</p></div>');
+}
+function out_(html, title) { return HtmlService.createHtmlOutput(html).setTitle(title || 'Website admin').addMetaTag('viewport', 'width=device-width, initial-scale=1'); }
+function page_(title, msg, kind) { return out_(statusHtml_(title, msg, kind), title); }
 
 /* ---- availability (GET) and approve / decline links ---- */
 function doGet(e) {
@@ -97,10 +132,10 @@ function doGet(e) {
 function act_(p) {
   var action = p.action, id = p.id || '';
   if (action === 'reply') return replyPage_(p);
-  if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.');
+  if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
-  if (!ev) return page_('Already handled', 'This request is no longer on the calendar. It was probably approved or declined already.');
-  if (!/^REQUEST/.test(ev.getTitle())) return page_('Already handled', 'This request was already handled: ' + esc_(ev.getTitle()));
+  if (!ev) return page_('Already handled', 'This request is no longer on the calendar. It was probably approved or declined already.', 'info');
+  if (!/^REQUEST/.test(ev.getTitle())) return page_('Already handled', 'This request was already handled: ' + esc_(ev.getTitle()), 'info');
   var name = ev.getTag('name') || 'the visitor', email = ev.getTag('email') || '', when = whenText_(ev.getStartTime(), ev.getEndTime());
   var len = Math.round((ev.getEndTime().getTime() - ev.getStartTime().getTime()) / 60000);
   if (action === 'approve') {
@@ -131,27 +166,24 @@ function act_(p) {
     }
     return page_('Approved', 'The appointment with ' + esc_(name) + ' on ' + esc_(when) + ' is confirmed. ' + (email ? 'A Google Calendar invitation and a confirmation email were sent to ' + esc_(email) + '.' : 'No email address was stored for this request, so nothing was sent.'));
   }
-  // Decline: show a page with a box for the reason; the reason is sent to the visitor by declineWith()
-  return HtmlService.createHtmlOutput(
-    '<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:40px auto;padding:0 20px;color:#1c2430">'
-    + '<h2 style="margin:0 0 6px">Decline this request</h2>'
-    + '<p style="margin:0 0 16px;color:#5b6675;line-height:1.5">' + esc_(name) + ', ' + esc_(when) + '</p>'
-    + '<label for="r" style="font-weight:bold">Reason (optional, sent to the visitor in the email)</label>'
-    + '<textarea id="r" rows="6" style="width:100%;box-sizing:border-box;margin:8px 0 14px;padding:10px;font:inherit;border:1px solid #c9d0da;border-radius:6px" placeholder="For example: I am travelling that week. Please pick a slot after 9 November."></textarea>'
-    + '<button id="b1" style="padding:11px 18px;border:0;border-radius:6px;background:#c5221f;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;margin:0 8px 8px 0">Block slot and decline</button>'
-    + '<button id="b0" style="padding:11px 18px;border:0;border-radius:6px;background:#1f4e9c;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;margin:0 0 8px 0">Unblock slot and decline</button>'
-    + '<p style="margin:6px 0 0;color:#5b6675;font-size:13px;line-height:1.5">Block keeps this time marked busy on the website (use it when you are not available). Unblock frees the time so someone else can book it. The visitor gets the same email either way.</p>'
-    + '<p id="m" style="margin-top:16px;line-height:1.6"></p>'
-    + '<script>function go(btn,blk){var bs=document.querySelectorAll("button");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Sending...";'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;document.getElementById("m").textContent="Something went wrong. Please try again.";})'
+  // Decline: portal page with a box for the reason and two actions; declineWith() does the work
+  var inner = '<div class="chips"><span class="chip"><b>' + esc_(name) + '</b></span><span class="chip">' + esc_(when) + '</span>' + (email ? '<span class="chip">' + esc_(email) + '</span>' : '') + '</div>'
+    + '<label class="l" for="r">Reason <span class="hint">(optional, included in the email to the visitor)</span></label>'
+    + '<textarea id="r" class="tx" placeholder="For example: I am travelling that week. Please pick a slot after 9 November."></textarea>'
+    + '<div class="acts">'
+    + '<div class="act"><h3>Block this slot</h3><p>Decline and keep the time marked busy on the website. Use this when you are not available.</p><button id="b1" class="b red">Block slot and decline</button></div>'
+    + '<div class="act"><h3>Free this slot</h3><p>Decline and open the time again so someone else can book it.</p><button id="b0" class="b blue">Unblock slot and decline</button></div>'
+    + '</div><div id="m" class="msg"></div>'
+    + '<script>function go(btn,blk){var bs=document.querySelectorAll(".b");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Sending...";'
+    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";})'
     + '.declineWith(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("r").value,blk);}'
-    + 'document.getElementById("b1").onclick=function(){go(this,true);};document.getElementById("b0").onclick=function(){go(this,false);};'
-    + '<\/script></div>').setTitle('Decline request');
+    + 'document.getElementById("b1").onclick=function(){go(this,true);};document.getElementById("b0").onclick=function(){go(this,false);};<\/script>';
+  return out_(shell_('Decline this request', 'The visitor gets a polite email. Choose what happens to the time slot.', inner), 'Decline request');
 }
 
 // Called from the decline page. Verifies the signed link again, removes the request and emails the visitor with the reason.
 function declineWith(id, sig, reason, block) {
-  var wrap = function (title, msg) { return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:48px auto;padding:0 20px;color:#1c2430"><h2>' + esc_(title) + '</h2><p style="line-height:1.6">' + msg + '</p></div>'; };
+  var wrap = function (title, msg) { return statusHtml_(title, msg, /valid|Not found|Already/.test(title) ? 'info' : 'ok'); };
   if (!id || sign_('decline', id) !== sig) return wrap('Link not valid', 'This link is not valid.');
   var ev = CalendarApp.getDefaultCalendar().getEventById(id);
   if (!ev || !/^REQUEST/.test(ev.getTitle())) return wrap('Already handled', 'This request was already approved or declined.');
@@ -206,64 +238,55 @@ function message_(p) {
 /* ---- reply editor (opened from the message notification) ---- */
 function replyPage_(p) {
   var id = p.id || '';
-  if (!id || sign_('reply', id) !== p.sig) return page_('Link not valid', 'This link is not valid.');
+  if (!id || sign_('reply', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
-  if (!raw) return page_('Not found', 'This message is no longer stored (messages are kept for 120 days).');
+  if (!raw) return page_('Not found', 'This message is no longer stored (messages are kept for 120 days).', 'info');
   var r = JSON.parse(raw);
-  var btn = 'border:1px solid #c9d0da;background:#fff;border-radius:5px;padding:5px 9px;font-size:14px;cursor:pointer;margin:0 2px 4px 0;min-width:32px';
   var fonts = ['Arial', 'Georgia', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Courier New', 'Tahoma'];
-  var h = '<div style="font-family:Arial,Helvetica,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#1c2430">'
-    + '<h2 style="margin:0 0 4px">Reply to ' + esc_(r.n) + '</h2>'
-    + '<div style="color:#5b6675;font-size:14px;margin-bottom:12px">' + esc_(r.e) + '. Sent from: Anandu Prabhakaran.</div>'
-    + '<div style="background:#f3f6fb;border-left:4px solid #1f4e9c;border-radius:4px;padding:10px 14px;margin-bottom:16px;font-size:14px;line-height:1.5;max-height:140px;overflow:auto"><b>Their message</b><br>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
-    + '<label style="font-weight:bold;font-size:14px">Subject</label>'
-    + '<input id="sub" value="' + esc_('Re: your message on my website') + '" style="width:100%;box-sizing:border-box;margin:6px 0 12px;padding:9px;font:inherit;border:1px solid #c9d0da;border-radius:6px">'
-    + '<div id="tb" style="margin-bottom:4px">'
-    + '<select id="ff" style="padding:6px;margin:0 4px 4px 0;border:1px solid #c9d0da;border-radius:5px"><option value="">Font</option>' + fonts.map(function (f) { return '<option>' + f + '</option>'; }).join('') + '</select>'
-    + '<select id="fs" style="padding:6px;margin:0 4px 4px 0;border:1px solid #c9d0da;border-radius:5px"><option value="">Size</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Large</option><option value="5">Larger</option><option value="6">Huge</option></select>'
-    + '<button type="button" data-c="bold" style="' + btn + ';font-weight:bold">B</button>'
-    + '<button type="button" data-c="italic" style="' + btn + ';font-style:italic">I</button>'
-    + '<button type="button" data-c="underline" style="' + btn + ';text-decoration:underline">U</button>'
-    + '<button type="button" data-c="strikeThrough" style="' + btn + ';text-decoration:line-through">S</button>'
-    + '<input type="color" id="fc" value="#1c2430" title="Text colour" style="height:32px;width:36px;border:1px solid #c9d0da;border-radius:5px;padding:2px;margin:0 6px 4px 0;vertical-align:top">'
-    + '<button type="button" data-c="justifyLeft" style="' + btn + '">Left</button>'
-    + '<button type="button" data-c="justifyCenter" style="' + btn + '">Centre</button>'
-    + '<button type="button" data-c="justifyRight" style="' + btn + '">Right</button>'
-    + '<button type="button" data-c="justifyFull" style="' + btn + '">Justify</button>'
-    + '<button type="button" data-c="insertUnorderedList" style="' + btn + '">Bullets</button>'
-    + '<button type="button" data-c="insertOrderedList" style="' + btn + '">Numbers</button>'
-    + '<button type="button" data-c="outdent" style="' + btn + '">Outdent</button>'
-    + '<button type="button" data-c="indent" style="' + btn + '">Indent</button>'
-    + '<button type="button" id="lk" style="' + btn + '">Link</button>'
-    + '<button type="button" data-c="removeFormat" style="' + btn + '">Clear</button>'
+  var tbtn = function (c, label, st, tip) { return '<button type="button" data-c="' + c + '" title="' + tip + '" style="' + (st || '') + '">' + label + '</button>'; };
+  var inner = '<div class="chips"><span class="chip"><b>' + esc_(r.n) + '</b></span><span class="chip">' + esc_(r.e) + '</span><span class="chip">Sending as Anandu Prabhakaran</span></div>'
+    + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
+    + '<label class="l" for="sub">Subject</label>'
+    + '<input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
+    + '<label class="l">Your reply</label>'
+    + '<div class="tb">'
+    + '<div class="tg"><select id="ff"><option value="">Font</option>' + fonts.map(function (f) { return '<option>' + f + '</option>'; }).join('') + '</select>'
+    + '<select id="fs"><option value="">Size</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Large</option><option value="5">Larger</option><option value="6">Huge</option></select></div>'
+    + '<div class="tg">' + tbtn('bold', 'B', 'font-weight:bold', 'Bold') + tbtn('italic', 'I', 'font-style:italic', 'Italic') + tbtn('underline', 'U', 'text-decoration:underline', 'Underline') + tbtn('strikeThrough', 'S', 'text-decoration:line-through', 'Strikethrough')
+    + '<input type="color" id="fc" value="#1c2430" title="Text colour"></div>'
+    + '<div class="tg">' + tbtn('justifyLeft', '&#8676;', '', 'Align left') + tbtn('justifyCenter', '&#8596;', '', 'Centre') + tbtn('justifyRight', '&#8677;', '', 'Align right') + tbtn('justifyFull', '&#9776;', '', 'Justify') + '</div>'
+    + '<div class="tg">' + tbtn('insertUnorderedList', '&#8226; List', '', 'Bullet list') + tbtn('insertOrderedList', '1. List', '', 'Numbered list') + tbtn('outdent', '&#8656;', '', 'Outdent') + tbtn('indent', '&#8658;', '', 'Indent') + '</div>'
+    + '<div class="tg"><button type="button" id="lk" title="Insert link">Link</button>' + tbtn('removeFormat', 'Clear', '', 'Clear formatting') + '</div>'
     + '</div>'
-    + '<div id="ed" contenteditable="true" style="min-height:240px;border:1px solid #c9d0da;border-radius:6px;padding:12px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;outline:none">Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran</div>'
-    + '<div style="margin:14px 0 6px"><label style="font-weight:bold;font-size:14px">Attachments</label> <span style="color:#5b6675;font-size:13px">(up to 15 MB in total)</span></div>'
-    + '<input type="file" id="fl" multiple><div id="fn" style="font-size:13px;color:#5b6675;margin-top:6px"></div>'
-    + '<div style="margin-top:18px"><button id="send" style="padding:12px 22px;border:0;border-radius:999px;background:#1f4e9c;color:#fff;font-weight:bold;font-size:15px;cursor:pointer">Send reply</button></div>'
-    + '<p id="m" style="margin-top:14px;line-height:1.6"></p></div>';
-  h += '<script>(function(){var ed=document.getElementById("ed"),m=document.getElementById("m");'
+    + '<div id="ed" class="ed" contenteditable="true">Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran</div>'
+    + '<label class="l" style="margin-top:18px">Attachments <span class="hint">(up to 15 MB in total)</span></label>'
+    + '<div id="dz" class="dz"><b>Click to add files</b> or drop them here</div><input type="file" id="fl" multiple style="display:none"><div id="fls" class="fl"></div>'
+    + '<div style="margin-top:22px"><button id="send" class="b blue auto">Send reply</button></div><div id="m" class="msg"></div>'
+    + '<script>(function(){var ed=document.getElementById("ed"),m=document.getElementById("m"),files=[],MAX=15*1024*1024;'
     + 'function ex(c,v){ed.focus();document.execCommand(c,false,v||null);}'
     + 'var bs=document.querySelectorAll("[data-c]");for(var i=0;i<bs.length;i++){bs[i].onmousedown=function(e){e.preventDefault();};bs[i].onclick=function(){ex(this.getAttribute("data-c"));};}'
     + 'document.getElementById("ff").onchange=function(){if(this.value)ex("fontName",this.value);};'
     + 'document.getElementById("fs").onchange=function(){if(this.value)ex("fontSize",this.value);};'
     + 'document.getElementById("fc").oninput=function(){ex("foreColor",this.value);};'
     + 'document.getElementById("lk").onclick=function(){var u=prompt("Link address (https://...)");if(u&&/^https?:\\/\\//i.test(u))ex("createLink",u);};'
-    + 'var files=[],total=0;'
-    + 'document.getElementById("fl").onchange=function(){files=[];total=0;var fn=document.getElementById("fn");fn.textContent="";var fs=this.files,n=fs.length,done=0;'
-    + 'if(!n)return;for(var i=0;i<n;i++){(function(f){total+=f.size;var rd=new FileReader();rd.onload=function(){files.push({name:f.name,type:f.type||"application/octet-stream",data:String(rd.result).split(",")[1]});done++;fn.textContent=files.map(function(x){return x.name;}).join(", ");};rd.readAsDataURL(f);})(fs[i]);}'
-    + 'if(total>15*1024*1024){m.style.color="#c5221f";m.textContent="Attachments are over 15 MB. Please remove some.";}};'
-    + 'document.getElementById("send").onclick=function(){var b=this;if(total>15*1024*1024){m.style.color="#c5221f";m.textContent="Attachments are over 15 MB.";return;}'
-    + 'b.disabled=true;b.textContent="Sending...";m.style.color="#1c2430";m.textContent="";'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send reply";m.style.color="#c5221f";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
-    + '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,files);};'
+    + 'function size(n){return n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB";}'
+    + 'function tot(){var t=0;for(var i=0;i<files.length;i++)t+=files[i].size;return t;}'
+    + 'function paint(){var l=document.getElementById("fls");l.innerHTML="";files.forEach(function(f,i){var c=document.createElement("span");c.className="fc";c.innerHTML="<span></span><i></i><button type=button title=Remove>&times;</button>";c.firstChild.textContent=f.name;c.children[1].textContent=size(f.size);c.lastChild.onclick=function(){files.splice(i,1);paint();};l.appendChild(c);});'
+    + 'if(tot()>MAX){m.className="msg bad";m.textContent="Attachments total "+size(tot())+", over the 15 MB limit. Remove some.";}else{m.className="msg";m.textContent="";}}'
+    + 'function add(list){for(var i=0;i<list.length;i++){(function(f){var rd=new FileReader();rd.onload=function(){files.push({name:f.name,type:f.type||"application/octet-stream",size:f.size,data:String(rd.result).split(",")[1]});paint();};rd.readAsDataURL(f);})(list[i]);}}'
+    + 'var dz=document.getElementById("dz"),fl=document.getElementById("fl");dz.onclick=function(){fl.click();};fl.onchange=function(){add(this.files);this.value="";};'
+    + 'dz.ondragover=function(e){e.preventDefault();dz.className="dz on";};dz.ondragleave=function(){dz.className="dz";};dz.ondrop=function(e){e.preventDefault();dz.className="dz";add(e.dataTransfer.files);};'
+    + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
+    + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
+    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send reply";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
+    + '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out);};'
     + '})();<\/script>';
-  return HtmlService.createHtmlOutput(h).setTitle('Reply to ' + r.n);
+  return out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner), 'Reply to ' + r.n);
 }
 
 // Called from the reply editor. Sends the formatted reply to the visitor as Anandu Prabhakaran, with attachments.
 function sendReply(id, sig, subject, bodyHtml, files) {
-  var wrap = function (title, msg) { return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:48px auto;padding:0 20px;color:#1c2430"><h2>' + esc_(title) + '</h2><p style="line-height:1.6">' + msg + '</p></div>'; };
+  var wrap = function (title, msg) { return statusHtml_(title, msg, /valid|Not found|Already/.test(title) ? 'info' : 'ok'); };
   if (!id || sign_('reply', id) !== sig) return wrap('Link not valid', 'This link is not valid.');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return wrap('Not found', 'This message is no longer stored.');
