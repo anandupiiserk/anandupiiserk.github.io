@@ -1063,19 +1063,19 @@ else (function loop() {
     for (let k = 0; k < 7; k++) { const wd = new Date(2024, 0, 7 + k); let n; try { n = wd.toLocaleDateString(loc(), { weekday: 'short' }); } catch (e) { n = 'SMTWTFS'[k]; } h += `<span class="wd">${n}</span>`; }
     const lead = new Date(y, m, 1).getDay(); for (let k = 0; k < lead; k++) h += '<span></span>';
     const nd = new Date(y, m + 1, 0).getDate();
-    for (let n = 1; n <= nd; n++) { const d = new Date(y, m, n), ok = open(d) && anyFree(d); h += `<button type="button" class="ad${ok ? '' : ' off'}${day && ymd(day) === ymd(d) ? ' on' : ''}" data-d="${ymd(d)}" ${ok ? '' : 'disabled'}>${n}</button>`; }
+    for (let n = 1; n <= nd; n++) { const d = new Date(y, m, n), ok = open(d), full = ok && !anyFree(d); h += `<button type="button" class="ad${ok ? (full ? ' full' : '') : ' off'}${day && ymd(day) === ymd(d) ? ' on' : ''}" data-d="${ymd(d)}" ${ok ? '' : 'disabled'}>${n}</button>`; }
     cal.innerHTML = h;
     $('#ap-prev').disabled = view <= new Date(first.getFullYear(), first.getMonth(), 1); $('#ap-next').disabled = view >= new Date(last.getFullYear(), last.getMonth(), 1);
   }
   function drawSlots() {
     if (!day) { slots.innerHTML = ''; return; }
     let h = `<div class="apd">${fmtD(day)}</div><div class="apt">`;
-    for (let t = T0; t + LEN <= T1; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); if (live && !free(day, lab, LEN)) continue; h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
+    for (let t = T0; t + LEN <= T1; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); if (live && !free(day, lab, LEN)) { h += `<button type="button" class="as taken" data-t="${lab}" data-taken="1" aria-disabled="true" title="${tr('Booked / unavailable')}">${lab}</button>`; continue; } h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
     slots.innerHTML = h + '</div>';
   }
   cal.addEventListener('click', e => { const b = e.target.closest('.ad'); if (!b || b.disabled) return; const [y, m, n] = b.dataset.d.split('-').map(Number); day = new Date(y, m - 1, n); chosen = null; sel.textContent = tr('No slot chosen yet'); drawCal(); drawSlots(); });
   slots.addEventListener('click', e => {
-    const b = e.target.closest('.as'); if (!b) return; chosen = ymd(day) + ' ' + b.dataset.t;
+    const b = e.target.closest('.as'); if (!b) return; if (b.dataset.taken) { chosen = null; sel.textContent = tr('This slot is booked or unavailable. Please choose another time.'); drawSlots(); return; } chosen = ymd(day) + ' ' + b.dataset.t;
     const t = b.dataset.t.split(':').map(Number), end = t[0] * 60 + t[1] + LEN; sel.textContent = fmtD(day) + ', ' + b.dataset.t + ' to ' + pad2(Math.floor(end / 60)) + ':' + pad2(end % 60) + ' IST'; drawSlots();
   });
   $$('input[name="aplen"]', root).forEach(r => r.addEventListener('change', () => { LEN = lenNow(); chosen = null; sel.textContent = tr('No slot chosen yet'); drawSlots(); }));

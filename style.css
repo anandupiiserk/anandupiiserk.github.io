@@ -1081,4 +1081,5 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 #ap-send .apl svg, #cf-send .apl svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 24; animation: ap-tick .45s .15s ease-out forwards; }
 @keyframes ap-tick { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { #ap-send.sending::before, #cf-send.sending::before { transition: none; width: 50%; } #ap-send .apl svg, #cf-send .apl svg { animation: none; stroke-dashoffset: 0; } }
+.as.taken { opacity: .42; text-decoration: line-through; cursor: not-allowed; background: none; border-style: dashed; } .as.taken:hover { border-color: var(--line2); background: none; } .ad.full { opacity: .6; }
 /* @endpagestamp */
