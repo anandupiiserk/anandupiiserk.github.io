@@ -1070,15 +1070,15 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 
 .appt-note, .appt-sel { text-align: justify; text-justify: inter-word; hyphens: auto; } .appt-note { max-width: none; }
 .apd { text-align: left; }
-#ap-send { min-width: 210px; justify-content: center; transition: background .3s, color .3s, border-color .3s, transform .45s var(--ease); }
-#ap-send .apl { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; }
-#ap-send::before { content: ""; position: absolute; inset: 0; width: 0; background: var(--a); z-index: 0; }
-#ap-send.sending, #ap-send.done { opacity: 1 !important; cursor: progress; background: transparent; color: var(--a); }
-#ap-send.sending::before { background: color-mix(in srgb, var(--a) 38%, transparent); width: 88%; transition: width 7s cubic-bezier(.1, .6, .2, 1); }
-#ap-send.sending { color: var(--text); }
-#ap-send.done { background: #2e9d57; border-color: #2e9d57; color: #fff; cursor: default; }
-#ap-send.done::before { width: 100%; background: #2e9d57; transition: width .35s ease-out; }
-#ap-send .apl svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 24; animation: ap-tick .45s .15s ease-out forwards; }
+#ap-send, #cf-send { min-width: 210px; justify-content: center; transition: background .3s, color .3s, border-color .3s, transform .45s var(--ease); }
+#ap-send .apl, #cf-send .apl { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; }
+#ap-send::before, #cf-send::before { content: ""; position: absolute; inset: 0; width: 0; background: var(--a); z-index: 0; }
+#ap-send.sending, #ap-send.done, #cf-send.sending, #cf-send.done { opacity: 1 !important; cursor: progress; background: transparent; color: var(--a); }
+#ap-send.sending::before, #cf-send.sending::before { background: color-mix(in srgb, var(--a) 38%, transparent); width: 88%; transition: width 7s cubic-bezier(.1, .6, .2, 1); }
+#ap-send.sending, #cf-send.sending { color: var(--text); }
+#ap-send.done, #cf-send.done { background: #2e9d57; border-color: #2e9d57; color: #fff; cursor: default; }
+#ap-send.done::before, #cf-send.done::before { width: 100%; background: #2e9d57; transition: width .35s ease-out; }
+#ap-send .apl svg, #cf-send .apl svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 24; animation: ap-tick .45s .15s ease-out forwards; }
 @keyframes ap-tick { to { stroke-dashoffset: 0; } }
-@media (prefers-reduced-motion: reduce) { #ap-send.sending::before { transition: none; width: 50%; } #ap-send .apl svg { animation: none; stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { #ap-send.sending::before, #cf-send.sending::before { transition: none; width: 50%; } #ap-send .apl svg, #cf-send .apl svg { animation: none; stroke-dashoffset: 0; } }
 /* @endpagestamp */

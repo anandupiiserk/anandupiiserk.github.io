@@ -318,6 +318,21 @@ buildChrome();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Enter a valid email address.', true); return; }
       if ($('#cf-web').value || Date.now() - t0 < 2500) { say('Thank you. Your message has been sent.'); cf.reset(); return; }
       const subject = `Website message from ${name}`;
+      const GEP = ($('#appt') && $('#appt').dataset.endpoint) || '';
+      if (GEP) {   /* messages go through the same Google script as appointments, which also sends the acknowledgement */
+        btn.disabled = true; say('');
+        const lab = btn.textContent.trim(); btn.innerHTML = '<span class="apl"></span>'; const al = btn.firstChild; al.textContent = tr('Sending...');
+        btn.classList.remove('done'); void btn.offsetWidth; btn.classList.add('sending'); let ok = false;
+        const reset = () => { btn.classList.remove('sending', 'done'); btn.innerHTML = ''; btn.textContent = lab; btn.disabled = false; };
+        try {
+          const r = await (await fetch(GEP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'message', name, email, message, website: '' }) })).json();
+          if (!r.ok) throw new Error(r.error || 'failed');
+          ok = true; btn.classList.remove('sending'); btn.classList.add('done'); al.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' + tr('Sent'); setTimeout(reset, 5000);
+          say('Your message has been forwarded to Anandu. A copy of what you sent has been emailed to you, and he will get back to you soon. Thank you!'); cf.reset();
+        } catch (err) { say('Something went wrong. Please email me directly.', true); }
+        if (!ok) reset();
+        return;
+      }
       if (!SITE.formEndpoint) {
         say('Opening your email app.'); location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message + '\n\n' + name + '\n' + email)}`; return;
       }
