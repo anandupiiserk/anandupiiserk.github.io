@@ -96,6 +96,7 @@ function doGet(e) {
 
 function act_(p) {
   var action = p.action, id = p.id || '';
+  if (action === 'reply') return replyPage_(p);
   if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev) return page_('Already handled', 'This request is no longer on the calendar. It was probably approved or declined already.');
@@ -178,13 +179,19 @@ function message_(p) {
   var props = PropertiesService.getScriptProperties(), day = ymd_(new Date()), key = 'MSGCOUNT_' + day, n = +(props.getProperty(key) || 0);
   if (n >= 40) return json_({ ok: false, error: 'busy' });   /* daily cap protects the mail quota */
   props.setProperty(key, String(n + 1));
+  var rid = Utilities.getUuid().replace(/-/g, '').slice(0, 12);
+  try {
+    props.setProperty('MSG_' + rid, JSON.stringify({ n: name, e: email, m: msg, t: Date.now() }));
+    var all = props.getProperties(), cut = Date.now() - 120 * 86400000;
+    Object.keys(all).forEach(function (k) { if (k.indexOf('MSG_') === 0) { try { if (JSON.parse(all[k]).t < cut) props.deleteProperty(k); } catch (z) { props.deleteProperty(k); } } });
+  } catch (x) { console.error('store failed: ' + x); }
   var html = esc_(msg).replace(/\n/g, '<br>'), sent = Utilities.formatDate(new Date(), TZ, 'EEEE d MMMM yyyy, HH:mm') + ' IST';
   try {
     MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, replyTo: email, subject: 'New message from ' + name + ' via your website',
       body: 'Name: ' + name + '\nEmail: ' + email + '\n\n' + msg,
       htmlBody: mail_('New message from your website', 'Someone sent you a message through the contact form. Reply to this email to answer them directly.',
-        [['Name', esc_(name)], ['Email', '<a href="mailto:' + esc_(email) + '">' + esc_(email) + '</a>'], ['Message', html], ['Received', esc_(sent)]], [],
-        'Sent by the website contact form. Replies go to the visitor, not to a mailbox.') });
+        [['Name', esc_(name)], ['Email', '<a href="mailto:' + esc_(email) + '">' + esc_(email) + '</a>'], ['Message', html], ['Received', esc_(sent)]], [['Reply to this message', link_('reply', rid), '#1f4e9c']],
+        'Reply to this message opens an editor (fonts, bold, alignment, attachments) and sends your answer to the visitor from Anandu Prabhakaran. Replying to this email directly also reaches the visitor.') });
   } catch (x) { console.error('message mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
   try {
     MailApp.sendEmail({ to: email, name: MSG_SENDER, subject: 'Your message has been received',
@@ -194,6 +201,89 @@ function message_(p) {
         'The details shown above are the details you filled in on the website.<br><br>Please do not respond to this email. It is system generated and you will be contacted by Anandu soon.') });
   } catch (x) { console.error('ack mail failed: ' + x); }
   return json_({ ok: true });
+}
+
+/* ---- reply editor (opened from the message notification) ---- */
+function replyPage_(p) {
+  var id = p.id || '';
+  if (!id || sign_('reply', id) !== p.sig) return page_('Link not valid', 'This link is not valid.');
+  var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
+  if (!raw) return page_('Not found', 'This message is no longer stored (messages are kept for 120 days).');
+  var r = JSON.parse(raw);
+  var btn = 'border:1px solid #c9d0da;background:#fff;border-radius:5px;padding:5px 9px;font-size:14px;cursor:pointer;margin:0 2px 4px 0;min-width:32px';
+  var fonts = ['Arial', 'Georgia', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Courier New', 'Tahoma'];
+  var h = '<div style="font-family:Arial,Helvetica,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#1c2430">'
+    + '<h2 style="margin:0 0 4px">Reply to ' + esc_(r.n) + '</h2>'
+    + '<div style="color:#5b6675;font-size:14px;margin-bottom:12px">' + esc_(r.e) + '. Sent from: Anandu Prabhakaran.</div>'
+    + '<div style="background:#f3f6fb;border-left:4px solid #1f4e9c;border-radius:4px;padding:10px 14px;margin-bottom:16px;font-size:14px;line-height:1.5;max-height:140px;overflow:auto"><b>Their message</b><br>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
+    + '<label style="font-weight:bold;font-size:14px">Subject</label>'
+    + '<input id="sub" value="' + esc_('Re: your message on my website') + '" style="width:100%;box-sizing:border-box;margin:6px 0 12px;padding:9px;font:inherit;border:1px solid #c9d0da;border-radius:6px">'
+    + '<div id="tb" style="margin-bottom:4px">'
+    + '<select id="ff" style="padding:6px;margin:0 4px 4px 0;border:1px solid #c9d0da;border-radius:5px"><option value="">Font</option>' + fonts.map(function (f) { return '<option>' + f + '</option>'; }).join('') + '</select>'
+    + '<select id="fs" style="padding:6px;margin:0 4px 4px 0;border:1px solid #c9d0da;border-radius:5px"><option value="">Size</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Large</option><option value="5">Larger</option><option value="6">Huge</option></select>'
+    + '<button type="button" data-c="bold" style="' + btn + ';font-weight:bold">B</button>'
+    + '<button type="button" data-c="italic" style="' + btn + ';font-style:italic">I</button>'
+    + '<button type="button" data-c="underline" style="' + btn + ';text-decoration:underline">U</button>'
+    + '<button type="button" data-c="strikeThrough" style="' + btn + ';text-decoration:line-through">S</button>'
+    + '<input type="color" id="fc" value="#1c2430" title="Text colour" style="height:32px;width:36px;border:1px solid #c9d0da;border-radius:5px;padding:2px;margin:0 6px 4px 0;vertical-align:top">'
+    + '<button type="button" data-c="justifyLeft" style="' + btn + '">Left</button>'
+    + '<button type="button" data-c="justifyCenter" style="' + btn + '">Centre</button>'
+    + '<button type="button" data-c="justifyRight" style="' + btn + '">Right</button>'
+    + '<button type="button" data-c="justifyFull" style="' + btn + '">Justify</button>'
+    + '<button type="button" data-c="insertUnorderedList" style="' + btn + '">Bullets</button>'
+    + '<button type="button" data-c="insertOrderedList" style="' + btn + '">Numbers</button>'
+    + '<button type="button" data-c="outdent" style="' + btn + '">Outdent</button>'
+    + '<button type="button" data-c="indent" style="' + btn + '">Indent</button>'
+    + '<button type="button" id="lk" style="' + btn + '">Link</button>'
+    + '<button type="button" data-c="removeFormat" style="' + btn + '">Clear</button>'
+    + '</div>'
+    + '<div id="ed" contenteditable="true" style="min-height:240px;border:1px solid #c9d0da;border-radius:6px;padding:12px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;outline:none">Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran</div>'
+    + '<div style="margin:14px 0 6px"><label style="font-weight:bold;font-size:14px">Attachments</label> <span style="color:#5b6675;font-size:13px">(up to 15 MB in total)</span></div>'
+    + '<input type="file" id="fl" multiple><div id="fn" style="font-size:13px;color:#5b6675;margin-top:6px"></div>'
+    + '<div style="margin-top:18px"><button id="send" style="padding:12px 22px;border:0;border-radius:999px;background:#1f4e9c;color:#fff;font-weight:bold;font-size:15px;cursor:pointer">Send reply</button></div>'
+    + '<p id="m" style="margin-top:14px;line-height:1.6"></p></div>';
+  h += '<script>(function(){var ed=document.getElementById("ed"),m=document.getElementById("m");'
+    + 'function ex(c,v){ed.focus();document.execCommand(c,false,v||null);}'
+    + 'var bs=document.querySelectorAll("[data-c]");for(var i=0;i<bs.length;i++){bs[i].onmousedown=function(e){e.preventDefault();};bs[i].onclick=function(){ex(this.getAttribute("data-c"));};}'
+    + 'document.getElementById("ff").onchange=function(){if(this.value)ex("fontName",this.value);};'
+    + 'document.getElementById("fs").onchange=function(){if(this.value)ex("fontSize",this.value);};'
+    + 'document.getElementById("fc").oninput=function(){ex("foreColor",this.value);};'
+    + 'document.getElementById("lk").onclick=function(){var u=prompt("Link address (https://...)");if(u&&/^https?:\\/\\//i.test(u))ex("createLink",u);};'
+    + 'var files=[],total=0;'
+    + 'document.getElementById("fl").onchange=function(){files=[];total=0;var fn=document.getElementById("fn");fn.textContent="";var fs=this.files,n=fs.length,done=0;'
+    + 'if(!n)return;for(var i=0;i<n;i++){(function(f){total+=f.size;var rd=new FileReader();rd.onload=function(){files.push({name:f.name,type:f.type||"application/octet-stream",data:String(rd.result).split(",")[1]});done++;fn.textContent=files.map(function(x){return x.name;}).join(", ");};rd.readAsDataURL(f);})(fs[i]);}'
+    + 'if(total>15*1024*1024){m.style.color="#c5221f";m.textContent="Attachments are over 15 MB. Please remove some.";}};'
+    + 'document.getElementById("send").onclick=function(){var b=this;if(total>15*1024*1024){m.style.color="#c5221f";m.textContent="Attachments are over 15 MB.";return;}'
+    + 'b.disabled=true;b.textContent="Sending...";m.style.color="#1c2430";m.textContent="";'
+    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send reply";m.style.color="#c5221f";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
+    + '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,files);};'
+    + '})();<\/script>';
+  return HtmlService.createHtmlOutput(h).setTitle('Reply to ' + r.n);
+}
+
+// Called from the reply editor. Sends the formatted reply to the visitor as Anandu Prabhakaran, with attachments.
+function sendReply(id, sig, subject, bodyHtml, files) {
+  var wrap = function (title, msg) { return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:48px auto;padding:0 20px;color:#1c2430"><h2>' + esc_(title) + '</h2><p style="line-height:1.6">' + msg + '</p></div>'; };
+  if (!id || sign_('reply', id) !== sig) return wrap('Link not valid', 'This link is not valid.');
+  var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
+  if (!raw) return wrap('Not found', 'This message is no longer stored.');
+  var r = JSON.parse(raw), blobs = [], total = 0;
+  (files || []).forEach(function (f) {
+    var bytes = Utilities.base64Decode(f.data); total += bytes.length;
+    blobs.push(Utilities.newBlob(bytes, String(f.type || 'application/octet-stream'), String(f.name || 'attachment').slice(0, 120)));
+  });
+  if (total > 15 * 1024 * 1024) throw new Error('Attachments are over 15 MB.');
+  var clean = String(bodyHtml || '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on[a-z]+="[^"]*"/gi, '').replace(/javascript:/gi, '');
+  var plain = clean.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  var html = '<div style="background:#eef2f8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1c2430"><div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,156,.12)">'
+    + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:22px 28px"><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85">Anandu Prabhakaran</div><div style="font-size:20px;font-weight:bold;margin-top:6px">' + esc_(String(subject || 'Reply').slice(0, 150)) + '</div></div>'
+    + '<div style="padding:26px 28px;font-size:15px;line-height:1.6">' + clean + '</div>'
+    + '<div style="margin:0 28px 24px;padding:12px 14px;background:#f7f9fc;border-left:4px solid #c9d0da;border-radius:4px;color:#5b6675;font-size:13px;line-height:1.5"><b>Your message</b><br>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
+    + '<div style="background:#f7f9fc;padding:14px 28px;text-align:center;color:#7a8594;font-size:12px;border-top:1px solid #e6ebf2">Created with <span style="color:#e0245e;font-size:14px">&#10084;</span> by Anandu Prabhakaran</div></div></div>';
+  var opts = { to: r.e, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: String(subject || 'Re: your message').slice(0, 150), body: plain + '\n\n---\nYour message:\n' + r.m, htmlBody: html };
+  if (blobs.length) opts.attachments = blobs;
+  MailApp.sendEmail(opts);
+  return wrap('Reply sent', 'Your reply was sent to ' + esc_(r.n) + ' (' + esc_(r.e) + ')' + (blobs.length ? ' with ' + blobs.length + ' attachment' + (blobs.length > 1 ? 's' : '') : '') + '. You can close this tab.');
 }
 
 /* ---- new request (POST) ---- */
