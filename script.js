@@ -1138,16 +1138,20 @@ else (function loop() {
   const valid = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
   window.__otp = window.__otp || {};
   const post = body => fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(r => r.json());
-  function gate(key, form, emailEl) {
-    if (!form || !emailEl) return;
+  function gate(key, form, emailEl, nameEl) {
+    if (!form || !emailEl || !nameEl) return;
     const box = document.createElement('div'); box.className = 'otp';
     box.innerHTML = '<div class="otp-line"><button type="button" class="btn ghost otp-send" disabled></button><small class="otp-note" aria-live="polite"></small></div>'
       + '<div class="otp-ver" hidden><input class="otp-in" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="OTP"><button type="button" class="btn otp-ok"></button><button type="button" class="btn ghost otp-re" disabled></button></div>';
     emailEl.closest('.frow').after(box);
     const sendB = $('.otp-send', box), note = $('.otp-note', box), ver = $('.otp-ver', box), inp = $('.otp-in', box), okB = $('.otp-ok', box), reB = $('.otp-re', box);
     sendB.textContent = tr('Send OTP'); okB.textContent = tr('Verify'); reB.textContent = tr('Resend');
-    let tok = '', exp = 0, vEmail = '', timer = 0, cool = 0;
-    const lock = on => { [...form.elements].forEach(el => { if (el === emailEl || box.contains(el)) return; el.disabled = on; }); };
+    let tok = '', exp = 0, vEmail = '', vName = '', timer = 0, cool = 0;
+    const lock = on => {
+      [...form.elements].forEach(el => { if (el === emailEl || el === nameEl || box.contains(el)) return; el.disabled = on; });
+      emailEl.readOnly = nameEl.readOnly = !on; emailEl.classList.toggle('otp-fixed', !on); nameEl.classList.toggle('otp-fixed', !on);
+      if (key === 'ap') $$('.appt-len, .appt-pick', root).forEach(el => { el.inert = on; el.classList.toggle('otp-wait', on); });
+    };
     const say = (m, cls) => { note.textContent = tr(m); note.className = 'otp-note' + (cls ? ' ' + cls : ''); };
     const emailNow = () => emailEl.value.trim();
     const live = () => tok && Date.now() < exp;
@@ -1172,8 +1176,8 @@ else (function loop() {
       try {
         const r = await post({ kind: 'verify', email: emailNow(), otp: code });
         if (r.ok) {
-          tok = r.token; exp = r.exp; vEmail = emailNow().toLowerCase(); ver.hidden = true; sendB.hidden = true; clearInterval(cool); lock(false);
-          say('✓ Email verified. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
+          tok = r.token; exp = r.exp; vEmail = emailNow().toLowerCase(); vName = nameEl.value; ver.hidden = true; sendB.hidden = true; clearInterval(cool); lock(false);
+          say('✓ Email verified. Name and email are now fixed. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
           clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
         } else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
       } catch (err) { say('Could not check the OTP. Please try again.', 'bad'); }
@@ -1185,11 +1189,11 @@ else (function loop() {
       const e = emailNow(); if (live() && e.toLowerCase() === vEmail) return;
       if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say('Enter OTP to proceed. The OTP is sent to your email.'); }
     });
-    form.addEventListener('reset', () => setTimeout(() => { if (live()) { emailEl.value = vEmail; } else idle(); }, 0));
+    form.addEventListener('reset', () => setTimeout(() => { if (live()) { emailEl.value = vEmail; nameEl.value = vName; } else idle(); }, 0));
     window.__otp[key] = { token: () => (live() ? tok : ''), reset: m => idle(m, m ? 'bad' : '') };
     idle();
   }
-  gate('cf', $('#cform'), $('#cf-email')); gate('ap', $('#ap-form'), $('#ap-email'));
+  gate('cf', $('#cform'), $('#cf-email'), $('#cf-name')); gate('ap', $('#ap-form'), $('#ap-email'), $('#ap-name'));
 })();
 /* @endpagestamp */
 
