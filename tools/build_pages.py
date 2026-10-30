@@ -71,15 +71,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261030k">
+<link rel="stylesheet" href="style.css?v=20261030l">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261030k"></script>
-<script src="script.js?v=20261030k"></script>
+<script src="i18n.js?v=20261030l"></script>
+<script src="script.js?v=20261030l"></script>
 </body>
 </html>
 '''
@@ -143,10 +143,12 @@ cartouche = '''<div class="cartouche" aria-hidden="true">
 
 mets = ''.join(f'<div class="metric reveal"><b data-count="{v}">0</b><span>{l}</span></div>' for v, l in [(9, 'Workshops and lectures'), (5, 'Conference presentations'), (2, 'Journal articles published'), (2023, 'PMRF fellow since')])
 
-home = f'''<div id="loader" aria-hidden="true">
+LOADER = '''<div id="loader" aria-hidden="true">
   <div class="panel top"></div><div class="panel bottom"></div>
   <div class="l-content"><div class="term" aria-hidden="true"><div class="tbar"><i></i><i></i><i></i><span>anandu.forest.fire</span></div><div class="tbody"><div id="term-out"></div><div class="tprog"><span id="l-bar">[                    ]</span> <span id="l-pct">000%</span></div></div></div></div>
-</div>
+</div>'''
+LOADER = '' if LITE else LOADER.replace('{{','{').replace('}}','}')
+home = f'''{LOADER}
 
 <section class="hero">
   <canvas class="contours" data-contours="hero" aria-hidden="true"></canvas>
@@ -177,7 +179,7 @@ home = f'''<div id="loader" aria-hidden="true">
 
 {sec(shead('03', 'Pages', 'Explore the site', 'Each section is its own page, with a short transition between them.') + '<div data-rows></div>')}
 '''
-page('index.html', 'home', f'{NAME} | Forest fire early warning', 'Portfolio of research on forest fire early warning in the Indian Himalayan Region.', home, 'locked')
+page('index.html', 'home', f'{NAME} | Forest fire early warning', 'Portfolio of research on forest fire early warning in the Indian Himalayan Region.', home, '' if LITE else 'locked')
 
 # ---------------------------------------------------------------- ABOUT
 dl_about = f'''<dl class="dl">
