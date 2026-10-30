@@ -1169,7 +1169,7 @@ else (function loop() {
     function accept(t, x, name, email, fromPeer) {
       tok = t; exp = x; vEmail = email.toLowerCase(); vName = name; nameEl.value = name; emailEl.value = email;
       freeze(); lock(false);
-      say('✓ Email verified. Name and email are now fixed. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
+      say('✓ Name and email are now verified. You can book the appointment or send messages for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
       clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
       if (!fromPeer) Object.keys(peers).forEach(k => { if (k !== key) peers[k].adopt(t, x, name, email); });
     }
