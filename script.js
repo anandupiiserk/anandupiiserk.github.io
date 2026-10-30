@@ -1074,13 +1074,16 @@ else (function loop() {
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Enter a valid email address.', true); return; }
     const t = chosen.split(' ')[1].split(':').map(Number), end = t[0] * 60 + t[1] + LEN, when = chosen.split(' ')[0] + ', ' + chosen.split(' ')[1] + ' to ' + pad2(Math.floor(end / 60)) + ':' + pad2(end % 60) + ' IST';
     if (live) {
-      const btn = $('#ap-send'); btn.disabled = true; say('Sending...');
+      const btn = $('#ap-send'); btn.disabled = true; say('');
+      const lab = btn.textContent.trim(); btn.innerHTML = '<span class="apl"></span>'; const al = btn.firstChild; al.textContent = tr('Sending...');
+      btn.classList.remove('done'); void btn.offsetWidth; btn.classList.add('sending');
+      const reset = () => { btn.classList.remove('sending', 'done'); btn.innerHTML = ''; btn.textContent = lab; btn.disabled = false; }; let ok = false;
       fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ name, email, topic, len: LEN, start: stamp(day, chosen.split(' ')[1]), website: '' }) })
         .then(r => r.json()).then(r => {
-          if (r.ok) { say('Thank you. Your request has been sent. I will reply by email to confirm.'); chosen = null; sel.textContent = tr('No slot chosen yet'); $('#ap-form').reset(); loadLive(); }
+          if (r.ok) { ok = true; btn.classList.remove('sending'); btn.classList.add('done'); al.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' + tr('Sent'); setTimeout(reset, 5000); say('Thank you. Your request has been sent. I will reply by email to confirm.'); chosen = null; sel.textContent = tr('No slot chosen yet'); $('#ap-form').reset(); loadLive(); }
           else if (r.error === 'taken' || r.error === 'too_soon' || r.error === 'hours') { say('That time is no longer available. Please choose another.', true); chosen = null; sel.textContent = tr('No slot chosen yet'); loadLive(); }
           else say('Something went wrong. Please email me directly.', true);
-        }).catch(() => say('Something went wrong. Please email me directly.', true)).finally(() => { btn.disabled = false; });
+        }).catch(() => say('Something went wrong. Please email me directly.', true)).finally(() => { if (!ok) reset(); });
       return;
     }
     const subject = `Appointment request: ${when}`, body = `Requested slot (${LEN} minutes): ${when}\nName: ${name}\nEmail: ${email}\n\nTopic:\n${topic}`;
