@@ -935,6 +935,7 @@ else (function loop() {
       if (fin) setTimeout(() => { bar.classList.add('done'); setTimeout(() => bar.remove(), 700); }, 450);
     };
     upd();
+    setTimeout(() => { if (!revealed) { revealed = true; apply(); } }, 15000);   /* slow connection: show what has loaded after 15 s and let the rest join as it arrives */
     const worker = async () => {
       while (next < items.length) {
         const it = items[next++], list = await resolve(it.e);
