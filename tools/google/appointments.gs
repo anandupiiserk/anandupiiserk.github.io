@@ -318,7 +318,7 @@ function editorPage_(mode, p, r) {
     + '<input type="color" id="fc" value="#1c2430" title="Text colour"></div>'
     + '<div class="tg">' + tbtn('justifyLeft', '&#8676;', '', 'Align left') + tbtn('justifyCenter', '&#8596;', '', 'Centre') + tbtn('justifyRight', '&#8677;', '', 'Align right') + tbtn('justifyFull', '&#9776;', '', 'Justify') + '</div>'
     + '<div class="tg">' + tbtn('insertUnorderedList', '&#8226; List', '', 'Bullet list') + tbtn('insertOrderedList', '1. List', '', 'Numbered list') + tbtn('outdent', '&#8656;', '', 'Outdent') + tbtn('indent', '&#8658;', '', 'Indent') + '</div>'
-    + '<div class="tg"><button type="button" id="lk" title="Insert link">Link</button>' + tbtn('removeFormat', 'Clear', '', 'Clear formatting') + '</div>'
+    + '<div class="tg"><button type="button" id="lk" title="Insert link">Link</button><button type="button" id="apl" title="Insert a button that opens the appointment booking page on your website">Add appointment link</button>' + tbtn('removeFormat', 'Clear', '', 'Clear formatting') + '</div>'
     + '</div>'
     + '<div id="ed" class="ed" contenteditable="true">' + (reply ? 'Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran' : '') + '</div>'
     + '<label class="l" style="margin-top:18px">Attachments <span class="hint">(up to 15 MB in total)</span></label>'
@@ -331,6 +331,7 @@ function editorPage_(mode, p, r) {
     + 'document.getElementById("fs").onchange=function(){if(this.value)ex("fontSize",this.value);};'
     + 'document.getElementById("fc").oninput=function(){ex("foreColor",this.value);};'
     + 'document.getElementById("lk").onclick=function(){var u=prompt("Link address (https://...)");if(u&&/^https?:\\/\\//i.test(u))ex("createLink",u);};'
+    + 'document.getElementById("apl").onclick=function(){ex("insertHTML",' + JSON.stringify('<p>If you would like to talk, you can choose a time that suits you here:</p><p><a href="' + SITE_URL + '#appt" style="display:inline-block;background:#1f4e9c;color:#ffffff;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif">Schedule an appointment</a></p>') + ');};'
     + 'function size(n){return n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB";}'
     + 'function tot(){var t=0;for(var i=0;i<files.length;i++)t+=files[i].size;return t;}'
     + 'function paint(){var l=document.getElementById("fls");l.innerHTML="";files.forEach(function(f,i){var c=document.createElement("span");c.className="fc";c.innerHTML="<span></span><i></i><button type=button title=Remove>&times;</button>";c.firstChild.textContent=f.name;c.children[1].textContent=size(f.size);c.lastChild.onclick=function(){files.splice(i,1);paint();};l.appendChild(c);});'
@@ -365,7 +366,7 @@ function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc) {
   });
   if (total > 15 * 1024 * 1024) throw new Error('Attachments are over 15 MB.');
   var clean = String(bodyHtml || '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on[a-z]+="[^"]*"/gi, '').replace(/javascript:/gi, '');
-  var plain = clean.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  var plain = clean.replace(/<a [^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '$2 ($1)').replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
   subject = String(subject || '').trim().slice(0, 150);
   var html = '<div style="background:#eef2f8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1c2430"><div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,156,.12)">'
     + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:20px 28px;font-size:18px;font-weight:bold">Email From Anandu Prabhakaran</div>'

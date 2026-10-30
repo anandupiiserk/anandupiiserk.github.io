@@ -1138,6 +1138,7 @@ else (function loop() {
   const valid = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
   window.__otp = window.__otp || {};
   const post = body => fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(r => r.json());
+  const peers = {};
   function gate(key, form, emailEl, nameEl) {
     if (!form || !emailEl || !nameEl) return;
     const box = document.createElement('div'); box.className = 'otp';
@@ -1150,16 +1151,28 @@ else (function loop() {
     const lock = on => {
       [...form.elements].forEach(el => { if (el === emailEl || el === nameEl || box.contains(el)) return; el.disabled = on; });
       emailEl.readOnly = nameEl.readOnly = !on; emailEl.classList.toggle('otp-fixed', !on); nameEl.classList.toggle('otp-fixed', !on);
-      if (key === 'ap') $$('.appt-len, .appt-pick', root).forEach(el => { el.inert = on; el.classList.toggle('otp-wait', on); });
     };
     const say = (m, cls) => { note.textContent = tr(m); note.className = 'otp-note' + (cls ? ' ' + cls : ''); };
     const emailNow = () => emailEl.value.trim();
     const TICK = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
     const start = (b, txt) => { b.classList.remove('done'); void b.offsetWidth; b.classList.add('sending'); b.innerHTML = '<span class="apl"></span>'; b.firstChild.textContent = txt; };
     const clear = (b, lab) => { b.classList.remove('sending', 'done'); b.textContent = lab; };
-    const finish = (b, ok, lab, doneTxt) => { b.classList.remove('sending'); if (!ok) { clear(b, lab); return Promise.resolve(); } b.classList.add('done'); b.innerHTML = '<span class="apl">' + TICK + '</span>'; b.firstChild.append(tr(doneTxt)); return new Promise(r => setTimeout(() => { clear(b, lab); r(); }, 1000)); };
+    const tick = (b, txt) => { b.classList.remove('sending'); b.classList.add('done'); b.innerHTML = '<span class="apl">' + TICK + '</span>'; b.firstChild.append(tr(txt)); };
+    const finish = (b, ok, lab, doneTxt) => { b.classList.remove('sending'); if (!ok) { clear(b, lab); return Promise.resolve(); } tick(b, doneTxt); return new Promise(r => setTimeout(() => { clear(b, lab); r(); }, 1000)); };
     const live = () => tok && Date.now() < exp;
-    function idle(msg, cls) { clearTimeout(timer); tok = ''; vEmail = ''; ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || 'Enter OTP to proceed. The OTP is sent to your email.', cls); sendB.disabled = !valid(emailNow()); }
+    function unfreeze() { clearInterval(cool); clear(okB, tr('Verify')); clear(reB, tr('Resend')); inp.disabled = false; inp.placeholder = '000000'; inp.value = ''; okB.disabled = false; okB.classList.remove('frozen'); reB.classList.remove('frozen'); }
+    function freeze() { clearInterval(cool); ver.hidden = false; sendB.hidden = true; inp.value = ''; inp.placeholder = '------'; inp.disabled = true; tick(okB, 'Verified'); okB.disabled = true; okB.classList.add('frozen'); clear(reB, tr('Resend')); reB.disabled = true; reB.classList.add('frozen'); }
+    function idle(msg, cls, fromPeer) {
+      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || 'Enter OTP to proceed. OTP will be sent to your email ID provided.', cls); sendB.disabled = !valid(emailNow());
+      if (!fromPeer && was) Object.keys(peers).forEach(k => { if (k !== key) peers[k].drop(msg, cls); });
+    }
+    function accept(t, x, name, email, fromPeer) {
+      tok = t; exp = x; vEmail = email.toLowerCase(); vName = name; nameEl.value = name; emailEl.value = email;
+      freeze(); lock(false);
+      say('✓ Email verified. Name and email are now fixed. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
+      clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
+      if (!fromPeer) Object.keys(peers).forEach(k => { if (k !== key) peers[k].adopt(t, x, name, email); });
+    }
     function cooldown() { clearInterval(cool); let n = 30; reB.disabled = true; reB.textContent = tr('Resend') + ' (' + n + ')'; cool = setInterval(() => { n--; if (n <= 0) { clearInterval(cool); reB.disabled = false; reB.textContent = tr('Resend'); } else reB.textContent = tr('Resend') + ' (' + n + ')'; }, 1000); }
     async function sendOtp(btn) {
       const e = emailNow(), lab = btn === sendB ? 'Send OTP' : 'Resend';
@@ -1173,31 +1186,29 @@ else (function loop() {
         else msg = r.error === 'blocked' ? 'This email address cannot be used here.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.';
       } catch (err) { msg = 'Could not send the OTP. Please try again.'; }
       await finish(btn, ok, tr(lab), 'Sent');
+      if (live()) return;
       if (ok) { ver.hidden = false; sendB.hidden = true; say('OTP sent to ' + e + '. Enter OTP to proceed.'); inp.focus(); cooldown(); }
       else { say(msg, 'bad'); sendB.disabled = !valid(emailNow()); reB.disabled = false; }
     }
     sendB.addEventListener('click', () => sendOtp(sendB)); reB.addEventListener('click', () => sendOtp(reB));
     async function verify() {
+      if (live()) return;
       const code = inp.value.replace(/\D/g, ''); if (code.length !== 6) { say('Enter the 6-digit OTP.', 'bad'); return; }
       okB.disabled = true; start(okB, tr('Verifying...')); let r = null, err = false;
       try { r = await post({ kind: 'verify', email: emailNow(), otp: code }); } catch (x) { err = true; }
-      const good = !!(r && r.ok);
-      await finish(okB, good, tr('Verify'), 'Verified');
-      if (good) {
-        tok = r.token; exp = r.exp; vEmail = emailNow().toLowerCase(); vName = nameEl.value; ver.hidden = true; sendB.hidden = true; clearInterval(cool); lock(false);
-        say('✓ Email verified. Name and email are now fixed. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
-        clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
-      } else if (err || !r) say('Could not check the OTP. Please try again.', 'bad');
+      if (r && r.ok) { accept(r.token, r.exp, nameEl.value, emailNow(), false); return; }
+      clear(okB, tr('Verify')); okB.disabled = false;
+      if (err || !r) say('Could not check the OTP. Please try again.', 'bad');
       else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
-      okB.disabled = false;
     }
     okB.addEventListener('click', verify); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
     inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
     emailEl.addEventListener('input', () => {
       const e = emailNow(); if (live() && e.toLowerCase() === vEmail) return;
-      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say('Enter OTP to proceed. The OTP is sent to your email.'); }
+      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say('Enter OTP to proceed. OTP will be sent to your email ID provided.'); }
     });
     form.addEventListener('reset', () => setTimeout(() => { if (live()) { emailEl.value = vEmail; nameEl.value = vName; } else idle(); }, 0));
+    peers[key] = { adopt: (t, x, name, email) => { if (live() && vEmail === email.toLowerCase()) { tok = t; exp = x; return; } accept(t, x, name, email, true); }, drop: (m, c) => idle(m, c, true) };
     window.__otp[key] = { token: () => (live() ? tok : ''), reset: m => idle(m, m ? 'bad' : '') };
     idle();
   }
