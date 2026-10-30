@@ -132,6 +132,7 @@ function doGet(e) {
 function act_(p) {
   var action = p.action, id = p.id || '';
   if (action === 'reply') return replyPage_(p);
+  if (action === 'compose') return composePage_(p);
   if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev) return page_('Already handled', 'This request is no longer on the calendar. It was probably approved or declined already.', 'info');
@@ -222,7 +223,7 @@ function message_(p) {
     MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, replyTo: email, subject: 'New message from ' + name + ' via your website',
       body: 'Name: ' + name + '\nEmail: ' + email + '\n\n' + msg,
       htmlBody: mail_('New message from your website', 'Someone sent you a message through the contact form. Reply to this email to answer them directly.',
-        [['Name', esc_(name)], ['Email', '<a href="mailto:' + esc_(email) + '">' + esc_(email) + '</a>'], ['Message', html], ['Received', esc_(sent)]], [['Reply to this message', link_('reply', rid), '#1f4e9c']],
+        [['Name', esc_(name)], ['Email', '<a href="mailto:' + esc_(email) + '">' + esc_(email) + '</a>'], ['Message', html], ['Received', esc_(sent)]], [['Reply to this message', link_('reply', rid), '#1f4e9c'], ['Write a new email', link_('compose', 'new'), '#5b6675']],
         'Reply to this message opens an editor (fonts, bold, alignment, attachments) and sends your answer to the visitor from Anandu Prabhakaran. Replying to this email directly also reaches the visitor.') });
   } catch (x) { console.error('message mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
   try {
@@ -241,14 +242,24 @@ function replyPage_(p) {
   if (!id || sign_('reply', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return page_('Not found', 'This message is no longer stored (messages are kept for 120 days).', 'info');
-  var r = JSON.parse(raw);
+  return editorPage_('reply', p, JSON.parse(raw));
+}
+function composePage_(p) {
+  if (sign_('compose', 'new') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  return editorPage_('compose', p, null);
+}
+function editorPage_(mode, p, r) {
+  var id = p.id || '', reply = mode === 'reply';
   var fonts = ['Arial', 'Georgia', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Courier New', 'Tahoma'];
   var tbtn = function (c, label, st, tip) { return '<button type="button" data-c="' + c + '" title="' + tip + '" style="' + (st || '') + '">' + label + '</button>'; };
-  var inner = '<div class="chips"><span class="chip"><b>' + esc_(r.n) + '</b></span><span class="chip">' + esc_(r.e) + '</span><span class="chip">Sending as Anandu Prabhakaran</span></div>'
-    + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
-    + '<label class="l" for="sub">Subject</label>'
-    + '<input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
-    + '<label class="l">Your reply</label>'
+  var inner = (reply
+      ? '<div class="chips"><span class="chip"><b>' + esc_(r.n) + '</b></span><span class="chip">' + esc_(r.e) + '</span><span class="chip">Sending as Anandu Prabhakaran</span></div>'
+        + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
+        + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
+      : '<div class="chips"><span class="chip">Sending as <b>Anandu Prabhakaran</b></span><span class="chip">New conversation</span></div>'
+        + '<label class="l" for="to">To</label><input id="to" class="tx" type="email" placeholder="name@example.com" autocomplete="off" style="margin-bottom:14px">'
+        + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
+    + '<label class="l">' + (reply ? 'Your reply' : 'Message') + '</label>'
     + '<div class="tb">'
     + '<div class="tg"><select id="ff"><option value="">Font</option>' + fonts.map(function (f) { return '<option>' + f + '</option>'; }).join('') + '</select>'
     + '<select id="fs"><option value="">Size</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Large</option><option value="5">Larger</option><option value="6">Huge</option></select></div>'
@@ -258,10 +269,10 @@ function replyPage_(p) {
     + '<div class="tg">' + tbtn('insertUnorderedList', '&#8226; List', '', 'Bullet list') + tbtn('insertOrderedList', '1. List', '', 'Numbered list') + tbtn('outdent', '&#8656;', '', 'Outdent') + tbtn('indent', '&#8658;', '', 'Indent') + '</div>'
     + '<div class="tg"><button type="button" id="lk" title="Insert link">Link</button>' + tbtn('removeFormat', 'Clear', '', 'Clear formatting') + '</div>'
     + '</div>'
-    + '<div id="ed" class="ed" contenteditable="true">Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran</div>'
+    + '<div id="ed" class="ed" contenteditable="true">' + (reply ? 'Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran' : '') + '</div>'
     + '<label class="l" style="margin-top:18px">Attachments <span class="hint">(up to 15 MB in total)</span></label>'
     + '<div id="dz" class="dz"><b>Click to add files</b> or drop them here</div><input type="file" id="fl" multiple style="display:none"><div id="fls" class="fl"></div>'
-    + '<div style="margin-top:22px"><button id="send" class="b blue auto">Send reply</button></div><div id="m" class="msg"></div>'
+    + '<div style="margin-top:22px"><button id="send" class="b blue auto">' + (reply ? 'Send reply' : 'Send email') + '</button></div><div id="m" class="msg"></div>'
     + '<script>(function(){var ed=document.getElementById("ed"),m=document.getElementById("m"),files=[],MAX=15*1024*1024;'
     + 'function ex(c,v){ed.focus();document.execCommand(c,false,v||null);}'
     + 'var bs=document.querySelectorAll("[data-c]");for(var i=0;i<bs.length;i++){bs[i].onmousedown=function(e){e.preventDefault();};bs[i].onclick=function(){ex(this.getAttribute("data-c"));};}'
@@ -278,19 +289,18 @@ function replyPage_(p) {
     + 'dz.ondragover=function(e){e.preventDefault();dz.className="dz on";};dz.ondragleave=function(){dz.className="dz";};dz.ondrop=function(e){e.preventDefault();dz.className="dz";add(e.dataTransfer.files);};'
     + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send reply";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
-    + '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out);};'
+    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
+    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out);};'
+      : '.sendNew(' + JSON.stringify(p.sig) + ',document.getElementById("to").value,document.getElementById("sub").value,ed.innerHTML,out);};')
     + '})();<\/script>';
-  return out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner), 'Reply to ' + r.n);
+  return reply
+    ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner), 'Reply to ' + r.n)
+    : out_(shell_('New email', 'Start a fresh conversation. It is sent as a formatted email from Anandu Prabhakaran, and replies come to your Gmail.', inner), 'New email');
 }
 
-// Called from the reply editor. Sends the formatted reply to the visitor as Anandu Prabhakaran, with attachments.
-function sendReply(id, sig, subject, bodyHtml, files) {
-  var wrap = function (title, msg) { return statusHtml_(title, msg, /valid|Not found|Already/.test(title) ? 'info' : 'ok'); };
-  if (!id || sign_('reply', id) !== sig) return wrap('Link not valid', 'This link is not valid.');
-  var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
-  if (!raw) return wrap('Not found', 'This message is no longer stored.');
-  var r = JSON.parse(raw), blobs = [], total = 0;
+// Shared by reply and new-email: builds the styled HTML email and sends it as Anandu Prabhakaran.
+function deliver_(to, subject, bodyHtml, files, quoted) {
+  var blobs = [], total = 0;
   (files || []).forEach(function (f) {
     var bytes = Utilities.base64Decode(f.data); total += bytes.length;
     blobs.push(Utilities.newBlob(bytes, String(f.type || 'application/octet-stream'), String(f.name || 'attachment').slice(0, 120)));
@@ -298,15 +308,37 @@ function sendReply(id, sig, subject, bodyHtml, files) {
   if (total > 15 * 1024 * 1024) throw new Error('Attachments are over 15 MB.');
   var clean = String(bodyHtml || '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on[a-z]+="[^"]*"/gi, '').replace(/javascript:/gi, '');
   var plain = clean.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  subject = String(subject || '').trim().slice(0, 150);
   var html = '<div style="background:#eef2f8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1c2430"><div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,156,.12)">'
-    + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:22px 28px"><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85">Anandu Prabhakaran</div><div style="font-size:20px;font-weight:bold;margin-top:6px">' + esc_(String(subject || 'Reply').slice(0, 150)) + '</div></div>'
+    + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:22px 28px"><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85">Anandu Prabhakaran</div><div style="font-size:20px;font-weight:bold;margin-top:6px">' + esc_(subject) + '</div></div>'
     + '<div style="padding:26px 28px;font-size:15px;line-height:1.6">' + clean + '</div>'
-    + '<div style="margin:0 28px 24px;padding:12px 14px;background:#f7f9fc;border-left:4px solid #c9d0da;border-radius:4px;color:#5b6675;font-size:13px;line-height:1.5"><b>Your message</b><br>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
+    + (quoted ? '<div style="margin:0 28px 24px;padding:12px 14px;background:#f7f9fc;border-left:4px solid #c9d0da;border-radius:4px;color:#5b6675;font-size:13px;line-height:1.5"><b>Your message</b><br>' + esc_(quoted).replace(/\n/g, '<br>') + '</div>' : '')
     + '<div style="background:#f7f9fc;padding:14px 28px;text-align:center;color:#7a8594;font-size:12px;border-top:1px solid #e6ebf2">Created with <span style="color:#e0245e;font-size:14px">&#10084;</span> by Anandu Prabhakaran</div></div></div>';
-  var opts = { to: r.e, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: String(subject || 'Re: your message').slice(0, 150), body: plain + '\n\n---\nYour message:\n' + r.m, htmlBody: html };
+  var opts = { to: to, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: subject, body: plain + (quoted ? '\n\n---\nYour message:\n' + quoted : ''), htmlBody: html };
   if (blobs.length) opts.attachments = blobs;
   MailApp.sendEmail(opts);
-  return wrap('Reply sent', 'Your reply was sent to ' + esc_(r.n) + ' (' + esc_(r.e) + ')' + (blobs.length ? ' with ' + blobs.length + ' attachment' + (blobs.length > 1 ? 's' : '') : '') + '. You can close this tab.');
+  return blobs.length;
+}
+function sentHtml_(n, to, nb) {
+  return statusHtml_('Email sent', 'Your email was sent to ' + esc_(n ? n + ' (' + to + ')' : to) + (nb ? ' with ' + nb + ' attachment' + (nb > 1 ? 's' : '') : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
+}
+
+// Called from the reply editor.
+function sendReply(id, sig, subject, bodyHtml, files) {
+  if (!id || sign_('reply', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
+  var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
+  if (!raw) return statusHtml_('Not found', 'This message is no longer stored.', 'info');
+  var r = JSON.parse(raw);
+  return sentHtml_(r.n, r.e, deliver_(r.e, subject || 'Re: your message', bodyHtml, files, r.m));
+}
+
+// Called from the new-email editor (fresh conversation).
+function sendNew(sig, to, subject, bodyHtml, files) {
+  if (sign_('compose', 'new') !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
+  to = String(to || '').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
+  if (!String(subject || '').trim()) throw new Error('Add a subject.');
+  return sentHtml_('', to, deliver_(to, subject, bodyHtml, files, ''));
 }
 
 /* ---- new request (POST) ---- */
