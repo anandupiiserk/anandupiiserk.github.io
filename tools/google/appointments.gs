@@ -96,10 +96,25 @@ function act_(p) {
   var name = ev.getTag('name') || 'the visitor', email = ev.getTag('email') || '', when = whenText_(ev.getStartTime(), ev.getEndTime());
   var len = Math.round((ev.getEndTime().getTime() - ev.getStartTime().getTime()) / 60000);
   if (action === 'approve') {
-    ev.setTitle('Appointment: ' + name);
-    try { ev.setColor(CalendarApp.EventColor.GREEN); } catch (x) { }
+    var done = false;
     if (email) {
-      try { ev.addGuest(email); } catch (x) { console.error('invite failed: ' + x); }
+      // addGuest() on an existing event adds the guest without emailing them, so create a fresh
+      // event with the guest and sendInvites on (this sends Google's invitation email), then drop the pending one.
+      try {
+        var ne = cal.createEvent('Appointment: ' + name, ev.getStartTime(), ev.getEndTime(),
+          { description: ev.getDescription(), guests: email, sendInvites: true });
+        try { ne.setColor(CalendarApp.EventColor.GREEN); } catch (x) { }
+        ne.setTag('name', name); ne.setTag('email', email);
+        ev.deleteEvent();
+        done = true;
+      } catch (x) { console.error('invite failed: ' + x); }
+    }
+    if (!done) {
+      ev.setTitle('Appointment: ' + name);
+      try { ev.setColor(CalendarApp.EventColor.GREEN); } catch (x) { }
+      if (email) { try { ev.addGuest(email); } catch (x) { console.error('addGuest failed: ' + x); } }
+    }
+    if (email) {
       try {
         MailApp.sendEmail({ to: email, name: OWNER_NAME, subject: 'Appointment confirmed: ' + when,
           body: 'Hello ' + name + ', your appointment is confirmed: ' + when + ' (' + len + ' minutes). A Google Calendar invitation has been sent to you.',
