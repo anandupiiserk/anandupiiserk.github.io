@@ -81,3 +81,4 @@ The picker reads busy times from the Google Calendar of anandupiiserk@gmail.com 
 - Weekends, 10:00 to 18:00 IST, 30 or 60 minutes, the holidays in `APPT_BLOCKED` and the ranges in `tools/unavailable.json` (`python3 tools/site.py block|unblock|blocked`) are enforced on the page.
 - Changing the script: edit it in script.google.com, then Deploy, Manage deployments, edit, New version (the URL stays the same). Keep `tools/google/appointments.gs` in step.
 - Requests appear on the calendar as "REQUEST (pending): name" (orange) and an email goes to the owner and the visitor.
+- Sending email needs the `script.google.com` permission to send mail as the owner. If emails stop arriving, open the project in script.google.com, run any function that calls MailApp (for example a one-line test) and approve the permission prompt, then Deploy, Manage deployments, New version. Errors are written to the Executions log.
