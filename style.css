@@ -1082,4 +1082,8 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 @keyframes ap-tick { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { #ap-send.sending::before, #cf-send.sending::before { transition: none; width: 50%; } #ap-send .apl svg, #cf-send .apl svg { animation: none; stroke-dashoffset: 0; } }
 .as.taken { opacity: .42; text-decoration: line-through; cursor: not-allowed; background: none; border-style: dashed; } .as.taken:hover { border-color: var(--line2); background: none; } .ad.full { opacity: .6; }
+.otp { margin: -4px 0 16px; } .otp-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .otp-note { font-size: .78rem; color: var(--muted); line-height: 1.4; } .otp-note.ok { color: #2e9d57; font-weight: 600; } .otp-note.bad { color: #d9534f; }
+.otp-ver { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; align-items: stretch; } .otp-in { width: 9.5em; text-align: center; letter-spacing: .38em; font-family: var(--mono); font-size: 1.05rem; padding: 8px 10px; border: 1px solid var(--line2); border-radius: 8px; background: var(--surface); color: var(--text); }
+.otp .btn { padding: 8px 18px; font-size: .82rem; min-height: 0; } .otp .btn:disabled { opacity: .5; cursor: not-allowed; }
+.cform input:disabled, .cform textarea:disabled { opacity: .5; cursor: not-allowed; }
 /* @endpagestamp */
