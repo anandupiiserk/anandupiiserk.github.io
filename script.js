@@ -19,6 +19,8 @@ const SITE = {
   email: 'anandupiiserk@gmail.com',
   /* Contact form. Leave endpoint empty to open the visitor's email app instead. Formspree: https://formspree.io/f/xxxxxxxx . Web3Forms: https://api.web3forms.com/submit and put the public access key in formKey. */
   formEndpoint: 'https://formspree.io/f/mdeeoqdz', formKey: '',
+  /* Gallery switch. false = the gallery page shows a short notice and no photo is fetched anywhere on the site (also stops the quiet background preload). */
+  galleryOn: false,
   nav: [
     { id: 'home',         href: 'home.html',         label: 'Home',         desc: 'Overview and research focus.' },
     { id: 'about',        href: 'about.html',        label: 'About me',     desc: 'Position, education and research interests.' },
@@ -449,7 +451,7 @@ if (!reduce && finePointer) {
    On every page except the gallery, once the page has finished loading and the browser is idle, the gallery photos are fetched
    into the browser cache, two at a time. Nothing is shown. Skipped on data saver and slow connections. */
 (function galleryPreload() {
-  if ($('#gallery') || window.__gpre) return; window.__gpre = true;
+  if (!SITE.galleryOn || $('#gallery') || window.__gpre) return; window.__gpre = true;
   const c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
   const EX = ['JPG', 'jpg', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'];
   const load = src => new Promise(r => { const im = new Image(); im.decoding = 'async'; im.onload = () => r(true); im.onerror = () => r(false); im.src = src; });
@@ -920,6 +922,7 @@ else (function loop() {
 
   let done = false, revealed = false; /* tiles stay hidden until every thumbnail is ready, then appear together (no pop-in while loading) */
   (async function init() {
+    if (!SITE.galleryOn) { empty.hidden = false; empty.textContent = 'The gallery is temporarily switched off.'; return; }
     let text = '';
     try { const r = await fetch(DIR + 'captions.txt', { cache: 'no-cache' }); if (r.ok) text = await r.text(); else console.warn('[gallery] gallery/captions.txt not found (HTTP ' + r.status + ')'); } catch (err) { console.warn('[gallery] could not read gallery/captions.txt', err); }
     if (!text && location.protocol === 'file:') { empty.hidden = false; empty.textContent = 'Preview note: browsers block reading captions.txt when the page is opened by double-clicking the file. Open the site through GitHub Pages, or run "python -m http.server" in this folder and visit http://localhost:8000.'; }
