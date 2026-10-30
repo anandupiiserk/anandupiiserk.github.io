@@ -15,6 +15,7 @@ var START_H = 10, END_H = 18;
 var LENGTHS = [30, 60];
 var MIN_LEAD_HOURS = 24;
 var HOLIDAY_CAL = 'en.indian#holiday@group.v.calendar.google.com';
+var MSG_SENDER = 'No-Reply-Website-Admin-Anandu';
 var OWNER_NAME = 'Anandu Prabhakaran';
 var SITE_URL = 'https://anandupiiserk.github.io/contact';
 
@@ -41,25 +42,31 @@ function calLink_(ev) {
 
 /* ---- HTML email ---- */
 function mail_(heading, intro, rows, buttons, footer) {
-  var h = '<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#1c2430">'
-    + '<div style="background:#1f4e9c;color:#ffffff;padding:16px 20px;border-radius:8px 8px 0 0;font-size:18px;font-weight:bold">' + esc_(heading) + '</div>'
-    + '<div style="border:1px solid #d9dee6;border-top:0;padding:20px;border-radius:0 0 8px 8px">';
-  if (intro) h += '<p style="margin:0 0 16px;line-height:1.5">' + intro + '</p>';
-  h += '<table style="border-collapse:collapse;width:100%">';
+  var h = '<div style="background:#eef2f8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1c2430">'
+    + '<div style="max-width:580px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,156,.12)">'
+    + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:26px 28px">'
+    + '<div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85">Anandu Prabhakaran</div>'
+    + '<div style="font-size:22px;font-weight:bold;margin-top:6px;line-height:1.3">' + esc_(heading) + '</div></div>'
+    + '<div style="padding:26px 28px">';
+  if (intro) h += '<p style="margin:0 0 18px;line-height:1.6;font-size:15px">' + intro + '</p>';
+  h += '<table style="border-collapse:collapse;width:100%;background:#f7f9fc;border-radius:10px">';
   rows.forEach(function (r) {
-    h += '<tr><td style="padding:8px 10px;border-bottom:1px solid #eef0f4;color:#5b6675;width:110px;vertical-align:top">' + esc_(r[0]) + '</td>'
-      + '<td style="padding:8px 10px;border-bottom:1px solid #eef0f4;vertical-align:top">' + r[1] + '</td></tr>';
+    h += '<tr><td style="padding:11px 14px;border-bottom:1px solid #e6ebf2;color:#5b6675;width:100px;vertical-align:top;font-size:13px;font-weight:bold">' + esc_(r[0]) + '</td>'
+      + '<td style="padding:11px 14px;border-bottom:1px solid #e6ebf2;vertical-align:top;font-size:15px;line-height:1.5">' + r[1] + '</td></tr>';
   });
   h += '</table>';
   if (buttons && buttons.length) {
-    h += '<div style="margin-top:22px">';
+    h += '<div style="margin-top:24px">';
     buttons.forEach(function (b) {
-      h += '<a href="' + b[1] + '" style="display:inline-block;margin:0 8px 8px 0;padding:11px 18px;border-radius:6px;background:' + b[2] + ';color:#ffffff;text-decoration:none;font-weight:bold;font-size:14px">' + esc_(b[0]) + '</a>';
+      h += '<a href="' + b[1] + '" style="display:inline-block;margin:0 8px 10px 0;padding:12px 22px;border-radius:999px;background:' + b[2] + ';color:#ffffff;text-decoration:none;font-weight:bold;font-size:14px">' + esc_(b[0]) + '</a>';
     });
     h += '</div>';
   }
-  if (footer) h += '<p style="margin:18px 0 0;color:#7a8594;font-size:12px;line-height:1.5">' + footer + '</p>';
-  return h + '</div></div>';
+  if (footer) h += '<p style="margin:22px 0 0;padding-top:16px;border-top:1px solid #e6ebf2;color:#7a8594;font-size:12px;line-height:1.6">' + footer + '</p>';
+  h += '</div><div style="background:#f7f9fc;padding:14px 28px;text-align:center;color:#7a8594;font-size:12px;border-top:1px solid #e6ebf2">'
+    + 'Created with <span style="color:#e0245e;font-size:14px">&#10084;</span> by Anandu Prabhakaran</div>'
+    + '</div></div>';
+  return h;
 }
 function page_(title, msg) {
   return HtmlService.createHtmlOutput('<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:48px auto;padding:0 20px;color:#1c2430"><h2>' + esc_(title) + '</h2><p style="line-height:1.6">' + msg + '</p></div>').setTitle(title);
@@ -164,6 +171,31 @@ function declineWith(id, sig, reason, block) {
   return wrap('Declined', 'The request from ' + esc_(name) + ' for ' + esc_(when) + ' ' + (block ? 'was declined and the slot stays blocked on the website (it is on your calendar as "Blocked (declined)"; delete that event to free it).' : 'was declined and the slot is free again.') + (email ? ' An email' + (reason ? ' with your reason' : '') + ' was sent to ' + esc_(email) + '.' : ''));
 }
 
+/* ---- contact form message (POST with kind:'message') ---- */
+function message_(p) {
+  var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), msg = String(p.message || '').trim().slice(0, 3000);
+  if (!name || !msg || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });
+  var props = PropertiesService.getScriptProperties(), day = ymd_(new Date()), key = 'MSGCOUNT_' + day, n = +(props.getProperty(key) || 0);
+  if (n >= 40) return json_({ ok: false, error: 'busy' });   /* daily cap protects the mail quota */
+  props.setProperty(key, String(n + 1));
+  var html = esc_(msg).replace(/\n/g, '<br>'), sent = Utilities.formatDate(new Date(), TZ, 'EEEE d MMMM yyyy, HH:mm') + ' IST';
+  try {
+    MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, replyTo: email, subject: 'New message from ' + name + ' via your website',
+      body: 'Name: ' + name + '\nEmail: ' + email + '\n\n' + msg,
+      htmlBody: mail_('New message from your website', 'Someone sent you a message through the contact form. Reply to this email to answer them directly.',
+        [['Name', esc_(name)], ['Email', '<a href="mailto:' + esc_(email) + '">' + esc_(email) + '</a>'], ['Message', html], ['Received', esc_(sent)]], [],
+        'Sent by the website contact form. Replies go to the visitor, not to a mailbox.') });
+  } catch (x) { console.error('message mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
+  try {
+    MailApp.sendEmail({ to: email, name: MSG_SENDER, subject: 'Your message has been received',
+      body: 'Hello ' + name + ', your message has been received.\n\nName: ' + name + '\nEmail: ' + email + '\nMessage:\n' + msg + '\n\nThe details above are the details you filled in on the website.\nPlease do not respond to this email. It is system generated and you will be contacted by Anandu soon.',
+      htmlBody: mail_('Your message has been received', 'Hello ' + esc_(name) + ', thank you for writing. Your message has been forwarded to Anandu.',
+        [['Name', esc_(name)], ['Email', esc_(email)], ['Message', html]], [],
+        'The details shown above are the details you filled in on the website.<br><br>Please do not respond to this email. It is system generated and you will be contacted by Anandu soon.') });
+  } catch (x) { console.error('ack mail failed: ' + x); }
+  return json_({ ok: true });
+}
+
 /* ---- new request (POST) ---- */
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -171,6 +203,7 @@ function doPost(e) {
     lock.waitLock(15000);
     var p = JSON.parse(e.postData.contents || '{}');
     if (p.website) return json_({ ok: true });
+    if (p.kind === 'message') return message_(p);
     var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), topic = String(p.topic || '').trim().slice(0, 1000);
     var len = +p.len, start = new Date(+p.start);
     if (!name || !topic || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });
