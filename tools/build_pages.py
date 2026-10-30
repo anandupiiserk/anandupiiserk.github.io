@@ -72,15 +72,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261031b">
+<link rel="stylesheet" href="style.css?v=20261031c">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261031b"></script>
-<script src="script.js?v=20261031b"></script>
+<script src="i18n.js?v=20261031c"></script>
+<script src="script.js?v=20261031c"></script>
 </body>
 </html>
 '''
@@ -142,7 +142,7 @@ cartouche = '''<div class="cartouche" aria-hidden="true">
   <text x="1" y="28" font-size="9" fill="currentColor" font-family="monospace">0</text><text x="65" y="28" font-size="9" fill="currentColor" font-family="monospace" text-anchor="middle">50</text><text x="129" y="28" font-size="9" fill="currentColor" font-family="monospace" text-anchor="end">100 km</text></svg>
 </div>'''
 
-mets = ''.join(f'<div class="metric reveal"><b data-count="{v}">0</b><span>{l}</span></div>' for v, l in [(9, 'Workshops and lectures'), (5, 'Conference presentations'), (2, 'Journal articles published'), (2023, 'PMRF fellow since')])
+mets = ''.join(f'<div class="metric reveal"><b data-count="{v}">0</b><span>{l}</span></div>' for v, l in [(10, 'Workshops and lectures'), (5, 'Conference presentations'), (2, 'Journal articles published'), (2023, 'PMRF fellow since')])
 
 LOADER = '''<div id="loader" aria-hidden="true">
   <div class="panel top"></div><div class="panel bottom"></div>
@@ -315,6 +315,7 @@ def wk(role, when, title, inst, place, mode=None, note=None, pics=None):
     n = f'<p>{note}</p>' if note else ''
     pc = ('<div class="wk-pics">' + ''.join(f'<img src="gallery/t/{f}.webp" data-full="gallery/{_full(f)}" alt="{a}" loading="lazy" width="480" height="360" tabindex="0" role="button">' for f, a in pics) + '</div>') if pics else ''
     return f'<article class="wk reveal"><div class="when"><span class="badge">{glyph}{role}</span><span translate="no">{when}</span></div><div><h3 translate="no">{title}</h3><p translate="no"><b>{inst}</b></p><p translate="no">{place}</p>{(m and "<p>"+m+"</p>")}{n}{pc}</div></article>'
+y2026 = wk('Conducted', '28-31 October 2026', 'Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study', 'School of Environment and Natural Resources, Doon University', 'Kedarpur, Dehradun, Uttarakhand, India', 'Offline', 'Four-day workshop for MSc and MTech students, held on campus.')
 y2025 = wk('Conducted', '10-16 October 2025', 'Introduction to Numerical Weather Prediction Models and Weather Research and Forecasting Model as a tool for Extreme Event Analysis', 'College of Climate Change and Environmental Studies, Kerala Agricultural University', 'Vellanikkara, Thrissur, Kerala', 'Online') + \
         wk('Conducted', '03-07 February 2025', 'Introduction to Disaster Mitigation &amp; Management, Climate Change and California Wildfire Analysis', 'Department of Environmental Studies, Kannur University', 'Mangattuparamba Campus', 'Offline', None, [('WORK_002_01', 'Blackboard announcing the lecture series on climate change at Kannur University'), ('WORK_002_02', 'Classroom during the lecture series at Kannur University'), ('WORK_002_04', 'Lecture during the series at Kannur University')])
 y2024 = wk('Conducted', '21-25 October 2024', 'Python Essentials: Foundations of Programming, Data Structures, and Analysis', 'Department of Environmental Sciences, School of Basic Sciences and Research, Sharda University', 'Greater Noida, Uttar Pradesh, India') + \
@@ -326,6 +327,7 @@ y2023 = wk('Conducted', '16-20 October 2023', 'Hands-on Workshop on Weather Pred
         wk('Organised', '02-08 January 2023', 'FOREcaSting and Early-Warning of Extreme Events and Disasters (FORESEED) KARYASHALA Workshop on WRF', 'Centre of Excellence for Disaster Mitigation and Management (CoEDMM), IIT Roorkee', 'Roorkee, Uttarakhand, India')
 att = wk('Attended', '', 'Workshop on Data Assimilation in Weather and Climate models', 'International Centre for Theoretical Sciences (ICTS)', 'Bengaluru, India')
 workshops = phero('04 / Workshops', 'Workshops', 'Workshops and lectures handled, organised and attended. A square marks conducted, a diamond organised and a circle attended.', 'WORKSHOPS AND LECTURES') + sec(f'''
+<div class="yh"><h3>2026</h3></div><div class="wks">{y2026}</div>
 <div class="yh"><h3>2025</h3></div><div class="wks">{y2025}</div>
 <div class="yh"><h3>2024</h3></div><div class="wks">{y2024}</div>
 <div class="yh"><h3>2023</h3></div><div class="wks">{y2023}</div>
