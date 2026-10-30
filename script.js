@@ -42,7 +42,7 @@ const SITE = {
     { label: 'Email', brand: '#d9902a',          icon: 'mail',         url: 'mailto:anandupiiserk@gmail.com' }
   ]
 };
-if (SITE.lite) SITE.nav = SITE.nav.filter(n => ['home', 'about'].includes(n.id));   /* keep in step with LIVE_PAGES in tools/build_pages.py */
+if (SITE.lite) SITE.nav = SITE.nav.filter(n => ['home', 'about', 'research', 'publications', 'workshops'].includes(n.id));   /* keep in step with LIVE_PAGES in tools/build_pages.py */
 /* @endstamp */
 
 
