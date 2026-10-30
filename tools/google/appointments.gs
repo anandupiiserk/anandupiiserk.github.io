@@ -138,7 +138,7 @@ function act_(p) {
     + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;document.getElementById("m").textContent="Something went wrong. Please try again.";})'
     + '.declineWith(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("r").value,blk);}'
     + 'document.getElementById("b1").onclick=function(){go(this,true);};document.getElementById("b0").onclick=function(){go(this,false);};'
-    + <\/script></div>').setTitle('Decline request');
+    + '<\/script></div>').setTitle('Decline request');
 }
 
 // Called from the decline page. Verifies the signed link again, removes the request and emails the visitor with the reason.
@@ -161,7 +161,7 @@ function declineWith(id, sig, reason, block) {
           [], [['Choose another time', SITE_URL, '#1f4e9c']], OWNER_NAME) });
     } catch (x) { console.error('decline mail failed: ' + x); }
   }
-  return wrap('Declined', 'The request from ' + esc_(name) + ' for ' + esc_(when) + ' ' + (block ? 'was declined and the slot stays blocked on the website (it is on your calendar as "Blocked (declined)"; delete that event to free it).' : 'was declined and the slot is free again.') + ' + (email ? ' An email' + (reason ? ' with your reason' : '') + ' was sent to ' + esc_(email) + '.' : ''));
+  return wrap('Declined', 'The request from ' + esc_(name) + ' for ' + esc_(when) + ' ' + (block ? 'was declined and the slot stays blocked on the website (it is on your calendar as "Blocked (declined)"; delete that event to free it).' : 'was declined and the slot is free again.') + (email ? ' An email' + (reason ? ' with your reason' : '') + ' was sent to ' + esc_(email) + '.' : ''));
 }
 
 /* ---- new request (POST) ---- */
