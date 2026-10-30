@@ -125,7 +125,6 @@ function applyTheme(t, persist) {
 /* ---------- Toast ---------- */
 let toastEl, toastTimer;
 function toast(msg, ms) { toastEl.textContent = tr(msg); toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms || 2200); }
-document.addEventListener('keydown', e => { if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); toast('Sorry, F12 is disabled here by Anandu!', 4200); } });
 
 /* ---------- Shared chrome ---------- */
 /* @stamp: header and footer */
@@ -237,7 +236,7 @@ buildChrome();
   document.addEventListener('keydown', e => {
     const k = (e.key || '').toLowerCase();
     /* F12, Ctrl/Cmd+Shift+I, J, C, Cmd+Option+I and Ctrl/Cmd+U (view source) */
-    if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && 'ijc'.includes(k) && k.length === 1) || (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && k === 'u')) { e.preventDefault(); e.stopPropagation(); return; }
+    if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && 'ijc'.includes(k) && k.length === 1) || (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && k === 'u')) { e.preventDefault(); e.stopPropagation(); toast(e.key === 'F12' ? 'Sorry, F12 is disabled here by Anandu!' : 'Sorry, this shortcut is disabled here by Anandu!', 4200); return; }
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
     if (k === 'p' || (!field(e.target) && (k === 'c' || k === 'x' || k === 'a'))) e.preventDefault();
   }, true);
