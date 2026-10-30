@@ -82,3 +82,7 @@ The picker reads busy times from the Google Calendar of anandupiiserk@gmail.com 
 - Changing the script: edit it in script.google.com, then Deploy, Manage deployments, edit, New version (the URL stays the same). Keep `tools/google/appointments.gs` in step.
 - Requests appear on the calendar as "REQUEST (pending): name" (orange) and an email goes to the owner and the visitor.
 - Sending email needs the `script.google.com` permission to send mail as the owner. If emails stop arriving, open the project in script.google.com, run any function that calls MailApp (for example a one-line test) and approve the permission prompt, then Deploy, Manage deployments, New version. Errors are written to the Executions log.
+
+
+### Composing emails from the admin portal
+Every contact-message notification has a Reply button (rich editor with attachments) and a Write a new email button. The new-email page starts a fresh conversation with any address, sent as Anandu Prabhakaran; bookmark that page for later use.
