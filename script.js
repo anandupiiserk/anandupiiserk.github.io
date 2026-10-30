@@ -327,12 +327,15 @@ buildChrome();
       const subject = `Website message from ${name}`;
       const GEP = ($('#appt') && $('#appt').dataset.endpoint) || '';
       if (GEP) {   /* messages go through the same Google script as appointments, which also sends the acknowledgement */
+        const vt = window.__otp && window.__otp.cf ? window.__otp.cf.token() : '';
+        if (!vt) { say('Please verify your email with the OTP first.', true); return; }
         btn.disabled = true; say('');
         const lab = btn.textContent.trim(); btn.innerHTML = '<span class="apl"></span>'; const al = btn.firstChild; al.textContent = tr('Sending...');
         btn.classList.remove('done'); void btn.offsetWidth; btn.classList.add('sending'); let ok = false;
         const reset = () => { btn.classList.remove('sending', 'done'); btn.innerHTML = ''; btn.textContent = lab; btn.disabled = false; };
         try {
-          const r = await (await fetch(GEP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'message', name, email, message, website: '' }) })).json();
+          const r = await (await fetch(GEP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'message', name, email, message, website: '', vtoken: vt }) })).json();
+          if (r.error === 'unverified' && window.__otp && window.__otp.cf) window.__otp.cf.reset('Verification expired. Send a new OTP.');
           if (!r.ok) throw new Error(r.error || 'failed');
           ok = true; btn.classList.remove('sending'); btn.classList.add('done'); al.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' + tr('Sent'); setTimeout(reset, 5000);
           say('Your message has been forwarded to Anandu. A copy of what you sent has been emailed to you, and he will get back to you soon. Thank you!'); cf.reset();
@@ -1098,13 +1101,16 @@ else (function loop() {
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Enter a valid email address.', true); return; }
     const t = chosen.split(' ')[1].split(':').map(Number), end = t[0] * 60 + t[1] + LEN, when = chosen.split(' ')[0] + ', ' + chosen.split(' ')[1] + ' to ' + pad2(Math.floor(end / 60)) + ':' + pad2(end % 60) + ' IST';
     if (live) {
+      const vt = window.__otp && window.__otp.ap ? window.__otp.ap.token() : '';
+      if (!vt) { say('Please verify your email with the OTP first.', true); return; }
       const btn = $('#ap-send'); btn.disabled = true; say('');
       const lab = btn.textContent.trim(); btn.innerHTML = '<span class="apl"></span>'; const al = btn.firstChild; al.textContent = tr('Sending...');
       btn.classList.remove('done'); void btn.offsetWidth; btn.classList.add('sending');
       const reset = () => { btn.classList.remove('sending', 'done'); btn.innerHTML = ''; btn.textContent = lab; btn.disabled = false; }; let ok = false;
-      fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ name, email, topic, len: LEN, start: stamp(day, chosen.split(' ')[1]), website: '' }) })
+      fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ name, email, topic, len: LEN, start: stamp(day, chosen.split(' ')[1]), website: '', vtoken: vt }) })
         .then(r => r.json()).then(r => {
           if (r.ok) { ok = true; btn.classList.remove('sending'); btn.classList.add('done'); al.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' + tr('Sent'); setTimeout(reset, 5000); say('Your appointment request has been forwarded to Anandu. He will get back to you via email. Thank you!'); chosen = null; sel.textContent = tr('No slot chosen yet'); $('#ap-form').reset(); loadLive(); }
+          else if (r.error === 'unverified') { say('Verification expired. Send a new OTP.', true); if (window.__otp && window.__otp.ap) window.__otp.ap.reset('Verification expired. Send a new OTP.'); }
           else if (r.error === 'taken' || r.error === 'too_soon' || r.error === 'hours') { say('That time is no longer available. Please choose another.', true); chosen = null; sel.textContent = tr('No slot chosen yet'); loadLive(); }
           else say('Something went wrong. Please email me directly.', true);
         }).catch(() => say('Something went wrong. Please email me directly.', true)).finally(() => { if (!ok) reset(); });
@@ -1120,6 +1126,70 @@ else (function loop() {
     }).catch(() => { live = false; });
   }
   drawCal(); loadLive();
+})();
+/* @endpagestamp */
+
+/* @pagestamp contact.html */
+/* ---------- Contact: email check by OTP (sent by the Google script). Forms stay locked until the OTP is accepted; the check lasts 20 minutes. ---------- */
+(function otpGates() {
+  const root = $('#appt'), EP = root && root.dataset.endpoint; if (!EP) return;
+  const BW = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean'];
+  const blockedEmail = e => { const w = e.toLowerCase(), flat = w.replace(/[^a-z0-9]/g, ''); return BW.some(x => flat.includes(x)) || w.split(/[^a-z0-9]+/).includes('dean'); };
+  const valid = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+  window.__otp = window.__otp || {};
+  const post = body => fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(r => r.json());
+  function gate(key, form, emailEl) {
+    if (!form || !emailEl) return;
+    const box = document.createElement('div'); box.className = 'otp';
+    box.innerHTML = '<div class="otp-line"><button type="button" class="btn ghost otp-send" disabled></button><small class="otp-note" aria-live="polite"></small></div>'
+      + '<div class="otp-ver" hidden><input class="otp-in" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="OTP"><button type="button" class="btn otp-ok"></button><button type="button" class="btn ghost otp-re" disabled></button></div>';
+    emailEl.closest('.frow').after(box);
+    const sendB = $('.otp-send', box), note = $('.otp-note', box), ver = $('.otp-ver', box), inp = $('.otp-in', box), okB = $('.otp-ok', box), reB = $('.otp-re', box);
+    sendB.textContent = tr('Send OTP'); okB.textContent = tr('Verify'); reB.textContent = tr('Resend');
+    let tok = '', exp = 0, vEmail = '', timer = 0, cool = 0;
+    const lock = on => { [...form.elements].forEach(el => { if (el === emailEl || box.contains(el)) return; el.disabled = on; }); };
+    const say = (m, cls) => { note.textContent = tr(m); note.className = 'otp-note' + (cls ? ' ' + cls : ''); };
+    const emailNow = () => emailEl.value.trim();
+    const live = () => tok && Date.now() < exp;
+    function idle(msg, cls) { clearTimeout(timer); tok = ''; vEmail = ''; ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || 'Enter OTP to proceed. The OTP is sent to your email.', cls); sendB.disabled = !valid(emailNow()); }
+    function cooldown() { clearInterval(cool); let n = 30; reB.disabled = true; reB.textContent = tr('Resend') + ' (' + n + ')'; cool = setInterval(() => { n--; if (n <= 0) { clearInterval(cool); reB.disabled = false; reB.textContent = tr('Resend'); } else reB.textContent = tr('Resend') + ' (' + n + ')'; }, 1000); }
+    async function sendOtp(btn) {
+      const e = emailNow();
+      if (!valid(e)) { say('Enter a valid email address.', 'bad'); return; }
+      if (blockedEmail(e)) { say('This email address cannot be used here.', 'bad'); return; }
+      sendB.disabled = reB.disabled = true; const lab = btn.textContent; btn.textContent = tr('Sending...'); say('');
+      try {
+        const r = await post({ kind: 'otp', email: e });
+        if (r.ok) { ver.hidden = false; sendB.hidden = true; say('OTP sent to ' + e + '. Enter OTP to proceed.'); inp.focus(); cooldown(); }
+        else say(r.error === 'blocked' ? 'This email address cannot be used here.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.', 'bad');
+      } catch (err) { say('Could not send the OTP. Please try again.', 'bad'); }
+      btn.textContent = lab; sendB.disabled = !valid(emailNow()); if (!ver.hidden) { reB.disabled = true; cooldown(); }
+    }
+    sendB.addEventListener('click', () => sendOtp(sendB)); reB.addEventListener('click', () => sendOtp(reB));
+    async function verify() {
+      const code = inp.value.replace(/\D/g, ''); if (code.length !== 6) { say('Enter the 6-digit OTP.', 'bad'); return; }
+      okB.disabled = true;
+      try {
+        const r = await post({ kind: 'verify', email: emailNow(), otp: code });
+        if (r.ok) {
+          tok = r.token; exp = r.exp; vEmail = emailNow().toLowerCase(); ver.hidden = true; sendB.hidden = true; clearInterval(cool); lock(false);
+          say('✓ Email verified. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
+          clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
+        } else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
+      } catch (err) { say('Could not check the OTP. Please try again.', 'bad'); }
+      okB.disabled = false;
+    }
+    okB.addEventListener('click', verify); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
+    inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
+    emailEl.addEventListener('input', () => {
+      const e = emailNow(); if (live() && e.toLowerCase() === vEmail) return;
+      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say('Enter OTP to proceed. The OTP is sent to your email.'); }
+    });
+    form.addEventListener('reset', () => setTimeout(() => { if (live()) { emailEl.value = vEmail; } else idle(); }, 0));
+    window.__otp[key] = { token: () => (live() ? tok : ''), reset: m => idle(m, m ? 'bad' : '') };
+    idle();
+  }
+  gate('cf', $('#cform'), $('#cf-email')); gate('ap', $('#ap-form'), $('#ap-email'));
 })();
 /* @endpagestamp */
 

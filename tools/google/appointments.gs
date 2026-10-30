@@ -205,10 +205,61 @@ function declineWith(id, sig, reason, block) {
   return wrap('Declined', 'The request from ' + esc_(name) + ' for ' + esc_(when) + ' ' + (block ? 'was declined and the slot stays blocked on the website (it is on your calendar as "Blocked (declined)"; delete that event to free it).' : 'was declined and the slot is free again.') + (email ? ' An email' + (reason ? ' with your reason' : '') + ' was sent to ' + esc_(email) + '.' : ''));
 }
 
+/* ---- email verification (OTP) ---- */
+var OTP_VALID_MIN = 20;          /* verified email stays valid this long after the OTP is accepted */
+var OTP_TTL_SEC = 600;           /* a sent OTP can be entered for 10 minutes */
+var OTP_PER_EMAIL_HOUR = 3, OTP_PER_DAY = 60;
+var BLOCK_WORDS = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean'];
+var BLOCK_TOKENS = ['dean'];
+function normEmail_(e) { return String(e || '').trim().toLowerCase(); }
+function blockedEmail_(email) {
+  var whole = normEmail_(email), flat = whole.replace(/[^a-z0-9]/g, ''), toks = whole.split(/[^a-z0-9]+/);
+  for (var i = 0; i < BLOCK_WORDS.length; i++) if (flat.indexOf(BLOCK_WORDS[i]) >= 0) return true;
+  for (var j = 0; j < toks.length; j++) if (BLOCK_TOKENS.indexOf(toks[j]) >= 0) return true;
+  return false;
+}
+function otpSend_(p) {
+  var email = normEmail_(p.email);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return json_({ ok: false, error: 'invalid' });
+  if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
+  var cache = CacheService.getScriptCache(), props = PropertiesService.getScriptProperties();
+  var nk = 'otpn_' + sign_('n', email).slice(0, 32), n = +(cache.get(nk) || 0);
+  if (n >= OTP_PER_EMAIL_HOUR) return json_({ ok: false, error: 'rate' });
+  var dk = 'OTPDAY_' + ymd_(new Date()), dn = +(props.getProperty(dk) || 0);
+  if (dn >= OTP_PER_DAY) return json_({ ok: false, error: 'busy' });
+  var code = ('000000' + (parseInt(sign_('code', Utilities.getUuid() + Date.now()).slice(0, 8), 16) % 1000000)).slice(-6);
+  cache.put('otp_' + sign_('o', email).slice(0, 32), JSON.stringify({ h: sign_('v:' + email, code), t: 0 }), OTP_TTL_SEC);
+  cache.put(nk, String(n + 1), 3600); props.setProperty(dk, String(dn + 1));
+  try {
+    MailApp.sendEmail({ to: email, name: MSG_SENDER, subject: 'Your verification code',
+      body: 'Your OTP is ' + code + '\n\nThis is system generated mail and do not respond here.\nThe OTP is valid for ' + (OTP_TTL_SEC / 60) + ' minutes.\n\nCreated with love by Anandu Prabhakaran',
+      htmlBody: mail_('Email verification', 'Your OTP is <span style="display:inline-block;margin-left:4px;padding:6px 14px;background:#eef5fd;border:1px solid #cfe0f5;border-radius:8px;font-size:26px;letter-spacing:.28em;font-weight:bold;color:#1f4e9c">' + code + '</span>', [], [],
+        'This is system generated mail and do not respond here. The OTP is valid for ' + (OTP_TTL_SEC / 60) + ' minutes. If you did not ask for it, ignore this email.') });
+  } catch (x) { console.error('otp mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
+  return json_({ ok: true });
+}
+function otpVerify_(p) {
+  var email = normEmail_(p.email), code = String(p.otp || '').replace(/\D/g, '');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || code.length !== 6) return json_({ ok: false, error: 'invalid' });
+  var cache = CacheService.getScriptCache(), k = 'otp_' + sign_('o', email).slice(0, 32), raw = cache.get(k);
+  if (!raw) return json_({ ok: false, error: 'expired' });
+  var r = JSON.parse(raw);
+  if (r.t >= 5) { cache.remove(k); return json_({ ok: false, error: 'locked' }); }
+  if (r.h !== sign_('v:' + email, code)) { r.t++; cache.put(k, JSON.stringify(r), OTP_TTL_SEC); return json_({ ok: false, error: 'wrong', left: 5 - r.t }); }
+  cache.remove(k);
+  var exp = Date.now() + OTP_VALID_MIN * 60000;
+  return json_({ ok: true, token: exp + '.' + sign_('tok', email + '|' + exp), exp: exp });
+}
+function tokenOk_(email, tok) {
+  var m = String(tok || '').match(/^(\d{10,16})\.([0-9a-f]{64})$/);
+  return !!m && +m[1] > Date.now() && sign_('tok', normEmail_(email) + '|' + m[1]) === m[2];
+}
+
 /* ---- contact form message (POST with kind:'message') ---- */
 function message_(p) {
   var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), msg = String(p.message || '').trim().slice(0, 3000);
   if (!name || !msg || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });
+  if (blockedEmail_(email) || !tokenOk_(email, p.vtoken)) return json_({ ok: false, error: 'unverified' });
   var props = PropertiesService.getScriptProperties(), day = ymd_(new Date()), key = 'MSGCOUNT_' + day, n = +(props.getProperty(key) || 0);
   if (n >= 40) return json_({ ok: false, error: 'busy' });   /* daily cap protects the mail quota */
   props.setProperty(key, String(n + 1));
@@ -357,10 +408,13 @@ function doPost(e) {
     lock.waitLock(15000);
     var p = JSON.parse(e.postData.contents || '{}');
     if (p.website) return json_({ ok: true });
+    if (p.kind === 'otp') return otpSend_(p);
+    if (p.kind === 'verify') return otpVerify_(p);
     if (p.kind === 'message') return message_(p);
     var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), topic = String(p.topic || '').trim().slice(0, 1000);
     var len = +p.len, start = new Date(+p.start);
     if (!name || !topic || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });
+    if (blockedEmail_(email) || !tokenOk_(email, p.vtoken)) return json_({ ok: false, error: 'unverified' });
     if (LENGTHS.indexOf(len) < 0 || isNaN(start.getTime())) return json_({ ok: false, error: 'invalid' });
     var end = new Date(start.getTime() + len * 60000), now = new Date();
     if (start.getTime() < now.getTime() + MIN_LEAD_HOURS * 3600000) return json_({ ok: false, error: 'too_soon' });
