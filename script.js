@@ -125,6 +125,7 @@ function applyTheme(t, persist) {
 /* ---------- Toast ---------- */
 let toastEl, toastTimer;
 function toast(msg, ms) { toastEl.textContent = tr(msg); toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms || 2200); }
+document.addEventListener('keydown', e => { if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); toast('Sorry, F12 is disabled here by Anandu!', 4200); } });
 
 /* ---------- Shared chrome ---------- */
 /* @stamp: header and footer */
