@@ -1053,6 +1053,7 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 #wk-lb img { max-height: 86vh; max-width: 92vw; }
 #wk-lb [hidden] { display: none; }
 
+/* @pagestamp contact.html */
 /* appointment request */
 .appt { margin-top: 12px; } .appt-note { color: var(--muted); max-width: 760px; margin: 0 0 18px; }
 .appt-cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
@@ -1069,3 +1070,4 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 
 .appt-note, .appt-sel { text-align: justify; text-justify: inter-word; hyphens: auto; } .appt-note { max-width: none; }
 .apd { text-align: left; }
+/* @endpagestamp */

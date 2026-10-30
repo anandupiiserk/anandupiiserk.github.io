@@ -27,6 +27,12 @@ def stamp(file, html):
         # Code that belongs to one page (its gallery, photo viewer or appointment picker) counts only for that page: /* @pagestamp gallery.html */ ... /* @endpagestamp */
         for nm, body in re.findall(r'/\* @pagestamp ([\w.]+) \*/(.*?)/\* @endpagestamp \*/', js, flags=re.S):
             if nm == file: h += body
+        # The same markers in style.css: look and layout of one page's own parts count for that page only.
+        try:
+            css = open(os.path.join(ROOT, 'style.css'), encoding='utf-8').read()
+            for nm, body in re.findall(r'/\* @pagestamp ([\w.]+) \*/(.*?)/\* @endpagestamp \*/', css, flags=re.S):
+                if nm == file: h += body
+        except OSError: pass
     except OSError: pass
     digest = hashlib.sha256(h.encode('utf-8')).hexdigest()
     try: db = json.load(open(STAMPS))
@@ -52,15 +58,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261030a">
+<link rel="stylesheet" href="style.css?v=20261030b">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261030a"></script>
-<script src="script.js?v=20261030a"></script>
+<script src="i18n.js?v=20261030b"></script>
+<script src="script.js?v=20261030b"></script>
 </body>
 </html>
 '''
