@@ -130,22 +130,28 @@ function act_(p) {
     + '<p style="margin:0 0 16px;color:#5b6675;line-height:1.5">' + esc_(name) + ', ' + esc_(when) + '</p>'
     + '<label for="r" style="font-weight:bold">Reason (optional, sent to the visitor in the email)</label>'
     + '<textarea id="r" rows="6" style="width:100%;box-sizing:border-box;margin:8px 0 14px;padding:10px;font:inherit;border:1px solid #c9d0da;border-radius:6px" placeholder="For example: I am travelling that week. Please pick a slot after 9 November."></textarea>'
-    + '<button id="b" style="padding:11px 18px;border:0;border-radius:6px;background:#c5221f;color:#fff;font-weight:bold;font-size:14px;cursor:pointer">Send decline</button>'
+    + '<button id="b1" style="padding:11px 18px;border:0;border-radius:6px;background:#c5221f;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;margin:0 8px 8px 0">Block slot and decline</button>'
+    + '<button id="b0" style="padding:11px 18px;border:0;border-radius:6px;background:#1f4e9c;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;margin:0 0 8px 0">Unblock slot and decline</button>'
+    + '<p style="margin:6px 0 0;color:#5b6675;font-size:13px;line-height:1.5">Block keeps this time marked busy on the website (use it when you are not available). Unblock frees the time so someone else can book it. The visitor gets the same email either way.</p>'
     + '<p id="m" style="margin-top:16px;line-height:1.6"></p>'
-    + '<script>document.getElementById("b").onclick=function(){var b=this;b.disabled=true;b.textContent="Sending...";'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent="Send decline";document.getElementById("m").textContent="Something went wrong. Please try again.";})'
-    + '.declineWith(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("r").value);};<\/script></div>').setTitle('Decline request');
+    + '<script>function go(btn,blk){var bs=document.querySelectorAll("button");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Sending...";'
+    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;document.getElementById("m").textContent="Something went wrong. Please try again.";})'
+    + '.declineWith(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("r").value,blk);}'
+    + 'document.getElementById("b1").onclick=function(){go(this,true);};document.getElementById("b0").onclick=function(){go(this,false);};'
+    + <\/script></div>').setTitle('Decline request');
 }
 
 // Called from the decline page. Verifies the signed link again, removes the request and emails the visitor with the reason.
-function declineWith(id, sig, reason) {
+function declineWith(id, sig, reason, block) {
   var wrap = function (title, msg) { return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:48px auto;padding:0 20px;color:#1c2430"><h2>' + esc_(title) + '</h2><p style="line-height:1.6">' + msg + '</p></div>'; };
   if (!id || sign_('decline', id) !== sig) return wrap('Link not valid', 'This link is not valid.');
   var ev = CalendarApp.getDefaultCalendar().getEventById(id);
   if (!ev || !/^REQUEST/.test(ev.getTitle())) return wrap('Already handled', 'This request was already approved or declined.');
   var name = ev.getTag('name') || 'the visitor', email = ev.getTag('email') || '', when = whenText_(ev.getStartTime(), ev.getEndTime());
   reason = String(reason || '').trim().slice(0, 1000);
-  ev.deleteEvent();
+  if (block) {
+    try { ev.setTitle('Blocked (declined): ' + name); ev.setColor(CalendarApp.EventColor.GRAY); ev.setDescription('Declined request, slot kept blocked on the website.\n\n' + ev.getDescription()); } catch (x) { console.error('block failed: ' + x); }
+  } else ev.deleteEvent();
   if (email) {
     var reasonHtml = reason ? '<div style="margin:14px 0 0;padding:12px 14px;background:#f3f6fb;border-left:4px solid #1f4e9c;border-radius:4px;line-height:1.5"><b>Reason:</b><br>' + esc_(reason).replace(/\n/g, '<br>') + '</div>' : '';
     try {
@@ -155,7 +161,7 @@ function declineWith(id, sig, reason) {
           [], [['Choose another time', SITE_URL, '#1f4e9c']], OWNER_NAME) });
     } catch (x) { console.error('decline mail failed: ' + x); }
   }
-  return wrap('Declined', 'The request from ' + esc_(name) + ' for ' + esc_(when) + ' was removed from the calendar.' + (email ? ' An email' + (reason ? ' with your reason' : '') + ' was sent to ' + esc_(email) + '.' : ''));
+  return wrap('Declined', 'The request from ' + esc_(name) + ' for ' + esc_(when) + ' ' + (block ? 'was declined and the slot stays blocked on the website (it is on your calendar as "Blocked (declined)"; delete that event to free it).' : 'was declined and the slot is free again.') + ' + (email ? ' An email' + (reason ? ' with your reason' : '') + ' was sent to ' + esc_(email) + '.' : ''));
 }
 
 /* ---- new request (POST) ---- */
@@ -200,7 +206,7 @@ function doPost(e) {
           [['Name', esc_(name)], ['Email', '<a href="mailto:' + esc_(email) + '">' + esc_(email) + '</a>'], ['Date', esc_(Utilities.formatDate(start, TZ, 'EEEE d MMMM yyyy'))],
            ['Time', esc_(Utilities.formatDate(start, TZ, 'HH:mm') + ' to ' + Utilities.formatDate(end, TZ, 'HH:mm') + ' IST')], ['Length', len + ' minutes'], ['Purpose', topicHtml]],
           [['Approve', link_('approve', id), '#1e8e3e'], ['Decline', link_('decline', id), '#c5221f'], ['Open in Google Calendar', calLink_(ev), '#1f4e9c']],
-          'Approve confirms the slot, sends the visitor a Google Calendar invitation and a confirmation email. Decline opens a page where you can type a reason, which is included in the email to the visitor, then removes the request. The request is on your calendar as REQUEST (pending).') });
+          'Approve confirms the slot, sends the visitor a Google Calendar invitation and a confirmation email. Decline opens a page where you can type a reason, which is included in the email to the visitor, and lets you choose to keep the slot blocked or free it. The request is on your calendar as REQUEST (pending).') });
     } catch (err) { console.error('mail failed: ' + err); }
     return json_({ ok: true });
   } catch (err) {
