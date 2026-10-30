@@ -1154,33 +1154,41 @@ else (function loop() {
     };
     const say = (m, cls) => { note.textContent = tr(m); note.className = 'otp-note' + (cls ? ' ' + cls : ''); };
     const emailNow = () => emailEl.value.trim();
+    const TICK = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    const start = (b, txt) => { b.classList.remove('done'); void b.offsetWidth; b.classList.add('sending'); b.innerHTML = '<span class="apl"></span>'; b.firstChild.textContent = txt; };
+    const clear = (b, lab) => { b.classList.remove('sending', 'done'); b.textContent = lab; };
+    const finish = (b, ok, lab, doneTxt) => { b.classList.remove('sending'); if (!ok) { clear(b, lab); return Promise.resolve(); } b.classList.add('done'); b.innerHTML = '<span class="apl">' + TICK + '</span>'; b.firstChild.append(tr(doneTxt)); return new Promise(r => setTimeout(() => { clear(b, lab); r(); }, 1000)); };
     const live = () => tok && Date.now() < exp;
     function idle(msg, cls) { clearTimeout(timer); tok = ''; vEmail = ''; ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || 'Enter OTP to proceed. The OTP is sent to your email.', cls); sendB.disabled = !valid(emailNow()); }
     function cooldown() { clearInterval(cool); let n = 30; reB.disabled = true; reB.textContent = tr('Resend') + ' (' + n + ')'; cool = setInterval(() => { n--; if (n <= 0) { clearInterval(cool); reB.disabled = false; reB.textContent = tr('Resend'); } else reB.textContent = tr('Resend') + ' (' + n + ')'; }, 1000); }
     async function sendOtp(btn) {
-      const e = emailNow();
+      const e = emailNow(), lab = btn === sendB ? 'Send OTP' : 'Resend';
       if (!valid(e)) { say('Enter a valid email address.', 'bad'); return; }
       if (blockedEmail(e)) { say('This email address cannot be used here.', 'bad'); return; }
-      sendB.disabled = reB.disabled = true; const lab = btn.textContent; btn.textContent = tr('Sending...'); say('');
+      sendB.disabled = reB.disabled = true; clearInterval(cool); start(btn, tr('Sending...')); say('');
+      let ok = false, msg = '';
       try {
         const r = await post({ kind: 'otp', email: e });
-        if (r.ok) { ver.hidden = false; sendB.hidden = true; say('OTP sent to ' + e + '. Enter OTP to proceed.'); inp.focus(); cooldown(); }
-        else say(r.error === 'blocked' ? 'This email address cannot be used here.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.', 'bad');
-      } catch (err) { say('Could not send the OTP. Please try again.', 'bad'); }
-      btn.textContent = lab; sendB.disabled = !valid(emailNow()); if (!ver.hidden) { reB.disabled = true; cooldown(); }
+        if (r.ok) ok = true;
+        else msg = r.error === 'blocked' ? 'This email address cannot be used here.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.';
+      } catch (err) { msg = 'Could not send the OTP. Please try again.'; }
+      await finish(btn, ok, tr(lab), 'Sent');
+      if (ok) { ver.hidden = false; sendB.hidden = true; say('OTP sent to ' + e + '. Enter OTP to proceed.'); inp.focus(); cooldown(); }
+      else { say(msg, 'bad'); sendB.disabled = !valid(emailNow()); reB.disabled = false; }
     }
     sendB.addEventListener('click', () => sendOtp(sendB)); reB.addEventListener('click', () => sendOtp(reB));
     async function verify() {
       const code = inp.value.replace(/\D/g, ''); if (code.length !== 6) { say('Enter the 6-digit OTP.', 'bad'); return; }
-      okB.disabled = true;
-      try {
-        const r = await post({ kind: 'verify', email: emailNow(), otp: code });
-        if (r.ok) {
-          tok = r.token; exp = r.exp; vEmail = emailNow().toLowerCase(); vName = nameEl.value; ver.hidden = true; sendB.hidden = true; clearInterval(cool); lock(false);
-          say('✓ Email verified. Name and email are now fixed. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
-          clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
-        } else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
-      } catch (err) { say('Could not check the OTP. Please try again.', 'bad'); }
+      okB.disabled = true; start(okB, tr('Verifying...')); let r = null, err = false;
+      try { r = await post({ kind: 'verify', email: emailNow(), otp: code }); } catch (x) { err = true; }
+      const good = !!(r && r.ok);
+      await finish(okB, good, tr('Verify'), 'Verified');
+      if (good) {
+        tok = r.token; exp = r.exp; vEmail = emailNow().toLowerCase(); vName = nameEl.value; ver.hidden = true; sendB.hidden = true; clearInterval(cool); lock(false);
+        say('✓ Email verified. Name and email are now fixed. You can send for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
+        clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
+      } else if (err || !r) say('Could not check the OTP. Please try again.', 'bad');
+      else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
       okB.disabled = false;
     }
     okB.addEventListener('click', verify); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
