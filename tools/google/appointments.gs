@@ -209,8 +209,8 @@ function declineWith(id, sig, reason, block) {
 var OTP_VALID_MIN = 20;          /* verified email stays valid this long after the OTP is accepted */
 var OTP_TTL_SEC = 600;           /* a sent OTP can be entered for 10 minutes */
 var OTP_PER_EMAIL_HOUR = 3, OTP_PER_DAY = 60;
-var BLOCK_WORDS = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean'];
-var BLOCK_TOKENS = ['dean'];
+var BLOCK_WORDS = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean', 'headofdept', 'headofdepartment', 'headofthedepartment', 'headofdivision'];
+var BLOCK_TOKENS = ['dean', 'hod', 'head'];
 function normEmail_(e) { return String(e || '').trim().toLowerCase(); }
 function blockedEmail_(email) {
   var whole = normEmail_(email), flat = whole.replace(/[^a-z0-9]/g, ''), toks = whole.split(/[^a-z0-9]+/);

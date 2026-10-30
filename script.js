@@ -1133,8 +1133,8 @@ else (function loop() {
 /* ---------- Contact: email check by OTP (sent by the Google script). Forms stay locked until the OTP is accepted; the check lasts 20 minutes. ---------- */
 (function otpGates() {
   const root = $('#appt'), EP = root && root.dataset.endpoint; if (!EP) return;
-  const BW = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean'];
-  const blockedEmail = e => { const w = e.toLowerCase(), flat = w.replace(/[^a-z0-9]/g, ''); return BW.some(x => flat.includes(x)) || w.split(/[^a-z0-9]+/).includes('dean'); };
+  const BW = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean', 'headofdept', 'headofdepartment', 'headofthedepartment', 'headofdivision'];
+  const blockedEmail = e => { const w = e.toLowerCase(), flat = w.replace(/[^a-z0-9]/g, ''); return BW.some(x => flat.includes(x)) || w.split(/[^a-z0-9]+/).some(t => ['dean', 'hod', 'head'].includes(t)); };
   const valid = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
   window.__otp = window.__otp || {};
   const post = body => fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(r => r.json());
