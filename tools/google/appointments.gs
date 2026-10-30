@@ -81,7 +81,7 @@ function doPost(e) {
         body: 'Hello ' + name + ',\n\nI have received your appointment request for ' + when + ' (' + len + ' minutes). It is not confirmed yet; I will reply by email.\n\nTopic you gave:\n' + topic + '\n\nAnandu Prabhakaran' });
       if (OWNER_NOTIFY) MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), replyTo: email, subject: 'Appointment request: ' + name + ', ' + when,
         body: name + ' <' + email + '> requested ' + when + ' (' + len + ' minutes).\n\nTopic:\n' + topic + '\n\nThe request is on your calendar as REQUEST (pending).' });
-    } catch (err) { /* mail failure must not lose the booking */ }
+    } catch (err) { console.error('mail failed: ' + err); /* mail failure must not lose the booking */ }
     return json_({ ok: true });
   } catch (err) {
     return json_({ ok: false, error: 'server' });
