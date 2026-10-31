@@ -72,15 +72,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261031g">
+<link rel="stylesheet" href="style.css?v=20261031j">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261031g"></script>
-<script src="script.js?v=20261031g"></script>
+<script src="i18n.js?v=20261031j"></script>
+<script src="script.js?v=20261031j"></script>
 </body>
 </html>
 '''
@@ -207,7 +207,8 @@ def rows(items):
 edu = rows([
     ('2022 - present', '~PhD in Disaster Mitigation and Management', '<span translate="no">Centre of Excellence in Disaster Mitigation and Management, Indian Institute of Technology Roorkee</span>', None),
     ('2015 - 2020', '~BS-MS Dual Degree in Geological Sciences', '<span translate="no">Indian Institute of Science Education and Research Kolkata</span>', None),
-    ('2013 - 2015', '~Higher Secondary Education', '<span translate="no">Sivaram NSS HSS, Karicode, Kollam, Kerala</span>', None)])
+    ('2013 - 2015', '~Higher Secondary Education', '<span translate="no">Sivaram NSS HSS, Karicode, Kollam, Kerala</span>', None),
+    ('Class 10', '~Secondary Education', '<span translate="no">Saint Jude Central School, Mukhathala, Kollam, Kerala</span>. Central Board of Secondary Education (CBSE).', None)])
 rexp = rows([
     ('2022 - present', 'Weather and Climate Research Group, IIT Roorkee', 'Modelling and Analysis of Atmospheric Conditions Conducive to the Spread of Wildfires over Mountainous Region in India.', None),
     ('2025', 'CEFE-CNRS, Montpellier', 'Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.', None),
@@ -238,11 +239,12 @@ about = phero('01 / About me', 'About me', 'PhD researcher working on forest fir
     <p class="reveal">I was born and raised in Kollam district, Kerala.</p>
     <p class="reveal">As part of my PMRF deliverables and science communication, I conduct and organise workshops, science communication lectures and other lectures at universities and colleges across India. The topics include the application of numerical weather prediction models, including the WRF model, followed by programming and data analysis with Python, R and Origin Pro, disaster mitigation and management, climate change, and wildfire spread and analysis using geospatial and other computational tools.</p>
     <div class="bio-int reveal"><span class="lbl">Interests</span>{chips}</div>
+    <div class="bio-int reveal"><span class="lbl">Languages</span><ul class="chips reveal"><li>English (read, write, speak)</li><li>Malayalam (read, write, speak)</li><li>Hindi (read, write, speak)</li></ul></div>
     <div class="socials reveal" data-socials></div>
   </div>
   <div>{dl_about}</div>
 </div>''') + sec(shead('02', 'Milestones', 'Fellowships and scholarships', 'In chronological order.') + f'<div class="tl" id="tl"><div class="tl-line"><i class="tl-fill" id="tl-fill"></i></div>{tl_items}</div>', 'sec alt')
-about += sec(shead('03', 'Education', 'Academic background', 'Degrees, most recent first.') + edu)
+about += sec(shead('03', 'Education', 'Academic background', '') + edu)
 about += sec(shead('04', 'Experience', 'Research experience', 'Research projects and internships.') + rexp, 'sec alt')
 about += sec(shead('05', 'Recognition', 'Honours and awards', 'Fellowships and scholarships held.') + honours)
 about += sec(shead('06', 'Achievements', 'Qualifying examinations', 'National and state eligibility tests cleared.') + achv, 'sec alt')
@@ -313,7 +315,7 @@ def wk(role, when, title, inst, place, mode=None, note=None, pics=None):
     glyph = {'Conducted': '<i></i>', 'Organised': '<i class="d"></i>', 'Attended': '<i class="o"></i>'}[role]
     m = f' <span class="badge alt">{mode}</span>' if mode else ''
     n = f'<p>{note}</p>' if note else ''
-    pc = ('<div class="wk-pics">' + ''.join(f'<img src="gallery/t/{f}.webp" data-full="gallery/{_full(f)}" alt="{a}" loading="lazy" width="480" height="360" tabindex="0" role="button">' for f, a in pics) + '</div>') if pics else ''
+    pc = ('<div class="wk-pics">' + ''.join(f'<span class="wmw"><img src="gallery/t/{f}.webp" data-full="gallery/{_full(f)}" alt="{a}" loading="lazy" width="480" height="360" tabindex="0" role="button"></span>' for f, a in pics) + '</div>') if pics else ''
     return f'<article class="wk reveal"><div class="when"><span class="badge">{glyph}{role}</span><span translate="no">{when}</span></div><div><h3 translate="no">{title}</h3><p translate="no"><b>{inst}</b></p><p translate="no">{place}</p>{(m and "<p>"+m+"</p>")}{n}{pc}</div></article>'
 y2026 = wk('Conducted', '28-31 October 2026', 'Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study', 'School of Environment and Natural Resources, Doon University', 'Kedarpur, Dehradun, Uttarakhand, India', 'Offline', 'Four-day workshop for MSc and MTech students, held on campus.', [('WORK_010_01', 'Group photograph with the participants after the workshop at Doon University'), ('WORK_010_05', 'Lecture during the workshop at Doon University'), ('WORK_010_06', 'Participants in the classroom during the workshop at Doon University')])
 y2025 = wk('Conducted', '10-16 October 2025', 'Introduction to Numerical Weather Prediction Models and Weather Research and Forecasting Model as a tool for Extreme Event Analysis', 'College of Climate Change and Environmental Studies, Kerala Agricultural University', 'Vellanikkara, Thrissur, Kerala', 'Online') + \
@@ -384,7 +386,6 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 <dl class="dl cdl">
   <div class="dl-row reveal"><dt>Personal</dt><dd><a href="mailto:anandupiiserk@gmail.com" translate="no">anandupiiserk@gmail.com</a><button class="cpy" type="button" data-copy="anandupiiserk@gmail.com" data-msg="Email address copied"></button></dd></div>
   <div class="dl-row reveal"><dt>IIT Roorkee</dt><dd><a href="mailto:anandu_p@dm.iitr.ac.in" translate="no">anandu_p@dm.iitr.ac.in</a><button class="cpy" type="button" data-copy="anandu_p@dm.iitr.ac.in" data-msg="Email address copied"></button></dd></div>
-  <div class="dl-row reveal"><dt>CEFE-CNRS</dt><dd><a href="mailto:anandu.prabhakaran@cefe.cnrs.fr" translate="no">anandu.prabhakaran@cefe.cnrs.fr</a><button class="cpy" type="button" data-copy="anandu.prabhakaran@cefe.cnrs.fr" data-msg="Email address copied"></button></dd></div>
 </dl>
 <div class="cta-row reveal" style="margin-top:14px">
   <button class="btn ghost cbtn" data-copy-email>Copy email</button>

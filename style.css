@@ -1093,3 +1093,12 @@ html[data-theme="light"] .tprog .welcome { color: #0f172a; text-shadow: none; }
 @media (prefers-reduced-motion: reduce) { .otp .btn.sending::before { transition: none; width: 50%; } .otp .btn .apl svg { animation: none; stroke-dashoffset: 0; } }
 .cform input:disabled, .cform textarea:disabled { opacity: .5; cursor: not-allowed; }
 /* @endpagestamp */
+
+/* Photo watermark (SITE.watermark in script.js). Tiles and workshop pictures use a corner text drawn by CSS; the enlarged view uses .wm-lb placed by script.js. The About page profile picture is not in any of these places. */
+.wk-pics .wmw { display: block; position: relative; }
+html.wmk .gimg, html.wmk .wk-pics .wmw { container-type: inline-size; }
+html.wmk .gimg::after, html.wmk .wk-pics .wmw::after { content: var(--wm-text); position: absolute; right: 2%; bottom: 3.5%; z-index: 4; pointer-events: none; font: 500 clamp(8px, 3cqw, 24px) / 1 var(--sans, Arial, sans-serif); color: rgba(255, 255, 255, .45); text-shadow: 0 1px 2px rgba(0, 0, 0, .35); letter-spacing: .01em; white-space: nowrap; }
+.wm-lb { position: absolute; z-index: 7; pointer-events: none; color: rgba(255, 255, 255, .45); text-shadow: 0 1px 2px rgba(0, 0, 0, .4); font-family: var(--sans, Arial, sans-serif); font-weight: 500; line-height: 1; white-space: nowrap; user-select: none; }
+.wm-lb[hidden] { display: none; }
+
+.bio p { text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; }
