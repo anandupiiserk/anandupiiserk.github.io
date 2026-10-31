@@ -279,3 +279,4 @@ MSpace_025_05 | Sitting cross-legged on the road, with colour on my face and arm
 MSpace_025_06 | With a friend by the low wall, the colours fully spread over clothes and hands.
 MSpace_025_07 | Relaxing on the road after the colours, with the Main Building and the celebrating crowd behind.
 MSpace_025_08 | Colour all over, a thoughtful pose in front of the Main Building.
+WORK_010 | [2026-10-28] Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study, School of Environment and Natural Resources, Doon University, 28 to 31 October 2026.
