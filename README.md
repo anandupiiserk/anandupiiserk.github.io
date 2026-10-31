@@ -89,3 +89,7 @@ Every contact-message notification has a Reply button (rich editor with attachme
 
 ### Lite mode (temporary)
 `LITE = True` (pages listed in LIVE_PAGES stay live) in tools/build_pages.py and `lite: true` plus `galleryOn: false` in script.js keep only the home page live (other pages become a small notice, no gallery downloads). To restore everything: set LITE = False, lite: false, galleryOn: true, then `python3 tools/site.py bump` and `build`.
+
+
+### Photo watermark
+Every gallery and workshop photo shows a faint "© Anandu Prabhakaran" in the bottom-right corner, also in the enlarged view. It is drawn over the photo by CSS and script.js, so the photo files are not changed. The profile picture on the About page is not affected. To remove it everywhere: in script.js set `watermark: false` in SITE, run `python3 tools/site.py bump`, build and push. To change the text, edit `watermarkText` there. (The `wmw` wrapper around workshop photos is harmless and can stay.)

@@ -23,6 +23,9 @@ const SITE = {
   galleryOn: true,
   /* Quiet background download of all gallery photos while browsing other pages. Off to keep every page light; the gallery page itself still loads its photos. */
   galleryPreload: false,
+  /* Photo watermark (small faint copyright text in the bottom-right corner of every gallery and workshop photo, also in the enlarged view). The profile picture on the About page never carries it. false = removed everywhere, the photo files are untouched. */
+  watermark: true,
+  watermarkText: '\u00a9 Anandu Prabhakaran',
   /* Lite mode (matches LITE and LIVE_PAGES in tools/build_pages.py): only some pages are live, so the menu lists just those. */
   lite: true,
   nav: [
@@ -1217,6 +1220,28 @@ else (function loop() {
   gate('cf', $('#cform'), $('#cf-email'), $('#cf-name')); gate('ap', $('#ap-form'), $('#ap-email'), $('#ap-name'));
 })();
 /* @endpagestamp */
+
+/* ---------- Photo watermark: a faint corner text over gallery and workshop photos (CSS) and over the enlarged photo (this code). Switch: SITE.watermark. ---------- */
+(function watermark() {
+  if (!SITE.watermark) return;
+  document.documentElement.classList.add('wmk'); document.documentElement.style.setProperty('--wm-text', JSON.stringify(SITE.watermarkText));
+  const place = (box, im) => {
+    let w = box.querySelector('.wm-lb');
+    if (!w) { w = document.createElement('span'); w.className = 'wm-lb'; w.setAttribute('aria-hidden', 'true'); w.textContent = SITE.watermarkText; box.appendChild(w); }
+    const r = im.getBoundingClientRect(), b = box.getBoundingClientRect();
+    if (!r.width || !r.height || !im.getAttribute('src')) { w.hidden = true; return; }
+    w.hidden = false; w.style.right = (b.right - r.right + r.width * .02) + 'px'; w.style.bottom = (b.bottom - r.bottom + r.height * .035) + 'px'; w.style.fontSize = Math.max(10, r.width * .03) + 'px';
+  };
+  const watch = box => {
+    if (box.__wm) return; box.__wm = 1; const im = box.querySelector('img'); if (!im) return;
+    const go = () => requestAnimationFrame(() => place(box, im));
+    im.addEventListener('load', go); box.addEventListener('animationend', go); addEventListener('resize', go);
+    new MutationObserver(go).observe(box, { subtree: true, attributes: true, attributeFilter: ['src', 'class', 'style'] });
+    go();
+  };
+  const scan = () => $$('.lightbox').forEach(watch);
+  scan(); new MutationObserver(scan).observe(document.body, { childList: true });
+})();
 
 /* ---------- Compare slider and spotlight ---------- */
 (function () {
