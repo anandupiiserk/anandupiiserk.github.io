@@ -238,8 +238,8 @@ buildChrome();
     /* F12, Ctrl/Cmd+Shift+I, J, C, Cmd+Option+I and Ctrl/Cmd+U (view source) */
     if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && 'ijc'.includes(k) && k.length === 1) || (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && k === 'u')) { e.preventDefault(); e.stopPropagation(); toast(e.key === 'F12' ? 'Sorry, F12 is disabled here by Anandu!' : 'Sorry, this shortcut is disabled here by Anandu!', 4200); return; }
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
-    if (k === 'p') { e.preventDefault(); toast('Sorry, this shortcut is disabled here by Anandu!', 4200); return; }
-    if (!field(e.target) && (k === 'c' || k === 'x' || k === 'a')) e.preventDefault();
+    if (k === 'p' || k === 's' || (k === 'a' && !field(e.target))) { e.preventDefault(); toast('Sorry, this shortcut is disabled here by Anandu!', 4200); return; }
+    if (!field(e.target) && (k === 'c' || k === 'x')) e.preventDefault();
   }, true);
 })();
 
