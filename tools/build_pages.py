@@ -72,15 +72,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261031f">
+<link rel="stylesheet" href="style.css?v=20261031g">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261031f"></script>
-<script src="script.js?v=20261031f"></script>
+<script src="i18n.js?v=20261031g"></script>
+<script src="script.js?v=20261031g"></script>
 </body>
 </html>
 '''
@@ -315,7 +315,7 @@ def wk(role, when, title, inst, place, mode=None, note=None, pics=None):
     n = f'<p>{note}</p>' if note else ''
     pc = ('<div class="wk-pics">' + ''.join(f'<img src="gallery/t/{f}.webp" data-full="gallery/{_full(f)}" alt="{a}" loading="lazy" width="480" height="360" tabindex="0" role="button">' for f, a in pics) + '</div>') if pics else ''
     return f'<article class="wk reveal"><div class="when"><span class="badge">{glyph}{role}</span><span translate="no">{when}</span></div><div><h3 translate="no">{title}</h3><p translate="no"><b>{inst}</b></p><p translate="no">{place}</p>{(m and "<p>"+m+"</p>")}{n}{pc}</div></article>'
-y2026 = wk('Conducted', '28-31 October 2026', 'Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study', 'School of Environment and Natural Resources, Doon University', 'Kedarpur, Dehradun, Uttarakhand, India', 'Offline', 'Four-day workshop for MSc and MTech students, held on campus.')
+y2026 = wk('Conducted', '28-31 October 2026', 'Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study', 'School of Environment and Natural Resources, Doon University', 'Kedarpur, Dehradun, Uttarakhand, India', 'Offline', 'Four-day workshop for MSc and MTech students, held on campus.', [('WORK_010_01', 'Group photograph with the participants after the workshop at Doon University'), ('WORK_010_05', 'Lecture during the workshop at Doon University'), ('WORK_010_06', 'Participants in the classroom during the workshop at Doon University')])
 y2025 = wk('Conducted', '10-16 October 2025', 'Introduction to Numerical Weather Prediction Models and Weather Research and Forecasting Model as a tool for Extreme Event Analysis', 'College of Climate Change and Environmental Studies, Kerala Agricultural University', 'Vellanikkara, Thrissur, Kerala', 'Online') + \
         wk('Conducted', '03-07 February 2025', 'Introduction to Disaster Mitigation &amp; Management, Climate Change and California Wildfire Analysis', 'Department of Environmental Studies, Kannur University', 'Mangattuparamba Campus', 'Offline', None, [('WORK_002_01', 'Blackboard announcing the lecture series on climate change at Kannur University'), ('WORK_002_02', 'Classroom during the lecture series at Kannur University'), ('WORK_002_04', 'Lecture during the series at Kannur University')])
 y2024 = wk('Conducted', '21-25 October 2024', 'Python Essentials: Foundations of Programming, Data Structures, and Analysis', 'Department of Environmental Sciences, School of Basic Sciences and Research, Sharda University', 'Greater Noida, Uttar Pradesh, India') + \
