@@ -51,7 +51,7 @@ LIVE_PAGES = ('home.html', 'index.html', 'about.html', 'research.html', 'publica
 def page(file, pid, title, desc, body, html_class=''):
     if LITE and file not in LIVE_PAGES:
         stub = ('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-                '<meta name="robots" content="noindex"><title>Anandu P.</title></head>'
+                '<meta name="robots" content="noindex"><title>Anandu Prabhakaran</title></head>'
                 '<body style="margin:0;background:#0c0a09;color:#f4efe9;font-family:Arial,Helvetica,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:24px">'
                 '<div><h1 style="font-weight:600;font-size:1.6rem;margin:0 0 10px">This page is temporarily unavailable</h1>'
                 '<p style="color:#b9b0a6;margin:0 0 22px">Please visit the home page.</p>'
@@ -72,15 +72,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261031e">
+<link rel="stylesheet" href="style.css?v=20261031f">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261031e"></script>
-<script src="script.js?v=20261031e"></script>
+<script src="i18n.js?v=20261031f"></script>
+<script src="script.js?v=20261031f"></script>
 </body>
 </html>
 '''
@@ -180,7 +180,7 @@ home = f'''{LOADER}
 
 {sec(shead('03', 'Pages', 'Explore the site', 'Each section is its own page, with a short transition between them.') + '<div data-rows></div>')}
 '''
-page('index.html', 'home', f'{NAME} | Forest fire early warning', 'Portfolio of research on forest fire early warning in the Indian Himalayan Region.', home, '' if LITE else 'locked')
+page('index.html', 'home', 'Anandu Prabhakaran | Forest fire early warning', 'Portfolio of research on forest fire early warning in the Indian Himalayan Region.', home, '' if LITE else 'locked')
 
 # ---------------------------------------------------------------- ABOUT
 dl_about = f'''<dl class="dl">
@@ -252,7 +252,7 @@ members = rows([
     ('Member', 'Association for Fire Ecology (AFE)', 'Professional association for fire ecology and fire science.', 'https://fireecology.org/')])
 about += sec(shead('07', 'Memberships', 'Professional memberships', 'Scientific societies I belong to.') + members)
 about += sec(shead('08', 'Work', 'Work experience', 'Part-time online roles, 2020 to 2022.') + work, 'sec alt')
-page('about.html', 'about', f'About me | {NAME}', 'About the researcher: position, education and research interests.', about)
+page('about.html', 'about', f'About me | Anandu Prabhakaran', 'About the researcher: position, education and research interests.', about)
 
 # ---------------------------------------------------------------- RESEARCH
 def ol(items): return '<ol class="ol">' + ''.join(f'<li>{i}</li>' for i in items) + '</ol>'
@@ -276,7 +276,7 @@ research = phero('02 / Research', 'Research', 'PhD thesis, M.Sc. thesis and summ
   <h4>Objectives</h4>{ol(['Black-body radiation studies to determine the temperature rise associated with the monsoon.', 'PBL determination over the Cochin region to reduce health risk and pollution.'])}
   <p class="who" translate="no">Dr. M.G. Manoj, Scientist-D, ACARR, CUSAT, Kalamassery, Cochin, Kerala, India</p></article>
 </div>''')
-page('research.html', 'research', f'Research | {NAME}', 'Research: PhD thesis, M.Sc. thesis and summer internships.', research)
+page('research.html', 'research', f'Research | Anandu Prabhakaran', 'Research: PhD thesis, M.Sc. thesis and summer internships.', research)
 
 # ---------------------------------------------------------------- PUBLICATIONS
 def pub(year, status, title, au, venue, doi=None):
@@ -300,7 +300,7 @@ publications = phero('03 / Publications', 'Publications', 'Journal articles and 
 <div class="cta-row reveal" style="margin-bottom:10px"><a class="btn" href="https://scholar.google.com/citations?user=0PK5HxYAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" data-cursor="Open">Google Scholar profile <span data-icon="up"></span></a></div>
 <h2 class="sub-h" data-split>Journal articles</h2><div class="pubs">{journal}</div>
 <h2 class="sub-h" data-split>Conference presentations</h2><div class="pubs">{conf}</div>''')
-page('publications.html', 'publications', f'Publications | {NAME}', 'Journal articles and conference presentations.', publications)
+page('publications.html', 'publications', f'Publications | Anandu Prabhakaran', 'Journal articles and conference presentations.', publications)
 
 # ---------------------------------------------------------------- WORKSHOPS
 import glob as _g, os as _o
@@ -332,7 +332,7 @@ workshops = phero('04 / Workshops', 'Workshops', 'Workshops and lectures handled
 <div class="yh"><h3>2024</h3></div><div class="wks">{y2024}</div>
 <div class="yh"><h3>2023</h3></div><div class="wks">{y2023}</div>
 <div class="yh"><h3>Workshops attended</h3></div><div class="wks">{att}</div>''')
-page('workshops.html', 'workshops', f'Workshops | {NAME}', 'Workshops and lectures handled, organised and attended.', workshops)
+page('workshops.html', 'workshops', f'Workshops | Anandu Prabhakaran', 'Workshops and lectures handled, organised and attended.', workshops)
 
 # ---------------------------------------------------------------- GALLERY
 GL = 'Photographs from the PhD, conferences, workshops, meetings, fieldwork and other journeys.'
@@ -349,7 +349,7 @@ gallery = phero('05 / Gallery', 'Gallery', GL, 'PHOTOGRAPHS') + sec('''
   <button class="lb-btn lb-next" id="lb-next" aria-label="Next">&#8250;</button>
   <p id="lb-cap"></p>
 </div>'''
-page('gallery.html', 'gallery', f'Gallery | {NAME}', GL, gallery)
+page('gallery.html', 'gallery', f'Gallery | Anandu Prabhakaran', GL, gallery)
 
 # ---------------------------------------------------------------- CONTACT
 import html as _h
@@ -426,7 +426,7 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 <div class="eyebrow reveal" style="margin-top:36px"><span class="n">05</span> Profiles</div>
 <div data-social-rows></div>
 </div>'''.replace('@@ADDRBLOCK@@', ADDR_BLOCK).replace('@@APPTEP@@', APPT_ENDPOINT).replace('@@BLOCKED@@', ','.join(APPT_BLOCKED + [x['range'] for x in json.load(open(os.path.join(ROOT, 'tools', 'unavailable.json')))])))
-page('contact.html', 'contact', f'Contact | {NAME}', 'Email and profiles on other platforms.', contact)
+page('contact.html', 'contact', f'Contact | Anandu Prabhakaran', 'Email and profiles on other platforms.', contact)
 
 print('written:', sorted(f for f in os.listdir(OUT)))
 
