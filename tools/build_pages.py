@@ -12,28 +12,17 @@ import hashlib, json, re, datetime
 STAMPS = os.path.join(HERE, 'page_stamps.json')
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 def stamp(file, html):
-    """Last-updated time of one page (IST). It changes when the page's own content changes, or when the shared header, footer or menu text in script.js changes (that shows on every page). Styling, behaviour code and translations do not count. The hash ignores the cache-busting ?v= strings, and the gallery page also hashes its captions and photo list."""
+    """Last-updated time of one page (IST). It changes on ANY change that reaches the page, even a single space: the page HTML, script.js, style.css, i18n.js (and, for the gallery, its captions and manifest). A change in a shared file updates every page."""
     h = re.sub(r'\?v=[0-9a-z]+', '', html)
     if file == 'gallery.html':
         for extra in ('captions.txt', 'manifest.json'):
             try: h += open(os.path.join(ROOT, 'gallery', extra), encoding='utf-8').read()
             except OSError: pass
-    # Header, footer, menu and social buttons are written by script.js. The parts between "@stamp" and "@endstamp" comments count for every page:
-    # change one letter there and every page gets a new time. Styling, behaviour code and translations do not count.
-    try:
-        js = open(os.path.join(ROOT, 'script.js'), encoding='utf-8').read()
-        parts = re.findall(r'/\* @stamp[^*]*\*/(.*?)/\* @endstamp \*/', js, flags=re.S)
-        h += ''.join(parts) if parts else re.sub(r'/\* @pagestamp.*?@endpagestamp \*/', '', js, flags=re.S)
-        # Code that belongs to one page (its gallery, photo viewer or appointment picker) counts only for that page: /* @pagestamp gallery.html */ ... /* @endpagestamp */
-        for nm, body in re.findall(r'/\* @pagestamp ([\w.]+) \*/(.*?)/\* @endpagestamp \*/', js, flags=re.S):
-            if nm == file: h += body
-        # The same markers in style.css: look and layout of one page's own parts count for that page only.
-        try:
-            css = open(os.path.join(ROOT, 'style.css'), encoding='utf-8').read()
-            for nm, body in re.findall(r'/\* @pagestamp ([\w.]+) \*/(.*?)/\* @endpagestamp \*/', css, flags=re.S):
-                if nm == file: h += body
+    # Any change counts, even one space: the page's own HTML, plus script.js (functions, header, footer, menu), style.css (layout and alignment) and i18n.js (translations).
+    # These three shared files are part of every page, so a change in one of them gives every page a new time. The cache-busting ?v= strings are ignored.
+    for extra in ('script.js', 'style.css', 'i18n.js'):
+        try: h += open(os.path.join(ROOT, extra), encoding='utf-8').read()
         except OSError: pass
-    except OSError: pass
     digest = hashlib.sha256(h.encode('utf-8')).hexdigest()
     try: db = json.load(open(STAMPS))
     except (OSError, ValueError): db = {}
@@ -72,15 +61,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261101c">
+<link rel="stylesheet" href="style.css?v=20261101e">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261101c"></script>
-<script src="script.js?v=20261101c"></script>
+<script src="i18n.js?v=20261101e"></script>
+<script src="script.js?v=20261101e"></script>
 </body>
 </html>
 '''

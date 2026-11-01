@@ -7,7 +7,7 @@ Commands
   build            Regenerate everything: i18n.js, gallery thumbnails and manifest, all HTML pages.
   bump             Raise the cache-busting version string (the ?v=... on style.css, script.js, i18n.js), then build.
   block START [END]  Block appointment days when I am away (YYYY-MM-DD, optional --note). unblock START [END] removes it; blocked lists them.
-  touch PAGES      Set the Last Updated time of pages to now (about contact ... or all). For visible changes made only in script.js or style.css, which the automatic stamp cannot see.
+  touch PAGES      Set the Last Updated time of pages to now (about contact ... or all). Normally not needed: any change, even one space, already updates the stamps.
   photos ID files  Resize photos to the site standard and name them for a gallery carousel or single photo.
   check            Static checks: em dash, PhD spelling, captions versus files, version strings, sizes.
   test             Browser smoke test with Chromium (needs Playwright): errors, failed requests, overflow.
