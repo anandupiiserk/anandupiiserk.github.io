@@ -8,7 +8,7 @@ man = {}
 for f in sorted(glob.glob(G + '/*')):
     n, e = os.path.splitext(os.path.basename(f))
     if e.lower() not in ('.jpg', '.jpeg', '.png', '.webp') or n.lower() == 'readme': continue
-    im = Image.open(f); im = im.convert('RGB') if im.mode != 'RGB' else im
+    im = Image.open(f); im = im.convert('RGBA' if 'A' in im.getbands() or 'transparency' in im.info else 'RGB')
     w, h = im.size; t = im.copy(); t.thumbnail((720, 720), Image.LANCZOS)
     t.save(f'{G}/t/{n}.webp', 'WEBP', quality=68, method=6)
     man[n] = {'e': e[1:], 'w': w, 'h': h}
