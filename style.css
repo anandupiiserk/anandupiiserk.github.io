@@ -385,7 +385,7 @@ svg.chart { width: 100%; height: auto; display: block; overflow: visible; touch-
 .tl { position: relative; max-width: 920px; }
 .tl-line { position: absolute; left: 168px; top: 10px; bottom: 30px; width: 2px; background: var(--line2); } .tl-fill { position: absolute; left: 0; top: 0; width: 2px; height: 0; background: var(--a); }
 .t-item { position: relative; display: grid; grid-template-columns: 140px 1fr; gap: 56px; padding-bottom: 56px; }
-.t-item::before { content: ""; position: absolute; left: 162px; top: 12px; width: 14px; height: 14px; background: var(--bg); border: 2px solid var(--line2); transform: rotate(45deg); transition: .6s var(--ease); }
+.t-item::before { content: ""; box-sizing: border-box; position: absolute; left: 162px; top: 12px; width: 14px; height: 14px; background: var(--bg); border: 2px solid var(--line2); transform: rotate(45deg); transition: .6s var(--ease); }
 .t-item.visible::before { background: var(--a); border-color: var(--a); box-shadow: 0 0 0 6px var(--a-soft); }
 .t-item .yr { font-family: var(--serif); font-size: 2.2rem; line-height: 1; letter-spacing: -.02em; text-align: right; }
 .t-item h3 { margin: 0 0 6px; } .t-item p { color: var(--muted); margin: 0; max-width: 520px; }
