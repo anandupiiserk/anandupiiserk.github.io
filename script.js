@@ -1167,7 +1167,7 @@ else (function loop() {
     function unfreeze() { clearInterval(cool); clear(okB, tr('Verify')); clear(reB, tr('Resend')); inp.disabled = false; inp.placeholder = '000000'; inp.value = ''; okB.disabled = false; okB.classList.remove('frozen'); reB.classList.remove('frozen'); }
     function freeze() { clearInterval(cool); ver.hidden = false; sendB.hidden = true; inp.value = ''; inp.placeholder = '------'; inp.disabled = true; tick(okB, 'Verified'); okB.disabled = true; okB.classList.add('frozen'); clear(reB, tr('Resend')); reB.disabled = true; reB.classList.add('frozen'); }
     function idle(msg, cls, fromPeer) {
-      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || 'Enter OTP to proceed. OTP will be sent to your email ID provided.', cls); sendB.disabled = !valid(emailNow());
+      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || 'OTP verification via email is mandatory to send a message or book an appointment.', msg ? cls : 'warn'); sendB.disabled = !valid(emailNow());
       if (!fromPeer && was) Object.keys(peers).forEach(k => { if (k !== key) peers[k].drop(msg, cls); });
     }
     function accept(t, x, name, email, fromPeer) {
@@ -1210,7 +1210,7 @@ else (function loop() {
     inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
     emailEl.addEventListener('input', () => {
       const e = emailNow(); if (live() && e.toLowerCase() === vEmail) return;
-      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say('Enter OTP to proceed. OTP will be sent to your email ID provided.'); }
+      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say('OTP verification via email is mandatory to send a message or book an appointment.', 'warn'); }
     });
     form.addEventListener('reset', () => setTimeout(() => { if (live()) { emailEl.value = vEmail; nameEl.value = vName; } else idle(); }, 0));
     peers[key] = { adopt: (t, x, name, email) => { if (live() && vEmail === email.toLowerCase()) { tok = t; exp = x; return; } accept(t, x, name, email, true); }, drop: (m, c) => idle(m, c, true) };
