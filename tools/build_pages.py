@@ -61,15 +61,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261105a">
+<link rel="stylesheet" href="style.css?v=20261105c">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261105a"></script>
-<script src="script.js?v=20261105a"></script>
+<script src="i18n.js?v=20261105c"></script>
+<script src="script.js?v=20261105c"></script>
 </body>
 </html>
 '''
@@ -300,7 +300,7 @@ def _full(f):
     m = [x for x in m if not x.endswith('.webp')]
     return _o.path.basename(m[0]) if m else f + '.JPG'
 
-# Workshop IDs (W_year_number, numbered by start date within the year, attended ones included). Never shown on the page. Each workshop has a Copy link button that copies the page address ending in its ID.
+# Workshop IDs (W_year_number, numbered by start date within the year, attended ones included). Never shown on the page. Each workshop card carries its ID as an invisible anchor, so the address ending in #ID opens the page at that workshop.
 WID = {'November 2026': 'W_2026_02', '28-31 October 2026': 'W_2026_01',
        '10-16 October 2025': 'W_2025_02', '03-07 February 2025': 'W_2025_01',
        '21-25 October 2024': 'W_2024_05', '14-20 October 2024': 'W_2024_04', '24-25 September 2024': 'W_2024_03', 'Workshop on Data Assimilation in Weather and Climate models': 'W_2024_02', '31 January - 08 February 2024': 'W_2024_01',
@@ -311,8 +311,8 @@ def wk(role, when, title, inst, place, mode=None, note=None, pics=None):
     n = f'<p>{note}</p>' if note else ''
     pc = ('<div class="wk-pics">' + ''.join(f'<span class="wmw"><img src="gallery/t/{f}.webp" data-full="gallery/{_full(f)}" alt="{a}" loading="lazy" width="480" height="360" tabindex="0" role="button"></span>' for f, a in pics) + '</div>') if pics else ''
     wid = WID[when or title]
-    return f'<article class="wk reveal" id="{wid}"><div class="when"><span class="badge">{glyph}{role}</span><span translate="no">{when}</span><button type="button" class="wk-copy" data-wid="{wid}" translate="no">Copy link</button></div><div><h3 translate="no">{title}</h3><p translate="no"><b>{inst}</b></p><p translate="no">{place}</p>{(m and "<p>"+m+"</p>")}{n}{pc}</div></article>'
-y2026 = wk('Conducted', 'November 2026', 'Climate Change Science and Weather Extremes: How Numerical Models Predict What Comes Next?', 'School of Earth and Environmental Sciences (SEES), Babasaheb Bhimrao Ambedkar University', 'Lucknow, Uttar Pradesh, India') + \
+    return f'<article class="wk reveal" id="{wid}"><div class="when"><span class="badge">{glyph}{role}</span><span translate="no">{when}</span></div><div><h3 translate="no">{title}</h3><p translate="no"><b>{inst}</b></p><p translate="no">{place}</p>{(m and "<p>"+m+"</p>")}{n}{pc}</div></article>'
+y2026 = wk('Conducted', 'November 2026', 'Climate Change Science and Weather Extremes: How Numerical Models Predict What Comes Next?', 'School of Earth and Environmental Sciences (SEES), Babasaheb Bhimrao Ambedkar University', 'Lucknow, Uttar Pradesh, India', 'Offline') + \
         wk('Conducted', '28-31 October 2026', 'Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study', 'School of Environment and Natural Resources, Doon University', 'Kedarpur, Dehradun, Uttarakhand, India', 'Offline', 'Four-day workshop for MSc and MTech students, held on campus.', [('WORK_010_01', 'Group photograph with the participants after the workshop at Doon University'), ('WORK_010_05', 'Lecture during the workshop at Doon University'), ('WORK_010_06', 'Participants in the classroom during the workshop at Doon University')])
 y2025 = wk('Conducted', '10-16 October 2025', 'Introduction to Numerical Weather Prediction Models and Weather Research and Forecasting Model as a tool for Extreme Event Analysis', 'College of Climate Change and Environmental Studies, Kerala Agricultural University', 'Vellanikkara, Thrissur, Kerala', 'Online') + \
         wk('Conducted', '03-07 February 2025', 'Introduction to Disaster Mitigation &amp; Management, Climate Change and California Wildfire Analysis', 'Department of Environmental Studies, Kannur University', 'Mangattuparamba Campus', 'Offline', None, [('WORK_002_01', 'Blackboard announcing the lecture series on climate change at Kannur University'), ('WORK_002_02', 'Classroom during the lecture series at Kannur University'), ('WORK_002_04', 'Lecture during the series at Kannur University')])
