@@ -370,6 +370,10 @@ buildChrome();
   $$('.cpy').forEach(b => { b.innerHTML = ICONS.copy; const l = tr('Copy'); b.setAttribute('aria-label', l); b.title = l; });
   $$('.bi[data-ic]').forEach(el => { el.innerHTML = ICONS[el.dataset.ic] || ''; });
   $$('[data-copy]').forEach(b => b.addEventListener('click', () => copyText(b.dataset.copy, b.dataset.msg)));
+  /* Workshops page: Copy link under each workshop copies this page's address ending in the workshop ID (for example ...#W_2026_01). The ID itself is not printed on the page. */
+  $$('.wk-copy').forEach(b => { b.innerHTML = ICONS.copy + '<span>' + tr('Copy link') + '</span>'; b.addEventListener('click', () => copyText(location.origin + location.pathname + '#' + b.dataset.wid, 'Workshop link copied')); });
+  const wkHash = () => { const el = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1))); if (el && el.classList.contains('wk')) { setTimeout(() => el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }), 600); el.classList.add('wk-hit'); setTimeout(() => el.classList.remove('wk-hit'), 3200); } };
+  wkHash(); addEventListener('hashchange', wkHash);
   $$('[data-share-addr]').forEach(b => {
     const wrap = b.parentElement, text = b.dataset.text, url = b.dataset.url;
     /* The device share sheet gets the address and the link as separate fields; the copied text already ends with the link, so it is left out here to avoid a double link. */
