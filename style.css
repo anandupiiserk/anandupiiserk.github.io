@@ -1103,7 +1103,5 @@ html.wmk .gimg::after, html.wmk .wk-pics .wmw::after { content: var(--wm-text); 
 
 .bio p { text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; }
 
-.wk-copy { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; padding: 5px 11px; font: 600 .74rem / 1 var(--sans, Arial, sans-serif); color: var(--muted); background: transparent; border: 1px solid var(--line2); border-radius: 999px; cursor: pointer; transition: color .25s, border-color .25s, background .25s; }
-.wk-copy svg { width: 13px; height: 13px; } .wk-copy:hover, .wk-copy:focus-visible { color: var(--a); border-color: var(--a); background: var(--a-soft); }
 .wk .when { scroll-margin-top: 110px; } .wk { scroll-margin-top: 110px; }
 .wk.wk-hit { border-color: var(--a); box-shadow: 0 0 0 4px var(--a-soft); }
