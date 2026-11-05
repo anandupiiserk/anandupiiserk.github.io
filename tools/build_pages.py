@@ -61,15 +61,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261105e">
+<link rel="stylesheet" href="style.css?v=20261105g">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261105e"></script>
-<script src="script.js?v=20261105e"></script>
+<script src="i18n.js?v=20261105g"></script>
+<script src="script.js?v=20261105g"></script>
 </body>
 </html>
 '''
@@ -304,7 +304,7 @@ def _full(f):
 WID = {'November 2026': 'W_2026_02', '28-31 October 2026': 'W_2026_01',
        '10-16 October 2025': 'W_2025_02', '03-07 February 2025': 'W_2025_01',
        '21-25 October 2024': 'W_2024_05', '14-20 October 2024': 'W_2024_04', '24-25 September 2024': 'W_2024_03', 'Workshop on Data Assimilation in Weather and Climate models': 'W_2024_02', '31 January - 08 February 2024': 'W_2024_01',
-       '16-20 October 2023': 'W_2023_03', '7 August - 01 November 2023': 'W_2023_02', '02-08 January 2023': 'W_2023_01'}
+       '16-20 October 2023': 'W_2023_03', '7 August - 01 November 2023': 'W_2023_02', '02-08 January 2023': 'W_2023_01', '10-12 April 2023': 'W_2023_04'}
 def wk(role, when, title, inst, place, mode=None, note=None, pics=None):
     glyph = {'Conducted': '<i></i>', 'Organised': '<i class="d"></i>', 'Attended': '<i class="o"></i>'}[role]
     m = f' <span class="badge alt">{mode}</span>' if mode else ''
@@ -323,7 +323,8 @@ y2024 = wk('Conducted', '21-25 October 2024', 'Python Essentials: Foundations of
 y2023 = wk('Conducted', '16-20 October 2023', 'Hands-on Workshop on Weather Prediction and Climate Model', 'Department of Architecture and Planning, IIT Roorkee', 'IIT Roorkee, Uttarakhand, India', None, 'Five-hour lecture with a hands-on session on the WRF model, organised and funded by the Department of Architecture and Planning under the project "Gender oriented adaptive transformation cross-learning for climate change and disaster risk resilience among India, Nepal, Sri Lanka, and Japan".') + \
         wk('Conducted', '7 August - 01 November 2023', 'Origin Pro &amp; PLAXIS 2D', 'Department of Civil Engineering, College of Engineering Roorkee', 'Haridwar, Uttarakhand, India') + \
         wk('Organised', '02-08 January 2023', 'FOREcaSting and Early-Warning of Extreme Events and Disasters (FORESEED) KARYASHALA Workshop on WRF', 'Centre of Excellence for Disaster Mitigation and Management (CoEDMM), IIT Roorkee', 'Roorkee, Uttarakhand, India')
-att = wk('Attended', '', 'Workshop on Data Assimilation in Weather and Climate models', 'International Centre for Theoretical Sciences (ICTS)', 'Bengaluru, India')
+att = wk('Attended', '10-12 April 2023', 'Technical Workshop on Earthquake Early Warning System (EEWS)', 'South Asia Alliance of Disaster Research Institutes (SAADRI) and Centre of Excellence in Disaster Mitigation and Management (CoEDMM), IIT Roorkee, in association with the National Science and Technology Center for Disaster Reduction (NCDR), Taiwan', 'CoEDMM, IIT Roorkee, Roorkee, Uttarakhand, India', 'Offline', None, [('WORK_012_01', 'Opening session of the Technical Workshop on Earthquake Early Warning System at IIT Roorkee'), ('WORK_012_02', 'Lecture during the Technical Workshop on Earthquake Early Warning System at IIT Roorkee')]) + \
+      wk('Attended', '', 'Workshop on Data Assimilation in Weather and Climate models', 'International Centre for Theoretical Sciences (ICTS)', 'Bengaluru, India')
 workshops = phero('04 / Workshops', 'Workshops', 'Workshops and lectures handled, organised and attended. A square marks conducted, a diamond organised and a circle attended.', 'WORKSHOPS AND LECTURES') + sec(f'''
 <div class="yh"><h3>2026</h3></div><div class="wks">{y2026}</div>
 <div class="yh"><h3>2025</h3></div><div class="wks">{y2025}</div>
