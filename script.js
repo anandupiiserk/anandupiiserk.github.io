@@ -814,6 +814,9 @@ else (function loop() {
     { id: 'phd', prefix: 'PhD', label: 'PhD' }, { id: 'conf', prefix: 'Conf', label: 'Conference' }, { id: 'work', prefix: 'WORK', label: 'Workshops' },
     { id: 'meet', prefix: 'Meet', label: 'Meetings' }, { id: 'events', prefix: 'Event', label: 'Events' }, { id: 'field', prefix: 'Field', label: 'Field' }, { id: 'visit', prefix: 'Visit', label: 'Visit' }, { id: 'myspace', prefix: 'MSpace', label: 'My Space' }
   ];
+  /* Photo labels: workshop photos read 'Workshop Handled' (taught or conducted) or 'Workshop Attended'. Add an ID here for workshops attended. */
+  const ATTENDED = new Set(['WORK_012']);
+  const catLabel = e => e.cat.id === 'work' ? (ATTENDED.has(e.base) ? 'Workshop Attended' : 'Workshop Handled') : e.cat.label;
   const DIR = 'gallery/', EXTS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'], MAXG = 40;
   const segs = $$('.seg'), btns = segs.flatMap(sg => $$('button', sg)), empty = $('#gal-empty');
   segs.forEach(sg => { const i = document.createElement('i'); i.className = 'seg-ind'; sg.prepend(i); });
@@ -874,7 +877,7 @@ else (function loop() {
   function build(e, list) {
     const f = document.createElement('figure'); f.className = 'gi' + (list.length > 1 ? ' multi' : ''); f.dataset.cat = e.cat.id; f.dataset.cursor = 'View'; f.tabIndex = 0; f.hidden = false;
     const cap = e.cap || list[0].cap;
-    f.innerHTML = `<div class="gwrap"><div class="gimg${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? ' fillbox' : ''}">${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? `<i class="gfill" style="background-image:url('${esc(list[0].th || list[0].src)}')"></i>` : ''}<img src="${esc(list[0].th || list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.th || p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><div class="gmeta"><b class="cat-${e.cat.id}">${esc(e.cat.label)}</b>${e.date ? `<i class="sep" aria-hidden="true">|</i><time datetime="${e.date}" data-i18n-skip>${fmtDate(e.date)}</time>` : ''}</div>${cap ? `<span class="gcap">${esc(cap)}</span>` : ''}</figcaption>`;
+    f.innerHTML = `<div class="gwrap"><div class="gimg${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? ' fillbox' : ''}">${list.length === 1 && Math.abs(list[0].w / list[0].h / 1.5 - 1) > .12 ? `<i class="gfill" style="background-image:url('${esc(list[0].th || list[0].src)}')"></i>` : ''}<img src="${esc(list[0].th || list[0].src)}" width="${list[0].w}" height="${list[0].h}" alt="${esc(cap)}" decoding="async">${list.slice(1).map(p => `<img class="gx" src="${esc(p.th || p.src)}" alt="" decoding="async">`).join('')}<button type="button" class="glike" data-id="${esc(e.base)}" aria-pressed="false" aria-label="Like this photo" data-i18n-skip>${HEART}</button>${list.length > 1 ? `<span class="gbadge" aria-hidden="true" data-i18n-skip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/></svg>${list.length}</span>` : ''}</div></div><figcaption><div class="gmeta"><b class="cat-${e.cat.id}">${esc(catLabel(e))}</b>${e.date ? `<i class="sep" aria-hidden="true">|</i><time datetime="${e.date}" data-i18n-skip>${fmtDate(e.date)}</time>` : ''}</div>${cap ? `<span class="gcap">${esc(cap)}</span>` : ''}</figcaption>`;
     const lb0 = f.querySelector('.glike'); lb0.addEventListener('click', ev => { ev.stopPropagation(); ev.preventDefault(); toggleLike(e.base, lb0); }); lb0.addEventListener('keydown', ev => ev.stopPropagation());
     paintLikes();
     if (list.length > 1) slideshow(f, list);
@@ -973,7 +976,7 @@ else (function loop() {
 
   /* Lightbox: every photo of the visible items, event photos in order */
   const lb = $('#lb'), img = $('#lb-img'), cap = $('#lb-cap'), count = $('#lb-count'); let slides = [], cur = 0; const warm = new Set();
-  function slidesNow() { slides = []; items.forEach(it => { if (!it.ok || it.el.hidden) return; it.list.forEach((p, k) => slides.push({ base: it.e.base, src: p.src, th: p.th, cap: p.cap || it.e.cap, cat: it.e.cat.label, k, n: it.list.length })); }); }
+  function slidesNow() { slides = []; items.forEach(it => { if (!it.ok || it.el.hidden) return; it.list.forEach((p, k) => slides.push({ base: it.e.base, src: p.src, th: p.th, cap: p.cap || it.e.cap, cat: catLabel(it.e), k, n: it.list.length })); }); }
   function show(i) {
     if (!slides.length) return; cur = (i + slides.length) % slides.length; const s = slides[cur];
     if (s.th && !warm.has(s.src)) { img.src = s.th; const fl = new Image(); fl.src = s.src; fl.decode().then(() => { warm.add(s.src); if (slides[cur] === s) img.src = s.src; }).catch(() => {}); } else img.src = s.src;
