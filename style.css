@@ -1106,7 +1106,8 @@ html.wmk .gimg::after, html.wmk .wk-pics .wmw::after { content: var(--wm-text); 
 .wk .when { scroll-margin-top: 110px; } .wk { scroll-margin-top: 110px; }
 .wk.wk-hit { border-color: var(--a); box-shadow: 0 0 0 4px var(--a-soft); }
 
-.seg-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; margin-bottom: 40px; }
-.seg-row .seg { margin-bottom: 0; }
-.seg-solo { flex: none; }
-@media (max-width: 820px) { .seg-row { margin-bottom: 26px; } .seg-solo { -webkit-mask-image: none; mask-image: none; } }
+:root { --my: #5fb89a; --on-my: #06130f; } :root[data-theme="light"] { --my: #0e7a66; --on-my: #ffffff; }
+.seg .seg-my { margin-left: 14px; color: var(--my); font-weight: 600; }
+.seg .seg-my::before { content: ''; position: absolute; left: -9px; top: 22%; bottom: 22%; width: 1px; background: var(--line2); }
+.seg .seg-my[aria-pressed="true"] { color: var(--on-my); }
+.seg.my-on .seg-ind { background: var(--my); }

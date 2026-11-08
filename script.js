@@ -817,7 +817,7 @@ else (function loop() {
   const DIR = 'gallery/', EXTS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'], MAXG = 40;
   const segs = $$('.seg'), btns = segs.flatMap(sg => $$('button', sg)), empty = $('#gal-empty');
   segs.forEach(sg => { const i = document.createElement('i'); i.className = 'seg-ind'; sg.prepend(i); });
-  const place = () => segs.forEach(sg => { const ind = $('.seg-ind', sg), b = $('[aria-pressed="true"]', sg); if (!b) { ind.style.width = '0px'; return; } ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; });
+  const place = () => segs.forEach(sg => { const ind = $('.seg-ind', sg), b = $('[aria-pressed="true"]', sg); if (!b) { ind.style.width = '0px'; return; } sg.classList.toggle('my-on', b.dataset.f === 'myspace'); ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; });
   window.__segPlace = place; place(); addEventListener('resize', place); addEventListener('load', place);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
 
