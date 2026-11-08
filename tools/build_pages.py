@@ -61,15 +61,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261106a">
+<link rel="stylesheet" href="style.css?v=20261108a">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261106a"></script>
-<script src="script.js?v=20261106a"></script>
+<script src="i18n.js?v=20261108a"></script>
+<script src="script.js?v=20261108a"></script>
 </body>
 </html>
 '''
@@ -336,7 +336,7 @@ page('workshops.html', 'workshops', f'Workshops | Anandu Prabhakaran', 'Workshop
 # ---------------------------------------------------------------- GALLERY
 GL = 'Photographs from the PhD, conferences, workshops, meetings, fieldwork and other journeys.'
 gallery = phero('05 / Gallery', 'Gallery', GL, 'PHOTOGRAPHS') + sec('''
-<div class="seg reveal" role="group" aria-label="Filter photographs"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="phd">PhD</button><button aria-pressed="false" data-f="conf">Conference</button><button aria-pressed="false" data-f="work">Workshops</button><button aria-pressed="false" data-f="meet">Meetings</button><button aria-pressed="false" data-f="events">Events</button><button aria-pressed="false" data-f="field">Field</button><button aria-pressed="false" data-f="visit">Visit</button><button aria-pressed="false" data-f="myspace">My Space</button></div>
+<div class="seg-row reveal"><div class="seg" role="group" aria-label="Filter photographs"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="phd">PhD</button><button aria-pressed="false" data-f="conf">Conference</button><button aria-pressed="false" data-f="work">Workshops</button><button aria-pressed="false" data-f="meet">Meetings</button><button aria-pressed="false" data-f="events">Events</button><button aria-pressed="false" data-f="field">Field</button><button aria-pressed="false" data-f="visit">Visit</button></div><div class="seg seg-solo" role="group" aria-label="My Space photographs"><button aria-pressed="false" data-f="myspace">My Space</button></div></div>
 <div class="gal" id="gallery"></div>
 <p class="gal-empty" id="gal-empty" hidden>Photographs will appear here soon.</p>''') + '''
 <div class="lightbox" id="lb" role="dialog" aria-modal="true" aria-label="Image viewer">

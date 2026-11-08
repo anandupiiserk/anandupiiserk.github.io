@@ -815,9 +815,9 @@ else (function loop() {
     { id: 'meet', prefix: 'Meet', label: 'Meetings' }, { id: 'events', prefix: 'Event', label: 'Events' }, { id: 'field', prefix: 'Field', label: 'Field' }, { id: 'visit', prefix: 'Visit', label: 'Visit' }, { id: 'myspace', prefix: 'MSpace', label: 'My Space' }
   ];
   const DIR = 'gallery/', EXTS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'], MAXG = 40;
-  const seg = $('.seg'), btns = $$('button', seg), empty = $('#gal-empty');
-  const ind = document.createElement('i'); ind.className = 'seg-ind'; seg.prepend(ind);
-  const place = () => { const b = $('[aria-pressed="true"]', seg); if (!b) return; ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; };
+  const segs = $$('.seg'), btns = segs.flatMap(sg => $$('button', sg)), empty = $('#gal-empty');
+  segs.forEach(sg => { const i = document.createElement('i'); i.className = 'seg-ind'; sg.prepend(i); });
+  const place = () => segs.forEach(sg => { const ind = $('.seg-ind', sg), b = $('[aria-pressed="true"]', sg); if (!b) { ind.style.width = '0px'; return; } ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`; });
   window.__segPlace = place; place(); addEventListener('resize', place); addEventListener('load', place);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
 
@@ -930,7 +930,7 @@ else (function loop() {
   }
   function apply() {
     let shown = 0;
-    items.forEach(it => { const hide = !revealed || !it.ok || (filter !== 'all' && it.e.cat.id !== filter); it.el.hidden = hide; if (!hide) { it.el.classList.remove('pop'); void it.el.offsetWidth; it.el.style.animationDelay = Math.min(shown, 14) * 55 + 'ms'; it.el.classList.add('pop'); shown++; } });
+    items.forEach(it => { const hide = !revealed || !it.ok || (filter === 'all' ? it.e.cat.id === 'myspace' : it.e.cat.id !== filter); it.el.hidden = hide; if (!hide) { it.el.classList.remove('pop'); void it.el.offsetWidth; it.el.style.animationDelay = Math.min(shown, 14) * 55 + 'ms'; it.el.classList.add('pop'); shown++; } });
     empty.hidden = shown > 0 || !done;
   }
   btns.forEach(b => b.addEventListener('click', () => { btns.forEach(x => x.setAttribute('aria-pressed', x === b)); filter = b.dataset.f; place(); apply(); }));
