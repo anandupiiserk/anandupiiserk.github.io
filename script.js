@@ -934,11 +934,11 @@ else (function loop() {
   function apply() {
     let shown = 0;
     items.forEach(it => { const hide = !revealed || !it.ok || (filter === 'all' ? it.e.cat.id === 'myspace' : it.e.cat.id !== filter); it.el.hidden = hide; if (!hide) { it.el.classList.remove('pop'); void it.el.offsetWidth; it.el.style.animationDelay = Math.min(shown, 14) * 55 + 'ms'; it.el.classList.add('pop'); shown++; } });
-    empty.hidden = shown > 0 || !done;
+    empty.hidden = shown > 0 || !(filter === 'myspace' ? msDone : done);
   }
   btns.forEach(b => b.addEventListener('click', () => { btns.forEach(x => x.setAttribute('aria-pressed', x === b)); filter = b.dataset.f; place(); apply(); }));
 
-  let done = false, revealed = true; /* progressive: each tile appears as soon as its thumbnail is ready, with the loading bar above (the earlier 'reveal together' version waited for every photo and looked blank on slow connections) */
+  let done = false, msDone = false, revealed = true; /* progressive: each tile appears as soon as its thumbnail is ready, with the loading bar above (the earlier 'reveal together' version waited for every photo and looked blank on slow connections) */
   (async function init() {
     if (!SITE.galleryOn) { empty.hidden = false; empty.textContent = 'The gallery is temporarily switched off.'; return; }
     let text = '';
@@ -946,32 +946,45 @@ else (function loop() {
     if (!text && location.protocol === 'file:') { empty.hidden = false; empty.textContent = 'Preview note: browsers block reading captions.txt when the page is opened by double-clicking the file. Open the site through GitHub Pages, or run "python -m http.server" in this folder and visit http://localhost:8000.'; }
     const entries = parse(text);
     items = entries.map(e => { const el = document.createElement('figure'); el.hidden = true; host.append(el); return { e, el, ok: false, list: [] }; });
-    let next = 0, proc = 0, loaded = 0, okN = 0, shownP = 0;
+    /* Everything except My Space loads first (progress bar above). My Space then loads in the background: its button fills like a progress bar, and its photos can already be opened while they arrive. */
+    const A = items.filter(it => it.e.cat.id !== 'myspace'), B = items.filter(it => it.e.cat.id === 'myspace');
+    let proc = 0, loaded = 0, okN = 0, shownP = 0;
     const bar = document.createElement('div'); bar.className = 'gload'; bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-label', 'Loading photos');
     bar.innerHTML = '<div class="gl-top"><span class="gl-t" data-i18n-skip>Loading photos</span><span class="gl-p" data-i18n-skip>0%</span></div><div class="gl-bar"><i></i></div>';
     host.before(bar);
     const upd = fin => {
-      const tot = items.length + okN, p = fin ? 1 : Math.min(.99, (proc + loaded) / Math.max(1, tot)); shownP = Math.max(shownP, p);
+      const tot = A.length + okN, p = fin ? 1 : Math.min(.99, (proc + loaded) / Math.max(1, tot)); shownP = Math.max(shownP, p);
       const v = Math.round(shownP * 100); bar.querySelector('i').style.transform = `scaleX(${shownP})`; bar.querySelector('.gl-p').textContent = v + '%'; bar.setAttribute('aria-valuenow', v);
       if (fin) setTimeout(() => { bar.classList.add('done'); setTimeout(() => bar.remove(), 700); }, 450);
     };
     upd();
+    const myBtn = $('.seg-my'), msN = { proc: 0, loaded: 0, ok: 0 };
+    const msUpd = fin => { if (!myBtn) return; const p = fin ? 1 : Math.min(.99, (msN.proc + msN.loaded) / Math.max(1, B.length + msN.ok)); myBtn.style.setProperty('--p', p); if (fin) setTimeout(() => { myBtn.classList.remove('filling'); myBtn.removeAttribute('aria-busy'); }, 700); };
+    if (myBtn && B.length) { myBtn.classList.add('filling'); myBtn.setAttribute('aria-busy', 'true'); myBtn.style.setProperty('--p', 0); }
+    const shownNow = e => filter === 'all' ? e.cat.id === 'myspace' ? false : true : e.cat.id === filter;
     setTimeout(() => { if (!revealed) { revealed = true; apply(); } }, 15000);   /* slow connection: show what has loaded after 15 s and let the rest join as it arrives */
-    const worker = async () => {
-      while (next < items.length) {
-        const it = items[next++], list = await resolve(it.e);
-        if (list.length) {
-          const el = build(it.e, list); el.hidden = !revealed; it.el.replaceWith(el); it.el = el; it.list = list; it.ok = true; okN++;
-          const im = el.querySelector('img'), ok = () => { if (im.dataset.d) return; im.dataset.d = 1; loaded++; el.classList.add('ready'); upd(done && loaded >= okN); };
-          if (im.complete && im.naturalWidth) ok(); else { im.addEventListener('load', ok); im.addEventListener('error', ok); }
-          if (window.__i18nAdd) window.__i18nAdd(el); wire(it);
+    const runPool = async (list, ms) => {
+      let next = 0;
+      const worker = async () => {
+        while (next < list.length) {
+          const it = list[next++], l = await resolve(it.e);
+          if (l.length) {
+            const el = build(it.e, l); el.hidden = !revealed || !shownNow(it.e); it.el.replaceWith(el); it.el = el; it.list = l; it.ok = true; if (ms) msN.ok++; else okN++;
+            const im = el.querySelector('img'), ok = () => { if (im.dataset.d) return; im.dataset.d = 1; el.classList.add('ready'); if (ms) { msN.loaded++; msUpd(msDone && msN.loaded >= msN.ok); } else { loaded++; upd(done && loaded >= okN); } };
+            if (im.complete && im.naturalWidth) ok(); else { im.addEventListener('load', ok); im.addEventListener('error', ok); }
+            if (window.__i18nAdd) window.__i18nAdd(el); wire(it);
+          }
+          if (ms) { msN.proc++; msUpd(); } else { proc++; upd(); }
         }
-        proc++; upd();
-      }
+      };
+      await Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]);
     };
-    await Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]);
+    await runPool(A, false);
     done = true; revealed = true; apply(); upd(loaded >= okN);
-    items.filter(it => !it.ok).forEach(it => it.el.remove());
+    A.filter(it => !it.ok).forEach(it => it.el.remove());
+    await runPool(B, true);
+    msDone = true; apply(); msUpd(msN.loaded >= msN.ok);
+    B.filter(it => !it.ok).forEach(it => it.el.remove());
   })();
 
   /* Lightbox: every photo of the visible items, event photos in order */
