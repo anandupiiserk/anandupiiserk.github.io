@@ -442,8 +442,9 @@ function subscribe_(p) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return json_({ ok: false, error: 'invalid' });
   if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
   if (!tokenOk_(email, p.vtoken)) return json_({ ok: false, error: 'unverified' });   /* same email OTP as the message and appointment forms */
-  var id = subId_(email);
-  PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify({ e: email, n: String(p.name || '').trim().slice(0, 80), s: 'active', t: Date.now() }));
+  var id = subId_(email), prev = subGet_(id), nm = String(p.name || '').trim().slice(0, 80) || (prev && prev.n) || '';
+  /* one record per email address (the id is a hash of the address), so re-subscribing never creates a duplicate */
+  PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify({ e: email, n: nm, s: 'active', t: Date.now(), t0: (prev && (prev.t0 || prev.t)) || Date.now(), re: prev && prev.s === 'unsub' ? (prev.re || 0) + 1 : (prev && prev.re) || 0 }));
   if (OWNER_NOTIFY) { try { MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: 'New newsletter subscriber', body: 'New subscriber: ' + email + '\nAll subscribers: ' + adminUrl_(), htmlBody: mail_('New subscriber', '', [['Name', esc_(String(p.name || '').trim().slice(0, 80) || '(not given)')], ['Email', esc_(email)], ['Total', String(nlActive_().length)]], [['View subscribers', adminUrl_(), '#1f4e9c']], '') }); } catch (err2) { } }
   try {
     var un = nlUnsubUrl_(id);
@@ -457,7 +458,7 @@ function subscribe_(p) {
 function nlUnsubPage_(p) {
   var id = p.id || '';
   if (!id || sign_('unsub', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
-  if (!subGet_(id)) return page_('Already unsubscribed', 'This address is not subscribed. To receive emails again, subscribe on the website.', 'info');
+  var cu = subGet_(id); if (!cu || cu.s !== 'active') return page_('Already unsubscribed', 'This address is not subscribed. To receive emails again, subscribe on the website.', 'info');
   var inner = '<div class="acts" style="display:block"><div class="act"><h3>Unsubscribe from news and information</h3><p>You will stop receiving emails from Anandu Prabhakaran. To receive them again later, you will need to subscribe again on the website.</p><button id="u" class="b red">Unsubscribe</button></div></div><div id="m" class="msg"></div>'
     + '<script>document.getElementById("u").onclick=function(){var b=this;b.disabled=true;b.textContent="Working...";google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent="Unsubscribe";var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";}).nlUnsub(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ');};<\/script>';
   return out_(shell_('Unsubscribe', 'Click the button below to unsubscribe.', inner), 'Unsubscribe');
@@ -465,7 +466,8 @@ function nlUnsubPage_(p) {
 // Called from the unsubscribe page. Deletes the record.
 function nlUnsub(id, sig) {
   if (!id || sign_('unsub', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
-  PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
+  var cu = subGet_(id);
+  if (cu) { cu.s = 'unsub'; cu.u = Date.now(); PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify(cu)); }   /* record kept (no duplicates, can be contacted for important notices) */
   return statusHtml_('You have been unsubscribed', 'You will no longer receive emails from Anandu Prabhakaran. You can subscribe again at any time on the website.', 'ok');
 }
 // Sends one email to every confirmed subscriber, each with its own unsubscribe link.
@@ -520,36 +522,47 @@ function accessDecide_(p) {
 }
 function adminPage_(p) {
   if (sign_('admin', 'subs') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
-  var subs = nlActive_().sort(function (a, b) { return b.t - a.t; }), props = PropertiesService.getScriptProperties().getProperties(), reqs = [];
+  var subs = nlActive_().sort(function (a, b) { return b.t - a.t; }), unsubs = nlAll_().filter(function (r) { return r.s === 'unsub'; }).sort(function (a, b) { return (b.u || 0) - (a.u || 0); }), props = PropertiesService.getScriptProperties().getProperties(), reqs = [];
   Object.keys(props).forEach(function (k) { if (k.indexOf('ACC_') === 0 && k.indexOf('ACCDAY_') !== 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); reqs.push(r); } catch (x) { } } });
   reqs.sort(function (a, b) { return b.t - a.t; });
   var fmt = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
   var th = 'text-align:left;padding:9px 10px;font-size:12px;color:#5b6675;border-bottom:2px solid #e1e8f3;white-space:nowrap', td = 'padding:10px;border-bottom:1px solid #eef2f8;font-size:14px;vertical-align:middle';
-  var rows = subs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none;margin-right:12px">Write</a><button class="rm" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Remove</button></td></tr>'; }).join('');
+  var rows = subs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none;margin-right:12px">Write</a><button class="rm" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Unsubscribe</button></td></tr>'; }).join('');
+  var urows = unsubs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t0 || r.t) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + (r.u ? fmt(r.u) : '') + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none;margin-right:12px">Write</a><button class="del" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Delete data</button></td></tr>'; }).join('');
   var rq = reqs.map(function (r) {
     var st = r.s === 'pending' ? '<a href="' + link_('acc_ok', r.id) + '" target="_top" style="color:#1e8e4e;font-weight:bold;text-decoration:none">Approve</a> &nbsp; <a href="' + link_('acc_no', r.id) + '" target="_top" style="color:#c5221f;font-weight:bold;text-decoration:none">Decline</a>' : '<span style="color:#5b6675">' + esc_(r.s) + '</span>';
     return '<tr><td style="' + td + '">' + esc_(r.n) + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + '">' + esc_(r.p) + '</td><td style="' + td + ';white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + '">' + st + '</td></tr>';
   }).join('');
-  var data = JSON.stringify(subs.map(function (r) { return [r.n || '', r.e, fmt(r.t)]; })).replace(/</g, '\\u003c');
-  var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + reqs.filter(function (r) { return r.s === 'pending'; }).length + '</b> pending request' + (reqs.filter(function (r) { return r.s === 'pending'; }).length === 1 ? '' : 's') + '</span></div>'
+  var data = JSON.stringify(subs.map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), 'Subscribed']; }).concat(unsubs.map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), 'Unsubscribed ' + (r.u ? fmt(r.u) : '')]; }))).replace(/</g, '\\u003c');
+  var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + unsubs.length + '</b> unsubscribed</span><span class="chip"><b>' + reqs.filter(function (r) { return r.s === 'pending'; }).length + '</b> pending request' + (reqs.filter(function (r) { return r.s === 'pending'; }).length === 1 ? '' : 's') + '</span></div>'
     + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px"><input id="q" class="tx" placeholder="Search name or email" style="flex:1;min-width:200px;width:auto"><button id="cp" class="b blue auto" style="padding:11px 20px">Copy all emails</button><button id="dl" class="b blue auto" style="padding:11px 20px">Download CSV</button><a class="b blue auto" style="text-decoration:none;padding:11px 20px" target="_top" href="' + link_('compose', 'new') + '">Write to subscribers</a></div>'
     + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;align-items:center"><button id="rm15" class="b blue auto" style="padding:9px 18px;font-size:13px">Turn on 15th-of-month reminder</button><button id="rmt" class="b blue auto" style="padding:9px 18px;font-size:13px;background:#5b6675">Send a test reminder now</button><span class="hint">A reminder email comes to you on the 15th of every month.</span></div>'
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '"></th></tr></thead><tbody id="tb">' + (rows || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No subscribers yet.</td></tr>') + '</tbody></table></div>'
+    + '<h2 style="font-size:17px;margin:30px 0 8px">Unsubscribed</h2><p class="sub" style="margin:0 0 10px">People who unsubscribed. Their name and email are kept here (one record per address, so there are no duplicates) and they do not receive newsletters. You can still write to one of them individually.</p>'
+    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '">Unsubscribed</th><th style="' + th + '"></th></tr></thead><tbody id="ub">' + (urows || '<tr><td colspan="6" style="' + td + ';color:#7a8594;text-align:center">Nobody has unsubscribed.</td></tr>') + '</tbody></table></div>'
     + '<h2 style="font-size:17px;margin:30px 0 8px">Approval requests</h2><p class="sub" style="margin:0 0 10px">People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP.</p>'
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">For</th><th style="' + th + '">Asked</th><th style="' + th + '">Status</th></tr></thead><tbody>' + (rq || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No requests.</td></tr>') + '</tbody></table></div><div id="m" class="msg"></div>'
     + '<script>(function(){var D=' + data + ',tb=document.getElementById("tb"),m=document.getElementById("m");'
-    + 'document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();var r=tb.querySelectorAll("tr[data-s]");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
-    + 'document.getElementById("cp").onclick=function(){var t=D.map(function(x){return x[1];}).join(", "),b=this;var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");b.textContent="Copied";}catch(e){b.textContent="Copy failed";}document.body.removeChild(ta);setTimeout(function(){b.textContent="Copy all emails";},1600);};'
-    + 'document.getElementById("dl").onclick=function(){var q=function(s){return "\\""+String(s).replace(/"/g,"\\"\\"")+"\\"";};var c="Name,Email,Subscribed\\n"+D.map(function(x){return x.map(q).join(",");}).join("\\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/csv"}));a.download="subscribers.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);};'
+    + 'document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();var r=document.querySelectorAll("tr[data-s]");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
+    + 'document.getElementById("cp").onclick=function(){var t=D.filter(function(x){return x[3]==="Subscribed";}).map(function(x){return x[1];}).join(", "),b=this;var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");b.textContent="Copied";}catch(e){b.textContent="Copy failed";}document.body.removeChild(ta);setTimeout(function(){b.textContent="Copy all emails";},1600);};'
+    + 'document.getElementById("dl").onclick=function(){var q=function(s){return "\\""+String(s).replace(/"/g,"\\"\\"")+"\\"";};var c="Name,Email,Subscribed on,Status\\n"+D.map(function(x){return x.map(q).join(",");}).join("\\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/csv"}));a.download="subscribers.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);};'
     + 'function act(id,fn,ok){document.getElementById(id).onclick=function(){var b=this,t=b.textContent;b.disabled=true;google.script.run.withSuccessHandler(function(){b.disabled=false;b.textContent=ok;setTimeout(function(){b.textContent=t;},2200);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="That did not work. Try again.";})[fn](' + JSON.stringify(p.sig) + ');};}act("rm15","enableReminder","Reminder is on");act("rmt","testReminder","Test sent");'
-    + 'tb.onclick=function(e){var b=e.target.closest(".rm");if(!b||!confirm("Remove this subscriber? They will have to subscribe again."))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not remove. Try again.";}).removeSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
+    + 'tb.onclick=function(e){var b=e.target.closest(".rm");if(!b||!confirm("Unsubscribe this person? Their details stay in the Unsubscribed list."))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not update. Try again.";}).removeSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
+    + 'document.getElementById("ub").onclick=function(e){var b=e.target.closest(".del");if(!b||!confirm("Delete this person\'s saved name and email permanently?"))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not delete. Try again.";}).deleteSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
     + '})();<\/script>';
   return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information. Newest first.', inner), 'Subscribers');
 }
 // Called from the subscribers page.
-function removeSub(sig, id) {
+function removeSub(sig, id) {   /* marks as unsubscribed; the record is kept */
   if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
-  PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
+  var cu = subGet_(id);
+  if (cu) { cu.s = 'unsub'; cu.u = Date.now(); PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify(cu)); }
+  return true;
+}
+function deleteSub(sig, id) {
+  if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
+  var cu = subGet_(id);
+  if (cu && cu.s === 'unsub') PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
   return true;
 }
 
