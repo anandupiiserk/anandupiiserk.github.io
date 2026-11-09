@@ -230,7 +230,7 @@ function otpSend_(p) {
   var email = normEmail_(p.email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return json_({ ok: false, error: 'invalid' });
   if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
-  if (p.purpose === 'subscribe') { var cs = subGet_(subId_(email)); if (cs && cs.s === 'active') return json_({ ok: false, error: 'subscribed' }); }
+  if (p.purpose === 'subscribe') { var cs = subGet_(subId_(email)); if (cs && cs.s === 'ban') return json_({ ok: false, error: 'banned' }); if (cs && (cs.s === 'active' || cs.s === 'watch')) return json_({ ok: false, error: 'subscribed' }); }
   var cache = CacheService.getScriptCache(), props = PropertiesService.getScriptProperties();
   var nk = 'otpn_' + sign_('n', email).slice(0, 32), n = +(cache.get(nk) || 0);
   if (n >= OTP_PER_EMAIL_HOUR) return json_({ ok: false, error: 'rate' });
@@ -318,7 +318,7 @@ function editorPage_(mode, p, r) {
         + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
         + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>' + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
       : '<div class="chips"><span class="chip">Sending as <b>Anandu Prabhakaran</b></span><span class="chip">New conversation</span></div>'
-        + '<label class="l">Send to</label><div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-size:14px"><label><input type="radio" name="aud" id="aud-one" checked> One person</label><label><input type="radio" name="aud" id="aud-all"> All newsletter subscribers (<b>' + nlActive_().length + '</b>)</label><a href="' + adminUrl_() + '" target="_top" style="color:#1f4e9c;text-decoration:none">View subscribers</a></div>'
+        + '<label class="l">Send to</label><div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-size:14px"><label><input type="radio" name="aud" id="aud-one" checked> One person</label><label><input type="radio" name="aud" id="aud-all"> All newsletter subscribers (<b>' + nlActive_().length + '</b>)</label><label><input type="radio" name="aud" id="aud-watch"> Yellow list (<b>' + nlWatch_().length + '</b>)</label><a href="' + adminUrl_() + '" target="_top" style="color:#1f4e9c;text-decoration:none">View subscribers</a></div>'
         + '<div id="tow"><label class="l" for="to">To</label><input id="to" class="tx" list="subl" value="' + esc_(p.to || '') + '" placeholder="name@example.com, or type a name to search your subscribers" autocomplete="off" style="margin-bottom:14px"><datalist id="subl">' + nlActive_().map(function (r) { return '<option value="' + esc_(r.e) + '">' + esc_(r.n || '') + '</option>'; }).join('') + '</datalist></div>' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
         + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
     + '<label class="l" for="hd">Email header <span class="hint">(the title bar at the top of the email)</span></label><input id="hd" class="tx" maxlength="80" value="Email from ' + OWNER_NAME + '" style="margin-bottom:16px">'
@@ -339,7 +339,7 @@ function editorPage_(mode, p, r) {
     + '<div style="margin-top:22px"><button id="send" class="b blue auto">' + (reply ? 'Send reply' : 'Send email') + '</button></div><div id="m" class="msg"></div>'
     + '<script>(function(){var ed=document.getElementById("ed"),m=document.getElementById("m"),files=[],MAX=15*1024*1024;'
     + 'function ex(c,v){ed.focus();document.execCommand(c,false,v||null);}'
-    + (reply ? '' : 'var ao=document.getElementById("aud-all"),a1=document.getElementById("aud-one"),tw=document.getElementById("tow");var hd=document.getElementById("hd"),hc=false;hd.oninput=function(){hc=true;};function aud(){tw.style.display=ao.checked?"none":"block";if(!hc)hd.value=ao.checked?"News Letter from Anandu Prabhakaran":"Email from Anandu Prabhakaran";}ao.onchange=aud;a1.onchange=aud;')
+    + (reply ? '' : 'var ao=document.getElementById("aud-all"),aw=document.getElementById("aud-watch"),a1=document.getElementById("aud-one"),tw=document.getElementById("tow");var hd=document.getElementById("hd"),hc=false;hd.oninput=function(){hc=true;};function aud(){tw.style.display=(ao.checked||aw.checked)?"none":"block";if(!hc)hd.value=ao.checked?"News Letter from Anandu Prabhakaran":"Email from Anandu Prabhakaran";}ao.onchange=aud;aw.onchange=aud;a1.onchange=aud;')
     + 'var bs=document.querySelectorAll("[data-c]");for(var i=0;i<bs.length;i++){bs[i].onmousedown=function(e){e.preventDefault();};bs[i].onclick=function(){ex(this.getAttribute("data-c"));};}'
     + 'document.getElementById("ff").onchange=function(){if(this.value)ex("fontName",this.value);};'
     + 'document.getElementById("fs").onchange=function(){if(this.value)ex("fontSize",this.value);};'
@@ -363,7 +363,7 @@ function editorPage_(mode, p, r) {
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
     + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
     + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};'
-      : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};')
+      : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":aw.checked?"__watch__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};')
     + '})();<\/script>';
   return reply
     ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner), 'Reply to ' + r.n)
@@ -420,6 +420,7 @@ function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header) {
   if (sign_('compose', 'new') !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   to = String(to || '').trim();
   if (to === '__subscribers__') return sendNews_(subject, bodyHtml, files, header);
+  if (to === '__watch__') return sendNews_(subject, bodyHtml, files, header, true);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
   return sentHtml_('', to, deliver_(to, subject, bodyHtml, files, '', cc, bcc, '', header));
@@ -442,6 +443,7 @@ function nlAll_() {
   });
   return out.filter(function (r) { if (r.s === 'pending' && r.t < cut) { PropertiesService.getScriptProperties().deleteProperty('SUB_' + r.id); return false; } return true; });
 }
+function nlWatch_() { return nlAll_().filter(function (r) { return r.s === 'watch'; }); }
 function nlActive_() { return nlAll_().filter(function (r) { return r.s === 'active'; }); }
 function nlUnsubUrl_(id) { return ScriptApp.getService().getUrl() + '?action=unsub&id=' + encodeURIComponent(id) + '&sig=' + sign_('unsub', id); }
 function subscribe_(p) {
@@ -450,6 +452,8 @@ function subscribe_(p) {
   if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
   if (!tokenOk_(email, p.vtoken)) return json_({ ok: false, error: 'unverified' });   /* same email OTP as the message and appointment forms */
   var id = subId_(email), prev = subGet_(id), nm = String(p.name || '').trim().slice(0, 80) || (prev && prev.n) || '';
+  if (prev && prev.s === 'ban') return json_({ ok: false, error: 'banned' });
+  if (prev && prev.s === 'watch') return json_({ ok: false, error: 'subscribed' });
   PropertiesService.getScriptProperties().deleteProperty('PEND_' + id);
   /* one record per email address (the id is a hash of the address), so re-subscribing never creates a duplicate */
   PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify({ e: email, n: nm, s: 'active', t: Date.now(), t0: (prev && (prev.t0 || prev.t)) || Date.now(), re: prev && prev.s === 'unsub' ? (prev.re || 0) + 1 : (prev && prev.re) || 0 }));
@@ -466,7 +470,7 @@ function subscribe_(p) {
 function nlUnsubPage_(p) {
   var id = p.id || '';
   if (!id || sign_('unsub', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
-  var cu = subGet_(id); if (!cu || cu.s !== 'active') return page_('Already unsubscribed', 'This address is not subscribed. To receive emails again, subscribe on the website.', 'info');
+  var cu = subGet_(id); if (!cu || (cu.s !== 'active' && cu.s !== 'watch')) return page_('Already unsubscribed', 'This address is not subscribed. To receive emails again, subscribe on the website.', 'info');
   var inner = '<div class="acts" style="display:block"><div class="act"><h3>Unsubscribe from news and information</h3><p>You will stop receiving emails from Anandu Prabhakaran. To receive them again later, you will need to subscribe again on the website.</p><button id="u" class="b red">Unsubscribe</button></div></div><div id="m" class="msg"></div>'
     + '<script>document.getElementById("u").onclick=function(){var b=this;b.disabled=true;b.textContent="Working...";google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent="Unsubscribe";var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";}).nlUnsub(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ');};<\/script>';
   return out_(shell_('Unsubscribe', 'Click the button below to unsubscribe.', inner), 'Unsubscribe');
@@ -475,20 +479,20 @@ function nlUnsubPage_(p) {
 function nlUnsub(id, sig) {
   if (!id || sign_('unsub', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var cu = subGet_(id);
-  if (cu) { cu.s = 'unsub'; cu.u = Date.now(); PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify(cu)); }   /* record kept (no duplicates, can be contacted for important notices) */
+  if (cu && (cu.s === 'active' || cu.s === 'watch')) { cu.s = 'unsub'; cu.u = Date.now(); cu.by = 'self'; PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify(cu)); }   /* record kept (no duplicates, can be contacted for important notices); a banned person stays banned */
   return statusHtml_('You have been unsubscribed', 'You will no longer receive emails from Anandu Prabhakaran. You can subscribe again at any time on the website.', 'ok');
 }
 // Sends one email to every confirmed subscriber, each with its own unsubscribe link.
-function sendNews_(subject, bodyHtml, files, header) {
+function sendNews_(subject, bodyHtml, files, header, yellow) {
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
-  var subs = nlActive_();
-  if (!subs.length) throw new Error('There are no confirmed subscribers yet.');
+  var subs = yellow ? nlWatch_() : nlActive_();
+  if (!subs.length) throw new Error(yellow ? 'Nobody is on the yellow list.' : 'There are no confirmed subscribers yet.');
   var left = MailApp.getRemainingDailyQuota();
   if (subs.length > left) throw new Error('Gmail allows ' + left + ' more recipients today, and there are ' + subs.length + ' subscribers. Try again tomorrow.');
   var ok = 0, bad = 0;
   subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header); ok++; } catch (err) { bad++; } });
-  if (ok) PropertiesService.getScriptProperties().setProperty('LASTNEWS', String(Date.now()));
-  return statusHtml_('Sent to subscribers', 'Your email went to ' + ok + ' subscriber' + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
+  if (ok && !yellow) PropertiesService.getScriptProperties().setProperty('LASTNEWS', String(Date.now()));
+  return statusHtml_(yellow ? 'Sent to the yellow list' : 'Sent to subscribers', 'Your email went to ' + ok + (yellow ? ' yellow-listed person' : ' subscriber') + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
 }
 
 /* ---- restricted addresses: request approval by email (no OTP), approve or decline, subscribers platform ---- */
@@ -566,7 +570,8 @@ function addSub(sig, name, email) {
   email = normEmail_(email); name = String(name || '').trim().slice(0, 80);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return { ok: false, error: 'invalid' };
   var props = PropertiesService.getScriptProperties(), id = subId_(email), prev = subGet_(id);
-  if (prev && prev.s === 'active') return { ok: false, error: 'exists' };   /* one record per address: no duplicates */
+  if (prev && prev.s === 'ban') return { ok: false, error: 'banned' };
+  if (prev && (prev.s === 'active' || prev.s === 'watch')) return { ok: false, error: 'exists' };   /* one record per address: no duplicates */
   props.setProperty('SUB_' + id, JSON.stringify({ e: email, n: name || (prev && prev.n) || '', s: 'active', t: Date.now(), t0: (prev && (prev.t0 || prev.t)) || Date.now(), re: prev && prev.s === 'unsub' ? (prev.re || 0) + 1 : (prev && prev.re) || 0, ad: 1 }));
   props.deleteProperty('PEND_' + id);
   var un = nlUnsubUrl_(id), sent = true;
@@ -600,53 +605,100 @@ function setupPendingCheck() {
 
 function adminPage_(p) {
   if (sign_('admin', 'subs') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
-  var subs = nlActive_().sort(function (a, b) { return b.t - a.t; }), pends = pendAll_(), unsubs = nlAll_().filter(function (r) { return r.s === 'unsub'; }).sort(function (a, b) { return (b.u || 0) - (a.u || 0); }), props = PropertiesService.getScriptProperties().getProperties(), reqs = [];
+  var all = nlAll_(), subs = all.filter(function (r) { return r.s === 'active'; }).sort(function (a, b) { return b.t - a.t; }),
+    watch = all.filter(function (r) { return r.s === 'watch'; }).sort(function (a, b) { return (b.w || 0) - (a.w || 0); }),
+    bans = all.filter(function (r) { return r.s === 'ban'; }).sort(function (a, b) { return (b.b || 0) - (a.b || 0); }),
+    unsubs = all.filter(function (r) { return r.s === 'unsub'; }).sort(function (a, b) { return (b.u || 0) - (a.u || 0); }),
+    pends = pendAll_(), props = PropertiesService.getScriptProperties().getProperties(), reqs = [];
   Object.keys(props).forEach(function (k) { if (k.indexOf('ACC_') === 0 && k.indexOf('ACCDAY_') !== 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); reqs.push(r); } catch (x) { } } });
   reqs.sort(function (a, b) { return b.t - a.t; });
   var fmt = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
   var th = 'text-align:left;padding:9px 10px;font-size:12px;color:#5b6675;border-bottom:2px solid #e1e8f3;white-space:nowrap', td = 'padding:10px;border-bottom:1px solid #eef2f8;font-size:14px;vertical-align:middle';
-  var rows = subs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none;margin-right:12px">Write</a><button class="rm" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Unsubscribe</button></td></tr>'; }).join('');
+  var pill = function (cls, to, id, label, col) { return '<button class="' + cls + '" data-to="' + to + '" data-id="' + esc_(id) + '" style="border:1px solid ' + col[0] + ';background:#fff;color:' + col[1] + ';border-radius:999px;padding:5px 11px;font:inherit;font-size:12px;cursor:pointer;margin-left:6px;white-space:nowrap">' + label + '</button>'; };
+  var RED = ['#e3b3b1', '#c5221f'], YEL = ['#e6cf7a', '#8a6a00'], GRN = ['#bfe0cc', '#1e8e4e'], BLU = ['#c3d3ea', '#1f4e9c'];
+  var write = function (r) { return '<a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none">Write</a>'; };
+  var edit = function (r) { return pill('ed', '', r.id, 'Edit', BLU); };
+  var tbl = function (id, head, rows, empty) { return '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr>' + head.map(function (h) { return '<th style="' + th + '">' + h + '</th>'; }).join('') + '</tr></thead><tbody id="' + id + '">' + (rows || '<tr><td colspan="' + head.length + '" style="' + td + ';color:#7a8594;text-align:center">' + empty + '</td></tr>') + '</tbody></table></div>'; };
+  var row = function (r, i, when, acts) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '" data-id="' + esc_(r.id) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td class="cn" style="' + td + '">' + esc_(r.n || '') + '</td><td class="ce" style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + when + '</td><td class="ca" style="' + td + ';text-align:right;white-space:nowrap">' + acts + '</td></tr>'; };
+  var H = ['#', 'Name', 'Email', 'Subscribed', ''];
+  var rows = subs.map(function (r, i) { return row(r, i, fmt(r.t0 || r.t), write(r) + edit(r) + pill('st', 'unsub', r.id, 'Unsubscribe', RED) + pill('st', 'watch', r.id, 'Yellow list', YEL) + pill('st', 'ban', r.id, 'Ban', RED)); }).join('');
+  var wrows = watch.map(function (r, i) { return row(r, i, r.w ? fmt(r.w) : '', write(r) + edit(r) + pill('st', 'active', r.id, 'Back to normal', GRN) + pill('st', 'ban', r.id, 'Ban', RED)); }).join('');
+  var brows = bans.map(function (r, i) { return row(r, i, r.b ? fmt(r.b) : '', write(r) + edit(r) + pill('st', 'unban', r.id, 'Unban', GRN) + pill('del', '', r.id, 'Delete data', RED)); }).join('');
+  var BY = { self: 'Unsubscribed by themselves', admin: 'Removed by ' + OWNER_NAME.split(' ')[0], unban: 'Unbanned by ' + OWNER_NAME.split(' ')[0] };
+  var urows = unsubs.map(function (r, i) { return row(r, i, (r.u ? fmt(r.u) : '') + '<br><span style="display:inline-block;margin-top:3px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:bold;background:' + (r.by === 'self' ? '#eef2f8;color:#5b6675' : '#fdecea;color:#c5221f') + '">' + (BY[r.by] || 'Unsubscribed') + '</span>', write(r) + edit(r) + pill('st', 'ban', r.id, 'Ban', RED) + pill('del', '', r.id, 'Delete data', RED)); }).join('');
   var prow = pends.map(function (r) { return '<tr data-s="' + esc_(r.e.toLowerCase()) + '"><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><button class="ap" data-id="' + esc_(r.id) + '" style="border:1px solid #bfe0cc;background:#fff;color:#1e8e4e;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:bold;cursor:pointer;margin-right:8px">Approve</button><button class="dp" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Dismiss</button></td></tr>'; }).join('');
-  var urows = unsubs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t0 || r.t) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + (r.u ? fmt(r.u) : '') + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none;margin-right:12px">Write</a><button class="del" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Delete data</button></td></tr>'; }).join('');
   var rq = reqs.map(function (r) {
     var st = r.s === 'pending' ? '<a href="' + link_('acc_ok', r.id) + '" target="_top" style="color:#1e8e4e;font-weight:bold;text-decoration:none">Approve</a> &nbsp; <a href="' + link_('acc_no', r.id) + '" target="_top" style="color:#c5221f;font-weight:bold;text-decoration:none">Decline</a>' : '<span style="color:#5b6675">' + esc_(r.s) + '</span>';
     return '<tr><td style="' + td + '">' + esc_(r.n) + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + '">' + esc_(r.p) + '</td><td style="' + td + ';white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + '">' + st + '</td></tr>';
   }).join('');
-  var data = JSON.stringify(subs.map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), 'Subscribed']; }).concat(unsubs.map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), 'Unsubscribed ' + (r.u ? fmt(r.u) : '')]; }))).replace(/</g, '\\u003c');
-  var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + pends.length + '</b> pending OTP</span><span class="chip"><b>' + unsubs.length + '</b> unsubscribed</span><span class="chip"><b>' + reqs.filter(function (r) { return r.s === 'pending'; }).length + '</b> pending request' + (reqs.filter(function (r) { return r.s === 'pending'; }).length === 1 ? '' : 's') + '</span></div>'
+  var data = JSON.stringify(all.filter(function (r) { return r.s !== 'pending'; }).map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), { active: 'Subscribed', watch: 'Yellow list', ban: 'Banned', unsub: 'Unsubscribed' }[r.s] || r.s]; })).replace(/</g, '\\u003c');
+  var h2 = function (t, d) { return '<h2 style="font-size:17px;margin:30px 0 8px">' + t + '</h2>' + (d ? '<p class="sub" style="margin:0 0 10px">' + d + '</p>' : ''); };
+  var pendN = reqs.filter(function (r) { return r.s === 'pending'; }).length;
+  var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + watch.length + '</b> yellow-listed</span><span class="chip"><b>' + bans.length + '</b> banned</span><span class="chip"><b>' + unsubs.length + '</b> unsubscribed</span><span class="chip"><b>' + pends.length + '</b> pending OTP</span><span class="chip"><b>' + pendN + '</b> pending request' + (pendN === 1 ? '' : 's') + '</span></div>'
     + '<details style="margin:0 0 14px;border:1.5px solid #d3dbe8;border-radius:12px;padding:12px 14px;background:#f8fafd"><summary style="cursor:pointer;font-weight:bold;color:#1f4e9c">Add a subscriber</summary><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center"><input id="an" class="tx" placeholder="Name" maxlength="80" style="flex:1;min-width:160px;width:auto"><input id="ae" class="tx" type="email" placeholder="Email address" style="flex:1.4;min-width:200px;width:auto"><button id="ab" class="b blue auto" style="padding:11px 20px">Add subscriber</button></div><p class="hint" style="margin:8px 0 0">They receive an email saying you added them, with an Unsubscribe button.</p></details>'
-    + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px"><input id="q" class="tx" placeholder="Search name or email" style="flex:1;min-width:200px;width:auto"><button id="cp" class="b blue auto" style="padding:11px 20px">Copy all emails</button><button id="dl" class="b blue auto" style="padding:11px 20px">Download CSV</button><a class="b blue auto" style="text-decoration:none;padding:11px 20px" target="_top" href="' + link_('compose', 'new') + '">Write to subscribers</a></div>'
-    + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;align-items:center"><button id="rm15" class="b blue auto" style="padding:9px 18px;font-size:13px">Turn on 15th-of-month reminder</button><button id="rmt" class="b blue auto" style="padding:9px 18px;font-size:13px;background:#5b6675">Send a test reminder now</button><span class="hint">A reminder email comes to you on the 15th of every month.</span></div>'
-    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '"></th></tr></thead><tbody id="tb">' + (rows || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No subscribers yet.</td></tr>') + '</tbody></table></div>'
-    + '<h2 style="font-size:17px;margin:30px 0 8px">Pending OTP verification</h2><p class="sub" style="margin:0 0 10px">People who asked for a subscription code but did not enter it. Approve to subscribe them without the OTP (they get a confirmation email with an unsubscribe link), or dismiss. You get one reminder email a day around 12:00 while someone is waiting.</p>'
-    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Email</th><th style="' + th + '">Asked</th><th style="' + th + '"></th></tr></thead><tbody id="pb">' + (prow || '<tr><td colspan="3" style="' + td + ';color:#7a8594;text-align:center">Nobody is waiting.</td></tr>') + '</tbody></table></div>'
-    + '<h2 style="font-size:17px;margin:30px 0 8px">Unsubscribed</h2><p class="sub" style="margin:0 0 10px">People who unsubscribed. Their name and email are kept here (one record per address, so there are no duplicates) and they do not receive newsletters. You can still write to one of them individually.</p>'
-    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '">Unsubscribed</th><th style="' + th + '"></th></tr></thead><tbody id="ub">' + (urows || '<tr><td colspan="6" style="' + td + ';color:#7a8594;text-align:center">Nobody has unsubscribed.</td></tr>') + '</tbody></table></div>'
-    + '<h2 style="font-size:17px;margin:30px 0 8px">Approval requests</h2><p class="sub" style="margin:0 0 10px">People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP.</p>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px"><input id="q" class="tx" placeholder="Search name or email in every list" style="flex:1;min-width:200px;width:auto"><button id="cp" class="b blue auto" style="padding:11px 20px">Copy subscriber emails</button><button id="dl" class="b blue auto" style="padding:11px 20px">Download CSV</button><a class="b blue auto" style="text-decoration:none;padding:11px 20px" target="_top" href="' + link_('compose', 'new') + '">Write to subscribers</a></div>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;align-items:center"><button id="rm15" class="b blue auto" style="padding:9px 18px;font-size:13px">Turn on reminders</button><button id="rmt" class="b blue auto" style="padding:9px 18px;font-size:13px;background:#5b6675">Send a test reminder now</button><span class="hint">A reminder email comes to you on the 15th of every month, and around 12:00 on days when someone is waiting for OTP approval.</span></div>'
+    + tbl('tb', H, rows, 'No subscribers yet.')
+    + h2('Yellow list', 'People you are keeping an eye on. They stay out of the newsletter. You can write to them separately (choose "Yellow-listed" in the editor), bring them back to normal, or ban them.') + tbl('wb', ['#', 'Name', 'Email', 'Yellow-listed', ''], wrows, 'Nobody is on the yellow list.')
+    + h2('Banned', 'Banned people cannot subscribe again. They see "Unfortunately, you cannot subscribe here." Unban lets them subscribe again if they choose to.') + tbl('bb', ['#', 'Name', 'Email', 'Banned', ''], brows, 'Nobody is banned.')
+    + h2('Pending OTP verification', 'People who asked for a subscription code but did not enter it. Approve to subscribe them without the OTP (they get a confirmation email with an unsubscribe link), or dismiss. You get one reminder email a day around 12:00 while someone is waiting.')
+    + tbl('pb', ['Email', 'Asked', ''], prow, 'Nobody is waiting.')
+    + h2('Unsubscribed', 'People who unsubscribed. Their name and email are kept here (one record per address, so there are no duplicates) and they do not receive newsletters. You can still write to one of them individually.') + tbl('ub', ['#', 'Name', 'Email', 'Unsubscribed (and who did it)', ''], urows, 'Nobody has unsubscribed.')
+    + h2('Approval requests', 'People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP. A decline is silent: they are not emailed.')
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">For</th><th style="' + th + '">Asked</th><th style="' + th + '">Status</th></tr></thead><tbody>' + (rq || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No requests.</td></tr>') + '</tbody></table></div><div id="m" class="msg"></div>'
-    + '<script>(function(){var D=' + data + ',tb=document.getElementById("tb"),m=document.getElementById("m");'
+    + '<script>(function(){var D=' + data + ',SIG=' + JSON.stringify(p.sig) + ',ADM=' + JSON.stringify(adminUrl_()) + ',m=document.getElementById("m"),G=google.script.run;'
+    + 'function bad(t){m.className="msg bad";m.textContent=t||"That did not work. Try again.";}function reload(){window.open(ADM,"_top");}'
     + 'document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();var r=document.querySelectorAll("tr[data-s]");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
-    + 'document.getElementById("cp").onclick=function(){var t=D.filter(function(x){return x[3]==="Subscribed";}).map(function(x){return x[1];}).join(", "),b=this;var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");b.textContent="Copied";}catch(e){b.textContent="Copy failed";}document.body.removeChild(ta);setTimeout(function(){b.textContent="Copy all emails";},1600);};'
+    + 'document.getElementById("cp").onclick=function(){var t=D.filter(function(x){return x[3]==="Subscribed";}).map(function(x){return x[1];}).join(", "),b=this;var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");b.textContent="Copied";}catch(e){b.textContent="Copy failed";}document.body.removeChild(ta);setTimeout(function(){b.textContent="Copy subscriber emails";},1600);};'
     + 'document.getElementById("dl").onclick=function(){var q=function(s){return "\\""+String(s).replace(/"/g,"\\"\\"")+"\\"";};var c="Name,Email,Subscribed on,Status\\n"+D.map(function(x){return x.map(q).join(",");}).join("\\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/csv"}));a.download="subscribers.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);};'
-    + 'function act(id,fn,ok){document.getElementById(id).onclick=function(){var b=this,t=b.textContent;b.disabled=true;google.script.run.withSuccessHandler(function(){b.disabled=false;b.textContent=ok;setTimeout(function(){b.textContent=t;},2200);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="That did not work. Try again.";})[fn](' + JSON.stringify(p.sig) + ');};}act("rm15","enableReminder","Reminder is on");act("rmt","testReminder","Test sent");'
-    + 'tb.onclick=function(e){var b=e.target.closest(".rm");if(!b||!confirm("Unsubscribe this person? Their details stay in the Unsubscribed list."))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not update. Try again.";}).removeSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
-    + 'document.getElementById("ab").onclick=function(){var b=this,n=document.getElementById("an"),e=document.getElementById("ae");if(!e.value.trim()||!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(e.value.trim())){m.className="msg bad";m.textContent="Enter a valid email address.";return;}b.disabled=true;google.script.run.withSuccessHandler(function(r){b.disabled=false;if(r&&r.ok){m.className="msg";m.textContent="Added"+(r.mailed?" and emailed.":", but the email could not be sent.")+" Reload to see them in the list.";n.value="";e.value="";}else{m.className="msg bad";m.textContent=r&&r.error==="exists"?"That email is already subscribed.":"Enter a valid email address.";}}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="That did not work. Try again.";}).addSub(' + JSON.stringify(p.sig) + ',n.value,e.value);};'
-    + 'document.getElementById("pb").onclick=function(e){var b=e.target.closest(".ap,.dp");if(!b)return;var ap=b.className==="ap";if(ap&&!confirm("Subscribe this person without the OTP and email them?"))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);m.className="msg";m.textContent=ap?"Approved and emailed. Reload to see them in the subscribers list.":"Dismissed.";}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="That did not work. Try again.";})[ap?"approvePend":"dismissPend"](' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
-    + 'document.getElementById("ub").onclick=function(e){var b=e.target.closest(".del");if(!b||!confirm("Delete this person\'s saved name and email permanently?"))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not delete. Try again.";}).deleteSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
+    + 'function act(id,fn,ok){document.getElementById(id).onclick=function(){var b=this,t=b.textContent;b.disabled=true;G.withSuccessHandler(function(){b.disabled=false;b.textContent=ok;setTimeout(function(){b.textContent=t;},2200);}).withFailureHandler(function(){b.disabled=false;bad();})[fn](SIG);};}act("rm15","enableReminder","Reminders are on");act("rmt","testReminder","Test sent");'
+    + 'document.getElementById("ab").onclick=function(){var b=this,n=document.getElementById("an"),e=document.getElementById("ae");if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(e.value.trim())){bad("Enter a valid email address.");return;}b.disabled=true;G.withSuccessHandler(function(r){b.disabled=false;if(r&&r.ok){m.className="msg";m.textContent="Added"+(r.mailed?" and emailed.":", but the email could not be sent.");n.value="";e.value="";setTimeout(reload,1200);}else bad(r&&r.error==="exists"?"That email is already subscribed.":r&&r.error==="banned"?"That person is banned. Unban them first.":"Enter a valid email address.");}).withFailureHandler(function(){b.disabled=false;bad();}).addSub(SIG,n.value,e.value);};'
+    + 'document.getElementById("pb").onclick=function(e){var b=e.target.closest(".ap,.dp");if(!b)return;var ap=b.className==="ap";if(ap&&!confirm("Subscribe this person without the OTP and email them?"))return;b.disabled=true;G.withSuccessHandler(function(){reload();}).withFailureHandler(function(){b.disabled=false;bad();})[ap?"approvePend":"dismissPend"](SIG,b.getAttribute("data-id"));};'
+    + 'var TXT={unsub:"Unsubscribe this person? Their details stay in the Unsubscribed list.",watch:"Move this person to the Yellow list? They will stop receiving the newsletter.",ban:"Ban this person? They will not be able to subscribe again until you unban them.",active:"Bring this person back to normal subscribers?",unban:"Unban this person? They can subscribe again if they choose to."};'
+    + 'document.body.addEventListener("click",function(e){'
+    + 'var b=e.target.closest(".st");if(b){var to=b.getAttribute("data-to");if(!confirm(TXT[to]))return;b.disabled=true;G.withSuccessHandler(reload).withFailureHandler(function(){b.disabled=false;bad();}).setSub(SIG,b.getAttribute("data-id"),to);return;}'
+    + 'b=e.target.closest(".del");if(b){if(!confirm("Delete this person\'s saved name and email permanently?"))return;b.disabled=true;G.withSuccessHandler(reload).withFailureHandler(function(){b.disabled=false;bad();}).deleteSub(SIG,b.getAttribute("data-id"));return;}'
+    + 'b=e.target.closest(".ed");if(b){var tr=b.closest("tr"),cn=tr.querySelector(".cn"),ce=tr.querySelector(".ce"),ca=tr.querySelector(".ca"),old=[cn.textContent,ce.textContent,ca.innerHTML];cn.innerHTML="<input class=\\"tx\\" style=\\"min-width:120px\\">";ce.innerHTML="<input class=\\"tx\\" type=\\"email\\" style=\\"min-width:180px\\">";cn.firstChild.value=old[0];ce.firstChild.value=old[1];ca.innerHTML="<button class=\\"sv\\" style=\\"border:1px solid #bfe0cc;background:#fff;color:#1e8e4e;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:bold;cursor:pointer\\">Save</button><button class=\\"cx\\" style=\\"border:1px solid #d3dbe8;background:#fff;color:#5b6675;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer;margin-left:6px\\">Cancel</button>";tr._old=old;return;}'
+    + 'b=e.target.closest(".cx");if(b){var t2=b.closest("tr");t2.querySelector(".cn").textContent=t2._old[0];t2.querySelector(".ce").textContent=t2._old[1];t2.querySelector(".ca").innerHTML=t2._old[2];return;}'
+    + 'b=e.target.closest(".sv");if(b){var t3=b.closest("tr"),nm=t3.querySelector(".cn input").value,em=t3.querySelector(".ce input").value;if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(em.trim())){bad("Enter a valid email address.");return;}b.disabled=true;G.withSuccessHandler(function(r){if(r&&r.ok)reload();else{b.disabled=false;bad(r&&r.error==="exists"?"Another subscriber already uses that email.":"Enter a valid email address.");}}).withFailureHandler(function(){b.disabled=false;bad();}).editSub(SIG,t3.getAttribute("data-id"),nm,em);}'
+    + '});'
     + '})();<\/script>';
-  return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information. Newest first.', inner), 'Subscribers');
+  return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information, plus the yellow, banned and unsubscribed lists. Newest first.', inner), 'Subscribers');
 }
 // Called from the subscribers page.
-function removeSub(sig, id) {   /* marks as unsubscribed; the record is kept */
+function setSub(sig, id, to) {   /* status changes from the subscribers page; the record is always kept */
   if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
-  var cu = subGet_(id);
-  if (cu) { cu.s = 'unsub'; cu.u = Date.now(); PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify(cu)); }
+  var props = PropertiesService.getScriptProperties(), cu = subGet_(id), now = Date.now();
+  if (!cu) throw new Error('Not found');
+  var ok = { unsub: ['active', 'watch'], watch: ['active'], ban: ['active', 'watch', 'unsub'], active: ['watch'], unban: ['ban'] };
+  if (!ok[to] || ok[to].indexOf(cu.s) < 0) throw new Error('Not allowed');
+  if (to === 'unsub') { cu.s = 'unsub'; cu.u = now; cu.by = 'admin'; }
+  else if (to === 'watch') { cu.s = 'watch'; cu.w = now; }
+  else if (to === 'ban') { cu.s = 'ban'; cu.b = now; }
+  else if (to === 'active') { cu.s = 'active'; delete cu.w; }
+  else if (to === 'unban') { cu.s = 'unsub'; cu.u = now; cu.by = 'unban'; delete cu.b; }
+  props.setProperty('SUB_' + id, JSON.stringify(cu));
   return true;
+}
+function editSub(sig, id, name, email) {
+  if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
+  var props = PropertiesService.getScriptProperties(), cu = subGet_(id);
+  if (!cu) throw new Error('Not found');
+  email = normEmail_(email); name = String(name || '').trim().slice(0, 80);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return { ok: false, error: 'invalid' };
+  var nid = subId_(email);
+  if (nid !== id) {
+    if (subGet_(nid)) return { ok: false, error: 'exists' };   /* one record per address */
+    props.deleteProperty('SUB_' + id);
+  }
+  cu.e = email; cu.n = name;
+  props.setProperty('SUB_' + nid, JSON.stringify(cu));
+  return { ok: true };
 }
 function deleteSub(sig, id) {
   if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
   var cu = subGet_(id);
-  if (cu && cu.s === 'unsub') PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
+  if (cu && (cu.s === 'unsub' || cu.s === 'ban')) PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
   return true;
 }
 

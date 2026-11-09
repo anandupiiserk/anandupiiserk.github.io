@@ -1213,7 +1213,7 @@ else (function loop() {
       try {
         const r = await post({ kind: 'otp', email: e, purpose: NLK(key) ? 'subscribe' : '' });
         if (r.ok) ok = true;
-        else msg = r.error === 'blocked' ? (showReq(true), APPR) : r.error === 'subscribed' ? 'This email is already subscribed.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.';
+        else msg = r.error === 'blocked' ? (showReq(true), APPR) : r.error === 'banned' ? 'Unfortunately, you cannot subscribe here.' : r.error === 'subscribed' ? 'This email is already subscribed.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.';
       } catch (err) { msg = 'Could not send the OTP. Please try again.'; }
       await finish(btn, ok, tr(lab), 'Sent');
       if (live()) return;
@@ -1233,7 +1233,7 @@ else (function loop() {
     async function doSub() {
       okB.disabled = true; start(okB, tr('Subscribing...')); const sOk = await opts.sub(tok, emailNow(), nameEl.value.trim());
       if (sOk) { needSub = false; inp.hidden = false; reB.hidden = false; freeze(); say('✓ Email verified and subscribed. Thank you!', 'ok'); if (opts.done) opts.done(); }
-      else { clear(okB, tr('Subscribe')); okB.disabled = false; say('Could not subscribe. Please try again.', 'bad'); }
+      else { clear(okB, tr('Subscribe')); okB.disabled = false; say(window.__nlBan ? 'Unfortunately, you cannot subscribe here.' : 'Could not subscribe. Please try again.', 'bad'); }
     }
     async function verify() {
       if (live()) { if (needSub) doSub(); return; }
@@ -1242,7 +1242,7 @@ else (function loop() {
       try { r = await post({ kind: 'verify', email: emailNow(), otp: code }); } catch (x) { err = true; }
       if (r && r.ok && opts && opts.sub) {
         start(okB, tr('Subscribing...')); const sOk = await opts.sub(r.token, emailNow(), nameEl.value.trim());
-        if (sOk) { accept(r.token, r.exp, nameEl.value, emailNow(), false); if (opts.done) opts.done(); } else { clear(okB, tr(VL)); idle('Verified, but could not subscribe. Please send a new OTP and try again.', 'bad'); }
+        if (sOk) { accept(r.token, r.exp, nameEl.value, emailNow(), false); if (opts.done) opts.done(); } else { clear(okB, tr(VL)); idle(window.__nlBan ? 'Unfortunately, you cannot subscribe here.' : 'Verified, but could not subscribe. Please send a new OTP and try again.', 'bad'); }
         return;
       }
       if (r && r.ok) { accept(r.token, r.exp, nameEl.value, emailNow(), false); return; }
@@ -1274,7 +1274,7 @@ else (function loop() {
   const { gate, post } = NL;
   const store = { get: k => { try { return localStorage.getItem(k); } catch (err) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (err) { /* storage unavailable */ } } };
   const subscribed = () => store.get('nl-sub') === '1';
-  const subOk = async (t, e, n) => { let r = null; try { r = await post({ kind: 'subscribe', email: e, name: n, vtoken: t, website: '' }); } catch (err) { /* network */ } if (r && r.ok) { store.set('nl-sub', '1'); return true; } return false; };
+  const subOk = async (t, e, n) => { let r = null; try { r = await post({ kind: 'subscribe', email: e, name: n, vtoken: t, website: '' }); } catch (err) { /* network */ } window.__nlBan = !!(r && r.error === 'banned'); if (r && r.ok) { store.set('nl-sub', '1'); return true; } return false; };
   const nlForm = $('#nl-form');
   if (nlForm) gate('nl', nlForm, $('#nl-email'), $('#nl-name'), { sub: subOk });
   /* Pop-up rules. Desktop (mouse, wide screen): once per browser window, on whichever page is opened first; a new window shows it again. Phone and tablet: only on the Contact page, once per browser. Never for someone already subscribed. */
