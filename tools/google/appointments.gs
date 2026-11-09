@@ -512,13 +512,13 @@ function accessDecide_(p) {
   if (r.s !== 'pending') return page_('Already handled', 'This request was already ' + esc_(r.s) + '.', 'info');
   r.s = ok ? 'approved' : 'declined'; r.t = Date.now(); props.setProperty('ACC_' + id, JSON.stringify(r));
   if (ok) props.setProperty('ALLOW_' + id, '1'); else props.deleteProperty('ALLOW_' + id);
-  try {
-    MailApp.sendEmail({ to: r.e, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: ok ? 'Your request was approved' : 'About your request',
+  if (ok) try {   /* a decline is silent: the person is not emailed */
+    MailApp.sendEmail({ to: r.e, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: 'Your request was approved',
       body: ok ? 'Hello ' + r.n + ', your request is approved. Go back to the website and verify your email with the one-time code to continue: ' + SITE_URL : 'Hello ' + r.n + ', your request for this email address was not approved. You are welcome to use a different email address.',
       htmlBody: ok ? mail_('Request approved', 'Hello ' + esc_(r.n) + ', your request is approved. Go back to the website and verify your email address with the one-time code to continue.', [], [['Open the website', SITE_URL, '#1f4e9c']], 'Only this email address was approved.')
                    : mail_('About your request', 'Hello ' + esc_(r.n) + ', your request to use this email address on the website was not approved. You are welcome to use a different email address.', [], [], '') });
   } catch (x) { }
-  return page_(ok ? 'Approved' : 'Declined', (ok ? esc_(r.e) + ' can now be verified by OTP on the website. They were notified by email.' : esc_(r.e) + ' was declined and notified by email.'), ok ? 'ok' : 'info');
+  return page_(ok ? 'Approved' : 'Declined', (ok ? esc_(r.e) + ' can now be verified by OTP on the website. They were notified by email.' : esc_(r.e) + ' was declined. They were not notified.'), ok ? 'ok' : 'info');
 }
 function adminPage_(p) {
   if (sign_('admin', 'subs') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
