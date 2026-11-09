@@ -623,7 +623,7 @@ function adminPage_(p) {
   var H = ['#', 'Name', 'Email', 'Subscribed', ''];
   var rows = subs.map(function (r, i) { return row(r, i, fmt(r.t0 || r.t), write(r) + edit(r) + pill('x-st', 'unsub', r.id, 'Unsubscribe', RED) + pill('x-st', 'watch', r.id, 'Yellow list', YEL) + pill('x-st', 'ban', r.id, 'Ban', RED)); }).join('');
   var wrows = watch.map(function (r, i) { return row(r, i, r.w ? fmt(r.w) : '', write(r) + edit(r) + pill('x-st', 'active', r.id, 'Back to normal', GRN) + pill('x-st', 'ban', r.id, 'Ban', RED)); }).join('');
-  var brows = bans.map(function (r, i) { return row(r, i, r.b ? fmt(r.b) : '', write(r) + edit(r) + pill('x-st', 'unban', r.id, 'Unban', GRN) + pill('x-del', '', r.id, 'Delete data', RED)); }).join('');
+  var brows = bans.map(function (r, i) { return row(r, i, r.b ? fmt(r.b) : '', write(r) + edit(r) + pill('x-st', 'unban', r.id, 'Unban', GRN) + pill('x-st', 'active', r.id, 'Move to subscribers', GRN) + pill('x-del', '', r.id, 'Delete data', RED)); }).join('');
   var BY = { self: 'Unsubscribed by themselves', admin: 'Removed by ' + OWNER_NAME.split(' ')[0], unban: 'Unbanned by ' + OWNER_NAME.split(' ')[0] };
   var urows = unsubs.map(function (r, i) { return row(r, i, (r.u ? fmt(r.u) : '') + '<br><span style="display:inline-block;margin-top:3px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:bold;background:' + (r.by === 'self' ? '#eef2f8;color:#5b6675' : '#fdecea;color:#c5221f') + '">' + (BY[r.by] || 'Unsubscribed') + '</span>', write(r) + edit(r) + pill('x-st', 'ban', r.id, 'Ban', RED) + pill('x-del', '', r.id, 'Delete data', RED)); }).join('');
   var prow = pends.map(function (r) { return '<tr data-s="' + esc_(r.e.toLowerCase()) + '"><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><button class="x-ap" data-id="' + esc_(r.id) + '" style="border:1px solid #bfe0cc;background:#fff;color:#1e8e4e;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:bold;cursor:pointer;margin-right:8px">Approve</button><button class="x-dp" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Dismiss</button></td></tr>'; }).join('');
@@ -654,7 +654,7 @@ function adminPage_(p) {
     + 'function act(id,fn,ok){document.getElementById(id).onclick=function(){var b=this,t=b.textContent;b.disabled=true;G.withSuccessHandler(function(){b.disabled=false;b.textContent=ok;setTimeout(function(){b.textContent=t;},2200);}).withFailureHandler(function(){b.disabled=false;bad();})[fn](SIG);};}act("rm15","enableReminder","Reminders are on");act("rmt","testReminder","Test sent");'
     + 'document.getElementById("ab").onclick=function(){var b=this,n=document.getElementById("an"),e=document.getElementById("ae");if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(e.value.trim())){bad("Enter a valid email address.");return;}b.disabled=true;G.withSuccessHandler(function(r){b.disabled=false;if(r&&r.ok){m.className="msg";m.textContent="Added"+(r.mailed?" and emailed.":", but the email could not be sent.");n.value="";e.value="";setTimeout(reload,1200);}else bad(r&&r.error==="exists"?"That email is already subscribed.":r&&r.error==="banned"?"That person is banned. Unban them first.":"Enter a valid email address.");}).withFailureHandler(function(){b.disabled=false;bad();}).addSub(SIG,n.value,e.value);};'
     + 'document.getElementById("pb").onclick=function(e){var b=e.target.closest(".x-ap,.x-dp");if(!b)return;var ap=b.className==="x-ap";if(ap&&!confirm("Subscribe this person without the OTP and email them?"))return;b.disabled=true;G.withSuccessHandler(function(){reload();}).withFailureHandler(function(){b.disabled=false;bad();})[ap?"approvePend":"dismissPend"](SIG,b.getAttribute("data-id"));};'
-    + 'var TXT={unsub:"Unsubscribe this person? Their details stay in the Unsubscribed list.",watch:"Move this person to the Yellow list? They will stop receiving the newsletter.",ban:"Ban this person? They will not be able to subscribe again until you unban them.",active:"Bring this person back to normal subscribers?",unban:"Unban this person? They can subscribe again if they choose to."};'
+    + 'var TXT={unsub:"Unsubscribe this person? Their details stay in the Unsubscribed list.",watch:"Move this person to the Yellow list? They will stop receiving the newsletter.",ban:"Ban this person? They will not be able to subscribe again until you unban them.",active:"Move this person to the normal subscribers list? They will receive the newsletter again.",unban:"Unban this person? They can subscribe again if they choose to."};'
     + 'document.body.addEventListener("click",function(e){'
     + 'var b=e.target.closest(".x-st");if(b){var to=b.getAttribute("data-to");if(!confirm(TXT[to]))return;b.disabled=true;G.withSuccessHandler(reload).withFailureHandler(function(){b.disabled=false;bad();}).setSub(SIG,b.getAttribute("data-id"),to);return;}'
     + 'b=e.target.closest(".x-del");if(b){if(!confirm("Delete this person\'s saved name and email permanently?"))return;b.disabled=true;G.withSuccessHandler(reload).withFailureHandler(function(){b.disabled=false;bad();}).deleteSub(SIG,b.getAttribute("data-id"));return;}'
@@ -670,12 +670,12 @@ function setSub(sig, id, to) {   /* status changes from the subscribers page; th
   if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
   var props = PropertiesService.getScriptProperties(), cu = subGet_(id), now = Date.now();
   if (!cu) throw new Error('Not found');
-  var ok = { unsub: ['active', 'watch'], watch: ['active'], ban: ['active', 'watch', 'unsub'], active: ['watch'], unban: ['ban'] };
+  var ok = { unsub: ['active', 'watch'], watch: ['active'], ban: ['active', 'watch', 'unsub'], active: ['watch', 'ban'], unban: ['ban'] };
   if (!ok[to] || ok[to].indexOf(cu.s) < 0) throw new Error('Not allowed');
   if (to === 'unsub') { cu.s = 'unsub'; cu.u = now; cu.by = 'admin'; }
   else if (to === 'watch') { cu.s = 'watch'; cu.w = now; }
   else if (to === 'ban') { cu.s = 'ban'; cu.b = now; }
-  else if (to === 'active') { cu.s = 'active'; delete cu.w; }
+  else if (to === 'active') { cu.s = 'active'; delete cu.w; delete cu.b; }
   else if (to === 'unban') { cu.s = 'unsub'; cu.u = now; cu.by = 'unban'; delete cu.b; }
   props.setProperty('SUB_' + id, JSON.stringify(cu));
   return true;
