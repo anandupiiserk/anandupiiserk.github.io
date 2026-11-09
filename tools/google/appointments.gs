@@ -329,7 +329,7 @@ function editorPage_(mode, p, r) {
     + '<input type="color" id="fc" value="#1c2430" title="Text colour"></div>'
     + '<div class="tg">' + tbtn('justifyLeft', '&#8676;', '', 'Align left') + tbtn('justifyCenter', '&#8596;', '', 'Centre') + tbtn('justifyRight', '&#8677;', '', 'Align right') + tbtn('justifyFull', '&#9776;', '', 'Justify') + '</div>'
     + '<div class="tg">' + tbtn('insertUnorderedList', '&#8226; List', '', 'Bullet list') + tbtn('insertOrderedList', '1. List', '', 'Numbered list') + tbtn('outdent', '&#8656;', '', 'Outdent') + tbtn('indent', '&#8658;', '', 'Indent') + '</div>'
-    + '<div class="tg"><button type="button" id="lk" title="Insert link">Link</button><button type="button" id="apl" title="Insert a button that opens the appointment booking page on your website">Add appointment link</button>' + tbtn('removeFormat', 'Clear', '', 'Clear formatting') + '</div>'
+    + '<div class="tg"><button type="button" id="lk" title="Insert link">Link</button><button type="button" id="apl" title="Insert a button that opens the appointment booking page on your website">Add appointment link</button><button type="button" id="mlk" title="Insert a button that opens the message form on your website">Add message link</button>' + tbtn('removeFormat', 'Clear', '', 'Clear formatting') + '</div>'
     + '</div>'
     + '<div id="ed" class="ed" contenteditable="true">' + (reply ? 'Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran' : '') + '</div>'
     + '<label class="l" style="margin-top:18px">Attachments <span class="hint">(up to 15 MB in total)</span></label>'
@@ -344,6 +344,7 @@ function editorPage_(mode, p, r) {
     + 'document.getElementById("fc").oninput=function(){ex("foreColor",this.value);};'
     + 'document.getElementById("lk").onclick=function(){var u=prompt("Link address (https://...)");if(u&&/^https?:\\/\\//i.test(u))ex("createLink",u);};'
     + 'document.getElementById("apl").onclick=function(){ex("insertHTML",' + JSON.stringify('<p>If you would like to talk, you can choose a time that suits you here:</p><p><a href="' + SITE_URL + '#appt" style="display:inline-block;background:#1f4e9c;color:#ffffff;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif">Schedule an appointment</a></p>') + ');};'
+    + 'document.getElementById("mlk").onclick=function(){ex("insertHTML",' + JSON.stringify('<p>If you would like to write to me, you can send a message here:</p><p><a href="' + SITE_URL + '#cform" style="display:inline-block;background:#1f4e9c;color:#ffffff;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif">Send me a message</a></p>') + ');};'
     + 'function size(n){return n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB";}'
     + 'function tot(){var t=0;for(var i=0;i<files.length;i++)t+=files[i].size;return t;}'
     + 'function paint(){var l=document.getElementById("fls");l.innerHTML="";files.forEach(function(f,i){var c=document.createElement("span");c.className="fc";c.innerHTML="<span></span><i></i><button type=button title=Remove>&times;</button>";c.firstChild.textContent=f.name;c.children[1].textContent=size(f.size);c.lastChild.onclick=function(){files.splice(i,1);paint();};l.appendChild(c);});'
@@ -476,6 +477,7 @@ function sendNews_(subject, bodyHtml, files, header) {
   if (subs.length > left) throw new Error('Gmail allows ' + left + ' more recipients today, and there are ' + subs.length + ' subscribers. Try again tomorrow.');
   var ok = 0, bad = 0;
   subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header); ok++; } catch (err) { bad++; } });
+  if (ok) PropertiesService.getScriptProperties().setProperty('LASTNEWS', String(Date.now()));
   return statusHtml_('Sent to subscribers', 'Your email went to ' + ok + ' subscriber' + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
 }
 
@@ -531,6 +533,7 @@ function adminPage_(p) {
   var data = JSON.stringify(subs.map(function (r) { return [r.n || '', r.e, fmt(r.t)]; })).replace(/</g, '\\u003c');
   var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + reqs.filter(function (r) { return r.s === 'pending'; }).length + '</b> pending request' + (reqs.filter(function (r) { return r.s === 'pending'; }).length === 1 ? '' : 's') + '</span></div>'
     + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px"><input id="q" class="tx" placeholder="Search name or email" style="flex:1;min-width:200px;width:auto"><button id="cp" class="b blue auto" style="padding:11px 20px">Copy all emails</button><button id="dl" class="b blue auto" style="padding:11px 20px">Download CSV</button><a class="b blue auto" style="text-decoration:none;padding:11px 20px" target="_top" href="' + link_('compose', 'new') + '">Write to subscribers</a></div>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;align-items:center"><button id="rm15" class="b blue auto" style="padding:9px 18px;font-size:13px">Turn on 15th-of-month reminder</button><button id="rmt" class="b blue auto" style="padding:9px 18px;font-size:13px;background:#5b6675">Send a test reminder now</button><span class="hint">A reminder email comes to you on the 15th of every month.</span></div>'
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '"></th></tr></thead><tbody id="tb">' + (rows || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No subscribers yet.</td></tr>') + '</tbody></table></div>'
     + '<h2 style="font-size:17px;margin:30px 0 8px">Approval requests</h2><p class="sub" style="margin:0 0 10px">People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP.</p>'
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">For</th><th style="' + th + '">Asked</th><th style="' + th + '">Status</th></tr></thead><tbody>' + (rq || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No requests.</td></tr>') + '</tbody></table></div><div id="m" class="msg"></div>'
@@ -538,6 +541,7 @@ function adminPage_(p) {
     + 'document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();var r=tb.querySelectorAll("tr[data-s]");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
     + 'document.getElementById("cp").onclick=function(){var t=D.map(function(x){return x[1];}).join(", "),b=this;var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");b.textContent="Copied";}catch(e){b.textContent="Copy failed";}document.body.removeChild(ta);setTimeout(function(){b.textContent="Copy all emails";},1600);};'
     + 'document.getElementById("dl").onclick=function(){var q=function(s){return "\\""+String(s).replace(/"/g,"\\"\\"")+"\\"";};var c="Name,Email,Subscribed\\n"+D.map(function(x){return x.map(q).join(",");}).join("\\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/csv"}));a.download="subscribers.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);};'
+    + 'function act(id,fn,ok){document.getElementById(id).onclick=function(){var b=this,t=b.textContent;b.disabled=true;google.script.run.withSuccessHandler(function(){b.disabled=false;b.textContent=ok;setTimeout(function(){b.textContent=t;},2200);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="That did not work. Try again.";})[fn](' + JSON.stringify(p.sig) + ');};}act("rm15","enableReminder","Reminder is on");act("rmt","testReminder","Test sent");'
     + 'tb.onclick=function(e){var b=e.target.closest(".rm");if(!b||!confirm("Remove this subscriber? They will have to subscribe again."))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not remove. Try again.";}).removeSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
     + '})();<\/script>';
   return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information. Newest first.', inner), 'Subscribers');
@@ -548,6 +552,24 @@ function removeSub(sig, id) {
   PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
   return true;
 }
+
+/* ---- monthly reminder: an email on the 15th of every month (time-driven trigger; run setupMonthlyReminder once, or press the button on the subscribers page) ---- */
+function reminderMail_() {
+  var n = nlActive_().length, last = +(PropertiesService.getScriptProperties().getProperty('LASTNEWS') || 0);
+  var lastTxt = last ? Utilities.formatDate(new Date(last), TZ, 'd MMMM yyyy') : 'No newsletter sent yet';
+  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: 'Your newsletter subscribers are waiting',
+    body: 'It is the 15th. ' + n + ' subscriber' + (n === 1 ? ' is' : 's are') + ' waiting to hear from you.\nWrite the newsletter: ' + link_('compose', 'new') + '\nView subscribers: ' + adminUrl_(),
+    htmlBody: mail_('Newsletter day', 'It is the 15th. Your <b>' + n + '</b> subscriber' + (n === 1 ? ' is' : 's are') + ' waiting to hear from you. A short update with news, a new paper or an event keeps them engaged. In the editor you can add buttons that send readers to book an appointment or to message you.',
+      [['Subscribers', String(n)], ['Last newsletter', esc_(lastTxt)]], [['Write the newsletter', link_('compose', 'new'), '#1f4e9c'], ['View subscribers', adminUrl_(), '#1e8e4e']], 'This reminder arrives on the 15th of every month.') });
+}
+function monthlyReminder() { reminderMail_(); }
+function setupMonthlyReminder() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'monthlyReminder') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('monthlyReminder').timeBased().onMonthDay(15).atHour(9).inTimezone(TZ).create();
+}
+// Called from the subscribers page.
+function enableReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); setupMonthlyReminder(); return true; }
+function testReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); reminderMail_(); return true; }
 
 /* ---- new request (POST) ---- */
 function doPost(e) {
