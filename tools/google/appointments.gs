@@ -133,6 +133,7 @@ function act_(p) {
   var action = p.action, id = p.id || '';
   if (action === 'reply') return replyPage_(p);
   if (action === 'compose') return composePage_(p);
+  if (action === 'unsub') return nlUnsubPage_(p);
   if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev) return page_('Already handled', 'This request is no longer on the calendar. It was probably approved or declined already.', 'info');
@@ -308,8 +309,10 @@ function editorPage_(mode, p, r) {
         + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
         + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>' + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
       : '<div class="chips"><span class="chip">Sending as <b>Anandu Prabhakaran</b></span><span class="chip">New conversation</span></div>'
-        + '<label class="l" for="to">To</label><input id="to" class="tx" placeholder="name@example.com" autocomplete="off" style="margin-bottom:14px">' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
+        + '<label class="l">Send to</label><div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-size:14px"><label><input type="radio" name="aud" id="aud-one" checked> One person</label><label><input type="radio" name="aud" id="aud-all"> All newsletter subscribers (<b>' + nlActive_().length + '</b>)</label></div>'
+        + '<div id="tow"><label class="l" for="to">To</label><input id="to" class="tx" placeholder="name@example.com" autocomplete="off" style="margin-bottom:14px"></div>' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
         + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
+    + '<label class="l" for="hd">Email header <span class="hint">(the title bar at the top of the email)</span></label><input id="hd" class="tx" maxlength="80" value="Email from ' + OWNER_NAME + '" style="margin-bottom:16px">'
     + '<label class="l">' + (reply ? 'Your reply' : 'Message') + '</label>'
     + '<div class="tb">'
     + '<div class="tg"><select id="ff"><option value="">Font</option>' + fonts.map(function (f) { return '<option>' + f + '</option>'; }).join('') + '</select>'
@@ -326,6 +329,7 @@ function editorPage_(mode, p, r) {
     + '<div style="margin-top:22px"><button id="send" class="b blue auto">' + (reply ? 'Send reply' : 'Send email') + '</button></div><div id="m" class="msg"></div>'
     + '<script>(function(){var ed=document.getElementById("ed"),m=document.getElementById("m"),files=[],MAX=15*1024*1024;'
     + 'function ex(c,v){ed.focus();document.execCommand(c,false,v||null);}'
+    + (reply ? '' : 'var ao=document.getElementById("aud-all"),a1=document.getElementById("aud-one"),tw=document.getElementById("tow");var hd=document.getElementById("hd"),hc=false;hd.oninput=function(){hc=true;};function aud(){tw.style.display=ao.checked?"none":"block";if(!hc)hd.value=ao.checked?"News Letter from Anandu Prabhakaran":"Email from Anandu Prabhakaran";}ao.onchange=aud;a1.onchange=aud;')
     + 'var bs=document.querySelectorAll("[data-c]");for(var i=0;i<bs.length;i++){bs[i].onmousedown=function(e){e.preventDefault();};bs[i].onclick=function(){ex(this.getAttribute("data-c"));};}'
     + 'document.getElementById("ff").onchange=function(){if(this.value)ex("fontName",this.value);};'
     + 'document.getElementById("fs").onchange=function(){if(this.value)ex("fontSize",this.value);};'
@@ -342,8 +346,8 @@ function editorPage_(mode, p, r) {
     + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
     + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
-    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value);};'
-      : '.sendNew(' + JSON.stringify(p.sig) + ',document.getElementById("to").value,document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value);};')
+    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};'
+      : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};')
     + '})();<\/script>';
   return reply
     ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner), 'Reply to ' + r.n)
@@ -357,7 +361,8 @@ function addrs_(v, label) {
   if (list.length > 20) throw new Error(label + ': too many addresses (max 20).');
   return list.join(',');
 }
-function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc) {
+function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, header) {
+  header = String(header || '').trim().slice(0, 80) || 'Email from ' + OWNER_NAME;
   cc = addrs_(cc, 'Cc'); bcc = addrs_(bcc, 'Bcc');
   var blobs = [], total = 0;
   (files || []).forEach(function (f) {
@@ -369,11 +374,12 @@ function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc) {
   var plain = clean.replace(/<a [^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '$2 ($1)').replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
   subject = String(subject || '').trim().slice(0, 150);
   var html = '<div style="background:#eef2f8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1c2430"><div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,156,.12)">'
-    + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:20px 28px;font-size:18px;font-weight:bold">Email From Anandu Prabhakaran</div>'
+    + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:20px 28px;font-size:18px;font-weight:bold">' + esc_(header) + '</div>'
     + '<div style="padding:26px 28px;font-size:15px;line-height:1.6">' + clean + '</div>'
     + (quoted ? '<div style="margin:0 28px 24px;padding:12px 14px;background:#f7f9fc;border-left:4px solid #c9d0da;border-radius:4px;color:#5b6675;font-size:13px;line-height:1.5"><b>Your message</b><br>' + esc_(quoted).replace(/\n/g, '<br>') + '</div>' : '')
+    + (unsubUrl ? '<div style="padding:0 28px 18px;color:#7a8594;font-size:12px;line-height:1.5">You are receiving this email because you subscribed to news and information from Anandu Prabhakaran on his website. <a href="' + unsubUrl + '" style="color:#1f4e9c">Unsubscribe</a></div>' : '')
     + '<div style="background:#f7f9fc;padding:14px 28px;text-align:center;color:#7a8594;font-size:12px;border-top:1px solid #e6ebf2">Created with <span style="color:#e0245e;font-size:14px">&#10084;</span> by Anandu Prabhakaran</div></div></div>';
-  var opts = { to: to, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: subject, body: plain + (quoted ? '\n\n---\nYour message:\n' + quoted : ''), htmlBody: html };
+  var opts = { to: to, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: subject, body: plain + (quoted ? '\n\n---\nYour message:\n' + quoted : '') + (unsubUrl ? '\n\n---\nYou are receiving this because you subscribed on the website. Unsubscribe: ' + unsubUrl : ''), htmlBody: html };
   if (blobs.length) opts.attachments = blobs;
   if (cc) opts.cc = cc;
   if (bcc) opts.bcc = bcc;
@@ -385,21 +391,81 @@ function sentHtml_(n, to, nb) {
 }
 
 // Called from the reply editor.
-function sendReply(id, sig, subject, bodyHtml, files, cc, bcc) {
+function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header) {
   if (!id || sign_('reply', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return statusHtml_('Not found', 'This message is no longer stored.', 'info');
   var r = JSON.parse(raw);
-  return sentHtml_(r.n, r.e, deliver_(r.e, subject || 'Re: your message', bodyHtml, files, r.m, cc, bcc));
+  return sentHtml_(r.n, r.e, deliver_(r.e, subject || 'Re: your message', bodyHtml, files, r.m, cc, bcc, '', header));
 }
 
 // Called from the new-email editor (fresh conversation).
-function sendNew(sig, to, subject, bodyHtml, files, cc, bcc) {
+function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header) {
   if (sign_('compose', 'new') !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   to = String(to || '').trim();
+  if (to === '__subscribers__') return sendNews_(subject, bodyHtml, files, header);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
-  return sentHtml_('', to, deliver_(to, subject, bodyHtml, files, '', cc, bcc));
+  return sentHtml_('', to, deliver_(to, subject, bodyHtml, files, '', cc, bcc, '', header));
+}
+
+/* ---- newsletter: subscribe (email OTP, same check as the forms), unsubscribe, send to all ----
+ * Subscribers live in this script's private Script Properties (keys SUB_<hash>), never in the public GitHub repository.
+ * Records: {e: email, s: 'pending'|'active', t: timestamp}. Unsubscribing deletes the record, so the person must subscribe again. */
+var NL_PENDING_DAYS = 7;
+function subId_(email) {
+  var d = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, normEmail_(email));
+  return d.map(function (b) { return ('0' + (b & 0xff).toString(16)).slice(-2); }).join('').slice(0, 24);
+}
+function subGet_(id) { var raw = PropertiesService.getScriptProperties().getProperty('SUB_' + id); return raw ? JSON.parse(raw) : null; }
+function nlAll_() {
+  var all = PropertiesService.getScriptProperties().getProperties(), out = [], cut = Date.now() - NL_PENDING_DAYS * 86400000;
+  Object.keys(all).forEach(function (k) {
+    if (k.indexOf('SUB_') !== 0) return;
+    try { var r = JSON.parse(all[k]); r.id = k.slice(4); out.push(r); } catch (err) { }
+  });
+  return out.filter(function (r) { if (r.s === 'pending' && r.t < cut) { PropertiesService.getScriptProperties().deleteProperty('SUB_' + r.id); return false; } return true; });
+}
+function nlActive_() { return nlAll_().filter(function (r) { return r.s === 'active'; }); }
+function nlUnsubUrl_(id) { return ScriptApp.getService().getUrl() + '?action=unsub&id=' + encodeURIComponent(id) + '&sig=' + sign_('unsub', id); }
+function subscribe_(p) {
+  var email = normEmail_(p.email);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return json_({ ok: false, error: 'invalid' });
+  if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
+  if (!tokenOk_(email, p.vtoken)) return json_({ ok: false, error: 'unverified' });   /* same email OTP as the message and appointment forms */
+  var id = subId_(email);
+  PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify({ e: email, s: 'active', t: Date.now() }));
+  try {
+    MailApp.sendEmail({ to: email, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: 'You are subscribed',
+      body: 'You are now subscribed to news and information from Anandu Prabhakaran.\n\nUnsubscribe at any time: ' + nlUnsubUrl_(id),
+      htmlBody: '<div style="font-family:Arial,Helvetica,sans-serif;color:#1c2430;font-size:15px;line-height:1.6"><p>You are now subscribed to news and information from Anandu Prabhakaran.</p><p style="color:#7a8594;font-size:12px">You can <a href="' + nlUnsubUrl_(id) + '" style="color:#1f4e9c">unsubscribe</a> at any time.</p></div>' });
+  } catch (err) { }
+  return json_({ ok: true, status: 'active' });
+}
+function nlUnsubPage_(p) {
+  var id = p.id || '';
+  if (!id || sign_('unsub', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  if (!subGet_(id)) return page_('Already unsubscribed', 'This address is not subscribed. To receive emails again, subscribe on the website.', 'info');
+  var inner = '<div class="acts" style="display:block"><div class="act"><h3>Unsubscribe from news and information</h3><p>You will stop receiving emails from Anandu Prabhakaran. To receive them again later, you will need to subscribe again on the website.</p><button id="u" class="b red">Unsubscribe</button></div></div><div id="m" class="msg"></div>'
+    + '<script>document.getElementById("u").onclick=function(){var b=this;b.disabled=true;b.textContent="Working...";google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent="Unsubscribe";var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";}).nlUnsub(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ');};<\/script>';
+  return out_(shell_('Unsubscribe', 'Click the button below to unsubscribe.', inner), 'Unsubscribe');
+}
+// Called from the unsubscribe page. Deletes the record.
+function nlUnsub(id, sig) {
+  if (!id || sign_('unsub', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
+  PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
+  return statusHtml_('You have been unsubscribed', 'You will no longer receive emails from Anandu Prabhakaran. You can subscribe again at any time on the website.', 'ok');
+}
+// Sends one email to every confirmed subscriber, each with its own unsubscribe link.
+function sendNews_(subject, bodyHtml, files, header) {
+  if (!String(subject || '').trim()) throw new Error('Add a subject.');
+  var subs = nlActive_();
+  if (!subs.length) throw new Error('There are no confirmed subscribers yet.');
+  var left = MailApp.getRemainingDailyQuota();
+  if (subs.length > left) throw new Error('Gmail allows ' + left + ' more recipients today, and there are ' + subs.length + ' subscribers. Try again tomorrow.');
+  var ok = 0, bad = 0;
+  subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header); ok++; } catch (err) { bad++; } });
+  return statusHtml_('Sent to subscribers', 'Your email went to ' + ok + ' subscriber' + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
 }
 
 /* ---- new request (POST) ---- */
@@ -412,6 +478,7 @@ function doPost(e) {
     if (p.kind === 'otp') return otpSend_(p);
     if (p.kind === 'verify') return otpVerify_(p);
     if (p.kind === 'message') return message_(p);
+    if (p.kind === 'subscribe') return subscribe_(p);
     var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), topic = String(p.topic || '').trim().slice(0, 1000);
     var len = +p.len, start = new Date(+p.start);
     if (!name || !topic || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });

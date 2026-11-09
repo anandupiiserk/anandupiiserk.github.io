@@ -1111,3 +1111,18 @@ html.wmk .gimg::after, html.wmk .wk-pics .wmw::after { content: var(--wm-text); 
 .seg .seg-my::before { content: ''; position: absolute; left: -9px; top: 22%; bottom: 22%; width: 1px; background: var(--line2); }
 .seg .seg-my[aria-pressed="true"] { color: var(--on-my); }
 .seg.my-on .seg-ind { background: var(--my); }
+
+/* ---------- Newsletter pop-up (contact page) ---------- */
+.nl-pop { position: fixed; right: 22px; bottom: 22px; z-index: 880; width: min(400px, calc(100vw - 32px)); max-height: calc(100vh - 44px); overflow-y: auto; padding: 22px 20px 20px; background: var(--surface); border: 1px solid var(--line2); border-radius: 16px; box-shadow: var(--shadow); transform: translateY(26px); opacity: 0; pointer-events: none; transition: transform .45s var(--ease), opacity .35s var(--ease); }
+.nl-pop.show { transform: none; opacity: 1; pointer-events: auto; }
+.nl-pop[hidden] { display: none; }
+.nl-pop .nl-t { margin: 0 34px 6px 0; font-size: 1.15rem; font-weight: 600; }
+.nl-pop .nl-p { margin: 0 0 14px; font-size: .88rem; color: var(--muted); line-height: 1.5; }
+.nl-pop .nl-x { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--muted); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.nl-pop .nl-x:hover { background: var(--hover); color: var(--text); }
+.nl-pop .nl-grab { display: none; width: 40px; height: 4px; border-radius: 4px; background: var(--line2); margin: -8px auto 12px; }
+.nl-pop .nl-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--line); border-radius: 0 0 16px 16px; overflow: hidden; }
+.nl-pop .nl-bar i { display: block; height: 100%; background: var(--a); transform-origin: left; }
+@media (max-width: 560px) { .nl-pop { left: 12px; right: 12px; bottom: 12px; width: auto; } .nl-pop .nl-grab { display: block; } }
+.fstat.ok{color:#2e8b57}
+.otp [hidden] { display: none !important; }

@@ -1149,6 +1149,8 @@ else (function loop() {
   window.__otp = window.__otp || {};
   const post = body => fetch(EP, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(r => r.json());
   const peers = {};
+  const NLK = k => k === 'nl' || k === 'np';
+  const MAND = k => NLK(k) ? 'OTP verification via email is mandatory to subscribe to the newsletter.' : 'OTP verification via email is mandatory to send a message or book an appointment.';
   function gate(key, form, emailEl, nameEl) {
     if (!form || !emailEl || !nameEl) return;
     const box = document.createElement('div'); box.className = 'otp';
@@ -1173,13 +1175,13 @@ else (function loop() {
     function unfreeze() { clearInterval(cool); clear(okB, tr('Verify')); clear(reB, tr('Resend')); inp.disabled = false; inp.placeholder = '000000'; inp.value = ''; okB.disabled = false; okB.classList.remove('frozen'); reB.classList.remove('frozen'); }
     function freeze() { clearInterval(cool); ver.hidden = false; sendB.hidden = true; inp.value = ''; inp.placeholder = '------'; inp.disabled = true; tick(okB, 'Verified'); okB.disabled = true; okB.classList.add('frozen'); clear(reB, tr('Resend')); reB.disabled = true; reB.classList.add('frozen'); }
     function idle(msg, cls, fromPeer) {
-      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || 'OTP verification via email is mandatory to send a message or book an appointment.', msg ? cls : 'warn'); sendB.disabled = !valid(emailNow());
+      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || MAND(key), msg ? cls : 'warn'); sendB.disabled = !valid(emailNow());
       if (!fromPeer && was) Object.keys(peers).forEach(k => { if (k !== key) peers[k].drop(msg, cls); });
     }
     function accept(t, x, name, email, fromPeer) {
       tok = t; exp = x; vEmail = email.toLowerCase(); vName = name; nameEl.value = name; emailEl.value = email;
       freeze(); lock(false);
-      say('✓ Name and email are now verified. You can book the appointment or send messages for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
+      say(NLK(key) ? '✓ Name and email are now verified. You can subscribe, send messages or book an appointment for the next 20 minutes.' : '✓ Name and email are now verified. You can book the appointment or send messages for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
       clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
       if (!fromPeer) Object.keys(peers).forEach(k => { if (k !== key) peers[k].adopt(t, x, name, email); });
     }
@@ -1211,12 +1213,12 @@ else (function loop() {
       if (err || !r) say('Could not check the OTP. Please try again.', 'bad');
       else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
     }
-    form.addEventListener('click', e => { const sb = e.target.closest && e.target.closest('button[type="submit"]'); if (sb && form.contains(sb) && !live()) { e.preventDefault(); e.stopImmediatePropagation(); toast(key === 'ap' ? 'Verify email to proceed with Appointment - Anandu' : 'Verify email to proceed with Message - Anandu', 4200); } }, true);
+    form.addEventListener('click', e => { const sb = e.target.closest && e.target.closest('button[type="submit"]'); if (sb && form.contains(sb) && !live()) { e.preventDefault(); e.stopImmediatePropagation(); toast(NLK(key) ? 'Verify email to proceed with Subscription - Anandu' : key === 'ap' ? 'Verify email to proceed with Appointment - Anandu' : 'Verify email to proceed with Message - Anandu', 4200); } }, true);
     okB.addEventListener('click', verify); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
     inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
     emailEl.addEventListener('input', () => {
       const e = emailNow(); if (live() && e.toLowerCase() === vEmail) return;
-      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say('OTP verification via email is mandatory to send a message or book an appointment.', 'warn'); }
+      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say(MAND(key), 'warn'); }
     });
     form.addEventListener('reset', () => setTimeout(() => { if (live()) { emailEl.value = vEmail; nameEl.value = vName; } else idle(); }, 0));
     peers[key] = { adopt: (t, x, name, email) => { if (live() && vEmail === email.toLowerCase()) { tok = t; exp = x; return; } accept(t, x, name, email, true); }, drop: (m, c) => idle(m, c, true) };
@@ -1224,6 +1226,50 @@ else (function loop() {
     idle();
   }
   gate('cf', $('#cform'), $('#cf-email'), $('#cf-name')); gate('ap', $('#ap-form'), $('#ap-email'), $('#ap-name'));
+
+  /* ---------- Newsletter: form at the bottom of this page, plus a pop-up on the first visit (10 s, X, Esc or swipe down to close) ---------- */
+  const store = { get: k => { try { return localStorage.getItem(k); } catch (err) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (err) { /* storage unavailable */ } } };
+  const subscribed = () => store.get('nl-sub') === '1';
+  async function subscribe(key, form, emailEl, nameEl, btn, stat) {
+    const t = window.__otp[key] && window.__otp[key].token(), e = emailEl.value.trim();
+    if (!t) { toast('Verify email to proceed with Subscription - Anandu', 4200); return false; }
+    btn.disabled = true; const lab = btn.textContent; btn.textContent = tr('Subscribing...'); stat.textContent = ''; stat.className = 'fstat';
+    let r = null; try { r = await post({ kind: 'subscribe', email: e, vtoken: t, website: '' }); } catch (err) { /* network */ }
+    btn.disabled = false; btn.textContent = lab;
+    if (r && r.ok) { store.set('nl-sub', '1'); stat.textContent = tr('You are subscribed.'); stat.className = 'fstat ok'; return true; }
+    stat.textContent = tr(r && r.error === 'blocked' ? 'This email address cannot be used here.' : r && r.error === 'unverified' ? 'Verification expired. Verify your email again.' : 'Could not subscribe. Please try again.'); stat.className = 'fstat bad'; return false;
+  }
+  const nlForm = $('#nl-form');
+  if (nlForm) {
+    const st = $('#nl-stat'), sb = $('#nl-send');
+    nlForm.addEventListener('submit', async e => { e.preventDefault(); if (await subscribe('nl', nlForm, $('#nl-email'), $('#nl-name'), sb, st)) { sb.textContent = tr('Subscribed'); sb.disabled = true; } });
+    if (subscribed()) st.textContent = tr('This browser is already subscribed. You can subscribe another address below.');
+  }
+  const pop = document.createElement('div'); pop.className = 'nl-pop'; pop.id = 'nl-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', tr('Subscribe to my newsletter')); pop.hidden = true;
+  pop.innerHTML = '<i class="nl-grab" aria-hidden="true"></i><button type="button" class="nl-x" aria-label="Close">&times;</button><h3 class="nl-t"></h3><p class="nl-p"></p>'
+    + '<form class="cform" id="np-form" novalidate><div class="frow"><label for="np-name"></label><input id="np-name" type="text" autocomplete="name"></div><div class="frow"><label for="np-email"></label><input id="np-email" type="email" autocomplete="email" required></div>'
+    + '<div class="fact"><button class="btn" type="submit" id="np-send"></button><span class="fstat" id="np-stat" role="status" aria-live="polite"></span></div></form><div class="nl-bar" aria-hidden="true"><i></i></div>';
+  document.body.appendChild(pop);
+  $('.nl-t', pop).textContent = tr('Subscribe to my newsletter'); $('.nl-p', pop).textContent = tr('News and information by email. Your email is checked with a one-time code.');
+  $('label[for="np-name"]', pop).textContent = tr('Your name'); $('label[for="np-email"]', pop).textContent = tr('Your email'); $('#np-send', pop).textContent = tr('Subscribe');
+  gate('nl', nlForm, $('#nl-email'), $('#nl-name')); gate('np', $('#np-form'), $('#np-email'), $('#np-name'));
+  let popOpen = false, left = 10000, last = 0, raf = 0, hold = false, engaged = false;
+  const bar = $('.nl-bar i', pop);
+  const closePop = () => { if (!popOpen) return; popOpen = false; cancelAnimationFrame(raf); pop.classList.remove('show'); pop.style.transform = ''; setTimeout(() => { pop.hidden = true; }, 450); };
+  const loop = t => { if (!popOpen) return; if (last && !hold && !engaged) left -= t - last; last = t; bar.style.transform = 'scaleX(' + (engaged ? 0 : Math.max(0, left / 10000)) + ')'; if (left <= 0 && !engaged) closePop(); else raf = requestAnimationFrame(loop); };
+  const openPop = () => { if (popOpen || subscribed() || store.get('nl-seen') === '1') return; store.set('nl-seen', '1'); popOpen = true; pop.hidden = false; void pop.offsetWidth; pop.classList.add('show'); left = 10000; last = 0; raf = requestAnimationFrame(loop); };
+  $('.nl-x', pop).addEventListener('click', closePop);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && popOpen) closePop(); });
+  pop.addEventListener('pointerenter', () => { hold = true; }); pop.addEventListener('pointerleave', () => { hold = false; });
+  pop.addEventListener('focusin', () => { hold = true; }); pop.addEventListener('focusout', () => { hold = false; });
+  pop.addEventListener('input', () => { engaged = true; }); pop.addEventListener('click', e => { if (e.target.closest('button') && !e.target.closest('.nl-x')) engaged = true; });
+  let y0 = null, dy = 0;
+  pop.addEventListener('touchstart', e => { hold = true; if (e.target.closest('input, button, a')) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; pop.style.transition = 'none'; }, { passive: true });
+  pop.addEventListener('touchmove', e => { if (y0 === null) return; dy = Math.max(0, e.touches[0].clientY - y0); pop.style.transform = 'translateY(' + dy + 'px)'; }, { passive: true });
+  pop.addEventListener('touchend', () => { hold = false; if (y0 === null) return; pop.style.transition = ''; if (dy > 70) closePop(); else pop.style.transform = ''; y0 = null; });
+  const pf = $('#np-form'), ps = $('#np-stat'), pb = $('#np-send');
+  pf.addEventListener('submit', async e => { e.preventDefault(); if (await subscribe('np', pf, $('#np-email'), $('#np-name'), pb, ps)) { pb.textContent = tr('Subscribed'); pb.disabled = true; setTimeout(closePop, 2600); } });
+  setTimeout(openPop, 2500);
 })();
 /* @endpagestamp */
 
