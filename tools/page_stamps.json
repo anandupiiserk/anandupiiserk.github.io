@@ -1,30 +1,34 @@
 {
  "index.html": {
-  "h": "a16276e6dc51ef9de5e29dd92ba6dcb556bad31d5ba2eaed4f0613cf94899522",
-  "t": "09-November-2026|17:35:40"
+  "h": "80f279cab14fb74614a48bbf6f0bd22672745f833981221e3341b8c769ca9e1a",
+  "t": "09-November-2026|17:44:22"
  },
  "about.html": {
-  "h": "d73da19d0518e47f33e31ba62c8830776c2a1de8d059aaf722b321e2a5fffc49",
-  "t": "09-November-2026|17:35:40"
+  "h": "84211d66c8c77fa90798355fe2b10e3a8ede6a1a3820996465e43cf8d82834c5",
+  "t": "09-November-2026|17:44:22"
  },
  "research.html": {
-  "h": "52549b1a019cb6e742566856cad1b65efb8afb4fb50189ee94b183ffedd46168",
-  "t": "09-November-2026|17:35:40"
+  "h": "57be3c4b43d308ac60178fdd02f023b0b44805e379f086f626944ddcbceddc94",
+  "t": "09-November-2026|17:44:22"
  },
  "publications.html": {
-  "h": "effa1c8253b58d5030d58f797b7455b0c0b899258eb9c9475a6cfb6cde332035",
-  "t": "09-November-2026|17:35:40"
+  "h": "d967752d7293803f1e3a17be354d3565cadbe418626ade7cd415a9f2f4c56827",
+  "t": "09-November-2026|17:44:22"
  },
  "workshops.html": {
-  "h": "49afa4c61d801b3580dc2536435c880e63850a239e3d649050ca9a0ec01f374d",
-  "t": "09-November-2026|17:35:40"
+  "h": "a1280f3aa537343bf04637b9112aafce675ac72e4541e7bafe5d92e5818bb7fb",
+  "t": "09-November-2026|17:44:22"
  },
  "gallery.html": {
-  "h": "0e6492ba6b3b0e9d8e22b0dbb45f8c528f59e222853bbbfc6ecfd6804cbb3100",
-  "t": "09-November-2026|17:35:40"
+  "h": "9f623af67e7b51659c98e8a76ee68c70dfe9f1fce4691ae4b36f18c7aa8f35e7",
+  "t": "09-November-2026|17:44:22"
  },
  "contact.html": {
-  "h": "9133d2e1e5394d749d126422085c21389f7c093b0154316436c369037bb7966d",
-  "t": "09-November-2026|17:35:40"
+  "h": "c745e90afba986aaffcc4f294e7648b4efa6a91955c8b8b0a73011e29d5b35a7",
+  "t": "09-November-2026|17:44:22"
+ },
+ "home.html": {
+  "h": "0fc3b4645b59be4d0c738139890f87f5a40af67777f4f77cb0068af511058d94",
+  "t": "05-November-2026|11:30:11"
  }
 }

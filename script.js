@@ -19,6 +19,8 @@ const SITE = {
   email: 'anandupiiserk@gmail.com',
   /* Contact form. Leave endpoint empty to open the visitor's email app instead. Formspree: https://formspree.io/f/xxxxxxxx . Web3Forms: https://api.web3forms.com/submit and put the public access key in formKey. */
   formEndpoint: 'https://formspree.io/f/mdeeoqdz', formKey: '',
+  /* Google Apps Script web app (OTP, appointments, newsletter). Keep in step with APPT_ENDPOINT in tools/build_pages.py. */
+  endpoint: 'https://script.google.com/macros/s/AKfycbx4ftUvQ0G2ctvXvvkhwiodbX87pfrSjky8RF_oZxzTygKLmODBvLh-PF8OyzW5EcTk/exec',
   /* Gallery switch. false = the gallery page shows a short notice and no photo is fetched anywhere on the site (also stops the quiet background preload). */
   galleryOn: true,
   /* Quiet background download of all gallery photos while browsing other pages. Off to keep every page light; the gallery page itself still loads its photos. */
@@ -1155,7 +1157,7 @@ else (function loop() {
 /* @pagestamp contact.html */
 /* ---------- Contact: email check by OTP (sent by the Google script). Forms stay locked until the OTP is accepted; the check lasts 20 minutes. ---------- */
 (function otpGates() {
-  const root = $('#appt'), EP = root && root.dataset.endpoint; if (!EP) return;
+  const root = $('#appt'), EP = SITE.endpoint || (root && root.dataset.endpoint); if (!EP) return;
   const BW = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean', 'headofdept', 'headofdepartment', 'headofthedepartment', 'headofdivision'];
   const blockedEmail = e => { const w = e.toLowerCase(), flat = w.replace(/[^a-z0-9]/g, ''); return BW.some(x => flat.includes(x)) || w.split(/[^a-z0-9]+/).some(t => ['dean', 'hod', 'head'].includes(t)); };
   const valid = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
@@ -1256,11 +1258,25 @@ else (function loop() {
   }
   gate('cf', $('#cform'), $('#cf-email'), $('#cf-name')); gate('ap', $('#ap-form'), $('#ap-email'), $('#ap-name'));
 
-  /* ---------- Newsletter: form at the bottom of this page, plus a pop-up on the first visit (10 s, X, Esc or swipe down to close) ---------- */
+  window.__nl = { gate, post, NLK };
+})();
+/* @endpagestamp */
+
+/* ---------- Newsletter: subscribe form on the Contact page and a pop-up (10 s, X, Esc or swipe down to close). Uses the email OTP gate above; verifying subscribes. ---------- */
+(function newsletter() {
+  const NL = window.__nl; if (!NL) return;
+  const { gate, post } = NL;
   const store = { get: k => { try { return localStorage.getItem(k); } catch (err) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (err) { /* storage unavailable */ } } };
   const subscribed = () => store.get('nl-sub') === '1';
   const subOk = async (t, e, n) => { let r = null; try { r = await post({ kind: 'subscribe', email: e, name: n, vtoken: t, website: '' }); } catch (err) { /* network */ } if (r && r.ok) { store.set('nl-sub', '1'); return true; } return false; };
   const nlForm = $('#nl-form');
+  if (nlForm) gate('nl', nlForm, $('#nl-email'), $('#nl-name'), { sub: subOk });
+  /* Pop-up rules. Desktop (mouse, wide screen): once per browser window, on whichever page is opened first; a new window shows it again. Phone and tablet: only on the Contact page, once per browser. Never for someone already subscribed. */
+  const desk = matchMedia('(hover: hover) and (pointer: fine)').matches && innerWidth >= 900;
+  const sess = { get: k => { try { return sessionStorage.getItem(k); } catch (err) { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (err) { /* storage unavailable */ } } };
+  const shouldShow = () => !subscribed() && (desk ? sess.get('nl-seen-s') !== '1' : page === 'contact' && store.get('nl-seen') !== '1');
+  const markSeen = () => { if (desk) sess.set('nl-seen-s', '1'); else store.set('nl-seen', '1'); };
+  if (!shouldShow()) return;
   const pop = document.createElement('div'); pop.className = 'nl-pop'; pop.id = 'nl-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', tr('Subscribe to my newsletter')); pop.hidden = true;
   pop.innerHTML = '<i class="nl-grab" aria-hidden="true"></i><button type="button" class="nl-x" aria-label="Close">&times;</button><h3 class="nl-t"></h3><p class="nl-p"></p>'
     + '<form class="cform" id="np-form" novalidate><div class="frow"><label for="np-name"></label><input id="np-name" type="text" autocomplete="name"></div><div class="frow"><label for="np-email"></label><input id="np-email" type="email" autocomplete="email" required></div>'
@@ -1268,12 +1284,12 @@ else (function loop() {
   document.body.appendChild(pop);
   $('.nl-t', pop).textContent = tr('Subscribe to my newsletter'); $('.nl-p', pop).textContent = tr('News and information by email. Your email is checked with a one-time code.');
   $('label[for="np-name"]', pop).textContent = tr('Your name'); $('label[for="np-email"]', pop).textContent = tr('Your email');
-  gate('nl', nlForm, $('#nl-email'), $('#nl-name'), { sub: subOk }); gate('np', $('#np-form'), $('#np-email'), $('#np-name'), { sub: subOk, done: () => setTimeout(closePop, 3000) });
+  gate('np', $('#np-form'), $('#np-email'), $('#np-name'), { sub: subOk, done: () => setTimeout(closePop, 3000) });
   let popOpen = false, left = 10000, last = 0, raf = 0, hold = false, engaged = false;
   const bar = $('.nl-bar i', pop);
   const closePop = () => { if (!popOpen) return; popOpen = false; cancelAnimationFrame(raf); pop.classList.remove('show'); pop.style.transform = ''; setTimeout(() => { pop.hidden = true; }, 450); };
   const loop = t => { if (!popOpen) return; if (last && !hold && !engaged) left -= t - last; last = t; bar.style.transform = 'scaleX(' + (engaged ? 0 : Math.max(0, left / 10000)) + ')'; if (left <= 0 && !engaged) closePop(); else raf = requestAnimationFrame(loop); };
-  const openPop = () => { if (popOpen || subscribed() || store.get('nl-seen') === '1') return; store.set('nl-seen', '1'); popOpen = true; pop.hidden = false; void pop.offsetWidth; pop.classList.add('show'); left = 10000; last = 0; raf = requestAnimationFrame(loop); };
+  const openPop = () => { if (popOpen || !shouldShow()) return; markSeen(); popOpen = true; pop.hidden = false; void pop.offsetWidth; pop.classList.add('show'); left = 10000; last = 0; raf = requestAnimationFrame(loop); };
   $('.nl-x', pop).addEventListener('click', closePop);
   addEventListener('keydown', e => { if (e.key === 'Escape' && popOpen) closePop(); });
   pop.addEventListener('pointerenter', () => { hold = true; }); pop.addEventListener('pointerleave', () => { hold = false; });
@@ -1283,9 +1299,8 @@ else (function loop() {
   pop.addEventListener('touchstart', e => { hold = true; if (e.target.closest('input, button, a')) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; pop.style.transition = 'none'; }, { passive: true });
   pop.addEventListener('touchmove', e => { if (y0 === null) return; dy = Math.max(0, e.touches[0].clientY - y0); pop.style.transform = 'translateY(' + dy + 'px)'; }, { passive: true });
   pop.addEventListener('touchend', () => { hold = false; if (y0 === null) return; pop.style.transition = ''; if (dy > 70) closePop(); else pop.style.transform = ''; y0 = null; });
-  setTimeout(openPop, 2500);
+  setTimeout(openPop, desk ? 3200 : 2500);
 })();
-/* @endpagestamp */
 
 /* ---------- Photo watermark: a faint corner text over gallery and workshop photos (CSS) and over the enlarged photo (this code). Switch: SITE.watermark. ---------- */
 (function watermark() {

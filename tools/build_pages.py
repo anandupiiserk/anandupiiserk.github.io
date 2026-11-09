@@ -11,19 +11,52 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
 import hashlib, json, re, datetime
 STAMPS = os.path.join(HERE, 'page_stamps.json')
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
-def stamp(file, html):
-    """Last-updated time of one page (IST). It changes on ANY change that reaches the page, even a single space: the page HTML, script.js, style.css, i18n.js (and, for the gallery, its captions and manifest). A change in a shared file updates every page."""
+def _css_rules(css):
+    """Flatten style.css into (selector_prelude, rule_text) pairs. Rules inside @media/@supports keep their wrapper text, so any edit counts."""
+    css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+    out = []
+    def walk(text, wrap):
+        k = 0; n = len(text)
+        while k < n:
+            b = text.find('{', k)
+            if b < 0: break
+            pre = text[k:b].strip(); depth = 1; e = b + 1
+            while e < n and depth:
+                c = text[e]; depth += (c == '{') - (c == '}'); e += 1
+            body = text[b + 1:e - 1]
+            if pre.startswith('@media') or pre.startswith('@supports'): walk(body, wrap + pre + '{')
+            else: out.append((pre, wrap + pre + '{' + body + '}' + ('}' if wrap else '')))
+            k = e
+    walk(css, '')
+    return out
+def _toks(text): return set(re.findall(r'[A-Za-z0-9_-]+', text))
+def stamp_hash(file, html, script, css, i18n, extras=''):
+    """Digest of everything that can change what ONE page shows (any change, even a single space): the page HTML, the script blocks marked for that page (@pagestamp), the shared script code, the
+    CSS rules that apply to that page (rules whose class or id appears in the page, its script blocks or the shared script; tag-only rules apply to every page), i18n.js and, for the gallery, its captions."""
     h = re.sub(r'\?v=[0-9a-z]+', '', html)
+    blocks = re.findall(r'/\* @pagestamp (\S+) \*/(.*?)/\* @endpagestamp \*/', script, flags=re.S)
+    mine = ''.join(b for f, b in blocks if f == file)
+    shared = re.sub(r'/\* @pagestamp (\S+) \*/(.*?)/\* @endpagestamp \*/', '', script, flags=re.S)
+    toks = _toks(h) | _toks(mine) | _toks(shared)
+    rules, varonly = [], []
+    for pre, text in _css_rules(css):
+        sels = [x for x in pre.split(',')]
+        specific = all(re.search(r'[.#][A-Za-z_][\w-]*', x) for x in sels) and not pre.startswith('@')
+        body = text[text.find('{') + 1:text.rfind('}')] if '@media' not in text and '@supports' not in text else ''
+        if not specific and body and all(d.strip().startswith('--') for d in body.split(';') if d.strip()): varonly.append((re.findall(r'(--[\w-]+)\s*:', body), text)); continue
+        if not specific or any(all(t.lstrip('.#') in toks for t in re.findall(r'[.#][A-Za-z_][\w-]*', x)) for x in sels): rules.append(text)
+    used = h + mine + shared + ''.join(rules)   # a rule that only defines custom properties counts for a page only if one of them is used there
+    rules += [t for names, t in varonly if any(n in used for n in names)]
+    return hashlib.sha256((h + '\x00' + mine + '\x00' + shared + '\x00' + ''.join(rules) + '\x00' + i18n + '\x00' + extras).encode('utf-8')).hexdigest()
+def stamp(file, html):
+    """Last-updated time of one page (IST). It changes only when something that reaches THAT page changes (see stamp_hash); a change that belongs to another page leaves it alone."""
+    extras = ''
     if file == 'gallery.html':
         for extra in ('captions.txt', 'manifest.json'):
-            try: h += open(os.path.join(ROOT, 'gallery', extra), encoding='utf-8').read()
+            try: extras += open(os.path.join(ROOT, 'gallery', extra), encoding='utf-8').read()
             except OSError: pass
-    # Any change counts, even one space: the page's own HTML, plus script.js (functions, header, footer, menu), style.css (layout and alignment) and i18n.js (translations).
-    # These three shared files are part of every page, so a change in one of them gives every page a new time. The cache-busting ?v= strings are ignored.
-    for extra in ('script.js', 'style.css', 'i18n.js'):
-        try: h += open(os.path.join(ROOT, extra), encoding='utf-8').read()
-        except OSError: pass
-    digest = hashlib.sha256(h.encode('utf-8')).hexdigest()
+    rd = lambda n: open(os.path.join(ROOT, n), encoding='utf-8').read() if os.path.exists(os.path.join(ROOT, n)) else ''
+    digest = stamp_hash(file, html, rd('script.js'), rd('style.css'), rd('i18n.js'), extras)
     try: db = json.load(open(STAMPS))
     except (OSError, ValueError): db = {}
     cur = db.get(file)
@@ -61,15 +94,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261109f">
+<link rel="stylesheet" href="style.css?v=20261109h">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261109f"></script>
-<script src="script.js?v=20261109f"></script>
+<script src="i18n.js?v=20261109h"></script>
+<script src="script.js?v=20261109h"></script>
 </body>
 </html>
 '''
