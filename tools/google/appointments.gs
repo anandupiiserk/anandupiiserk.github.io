@@ -134,6 +134,8 @@ function act_(p) {
   if (action === 'reply') return replyPage_(p);
   if (action === 'compose') return composePage_(p);
   if (action === 'unsub') return nlUnsubPage_(p);
+  if (action === 'admin') return adminPage_(p);
+  if (action === 'acc_ok' || action === 'acc_no') return accessDecide_(p);
   if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev) return page_('Already handled', 'This request is no longer on the calendar. It was probably approved or declined already.', 'info');
@@ -213,16 +215,22 @@ var OTP_PER_EMAIL_HOUR = 3, OTP_PER_DAY = 60;
 var BLOCK_WORDS = ['director', 'registrar', 'chairman', 'chairperson', 'chancellor', 'associatedean', 'assistantdean', 'deputydean', 'assocdean', 'headofdept', 'headofdepartment', 'headofthedepartment', 'headofdivision'];
 var BLOCK_TOKENS = ['dean', 'hod', 'head'];
 function normEmail_(e) { return String(e || '').trim().toLowerCase(); }
-function blockedEmail_(email) {
+function restricted_(email) {
   var whole = normEmail_(email), flat = whole.replace(/[^a-z0-9]/g, ''), toks = whole.split(/[^a-z0-9]+/);
   for (var i = 0; i < BLOCK_WORDS.length; i++) if (flat.indexOf(BLOCK_WORDS[i]) >= 0) return true;
   for (var j = 0; j < toks.length; j++) if (BLOCK_TOKENS.indexOf(toks[j]) >= 0) return true;
   return false;
 }
+/* A restricted address (director, dean, HOD ...) is refused unless the owner approved a request for exactly that address. */
+function blockedEmail_(email) {
+  if (!restricted_(email)) return false;
+  return !PropertiesService.getScriptProperties().getProperty('ALLOW_' + subId_(email));
+}
 function otpSend_(p) {
   var email = normEmail_(p.email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return json_({ ok: false, error: 'invalid' });
   if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
+  if (p.purpose === 'subscribe') { var cs = subGet_(subId_(email)); if (cs && cs.s === 'active') return json_({ ok: false, error: 'subscribed' }); }
   var cache = CacheService.getScriptCache(), props = PropertiesService.getScriptProperties();
   var nk = 'otpn_' + sign_('n', email).slice(0, 32), n = +(cache.get(nk) || 0);
   if (n >= OTP_PER_EMAIL_HOUR) return json_({ ok: false, error: 'rate' });
@@ -309,7 +317,7 @@ function editorPage_(mode, p, r) {
         + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
         + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>' + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
       : '<div class="chips"><span class="chip">Sending as <b>Anandu Prabhakaran</b></span><span class="chip">New conversation</span></div>'
-        + '<label class="l">Send to</label><div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-size:14px"><label><input type="radio" name="aud" id="aud-one" checked> One person</label><label><input type="radio" name="aud" id="aud-all"> All newsletter subscribers (<b>' + nlActive_().length + '</b>)</label></div>'
+        + '<label class="l">Send to</label><div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-size:14px"><label><input type="radio" name="aud" id="aud-one" checked> One person</label><label><input type="radio" name="aud" id="aud-all"> All newsletter subscribers (<b>' + nlActive_().length + '</b>)</label><a href="' + adminUrl_() + '" target="_top" style="color:#1f4e9c;text-decoration:none">View subscribers</a></div>'
         + '<div id="tow"><label class="l" for="to">To</label><input id="to" class="tx" placeholder="name@example.com" autocomplete="off" style="margin-bottom:14px"></div>' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
         + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
     + '<label class="l" for="hd">Email header <span class="hint">(the title bar at the top of the email)</span></label><input id="hd" class="tx" maxlength="80" value="Email from ' + OWNER_NAME + '" style="margin-bottom:16px">'
@@ -434,11 +442,14 @@ function subscribe_(p) {
   if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
   if (!tokenOk_(email, p.vtoken)) return json_({ ok: false, error: 'unverified' });   /* same email OTP as the message and appointment forms */
   var id = subId_(email);
-  PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify({ e: email, s: 'active', t: Date.now() }));
+  PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify({ e: email, n: String(p.name || '').trim().slice(0, 80), s: 'active', t: Date.now() }));
+  if (OWNER_NOTIFY) { try { MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: 'New newsletter subscriber', body: 'New subscriber: ' + email + '\nAll subscribers: ' + adminUrl_(), htmlBody: mail_('New subscriber', '', [['Name', esc_(String(p.name || '').trim().slice(0, 80) || '(not given)')], ['Email', esc_(email)], ['Total', String(nlActive_().length)]], [['View subscribers', adminUrl_(), '#1f4e9c']], '') }); } catch (err2) { } }
   try {
+    var un = nlUnsubUrl_(id);
     MailApp.sendEmail({ to: email, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: 'You are subscribed',
-      body: 'You are now subscribed to news and information from Anandu Prabhakaran.\n\nUnsubscribe at any time: ' + nlUnsubUrl_(id),
-      htmlBody: '<div style="font-family:Arial,Helvetica,sans-serif;color:#1c2430;font-size:15px;line-height:1.6"><p>You are now subscribed to news and information from Anandu Prabhakaran.</p><p style="color:#7a8594;font-size:12px">You can <a href="' + nlUnsubUrl_(id) + '" style="color:#1f4e9c">unsubscribe</a> at any time.</p></div>' });
+      body: 'You are now subscribed to news and information from Anandu Prabhakaran.\n\nUnsubscribe at any time: ' + un + '\n\nCreated with love by Anandu Prabhakaran',
+      htmlBody: mail_('You are subscribed', 'Thank you for subscribing. You will now receive news and information from Anandu Prabhakaran by email.', [], [],
+        'You are receiving this email because this address was verified and subscribed on the website. <a href="' + un + '" style="color:#1f4e9c">Unsubscribe</a>') });
   } catch (err) { }
   return json_({ ok: true, status: 'active' });
 }
@@ -468,6 +479,76 @@ function sendNews_(subject, bodyHtml, files, header) {
   return statusHtml_('Sent to subscribers', 'Your email went to ' + ok + ' subscriber' + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
 }
 
+/* ---- restricted addresses: request approval by email (no OTP), approve or decline, subscribers platform ---- */
+function adminUrl_() { return ScriptApp.getService().getUrl() + '?action=admin&sig=' + sign_('admin', 'subs'); }
+function accessRequest_(p) {
+  var email = normEmail_(p.email), name = String(p.name || '').trim().slice(0, 80), purpose = { Message: 1, Appointment: 1, Newsletter: 1 }[p.purpose] ? p.purpose : 'Website';
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120 || !name) return json_({ ok: false, error: 'invalid' });
+  if (!blockedEmail_(email)) return json_({ ok: true, status: 'allowed' });
+  var props = PropertiesService.getScriptProperties(), id = subId_(email), cur = props.getProperty('ACC_' + id);
+  if (cur) { var r0 = JSON.parse(cur); if (r0.s === 'pending') return json_({ ok: true, status: 'pending' }); if (r0.s === 'declined' && Date.now() - r0.t < 7 * 86400000) return json_({ ok: false, error: 'declined' }); }
+  var dk = 'ACCDAY_' + ymd_(new Date()), dn = +(props.getProperty(dk) || 0);
+  if (dn >= 15) return json_({ ok: false, error: 'busy' });
+  props.setProperty(dk, String(dn + 1));
+  props.setProperty('ACC_' + id, JSON.stringify({ e: email, n: name, p: purpose, s: 'pending', t: Date.now() }));
+  try {
+    MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: 'Approval request: ' + email,
+      body: name + ' (' + email + ') asks to use the website (' + purpose + '). Approve: ' + link_('acc_ok', id) + '\nDecline: ' + link_('acc_no', id),
+      htmlBody: mail_('Approval request', 'Someone whose address is on the restricted list asks to use the website. No OTP was needed to send this request. If you approve, they still have to verify the address with an OTP before anything is sent.', [['Name', esc_(name)], ['Email', esc_(email)], ['For', esc_(purpose)]],
+        [['Approve', link_('acc_ok', id), '#1e8e4e'], ['Decline', link_('acc_no', id), '#c5221f'], ['Subscribers and requests', adminUrl_(), '#1f4e9c']], 'Approving allows only this exact address.') });
+  } catch (x) { console.error('access mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
+  return json_({ ok: true, status: 'pending' });
+}
+function accessDecide_(p) {
+  var id = p.id || '';
+  if (!id || sign_(p.action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var props = PropertiesService.getScriptProperties(), raw = props.getProperty('ACC_' + id);
+  if (!raw) return page_('Not found', 'This request is no longer stored.', 'info');
+  var r = JSON.parse(raw), ok = p.action === 'acc_ok';
+  if (r.s !== 'pending') return page_('Already handled', 'This request was already ' + esc_(r.s) + '.', 'info');
+  r.s = ok ? 'approved' : 'declined'; r.t = Date.now(); props.setProperty('ACC_' + id, JSON.stringify(r));
+  if (ok) props.setProperty('ALLOW_' + id, '1'); else props.deleteProperty('ALLOW_' + id);
+  try {
+    MailApp.sendEmail({ to: r.e, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: ok ? 'Your request was approved' : 'About your request',
+      body: ok ? 'Hello ' + r.n + ', your request is approved. Go back to the website and verify your email with the one-time code to continue: ' + SITE_URL : 'Hello ' + r.n + ', your request for this email address was not approved. You are welcome to use a different email address.',
+      htmlBody: ok ? mail_('Request approved', 'Hello ' + esc_(r.n) + ', your request is approved. Go back to the website and verify your email address with the one-time code to continue.', [], [['Open the website', SITE_URL, '#1f4e9c']], 'Only this email address was approved.')
+                   : mail_('About your request', 'Hello ' + esc_(r.n) + ', your request to use this email address on the website was not approved. You are welcome to use a different email address.', [], [], '') });
+  } catch (x) { }
+  return page_(ok ? 'Approved' : 'Declined', (ok ? esc_(r.e) + ' can now be verified by OTP on the website. They were notified by email.' : esc_(r.e) + ' was declined and notified by email.'), ok ? 'ok' : 'info');
+}
+function adminPage_(p) {
+  if (sign_('admin', 'subs') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var subs = nlActive_().sort(function (a, b) { return b.t - a.t; }), props = PropertiesService.getScriptProperties().getProperties(), reqs = [];
+  Object.keys(props).forEach(function (k) { if (k.indexOf('ACC_') === 0 && k.indexOf('ACCDAY_') !== 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); reqs.push(r); } catch (x) { } } });
+  reqs.sort(function (a, b) { return b.t - a.t; });
+  var fmt = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
+  var th = 'text-align:left;padding:9px 10px;font-size:12px;color:#5b6675;border-bottom:2px solid #e1e8f3;white-space:nowrap', td = 'padding:10px;border-bottom:1px solid #eef2f8;font-size:14px;vertical-align:middle';
+  var rows = subs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right"><button class="rm" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Remove</button></td></tr>'; }).join('');
+  var rq = reqs.map(function (r) {
+    var st = r.s === 'pending' ? '<a href="' + link_('acc_ok', r.id) + '" target="_top" style="color:#1e8e4e;font-weight:bold;text-decoration:none">Approve</a> &nbsp; <a href="' + link_('acc_no', r.id) + '" target="_top" style="color:#c5221f;font-weight:bold;text-decoration:none">Decline</a>' : '<span style="color:#5b6675">' + esc_(r.s) + '</span>';
+    return '<tr><td style="' + td + '">' + esc_(r.n) + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + '">' + esc_(r.p) + '</td><td style="' + td + ';white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + '">' + st + '</td></tr>';
+  }).join('');
+  var data = JSON.stringify(subs.map(function (r) { return [r.n || '', r.e, fmt(r.t)]; })).replace(/</g, '\\u003c');
+  var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + reqs.filter(function (r) { return r.s === 'pending'; }).length + '</b> pending request' + (reqs.filter(function (r) { return r.s === 'pending'; }).length === 1 ? '' : 's') + '</span></div>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px"><input id="q" class="tx" placeholder="Search name or email" style="flex:1;min-width:200px;width:auto"><button id="cp" class="b blue auto" style="padding:11px 20px">Copy all emails</button><button id="dl" class="b blue auto" style="padding:11px 20px">Download CSV</button><a class="b blue auto" style="text-decoration:none;padding:11px 20px" target="_top" href="' + link_('compose', 'new') + '">Write to subscribers</a></div>'
+    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '"></th></tr></thead><tbody id="tb">' + (rows || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No subscribers yet.</td></tr>') + '</tbody></table></div>'
+    + '<h2 style="font-size:17px;margin:30px 0 8px">Approval requests</h2><p class="sub" style="margin:0 0 10px">People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP.</p>'
+    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">For</th><th style="' + th + '">Asked</th><th style="' + th + '">Status</th></tr></thead><tbody>' + (rq || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No requests.</td></tr>') + '</tbody></table></div><div id="m" class="msg"></div>'
+    + '<script>(function(){var D=' + data + ',tb=document.getElementById("tb"),m=document.getElementById("m");'
+    + 'document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();var r=tb.querySelectorAll("tr[data-s]");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
+    + 'document.getElementById("cp").onclick=function(){var t=D.map(function(x){return x[1];}).join(", "),b=this;var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");b.textContent="Copied";}catch(e){b.textContent="Copy failed";}document.body.removeChild(ta);setTimeout(function(){b.textContent="Copy all emails";},1600);};'
+    + 'document.getElementById("dl").onclick=function(){var q=function(s){return "\\""+String(s).replace(/"/g,"\\"\\"")+"\\"";};var c="Name,Email,Subscribed\\n"+D.map(function(x){return x.map(q).join(",");}).join("\\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/csv"}));a.download="subscribers.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);};'
+    + 'tb.onclick=function(e){var b=e.target.closest(".rm");if(!b||!confirm("Remove this subscriber? They will have to subscribe again."))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not remove. Try again.";}).removeSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
+    + '})();<\/script>';
+  return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information. Newest first.', inner), 'Subscribers');
+}
+// Called from the subscribers page.
+function removeSub(sig, id) {
+  if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
+  PropertiesService.getScriptProperties().deleteProperty('SUB_' + id);
+  return true;
+}
+
 /* ---- new request (POST) ---- */
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -479,6 +560,7 @@ function doPost(e) {
     if (p.kind === 'verify') return otpVerify_(p);
     if (p.kind === 'message') return message_(p);
     if (p.kind === 'subscribe') return subscribe_(p);
+    if (p.kind === 'access') return accessRequest_(p);
     var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), topic = String(p.topic || '').trim().slice(0, 1000);
     var len = +p.len, start = new Date(+p.start);
     if (!name || !topic || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });

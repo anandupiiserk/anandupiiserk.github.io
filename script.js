@@ -1164,14 +1164,17 @@ else (function loop() {
   const peers = {};
   const NLK = k => k === 'nl' || k === 'np';
   const MAND = k => NLK(k) ? 'OTP verification via email is mandatory to subscribe to the newsletter.' : 'OTP verification via email is mandatory to send a message or book an appointment.';
-  function gate(key, form, emailEl, nameEl) {
+  function gate(key, form, emailEl, nameEl, opts) {
     if (!form || !emailEl || !nameEl) return;
+    const VL = opts && opts.sub ? 'Verify and subscribe' : 'Verify';
     const box = document.createElement('div'); box.className = 'otp';
-    box.innerHTML = '<div class="otp-line"><button type="button" class="btn ghost otp-send" disabled></button><small class="otp-note" aria-live="polite"></small></div>'
+    box.innerHTML = '<div class="otp-line"><button type="button" class="btn ghost otp-send" disabled></button><button type="button" class="btn ghost otp-req" hidden></button><small class="otp-note" aria-live="polite"></small></div>'
       + '<div class="otp-ver" hidden><input class="otp-in" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="OTP"><button type="button" class="btn otp-ok"></button><button type="button" class="btn ghost otp-re" disabled></button></div>';
     emailEl.closest('.frow').after(box);
-    const sendB = $('.otp-send', box), note = $('.otp-note', box), ver = $('.otp-ver', box), inp = $('.otp-in', box), okB = $('.otp-ok', box), reB = $('.otp-re', box);
-    sendB.textContent = tr('Send OTP'); okB.textContent = tr('Verify'); reB.textContent = tr('Resend');
+    const sendB = $('.otp-send', box), reqB = $('.otp-req', box), note = $('.otp-note', box), ver = $('.otp-ver', box), inp = $('.otp-in', box), okB = $('.otp-ok', box), reB = $('.otp-re', box);
+    sendB.textContent = tr('Send OTP'); reqB.textContent = tr('Request approval');
+    const PURPOSE = NLK(key) ? 'Newsletter' : key === 'ap' ? 'Appointment' : 'Message', APPR = 'This email address needs my approval first. Press Request approval; the request reaches me by email. Once I approve it, send the OTP.';
+    const showReq = on => { reqB.hidden = !on; }; okB.textContent = tr(VL); reB.textContent = tr('Resend');
     let tok = '', exp = 0, vEmail = '', vName = '', timer = 0, cool = 0;
     const lock = on => {
       [...form.elements].forEach(el => { if (el === emailEl || el === nameEl || box.contains(el)) return; if (el.type === 'submit') { el.disabled = false; el.classList.toggle('otp-locked', on); el.setAttribute('aria-disabled', on ? 'true' : 'false'); return; } el.disabled = on; });
@@ -1185,30 +1188,29 @@ else (function loop() {
     const tick = (b, txt) => { b.classList.remove('sending'); b.classList.add('done'); b.innerHTML = '<span class="apl">' + TICK + '</span>'; b.firstChild.append(tr(txt)); };
     const finish = (b, ok, lab, doneTxt) => { b.classList.remove('sending'); if (!ok) { clear(b, lab); return Promise.resolve(); } tick(b, doneTxt); return new Promise(r => setTimeout(() => { clear(b, lab); r(); }, 1000)); };
     const live = () => tok && Date.now() < exp;
-    function unfreeze() { clearInterval(cool); clear(okB, tr('Verify')); clear(reB, tr('Resend')); inp.disabled = false; inp.placeholder = '000000'; inp.value = ''; okB.disabled = false; okB.classList.remove('frozen'); reB.classList.remove('frozen'); }
+    function unfreeze() { clearInterval(cool); clear(okB, tr(VL)); clear(reB, tr('Resend')); inp.disabled = false; inp.placeholder = '000000'; inp.value = ''; okB.disabled = false; okB.classList.remove('frozen'); reB.classList.remove('frozen'); }
     function freeze() { clearInterval(cool); ver.hidden = false; sendB.hidden = true; inp.value = ''; inp.placeholder = '------'; inp.disabled = true; tick(okB, 'Verified'); okB.disabled = true; okB.classList.add('frozen'); clear(reB, tr('Resend')); reB.disabled = true; reB.classList.add('frozen'); }
     function idle(msg, cls, fromPeer) {
-      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; lock(true); form.classList.remove('otp-ok-on'); say(msg || MAND(key), msg ? cls : 'warn'); sendB.disabled = !valid(emailNow());
-      if (!fromPeer && was) Object.keys(peers).forEach(k => { if (k !== key) peers[k].drop(msg, cls); });
+      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; showReq(false); lock(true); form.classList.remove('otp-ok-on'); say(msg || MAND(key), msg ? cls : 'warn'); sendB.disabled = !valid(emailNow());
+      if (!fromPeer && was) Object.keys(peers).forEach(k => { if (k !== key && NLK(k) === NLK(key)) peers[k].drop(msg, cls); });
     }
     function accept(t, x, name, email, fromPeer) {
       tok = t; exp = x; vEmail = email.toLowerCase(); vName = name; nameEl.value = name; emailEl.value = email;
       freeze(); lock(false);
-      say(NLK(key) ? '✓ Name and email are now verified. You can subscribe, send messages or book an appointment for the next 20 minutes.' : '✓ Name and email are now verified. You can book the appointment or send messages for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
+      say(NLK(key) ? '✓ Email verified and subscribed. Thank you!' : '✓ Name and email are now verified. You can book the appointment or send messages for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
       clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
-      if (!fromPeer) Object.keys(peers).forEach(k => { if (k !== key) peers[k].adopt(t, x, name, email); });
+      if (!fromPeer) Object.keys(peers).forEach(k => { if (k !== key && NLK(k) === NLK(key)) peers[k].adopt(t, x, name, email); });
     }
     function cooldown() { clearInterval(cool); let n = 30; reB.disabled = true; reB.textContent = tr('Resend') + ' (' + n + ')'; cool = setInterval(() => { n--; if (n <= 0) { clearInterval(cool); reB.disabled = false; reB.textContent = tr('Resend'); } else reB.textContent = tr('Resend') + ' (' + n + ')'; }, 1000); }
     async function sendOtp(btn) {
       const e = emailNow(), lab = btn === sendB ? 'Send OTP' : 'Resend';
       if (!valid(e)) { say('Enter a valid email address.', 'bad'); return; }
-      if (blockedEmail(e)) { say('This email address cannot be used here.', 'bad'); return; }
       sendB.disabled = reB.disabled = true; clearInterval(cool); start(btn, tr('Sending...')); say('');
       let ok = false, msg = '';
       try {
-        const r = await post({ kind: 'otp', email: e });
+        const r = await post({ kind: 'otp', email: e, purpose: NLK(key) ? 'subscribe' : '' });
         if (r.ok) ok = true;
-        else msg = r.error === 'blocked' ? 'This email address cannot be used here.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.';
+        else msg = r.error === 'blocked' ? (showReq(true), APPR) : r.error === 'subscribed' ? 'This email is already subscribed.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.';
       } catch (err) { msg = 'Could not send the OTP. Please try again.'; }
       await finish(btn, ok, tr(lab), 'Sent');
       if (live()) return;
@@ -1216,13 +1218,27 @@ else (function loop() {
       else { say(msg, 'bad'); sendB.disabled = !valid(emailNow()); reB.disabled = false; }
     }
     sendB.addEventListener('click', () => sendOtp(sendB)); reB.addEventListener('click', () => sendOtp(reB));
+    reqB.addEventListener('click', async () => {
+      const e = emailNow(), n = nameEl.value.trim();
+      if (!valid(e)) { say('Enter a valid email address.', 'bad'); return; }
+      if (!n) { say('Enter your name first.', 'bad'); nameEl.focus(); return; }
+      reqB.disabled = true; start(reqB, tr('Sending...')); let r = null; try { r = await post({ kind: 'access', email: e, name: n, purpose: PURPOSE }); } catch (err) { /* network */ }
+      await finish(reqB, !!(r && r.ok), tr('Request approval'), 'Sent'); reqB.disabled = false;
+      if (r && r.ok) say(r.status === 'allowed' ? 'This address does not need approval. Send the OTP.' : 'Request sent. I will reply by email once I decide. Then come back here and send the OTP.', 'ok');
+      else say(r && r.error === 'declined' ? 'This address was declined recently.' : r && r.error === 'busy' ? 'Too many requests today. Please try again tomorrow.' : 'Could not send the request. Please try again.', 'bad');
+    });
     async function verify() {
       if (live()) return;
       const code = inp.value.replace(/\D/g, ''); if (code.length !== 6) { say('Enter the 6-digit OTP.', 'bad'); return; }
       okB.disabled = true; start(okB, tr('Verifying...')); let r = null, err = false;
       try { r = await post({ kind: 'verify', email: emailNow(), otp: code }); } catch (x) { err = true; }
+      if (r && r.ok && opts && opts.sub) {
+        start(okB, tr('Subscribing...')); const sOk = await opts.sub(r.token, emailNow(), nameEl.value.trim());
+        if (sOk) { accept(r.token, r.exp, nameEl.value, emailNow(), false); if (opts.done) opts.done(); } else { clear(okB, tr(VL)); idle('Verified, but could not subscribe. Please send a new OTP and try again.', 'bad'); }
+        return;
+      }
       if (r && r.ok) { accept(r.token, r.exp, nameEl.value, emailNow(), false); return; }
-      clear(okB, tr('Verify')); okB.disabled = false;
+      clear(okB, tr(VL)); okB.disabled = false;
       if (err || !r) say('Could not check the OTP. Please try again.', 'bad');
       else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
     }
@@ -1231,7 +1247,7 @@ else (function loop() {
     inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
     emailEl.addEventListener('input', () => {
       const e = emailNow(); if (live() && e.toLowerCase() === vEmail) return;
-      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) say('This email address cannot be used here.', 'bad'); else if (note.classList.contains('bad')) say(MAND(key), 'warn'); }
+      if (live() || !ver.hidden) idle(); else { sendB.disabled = !valid(e); if (e && blockedEmail(e)) { say(APPR, 'bad'); showReq(true); } else { showReq(false); if (note.classList.contains('bad')) say(MAND(key), 'warn'); } }
     });
     form.addEventListener('reset', () => setTimeout(() => { if (live()) { emailEl.value = vEmail; nameEl.value = vName; } else idle(); }, 0));
     peers[key] = { adopt: (t, x, name, email) => { if (live() && vEmail === email.toLowerCase()) { tok = t; exp = x; return; } accept(t, x, name, email, true); }, drop: (m, c) => idle(m, c, true) };
@@ -1243,29 +1259,16 @@ else (function loop() {
   /* ---------- Newsletter: form at the bottom of this page, plus a pop-up on the first visit (10 s, X, Esc or swipe down to close) ---------- */
   const store = { get: k => { try { return localStorage.getItem(k); } catch (err) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (err) { /* storage unavailable */ } } };
   const subscribed = () => store.get('nl-sub') === '1';
-  async function subscribe(key, form, emailEl, nameEl, btn, stat) {
-    const t = window.__otp[key] && window.__otp[key].token(), e = emailEl.value.trim();
-    if (!t) { toast('Verify email to proceed with Subscription - Anandu', 4200); return false; }
-    btn.disabled = true; const lab = btn.textContent; btn.textContent = tr('Subscribing...'); stat.textContent = ''; stat.className = 'fstat';
-    let r = null; try { r = await post({ kind: 'subscribe', email: e, vtoken: t, website: '' }); } catch (err) { /* network */ }
-    btn.disabled = false; btn.textContent = lab;
-    if (r && r.ok) { store.set('nl-sub', '1'); stat.textContent = tr('You are subscribed.'); stat.className = 'fstat ok'; return true; }
-    stat.textContent = tr(r && r.error === 'blocked' ? 'This email address cannot be used here.' : r && r.error === 'unverified' ? 'Verification expired. Verify your email again.' : 'Could not subscribe. Please try again.'); stat.className = 'fstat bad'; return false;
-  }
+  const subOk = async (t, e, n) => { let r = null; try { r = await post({ kind: 'subscribe', email: e, name: n, vtoken: t, website: '' }); } catch (err) { /* network */ } if (r && r.ok) { store.set('nl-sub', '1'); return true; } return false; };
   const nlForm = $('#nl-form');
-  if (nlForm) {
-    const st = $('#nl-stat'), sb = $('#nl-send');
-    nlForm.addEventListener('submit', async e => { e.preventDefault(); if (await subscribe('nl', nlForm, $('#nl-email'), $('#nl-name'), sb, st)) { sb.textContent = tr('Subscribed'); sb.disabled = true; } });
-    if (subscribed()) st.textContent = tr('This browser is already subscribed. You can subscribe another address below.');
-  }
   const pop = document.createElement('div'); pop.className = 'nl-pop'; pop.id = 'nl-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', tr('Subscribe to my newsletter')); pop.hidden = true;
   pop.innerHTML = '<i class="nl-grab" aria-hidden="true"></i><button type="button" class="nl-x" aria-label="Close">&times;</button><h3 class="nl-t"></h3><p class="nl-p"></p>'
     + '<form class="cform" id="np-form" novalidate><div class="frow"><label for="np-name"></label><input id="np-name" type="text" autocomplete="name"></div><div class="frow"><label for="np-email"></label><input id="np-email" type="email" autocomplete="email" required></div>'
-    + '<div class="fact"><button class="btn" type="submit" id="np-send"></button><span class="fstat" id="np-stat" role="status" aria-live="polite"></span></div></form><div class="nl-bar" aria-hidden="true"><i></i></div>';
+    + '</form><div class="nl-bar" aria-hidden="true"><i></i></div>';
   document.body.appendChild(pop);
   $('.nl-t', pop).textContent = tr('Subscribe to my newsletter'); $('.nl-p', pop).textContent = tr('News and information by email. Your email is checked with a one-time code.');
-  $('label[for="np-name"]', pop).textContent = tr('Your name'); $('label[for="np-email"]', pop).textContent = tr('Your email'); $('#np-send', pop).textContent = tr('Subscribe');
-  gate('nl', nlForm, $('#nl-email'), $('#nl-name')); gate('np', $('#np-form'), $('#np-email'), $('#np-name'));
+  $('label[for="np-name"]', pop).textContent = tr('Your name'); $('label[for="np-email"]', pop).textContent = tr('Your email');
+  gate('nl', nlForm, $('#nl-email'), $('#nl-name'), { sub: subOk }); gate('np', $('#np-form'), $('#np-email'), $('#np-name'), { sub: subOk, done: () => setTimeout(closePop, 3000) });
   let popOpen = false, left = 10000, last = 0, raf = 0, hold = false, engaged = false;
   const bar = $('.nl-bar i', pop);
   const closePop = () => { if (!popOpen) return; popOpen = false; cancelAnimationFrame(raf); pop.classList.remove('show'); pop.style.transform = ''; setTimeout(() => { pop.hidden = true; }, 450); };
@@ -1280,8 +1283,6 @@ else (function loop() {
   pop.addEventListener('touchstart', e => { hold = true; if (e.target.closest('input, button, a')) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; pop.style.transition = 'none'; }, { passive: true });
   pop.addEventListener('touchmove', e => { if (y0 === null) return; dy = Math.max(0, e.touches[0].clientY - y0); pop.style.transform = 'translateY(' + dy + 'px)'; }, { passive: true });
   pop.addEventListener('touchend', () => { hold = false; if (y0 === null) return; pop.style.transition = ''; if (dy > 70) closePop(); else pop.style.transform = ''; y0 = null; });
-  const pf = $('#np-form'), ps = $('#np-stat'), pb = $('#np-send');
-  pf.addEventListener('submit', async e => { e.preventDefault(); if (await subscribe('np', pf, $('#np-email'), $('#np-name'), pb, ps)) { pb.textContent = tr('Subscribed'); pb.disabled = true; setTimeout(closePop, 2600); } });
   setTimeout(openPop, 2500);
 })();
 /* @endpagestamp */
