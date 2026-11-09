@@ -245,6 +245,7 @@ function otpSend_(p) {
       htmlBody: mail_('Email verification', 'Your OTP is <span style="display:inline-block;margin-left:4px;padding:6px 14px;background:#eef5fd;border:1px solid #cfe0f5;border-radius:8px;font-size:26px;letter-spacing:.28em;font-weight:bold;color:#1f4e9c">' + code + '</span>', [], [],
         'This is system generated mail and do not respond here. The OTP is valid for ' + (OTP_TTL_SEC / 60) + ' minutes. If you did not ask for it, ignore this email.') });
   } catch (x) { console.error('otp mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
+  if (p.purpose === 'subscribe') { try { var pid = subId_(email), po = pendGet_(pid); props.setProperty('PEND_' + pid, JSON.stringify({ e: email, t: po ? po.t : Date.now(), l: Date.now() })); } catch (x2) { } }   /* asked for an OTP to subscribe, not finished yet */
   return json_({ ok: true });
 }
 function otpVerify_(p) {
@@ -443,6 +444,7 @@ function subscribe_(p) {
   if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
   if (!tokenOk_(email, p.vtoken)) return json_({ ok: false, error: 'unverified' });   /* same email OTP as the message and appointment forms */
   var id = subId_(email), prev = subGet_(id), nm = String(p.name || '').trim().slice(0, 80) || (prev && prev.n) || '';
+  PropertiesService.getScriptProperties().deleteProperty('PEND_' + id);
   /* one record per email address (the id is a hash of the address), so re-subscribing never creates a duplicate */
   PropertiesService.getScriptProperties().setProperty('SUB_' + id, JSON.stringify({ e: email, n: nm, s: 'active', t: Date.now(), t0: (prev && (prev.t0 || prev.t)) || Date.now(), re: prev && prev.s === 'unsub' ? (prev.re || 0) + 1 : (prev && prev.re) || 0 }));
   if (OWNER_NOTIFY) { try { MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: 'New newsletter subscriber', body: 'New subscriber: ' + email + '\nAll subscribers: ' + adminUrl_(), htmlBody: mail_('New subscriber', '', [['Name', esc_(String(p.name || '').trim().slice(0, 80) || '(not given)')], ['Email', esc_(email)], ['Total', String(nlActive_().length)]], [['View subscribers', adminUrl_(), '#1f4e9c']], '') }); } catch (err2) { } }
@@ -520,24 +522,79 @@ function accessDecide_(p) {
   } catch (x) { }
   return page_(ok ? 'Approved' : 'Declined', (ok ? esc_(r.e) + ' can now be verified by OTP on the website. They were notified by email.' : esc_(r.e) + ' was declined. They were not notified.'), ok ? 'ok' : 'info');
 }
+/* ---- pending OTP verifications: someone asked for a subscription OTP but did not finish. The admin can approve them without the OTP. ---- */
+var PEND_KEEP_DAYS = 30;
+function pendGet_(id) { var raw = PropertiesService.getScriptProperties().getProperty('PEND_' + id); return raw ? JSON.parse(raw) : null; }
+function pendAll_() {
+  var props = PropertiesService.getScriptProperties(), all = props.getProperties(), out = [], cut = Date.now() - PEND_KEEP_DAYS * 86400000;
+  Object.keys(all).forEach(function (k) {
+    if (k.indexOf('PEND_') !== 0) return;
+    try {
+      var r = JSON.parse(all[k]); r.id = k.slice(5);
+      var cur = subGet_(r.id);
+      if (r.l < cut || (cur && cur.s === 'active')) { props.deleteProperty(k); return; }
+      out.push(r);
+    } catch (err) { }
+  });
+  return out.sort(function (a, b) { return b.t - a.t; });
+}
+function approvePend(sig, id) {
+  if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
+  var props = PropertiesService.getScriptProperties(), r = pendGet_(id);
+  if (!r) return false;
+  var prev = subGet_(id), email = r.e;
+  props.setProperty('SUB_' + id, JSON.stringify({ e: email, n: (prev && prev.n) || '', s: 'active', t: Date.now(), t0: (prev && (prev.t0 || prev.t)) || Date.now(), re: (prev && prev.re) || 0, ap: 1 }));
+  props.deleteProperty('PEND_' + id);
+  try {
+    var un = nlUnsubUrl_(id);
+    MailApp.sendEmail({ to: email, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: 'Your subscription is approved',
+      body: 'Hey, the Admin has noticed and approved your pending OTP verification. You are now subscribed to news and information from Anandu Prabhakaran.\n\nUnsubscribe at any time: ' + un + '\n\nCreated with love by Anandu Prabhakaran',
+      htmlBody: mail_('You are approved', 'Hey, the Admin has noticed and approved your pending OTP verification. You are now subscribed to news and information from Anandu Prabhakaran.', [], [],
+        'You are receiving this email because this address asked to subscribe on the website. <a href="' + un + '" style="color:#1f4e9c">Unsubscribe</a>') });
+  } catch (err) { }
+  return true;
+}
+function dismissPend(sig, id) {
+  if (sign_('admin', 'subs') !== sig || !id) throw new Error('Not allowed');
+  PropertiesService.getScriptProperties().deleteProperty('PEND_' + id);
+  return true;
+}
+/* Runs every day around 12:00. One email to the owner when someone has been waiting since an earlier day. */
+function pendingCheck() {
+  var startToday = new Date(Utilities.formatDate(new Date(), TZ, "yyyy-MM-dd'T'00:00:00+05:30")).getTime();
+  var waiting = pendAll_().filter(function (r) { return r.t < startToday; });
+  if (!waiting.length) return;
+  var list = waiting.slice(0, 15).map(function (r) { return [esc_(r.e), 'asked ' + Utilities.formatDate(new Date(r.t), TZ, 'd MMM, HH:mm')]; });
+  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: waiting.length + ' pending OTP verification' + (waiting.length === 1 ? '' : 's') + ' waiting for you',
+    body: waiting.length + ' people asked to subscribe but did not finish the OTP. Review and approve: ' + adminUrl_(),
+    htmlBody: mail_('Pending OTP verifications', '<b>' + waiting.length + '</b> ' + (waiting.length === 1 ? 'person asked' : 'people asked') + ' to subscribe but did not finish the OTP. You can approve them without the OTP, or dismiss them, on the subscribers page.', list, [['Review pending', adminUrl_(), '#1f4e9c']], 'This reminder comes at most once a day, around 12:00, while someone is waiting.') });
+}
+function setupPendingCheck() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'pendingCheck') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('pendingCheck').timeBased().everyDays(1).atHour(12).inTimezone(TZ).create();
+}
+
 function adminPage_(p) {
   if (sign_('admin', 'subs') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
-  var subs = nlActive_().sort(function (a, b) { return b.t - a.t; }), unsubs = nlAll_().filter(function (r) { return r.s === 'unsub'; }).sort(function (a, b) { return (b.u || 0) - (a.u || 0); }), props = PropertiesService.getScriptProperties().getProperties(), reqs = [];
+  var subs = nlActive_().sort(function (a, b) { return b.t - a.t; }), pends = pendAll_(), unsubs = nlAll_().filter(function (r) { return r.s === 'unsub'; }).sort(function (a, b) { return (b.u || 0) - (a.u || 0); }), props = PropertiesService.getScriptProperties().getProperties(), reqs = [];
   Object.keys(props).forEach(function (k) { if (k.indexOf('ACC_') === 0 && k.indexOf('ACCDAY_') !== 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); reqs.push(r); } catch (x) { } } });
   reqs.sort(function (a, b) { return b.t - a.t; });
   var fmt = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
   var th = 'text-align:left;padding:9px 10px;font-size:12px;color:#5b6675;border-bottom:2px solid #e1e8f3;white-space:nowrap', td = 'padding:10px;border-bottom:1px solid #eef2f8;font-size:14px;vertical-align:middle';
   var rows = subs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none;margin-right:12px">Write</a><button class="rm" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Unsubscribe</button></td></tr>'; }).join('');
+  var prow = pends.map(function (r) { return '<tr data-s="' + esc_(r.e.toLowerCase()) + '"><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><button class="ap" data-id="' + esc_(r.id) + '" style="border:1px solid #bfe0cc;background:#fff;color:#1e8e4e;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:bold;cursor:pointer;margin-right:8px">Approve</button><button class="dp" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Dismiss</button></td></tr>'; }).join('');
   var urows = unsubs.map(function (r, i) { return '<tr data-s="' + esc_((r.n + ' ' + r.e).toLowerCase()) + '"><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.n || '') + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t0 || r.t) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + (r.u ? fmt(r.u) : '') + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><a href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '" target="_top" style="color:#1f4e9c;font-size:12px;font-weight:bold;text-decoration:none;margin-right:12px">Write</a><button class="del" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Delete data</button></td></tr>'; }).join('');
   var rq = reqs.map(function (r) {
     var st = r.s === 'pending' ? '<a href="' + link_('acc_ok', r.id) + '" target="_top" style="color:#1e8e4e;font-weight:bold;text-decoration:none">Approve</a> &nbsp; <a href="' + link_('acc_no', r.id) + '" target="_top" style="color:#c5221f;font-weight:bold;text-decoration:none">Decline</a>' : '<span style="color:#5b6675">' + esc_(r.s) + '</span>';
     return '<tr><td style="' + td + '">' + esc_(r.n) + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + '">' + esc_(r.p) + '</td><td style="' + td + ';white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + '">' + st + '</td></tr>';
   }).join('');
   var data = JSON.stringify(subs.map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), 'Subscribed']; }).concat(unsubs.map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), 'Unsubscribed ' + (r.u ? fmt(r.u) : '')]; }))).replace(/</g, '\\u003c');
-  var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + unsubs.length + '</b> unsubscribed</span><span class="chip"><b>' + reqs.filter(function (r) { return r.s === 'pending'; }).length + '</b> pending request' + (reqs.filter(function (r) { return r.s === 'pending'; }).length === 1 ? '' : 's') + '</span></div>'
+  var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + pends.length + '</b> pending OTP</span><span class="chip"><b>' + unsubs.length + '</b> unsubscribed</span><span class="chip"><b>' + reqs.filter(function (r) { return r.s === 'pending'; }).length + '</b> pending request' + (reqs.filter(function (r) { return r.s === 'pending'; }).length === 1 ? '' : 's') + '</span></div>'
     + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px"><input id="q" class="tx" placeholder="Search name or email" style="flex:1;min-width:200px;width:auto"><button id="cp" class="b blue auto" style="padding:11px 20px">Copy all emails</button><button id="dl" class="b blue auto" style="padding:11px 20px">Download CSV</button><a class="b blue auto" style="text-decoration:none;padding:11px 20px" target="_top" href="' + link_('compose', 'new') + '">Write to subscribers</a></div>'
     + '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;align-items:center"><button id="rm15" class="b blue auto" style="padding:9px 18px;font-size:13px">Turn on 15th-of-month reminder</button><button id="rmt" class="b blue auto" style="padding:9px 18px;font-size:13px;background:#5b6675">Send a test reminder now</button><span class="hint">A reminder email comes to you on the 15th of every month.</span></div>'
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '"></th></tr></thead><tbody id="tb">' + (rows || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No subscribers yet.</td></tr>') + '</tbody></table></div>'
+    + '<h2 style="font-size:17px;margin:30px 0 8px">Pending OTP verification</h2><p class="sub" style="margin:0 0 10px">People who asked for a subscription code but did not enter it. Approve to subscribe them without the OTP (they get a confirmation email with an unsubscribe link), or dismiss. You get one reminder email a day around 12:00 while someone is waiting.</p>'
+    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Email</th><th style="' + th + '">Asked</th><th style="' + th + '"></th></tr></thead><tbody id="pb">' + (prow || '<tr><td colspan="3" style="' + td + ';color:#7a8594;text-align:center">Nobody is waiting.</td></tr>') + '</tbody></table></div>'
     + '<h2 style="font-size:17px;margin:30px 0 8px">Unsubscribed</h2><p class="sub" style="margin:0 0 10px">People who unsubscribed. Their name and email are kept here (one record per address, so there are no duplicates) and they do not receive newsletters. You can still write to one of them individually.</p>'
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">#</th><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">Subscribed</th><th style="' + th + '">Unsubscribed</th><th style="' + th + '"></th></tr></thead><tbody id="ub">' + (urows || '<tr><td colspan="6" style="' + td + ';color:#7a8594;text-align:center">Nobody has unsubscribed.</td></tr>') + '</tbody></table></div>'
     + '<h2 style="font-size:17px;margin:30px 0 8px">Approval requests</h2><p class="sub" style="margin:0 0 10px">People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP.</p>'
@@ -548,6 +605,7 @@ function adminPage_(p) {
     + 'document.getElementById("dl").onclick=function(){var q=function(s){return "\\""+String(s).replace(/"/g,"\\"\\"")+"\\"";};var c="Name,Email,Subscribed on,Status\\n"+D.map(function(x){return x.map(q).join(",");}).join("\\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/csv"}));a.download="subscribers.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);};'
     + 'function act(id,fn,ok){document.getElementById(id).onclick=function(){var b=this,t=b.textContent;b.disabled=true;google.script.run.withSuccessHandler(function(){b.disabled=false;b.textContent=ok;setTimeout(function(){b.textContent=t;},2200);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="That did not work. Try again.";})[fn](' + JSON.stringify(p.sig) + ');};}act("rm15","enableReminder","Reminder is on");act("rmt","testReminder","Test sent");'
     + 'tb.onclick=function(e){var b=e.target.closest(".rm");if(!b||!confirm("Unsubscribe this person? Their details stay in the Unsubscribed list."))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not update. Try again.";}).removeSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
+    + 'document.getElementById("pb").onclick=function(e){var b=e.target.closest(".ap,.dp");if(!b)return;var ap=b.className==="ap";if(ap&&!confirm("Subscribe this person without the OTP and email them?"))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);m.className="msg";m.textContent=ap?"Approved and emailed. Reload to see them in the subscribers list.":"Dismissed.";}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="That did not work. Try again.";})[ap?"approvePend":"dismissPend"](' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
     + 'document.getElementById("ub").onclick=function(e){var b=e.target.closest(".del");if(!b||!confirm("Delete this person\'s saved name and email permanently?"))return;b.disabled=true;google.script.run.withSuccessHandler(function(){var tr=b.closest("tr");tr.parentNode.removeChild(tr);}).withFailureHandler(function(){b.disabled=false;m.className="msg bad";m.textContent="Could not delete. Try again.";}).deleteSub(' + JSON.stringify(p.sig) + ',b.getAttribute("data-id"));};'
     + '})();<\/script>';
   return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information. Newest first.', inner), 'Subscribers');
@@ -579,6 +637,7 @@ function monthlyReminder() { reminderMail_(); }
 function setupMonthlyReminder() {
   ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'monthlyReminder') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('monthlyReminder').timeBased().onMonthDay(15).atHour(9).inTimezone(TZ).create();
+  setupPendingCheck();
 }
 // Called from the subscribers page.
 function enableReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); setupMonthlyReminder(); return true; }
