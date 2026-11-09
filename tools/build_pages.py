@@ -1,4 +1,4 @@
-import os
+import os, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)   # the repository root: the published site lives here
@@ -70,6 +70,28 @@ LITE = True   # True = only the pages in LIVE_PAGES are built as real pages; eve
 LIVE_PAGES = ('home.html', 'index.html', 'about.html', 'research.html', 'publications.html', 'workshops.html', 'contact.html', 'gallery.html')
 
 
+INST_LINKS = {'IISER Kolkata': 'https://www.iiserkol.ac.in/', 'IIT Roorkee': 'https://www.iitr.ac.in/'}
+_INST_RE = re.compile('|'.join(re.escape(k) for k in INST_LINKS))
+_INST_SKIP = ('a', 'script', 'style', 'title', 'button', 'option', 'textarea', 'select')
+
+
+def inst_links(html):
+    """Link every visible mention of IISER Kolkata / IIT Roorkee to the institute home page (skips text already inside a link, button, script etc.)."""
+    out, depth = [], 0
+    for tok in re.split(r'(<[^>]+>)', html):
+        if tok.startswith('<'):
+            m = re.match(r'<(/?)([a-zA-Z0-9]+)', tok)
+            if m and m.group(2).lower() in _INST_SKIP and not tok.endswith('/>'):
+                depth += -1 if m.group(1) else 1
+                depth = max(depth, 0)
+            out.append(tok)
+        elif depth == 0 and tok.strip():
+            out.append(_INST_RE.sub(lambda m: f'<a class="inst" href="{INST_LINKS[m.group(0)]}" target="_blank" rel="noopener">{m.group(0)}</a>', tok))
+        else:
+            out.append(tok)
+    return ''.join(out)
+
+
 def page(file, pid, title, desc, body, html_class=''):
     if LITE and file not in LIVE_PAGES:
         stub = ('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -81,6 +103,7 @@ def page(file, pid, title, desc, body, html_class=''):
         with open(os.path.join(OUT, file), 'w', encoding='utf-8') as f:
             f.write(stub)
         return
+    body = inst_links(body)
     cls = f' class="{html_class}"' if html_class else ''
     html = f'''<!DOCTYPE html>
 <html lang="en" data-theme="dark"{cls}>
@@ -94,15 +117,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261109h">
+<link rel="stylesheet" href="style.css?v=20261109i">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261109h"></script>
-<script src="script.js?v=20261109h"></script>
+<script src="i18n.js?v=20261109i"></script>
+<script src="script.js?v=20261109i"></script>
 </body>
 </html>
 '''

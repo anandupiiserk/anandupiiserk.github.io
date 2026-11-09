@@ -1130,3 +1130,7 @@ html.wmk .gimg::after, html.wmk .wk-pics .wmw::after { content: var(--wm-text); 
 /* My Space button fills while its photos load in the background */
 .seg .seg-my.filling::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 999px; background: color-mix(in srgb, var(--my) 34%, transparent); transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform .5s var(--ease); }
 .seg .seg-my.filling[aria-pressed="true"]::after { background: rgba(255, 255, 255, .38); }
+
+/* Institute links (IISER Kolkata, IIT Roorkee): bold, same size; on hover the colour changes and an underline sweeps in from left to right */
+a.inst { font: inherit; font-weight: 700; color: inherit; text-decoration: none; background: linear-gradient(var(--a), var(--a)) 0 100% / 0 2px no-repeat; transition: background-size .5s var(--ease), color .3s; padding-bottom: 1px; }
+a.inst:hover, a.inst:focus-visible { color: var(--a); background-size: 100% 2px; }
