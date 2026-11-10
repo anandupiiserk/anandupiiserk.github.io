@@ -144,7 +144,7 @@ MSpace_014_14 | A large ring-shaped canopy of wooden slats over a fountain round
 MSpace_014_15 | The Philippidès athletics stadium in Montpellier, with its blue synthetic track and covered grandstand. The stadium was inaugurated in 1988.
 MSpace_014_16 | 15 November 2025: a night-time light show projected on the Opéra Comédie at Place de la Comédie, with vintage trams and street scenes and crowds filming with their phones.
 MSpace_014_17 | 15 November 2025: the same event on the Arc de Triomphe of Montpellier (Porte du Peyrou), lit red, with the projected text "Gare de Montpellier Saint-Roch".
-MSpace_014_18 | September 2025 (exact date not given): Turkish food at Grill House (Falafel & Kebab) in Montpellier, with doner meat, salad, fries and sauces.
+MSpace_014_18 | 8 September 2025: Turkish food at Grill House (Falafel & Kebab) in Montpellier, with doner meat, salad, fries and sauces.
 MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
 MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
 MSpace_016_01 | Puttu and egg curry, cooked at home.
