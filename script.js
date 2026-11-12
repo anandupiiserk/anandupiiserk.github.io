@@ -65,7 +65,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const page = document.body.dataset.page || 'home';
 const root = document.documentElement;
 const LS = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
-const LANGS = [{ c: 'en', n: 'English', s: 'EN' }, { c: 'ml', n: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', s: 'ML' }, { c: 'hi', n: '\u0939\u093f\u0928\u094d\u0926\u0940', s: 'HI' }, { c: 'fr', n: 'Fran\u00e7ais', s: 'FR' }, { c: 'de', n: 'Deutsch', s: 'DE' }, { c: 'ar', n: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', s: 'AR' }, { c: 'es', n: 'Espa\u00f1ol', s: 'ES' }, { c: 'pt', n: 'Portugu\u00eas', s: 'PT' }, { c: 'zh', n: '\u4e2d\u6587', s: 'ZH' }, { c: 'ja', n: '\u65e5\u672c\u8a9e', s: 'JA' }];
+const LANGS = [{ c: 'en', n: 'English', s: 'EN' }, { c: 'ml', n: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', s: 'ML' }, { c: 'hi', n: '\u0939\u093f\u0928\u094d\u0926\u0940', s: 'HI' }, { c: 'fr', n: 'Fran\u00e7ais', s: 'FR' }, { c: 'de', n: 'Deutsch', s: 'DE' }, { c: 'ar', n: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', s: 'AR' }, { c: 'es', n: 'Espa\u00f1ol', s: 'ES' }, { c: 'pt', n: 'Portugu\u00eas', s: 'PT' }, { c: 'zh', n: '\u4e2d\u6587', s: 'ZH' }, { c: 'ja', n: '\u65e5\u672c\u8a9e', s: 'JA' }, { c: 'sv', n: 'Svenska', s: 'SV' }];
 let LANG = 'en'; const DICT = window.I18N || {};
 const norm = s => String(s).replace(/\s+/g, ' ').trim();
 const KEEP = /^(Blogger|Anandu Prabhakaran|\S+@\S+|anandu|\.fire|LAT|LON|FWI|[a-z.]+\.(com|net|org)|Anandu P\.|anandu\.fire|GitHub|LinkedIn|ORCID|ResearchGate|Google Scholar|X|WRF-SFIRE|CMIP6|CoEDMM, IIT Roorkee|IIT Roorkee|CEFE-CNRS|DOI|you@example\.com)$/;
@@ -1118,6 +1118,7 @@ else (function loop() {
   $$('input[name="aplen"]', root).forEach(r => r.addEventListener('change', () => { LEN = lenNow(); chosen = null; sel.textContent = tr('No slot chosen yet'); drawSlots(); }));
   $('#ap-prev').addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); drawCal(); });
   $('#ap-next').addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); drawCal(); });
+  addEventListener('langchange', () => { drawCal(); drawSlots(); });
   $('#ap-form').addEventListener('submit', e => {
     e.preventDefault(); const say = (m, bad) => { stat.textContent = tr(m); stat.classList.toggle('bad', !!bad); };
     const name = $('#ap-name').value.trim(), email = $('#ap-email').value.trim(), topic = $('#ap-topic').value.trim();
@@ -1217,7 +1218,7 @@ else (function loop() {
       } catch (err) { msg = 'Could not send the OTP. Please try again.'; }
       await finish(btn, ok, tr(lab), 'Sent');
       if (live()) return;
-      if (ok) { ver.hidden = false; sendB.hidden = true; say('OTP sent to ' + e + '. Enter OTP to proceed.'); inp.focus(); cooldown(); }
+      if (ok) { ver.hidden = false; sendB.hidden = true; say(tr('OTP sent to {email}. Enter OTP to proceed.').replace('{email}', e)); inp.focus(); cooldown(); }
       else { say(msg, 'bad'); sendB.disabled = !valid(emailNow()); reB.disabled = false; }
     }
     sendB.addEventListener('click', () => sendOtp(sendB)); reB.addEventListener('click', () => sendOtp(reB));
@@ -1248,7 +1249,7 @@ else (function loop() {
       if (r && r.ok) { accept(r.token, r.exp, nameEl.value, emailNow(), false); return; }
       clear(okB, tr(VL)); okB.disabled = false;
       if (err || !r) say('Could not check the OTP. Please try again.', 'bad');
-      else say(r.error === 'wrong' ? 'Wrong OTP. ' + r.left + ' tries left.' : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
+      else say(r.error === 'wrong' ? tr('Wrong OTP. {n} tries left.').replace('{n}', r.left) : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
     }
     form.addEventListener('click', e => { const sb = e.target.closest && e.target.closest('button[type="submit"]'); if (sb && form.contains(sb) && !live()) { e.preventDefault(); e.stopImmediatePropagation(); toast(NLK(key) ? 'Verify email to proceed with Subscription - Anandu' : key === 'ap' ? 'Verify email to proceed with Appointment - Anandu' : 'Verify email to proceed with Message - Anandu', 4200); } }, true);
     okB.addEventListener('click', verify); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
@@ -1428,10 +1429,19 @@ document.addEventListener('keydown', e => {
 });
 
 /* Language engine: collects every text node, label and heading once, then swaps in the dictionary entry (i18n.js). */
-const I = { nodes: [], attrs: [], splits: [], title: norm(document.title), desc: '' };
+const I = { nodes: [], attrs: [], splits: [], blocks: [], title: norm(document.title), desc: '' };
+const INSTA = {}, escH = x => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+/* A sentence that holds an institute link is translated as one piece, then the institute names are linked again. */
+function blockApply(o, t) { const s = t(o.src); o.el.innerHTML = s === o.src ? o.html0 : escH(s).replace(/IISER Kolkata|IIT Roorkee/g, m => INSTA[m] || m); }
 function collect(root, init) {
-  const out = { nodes: [], attrs: [] };
-  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode(n) { const p = n.parentElement; if (!p || p.closest('script,style,noscript,canvas,[data-i18n-skip],[data-dyn],[data-split],.nt')) return NodeFilter.FILTER_REJECT; return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; } });
+  const out = { nodes: [], attrs: [], blocks: [] };
+  $$('a.inst', root).forEach(a => {
+    const p = a.parentElement; if (!p || p.hasAttribute('data-i18n-block') || p.closest('script,style,noscript,canvas,[data-i18n-skip],[data-dyn],[data-split],.nt')) return;
+    if (![...p.childNodes].every(c => c.nodeType === 3 || (c.nodeType === 1 && (c.matches('a.inst') || c.matches('span[translate="no"]'))))) return;
+    $$('a.inst', p).forEach(x => { if (!INSTA[x.textContent]) INSTA[x.textContent] = x.outerHTML; });
+    p.setAttribute('data-i18n-block', ''); const o = { el: p, html0: p.innerHTML, src: norm(p.textContent) }; I.blocks.push(o); out.blocks.push(o);
+  });
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode(n) { const p = n.parentElement; if (!p || p.closest('script,style,noscript,canvas,[data-i18n-skip],[data-dyn],[data-split],.nt,[data-i18n-block]')) return NodeFilter.FILTER_REJECT; return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; } });
   let n; while ((n = w.nextNode())) { const o = { n, src: norm(n.nodeValue), pre: n.nodeValue.match(/^\s*/)[0], post: n.nodeValue.match(/\s*$/)[0] }; I.nodes.push(o); out.nodes.push(o); }
   $$('[aria-label],[title],[alt]', root).forEach(el => {
     if (el.closest('[data-dyn],[data-i18n-skip]') || el.hasAttribute('data-split')) return;
@@ -1447,13 +1457,15 @@ collect(document.body, true);
 /* Content added after load (the gallery) is registered and translated here. */
 window.__i18nAdd = root => {
   const r = collect(root), d = DICT[LANG] || {}, t = s => (LANG === 'en' || d[s] === undefined ? s : d[s]);
-  r.nodes.forEach(o => { o.n.nodeValue = o.pre + t(o.src) + o.post; }); r.attrs.forEach(o => o.el.setAttribute(o.a, t(o.src)));
+  r.nodes.forEach(o => { o.n.nodeValue = o.pre + t(o.src) + o.post; }); r.blocks.forEach(o => blockApply(o, t)); r.attrs.forEach(o => o.el.setAttribute(o.a, t(o.src)));
 };
 const EXTRA_KEYS = ['Switch to light theme', 'Switch to dark theme', 'Open menu', 'Close menu', 'Text size', 'Decrease text size', 'Increase text size', 'Language', 'Full screen (F)', 'Exit full screen (F)', 'Link copied to clipboard', 'Email address copied', 'Voice started', 'Voice paused. Click to resume, double click to restart.', 'Voice resumed', 'Restarting from the beginning', 'Read this page aloud. Click to pause or resume, double click to restart.', 'No voice for this language is installed on this device. The default voice will be used.'];
-window.__i18nKeys = () => [...new Set([...I.nodes.map(o => o.src), ...I.attrs.map(o => o.src), ...I.splits.map(e => norm(e.dataset.src)), ...I.title.split(' | '), I.desc, ...EXTRA_KEYS])].filter(Boolean);
+window.__i18nKeys = () => [...new Set([...I.nodes.map(o => o.src), ...I.blocks.map(o => o.src), ...I.attrs.map(o => o.src), ...I.splits.map(e => norm(e.dataset.src)), ...I.title.split(' | '), I.desc, ...EXTRA_KEYS])].filter(Boolean);
 
 function applyThemeLabels() { const b = $('#theme'), t = root.dataset.theme; if (b) { const l = tr(t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'); b.setAttribute('aria-label', l); b.title = l; } }
 function refreshDyn() {
+  const apSel = document.getElementById('ap-sel');
+  if (apSel) ['No slot chosen yet', 'This slot is booked or unavailable. Please choose another time.'].forEach(k => { if ([k, ...Object.values(DICT).map(d => d[k])].includes(apSel.textContent)) apSel.textContent = tr(k); });
   applyThemeLabels(); $('#burger').setAttribute('aria-label', tr(document.body.classList.contains('menu-open') ? 'Close menu' : 'Open menu'));
   const sz = $('.sz'); if (sz) sz.setAttribute('aria-label', tr('Text size'));
   [['#sz-dec', 'Decrease text size'], ['#sz-inc', 'Increase text size']].forEach(([q, k]) => { const b = $(q); b.setAttribute('aria-label', tr(k)); b.title = tr(k); });
@@ -1466,12 +1478,14 @@ function applyLang(code) {
   LANG = code; root.lang = code; root.dir = code === 'ar' ? 'rtl' : 'ltr'; LS.set('lang', code);
   const d = DICT[code] || {}, t = s => (code === 'en' || d[s] === undefined ? s : d[s]);
   I.nodes.forEach(o => { o.n.nodeValue = o.pre + t(o.src) + o.post; });
+  I.blocks.forEach(o => blockApply(o, t));
   I.attrs.forEach(o => o.el.setAttribute(o.a, t(o.src)));
   I.splits.forEach(el => renderSplit(el, t(norm(el.dataset.src))));
   document.title = I.title.split(' | ').map(p => (KEEP.test(p) ? p : t(p))).join(' | ');
   if (I.meta) I.meta.content = t(I.desc);
   $$('[data-lang]').forEach(b => b.setAttribute('aria-checked', b.dataset.lang === code));
   refreshDyn(); fitNav(); if (window.__segPlace) window.__segPlace(); if (window.__voiceLang) window.__voiceLang();
+  dispatchEvent(new Event('langchange'));
   if (code !== 'en') {
     const miss = window.__i18nKeys().filter(k => /[A-Za-z]{3,}/.test(k) && !KEEP.test(k) && d[k] === undefined);
     if (miss.length) console.info('[i18n] no ' + code + ' translation yet for:', miss);
@@ -1494,16 +1508,17 @@ function applyLang(code) {
   const synth = window.speechSynthesis;
   if (!synth || typeof SpeechSynthesisUtterance === 'undefined') { btn.style.display = 'none'; return; }
   const V = {
-    en: { tag: 'en-IN', intro: 'Hello, this is Anandu Prabhakaran. Welcome to my website. I am your personal voice assistant, and I will help you understand what is here.', here: 'Currently, you are in the {tab} tab. Here is the key information from this tab.', avail: 'This website is available in English, Malayalam, Hindi, French, German, Arabic, Spanish, Portuguese, Chinese and Japanese. Select a language from the language button, and the voice will switch to it automatically.', tip: 'Press the voice button once to pause or resume, and twice to start again from the beginning.' },
-    ml: { tag: 'ml-IN', intro: 'നമസ്കാരം, ഞാൻ ആനന്ദു പ്രഭാകരൻ. എന്റെ വെബ്സൈറ്റിലേക്ക് സ്വാഗതം. ഇവിടെയുള്ള വിവരങ്ങൾ മനസ്സിലാക്കാൻ സഹായിക്കുന്ന നിങ്ങളുടെ വ്യക്തിഗത വോയ്സ് അസിസ്റ്റന്റാണ് ഞാൻ.', here: 'ഇപ്പോൾ നിങ്ങൾ {tab} ടാബിലാണ്. ഈ ടാബിലെ പ്രധാന വിവരങ്ങൾ ഇതാ.', avail: 'ഈ വെബ്സൈറ്റ് ഇംഗ്ലീഷ്, മലയാളം, ഹിന്ദി, ഫ്രഞ്ച്, ജർമ്മൻ, അറബിക്, സ്പാനിഷ്, പോർച്ചുഗീസ്, ചൈനീസ്, ജാപ്പനീസ് എന്നീ ഭാഷകളിൽ ലഭ്യമാണ്. ഭാഷാ ബട്ടണിൽ നിന്ന് ഒരു ഭാഷ തിരഞ്ഞെടുക്കുക, ശബ്ദം സ്വയമേവ ആ ഭാഷയിലേക്ക് മാറും.', tip: 'ശബ്ദ ബട്ടൺ ഒരു തവണ അമർത്തിയാൽ നിർത്തുകയോ തുടരുകയോ ചെയ്യാം; രണ്ടു തവണ അമർത്തിയാൽ തുടക്കം മുതൽ വീണ്ടും തുടങ്ങും.' },
-    hi: { tag: 'hi-IN', intro: 'नमस्ते, मैं आनंदु प्रभाकरन हूँ। मेरी वेबसाइट पर आपका स्वागत है। मैं आपका निजी वॉइस असिस्टेंट हूँ, जो यहाँ की जानकारी समझने में आपकी मदद करेगा।', here: 'अभी आप {tab} टैब में हैं। इस टैब की मुख्य जानकारी यह है।', avail: 'यह वेबसाइट अंग्रेज़ी, मलयालम, हिंदी, फ़्रेंच, जर्मन, अरबी, स्पेनिश, पुर्तगाली, चीनी और जापानी भाषाओं में उपलब्ध है। भाषा बटन से कोई भाषा चुनें, आवाज़ अपने आप उसी भाषा में बदल जाएगी।', tip: 'आवाज़ बटन को एक बार दबाने पर वह रुकेगा या फिर शुरू होगा, और दो बार दबाने पर शुरू से दोबारा चलेगा।' },
-    fr: { tag: 'fr-FR', intro: "Bonjour, je suis Anandu Prabhakaran. Bienvenue sur mon site. Je suis votre assistant vocal personnel et je vous aide à comprendre son contenu.", here: "Vous êtes actuellement dans l'onglet {tab}. Voici les informations essentielles de cet onglet.", avail: "Ce site est disponible en anglais, malayalam, hindi, français, allemand, arabe, espagnol, portugais, chinois et japonais. Choisissez une langue avec le bouton de langue et la voix changera automatiquement.", tip: "Appuyez une fois sur le bouton vocal pour mettre en pause ou reprendre, et deux fois pour recommencer depuis le début." },
-    de: { tag: 'de-DE', intro: 'Hallo, ich bin Anandu Prabhakaran. Willkommen auf meiner Website. Ich bin Ihr persönlicher Sprachassistent und helfe Ihnen, die Inhalte zu verstehen.', here: 'Sie befinden sich derzeit im Tab {tab}. Hier sind die wichtigsten Informationen aus diesem Tab.', avail: 'Diese Website ist auf Englisch, Malayalam, Hindi, Französisch, Deutsch, Arabisch, Spanisch, Portugiesisch, Chinesisch und Japanisch verfügbar. Wählen Sie über die Sprachtaste eine Sprache, und die Stimme wechselt automatisch.', tip: 'Einmal auf die Sprachtaste tippen pausiert oder setzt fort, zweimal tippen startet von vorn.' },
-    ar: { tag: 'ar-SA', intro: 'مرحباً، أنا أنندو برابهاكاران. أهلاً بكم في موقعي. أنا مساعدكم الصوتي الشخصي، وسأساعدكم على فهم محتويات الموقع.', here: 'أنتم الآن في تبويب {tab}. إليكم أهم المعلومات في هذا التبويب.', avail: 'الموقع متاح بالإنجليزية والمالايالامية والهندية والفرنسية والألمانية والعربية والإسبانية والبرتغالية والصينية واليابانية. اختاروا لغة من زر اللغة، وسيتحول الصوت إليها تلقائياً.', tip: 'اضغطوا زر الصوت مرة واحدة للإيقاف المؤقت أو المتابعة، ومرتين للبدء من جديد.' },
-    es: { tag: 'es-ES', intro: 'Hola, soy Anandu Prabhakaran. Bienvenido a mi sitio web. Soy su asistente de voz personal y le ayudaré a conocer su contenido.', here: 'Actualmente está en la pestaña {tab}. Esta es la información clave de esta pestaña.', avail: 'Este sitio está disponible en inglés, malayalam, hindi, francés, alemán, árabe, español, portugués, chino y japonés. Elija un idioma con el botón de idioma y la voz cambiará automáticamente.', tip: 'Pulse el botón de voz una vez para pausar o reanudar, y dos veces para empezar de nuevo desde el principio.' },
-    pt: { tag: 'pt-BR', intro: 'Olá, eu sou Anandu Prabhakaran. Bem-vindo ao meu site. Sou seu assistente de voz pessoal e vou ajudá-lo a conhecer o conteúdo.', here: 'No momento, você está na aba {tab}. Estas são as informações principais desta aba.', avail: 'Este site está disponível em inglês, malaiala, híndi, francês, alemão, árabe, espanhol, português, chinês e japonês. Escolha um idioma no botão de idioma e a voz mudará automaticamente.', tip: 'Toque no botão de voz uma vez para pausar ou continuar, e duas vezes para recomeçar do início.' },
-    zh: { tag: 'zh-CN', intro: '您好，我是 Anandu Prabhakaran。欢迎访问我的网站。我是您的个人语音助手，将帮助您了解这里的内容。', here: '您目前位于“{tab}”标签页。以下是该页面的关键信息。', avail: '本网站提供英语、马拉雅拉姆语、印地语、法语、德语、阿拉伯语、西班牙语、葡萄牙语、中文和日语。请通过语言按钮选择语言，语音将自动切换。', tip: '单击语音按钮可暂停或继续，双击则从头开始。' },
-    ja: { tag: 'ja-JP', intro: 'こんにちは、Anandu Prabhakaran です。私のウェブサイトへようこそ。私はあなた専用の音声アシスタントとして、ここにある内容の理解をお手伝いします。', here: '現在、「{tab}」タブをご覧です。このタブの重要な情報をお伝えします。', avail: 'このサイトは、英語、マラヤーラム語、ヒンディー語、フランス語、ドイツ語、アラビア語、スペイン語、ポルトガル語、中国語、日本語でご利用いただけます。言語ボタンで言語を選ぶと、音声も自動的に切り替わります。', tip: '音声ボタンを1回押すと一時停止または再開、2回押すと最初からやり直します。' }
+    en: { tag: 'en-IN', intro: 'Hello, this is Anandu Prabhakaran. Welcome to my website. I am your personal voice assistant, and I will help you understand what is here.', here: 'Currently, you are in the {tab} tab. Here is the key information from this tab.', avail: 'This website is available in English, Malayalam, Hindi, French, German, Arabic, Spanish, Portuguese, Chinese, Japanese and Swedish. Select a language from the language button, and the voice will switch to it automatically.', tip: 'Press the voice button once to pause or resume, and twice to start again from the beginning.' },
+    ml: { tag: 'ml-IN', intro: 'നമസ്കാരം, ഞാൻ ആനന്ദു പ്രഭാകരൻ. എന്റെ വെബ്സൈറ്റിലേക്ക് സ്വാഗതം. ഇവിടെയുള്ള വിവരങ്ങൾ മനസ്സിലാക്കാൻ സഹായിക്കുന്ന നിങ്ങളുടെ വ്യക്തിഗത വോയ്സ് അസിസ്റ്റന്റാണ് ഞാൻ.', here: 'ഇപ്പോൾ നിങ്ങൾ {tab} ടാബിലാണ്. ഈ ടാബിലെ പ്രധാന വിവരങ്ങൾ ഇതാ.', avail: 'ഈ വെബ്സൈറ്റ് ഇംഗ്ലീഷ്, മലയാളം, ഹിന്ദി, ഫ്രഞ്ച്, ജർമ്മൻ, അറബിക്, സ്പാനിഷ്, പോർച്ചുഗീസ്, ചൈനീസ്, ജാപ്പനീസ്, സ്വീഡിഷ് എന്നീ ഭാഷകളിൽ ലഭ്യമാണ്. ഭാഷാ ബട്ടണിൽ നിന്ന് ഒരു ഭാഷ തിരഞ്ഞെടുക്കുക, ശബ്ദം സ്വയമേവ ആ ഭാഷയിലേക്ക് മാറും.', tip: 'ശബ്ദ ബട്ടൺ ഒരു തവണ അമർത്തിയാൽ നിർത്തുകയോ തുടരുകയോ ചെയ്യാം; രണ്ടു തവണ അമർത്തിയാൽ തുടക്കം മുതൽ വീണ്ടും തുടങ്ങും.' },
+    hi: { tag: 'hi-IN', intro: 'नमस्ते, मैं आनंदु प्रभाकरन हूँ। मेरी वेबसाइट पर आपका स्वागत है। मैं आपका निजी वॉइस असिस्टेंट हूँ, जो यहाँ की जानकारी समझने में आपकी मदद करेगा।', here: 'अभी आप {tab} टैब में हैं। इस टैब की मुख्य जानकारी यह है।', avail: 'यह वेबसाइट अंग्रेज़ी, मलयालम, हिंदी, फ़्रेंच, जर्मन, अरबी, स्पेनिश, पुर्तगाली, चीनी, जापानी और स्वीडिश भाषाओं में उपलब्ध है। भाषा बटन से कोई भाषा चुनें, आवाज़ अपने आप उसी भाषा में बदल जाएगी।', tip: 'आवाज़ बटन को एक बार दबाने पर वह रुकेगा या फिर शुरू होगा, और दो बार दबाने पर शुरू से दोबारा चलेगा।' },
+    fr: { tag: 'fr-FR', intro: "Bonjour, je suis Anandu Prabhakaran. Bienvenue sur mon site. Je suis votre assistant vocal personnel et je vous aide à comprendre son contenu.", here: "Vous êtes actuellement dans l'onglet {tab}. Voici les informations essentielles de cet onglet.", avail: "Ce site est disponible en anglais, malayalam, hindi, français, allemand, arabe, espagnol, portugais, chinois, japonais et suédois. Choisissez une langue avec le bouton de langue et la voix changera automatiquement.", tip: "Appuyez une fois sur le bouton vocal pour mettre en pause ou reprendre, et deux fois pour recommencer depuis le début." },
+    de: { tag: 'de-DE', intro: 'Hallo, ich bin Anandu Prabhakaran. Willkommen auf meiner Website. Ich bin Ihr persönlicher Sprachassistent und helfe Ihnen, die Inhalte zu verstehen.', here: 'Sie befinden sich derzeit im Tab {tab}. Hier sind die wichtigsten Informationen aus diesem Tab.', avail: 'Diese Website ist auf Englisch, Malayalam, Hindi, Französisch, Deutsch, Arabisch, Spanisch, Portugiesisch, Chinesisch, Japanisch und Schwedisch verfügbar. Wählen Sie über die Sprachtaste eine Sprache, und die Stimme wechselt automatisch.', tip: 'Einmal auf die Sprachtaste tippen pausiert oder setzt fort, zweimal tippen startet von vorn.' },
+    ar: { tag: 'ar-SA', intro: 'مرحباً، أنا أنندو برابهاكاران. أهلاً بكم في موقعي. أنا مساعدكم الصوتي الشخصي، وسأساعدكم على فهم محتويات الموقع.', here: 'أنتم الآن في تبويب {tab}. إليكم أهم المعلومات في هذا التبويب.', avail: 'الموقع متاح بالإنجليزية والمالايالامية والهندية والفرنسية والألمانية والعربية والإسبانية والبرتغالية والصينية واليابانية والسويدية. اختاروا لغة من زر اللغة، وسيتحول الصوت إليها تلقائياً.', tip: 'اضغطوا زر الصوت مرة واحدة للإيقاف المؤقت أو المتابعة، ومرتين للبدء من جديد.' },
+    es: { tag: 'es-ES', intro: 'Hola, soy Anandu Prabhakaran. Bienvenido a mi sitio web. Soy su asistente de voz personal y le ayudaré a conocer su contenido.', here: 'Actualmente está en la pestaña {tab}. Esta es la información clave de esta pestaña.', avail: 'Este sitio está disponible en inglés, malayalam, hindi, francés, alemán, árabe, español, portugués, chino, japonés y sueco. Elija un idioma con el botón de idioma y la voz cambiará automáticamente.', tip: 'Pulse el botón de voz una vez para pausar o reanudar, y dos veces para empezar de nuevo desde el principio.' },
+    pt: { tag: 'pt-BR', intro: 'Olá, eu sou Anandu Prabhakaran. Bem-vindo ao meu site. Sou seu assistente de voz pessoal e vou ajudá-lo a conhecer o conteúdo.', here: 'No momento, você está na aba {tab}. Estas são as informações principais desta aba.', avail: 'Este site está disponível em inglês, malaiala, híndi, francês, alemão, árabe, espanhol, português, chinês, japonês e sueco. Escolha um idioma no botão de idioma e a voz mudará automaticamente.', tip: 'Toque no botão de voz uma vez para pausar ou continuar, e duas vezes para recomeçar do início.' },
+    zh: { tag: 'zh-CN', intro: '您好，我是 Anandu Prabhakaran。欢迎访问我的网站。我是您的个人语音助手，将帮助您了解这里的内容。', here: '您目前位于“{tab}”标签页。以下是该页面的关键信息。', avail: '本网站提供英语、马拉雅拉姆语、印地语、法语、德语、阿拉伯语、西班牙语、葡萄牙语、中文、日语和瑞典语。请通过语言按钮选择语言，语音将自动切换。', tip: '单击语音按钮可暂停或继续，双击则从头开始。' },
+    ja: { tag: 'ja-JP', intro: 'こんにちは、Anandu Prabhakaran です。私のウェブサイトへようこそ。私はあなた専用の音声アシスタントとして、ここにある内容の理解をお手伝いします。', here: '現在、「{tab}」タブをご覧です。このタブの重要な情報をお伝えします。', avail: 'このサイトは、英語、マラヤーラム語、ヒンディー語、フランス語、ドイツ語、アラビア語、スペイン語、ポルトガル語、中国語、日本語、スウェーデン語でご利用いただけます。言語ボタンで言語を選ぶと、音声も自動的に切り替わります。', tip: '音声ボタンを1回押すと一時停止または再開、2回押すと最初からやり直します。' },
+    sv: { tag: 'sv-SE', intro: 'Hej, jag heter Anandu Prabhakaran. Välkommen till min webbplats. Jag är din personliga röstassistent och hjälper dig att förstå innehållet.', here: 'Just nu är du på fliken {tab}. Här är den viktigaste informationen på den här fliken.', avail: 'Den här webbplatsen finns på engelska, malayalam, hindi, franska, tyska, arabiska, spanska, portugisiska, kinesiska, japanska och svenska. Välj ett språk med språkknappen så byter rösten automatiskt.', tip: 'Tryck en gång på röstknappen för att pausa eller återuppta, och två gånger för att börja om från början.' }
   };
   let voices = [], state = 'idle', queue = [], qi = 0, token = 0, warned = {};
   const load = () => { voices = synth.getVoices() || []; };
