@@ -188,7 +188,7 @@ function buildChrome() {
     return v && v.length === 2 ? 'Last Updated : ' + v[0] + ' | Time : ' + v[1] + ' (IST)' : '';
   }
   const foot = document.createElement('footer');
-  foot.innerHTML = `<div class="copy"><div class="cpwrap"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="upd" data-i18n-skip>${updatedText()}</div></div><div class="socials" aria-label="Social media">${socialsHTML(true)}</div></div><p class="ainote">This website was partially developed and is maintained with the help of Claude, an AI assistant made by Anthropic.</p><p class="ainote">This website counts visits by country and page only. No IP address or personal data is stored.</p>`;
+  foot.innerHTML = `<div class="copy"><div class="cpwrap"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="upd" data-i18n-skip>${updatedText()}</div></div><div class="socials" aria-label="Social media">${socialsHTML(true)}</div></div><p class="ainote">This website was partially developed and is maintained with the help of Claude, an AI assistant made by Anthropic.</p>`;
   document.body.append(foot);
   document.body.insertAdjacentHTML('beforeend', `
     <button id="totop" aria-label="Back to top"><svg viewBox="0 0 50 50"><circle class="bg" cx="25" cy="25" r="22"/><circle class="fg" id="totop-fg" cx="25" cy="25" r="22"/></svg>&uarr;</button>
