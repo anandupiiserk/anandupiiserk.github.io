@@ -723,48 +723,84 @@ function setupMonthlyReminder() {
 function enableReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); setupMonthlyReminder(); return true; }
 function testReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); reminderMail_(); return true; }
 
-/* ---- visitors by country: only a country name and a count are stored (no IP address, no personal data) ----
-   Each counted visit also sends you one short email, up to VISIT_MAIL_MAX a day (the rest are still counted).
-   A daily trigger moves those emails to the Trash after 30 days (needs Gmail permission once). */
-var VISIT_MAIL = true, VISIT_MAIL_MAX = 25, VISIT_MAIL_DAYS = 30;
+/* ---- visitors by country: only a country name, a tab name and counts are stored (no IP address, no personal data) ----
+   A visit from any country other than India sends you ONE email (up to VISIT_MAIL_MAX a day) that lists every country's
+   visitor total and how many Indian visits came in since the last email. Indian visits are counted but never emailed.
+   A daily trigger moves these emails to the Trash after 30 days (needs Gmail permission once). */
+var VISIT_MAIL = true, VISIT_MAIL_MAX = 25, VISIT_MAIL_DAYS = 30, HOME_CC = 'IN', KEEP_DAYS = 400;
+var TABS_ = { index: 'Home', home: 'Home', about: 'About me', research: 'Research', publications: 'Publications', workshops: 'Workshops', gallery: 'Gallery', contact: 'Contact' };
+var LANG_ = { en: 'English', ml: 'Malayalam', hi: 'Hindi', ar: 'Arabic', zh: 'Chinese', fr: 'French', de: 'German', ja: 'Japanese', pt: 'Portuguese', es: 'Spanish', sv: 'Swedish' };
 function visit_(p) {
   var cc = String(p.cc || '').toUpperCase();
   if (!/^[A-Z]{2}$/.test(cc)) return json_({ ok: false });
   var nm = String(p.name || '').trim();
   if (!/^[A-Za-z .,'()\-]{2,45}$/.test(nm)) nm = cc;
-  var sp = PropertiesService.getScriptProperties(), k = 'VIS_' + cc, cur = {};
-  try { cur = JSON.parse(sp.getProperty(k) || '{}'); } catch (x) { cur = {}; }
-  cur.n = (cur.n || 0) + 1; cur.t = Date.now(); cur.name = nm; cur.f = cur.f || cur.t;
-  sp.setProperty(k, JSON.stringify(cur));
+  var tab = TABS_[String(p.page || '').toLowerCase()] || 'Home', lang = LANG_[String(p.lang || '').toLowerCase()] || 'English', first = p.first === true;
+  var sp = PropertiesService.getScriptProperties(), now = Date.now(), day = Utilities.formatDate(new Date(now), TZ, 'yyyyMMdd');
+  var d = {}; try { d = JSON.parse(sp.getProperty('VD_' + day) || '{}'); } catch (x) { d = {}; }
+  d.c = d.c || {}; d.t = d.t || {}; d.v = d.v || 0;
+  d.t[tab] = (d.t[tab] || 0) + 1;                       // every tab view
+  var cur = {}; try { cur = JSON.parse(sp.getProperty('VIS_' + cc) || '{}'); } catch (x) { cur = {}; }
+  cur.name = nm; cur.f = cur.f || now; cur.t = now; cur.n = cur.n || 0;
+  if (first) { d.c[cc] = (d.c[cc] || 0) + 1; d.v++; cur.n++; }   // one visitor per browser session
+  sp.setProperty('VD_' + day, JSON.stringify(d)); sp.setProperty('VIS_' + cc, JSON.stringify(cur));
+  if (!first) return json_({ ok: true });
+  if (cc === HOME_CC) { sp.setProperty('VISIN', String(+(sp.getProperty('VISIN') || 0) + 1)); return json_({ ok: true }); }
   if (VISIT_MAIL) {
-    var dk = 'VISMAIL_' + Utilities.formatDate(new Date(), TZ, 'yyyyMMdd'), sent = +(sp.getProperty(dk) || 0);
+    var dk = 'VISMAIL_' + day, sent = +(sp.getProperty(dk) || 0);
     if (sent < VISIT_MAIL_MAX) {
       sp.setProperty(dk, String(sent + 1));
-      try { MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: '[Site visit] ' + nm,
-        body: 'Someone visited your website from ' + nm + ' (' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy, HH:mm') + ' IST). Visits from ' + nm + ' so far: ' + cur.n + '.\nThis email is moved to the Trash automatically after ' + VISIT_MAIL_DAYS + ' days.' }); } catch (x) { }
+      try { visitMail_(sp, cc, nm, tab, lang, now); } catch (x) { }
     }
   }
   return json_({ ok: true });
 }
+function visitMail_(sp, cc, nm, tab, lang, now) {
+  var inSince = +(sp.getProperty('VISIN') || 0), props = sp.getProperties(), list = [];
+  Object.keys(props).forEach(function (k) { if (k.indexOf('VIS_') === 0) { try { var r = JSON.parse(props[k]); r.cc = k.slice(4); list.push(r); } catch (x) { } } });
+  list.sort(function (a, b) { return b.n - a.n; });
+  var total = list.reduce(function (a, r) { return a + r.n; }, 0), when = Utilities.formatDate(new Date(now), TZ, 'd MMM yyyy, HH:mm') + ' IST';
+  var rows = [['Country', esc_(nm)], ['Tab visited', esc_(tab)], ['Time', esc_(when)], ['Language chosen', esc_(lang)],
+    ['Indian visits since the last email', String(inSince)]];
+  list.forEach(function (r) { rows.push([(r.cc === HOME_CC ? '• ' : '') + esc_(r.name || r.cc), String(r.n) + (r.n === 1 ? ' visitor' : ' visitors')]); });
+  rows.push(['All countries together', String(total) + ' visitors']);
+  var plain = 'Someone from ' + nm + ' visited your ' + tab + ' tab (' + when + ', ' + lang + ').\nIndian visits since the last email: ' + inSince + '\n\nVisitors so far:\n'
+    + list.map(function (r) { return ' - ' + (r.name || r.cc) + ': ' + r.n; }).join('\n') + '\nTotal: ' + total + '\n\nDaily details: ' + adminUrl_() + '\nThis email is moved to the Trash automatically after ' + VISIT_MAIL_DAYS + ' days.';
+  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: '[Site visit] Someone from ' + nm + ' visited your ' + tab + ' tab', body: plain,
+    htmlBody: mail_('Someone from ' + esc_(nm) + ' visited', 'Someone from <b>' + esc_(nm) + '</b> visited your <b>' + esc_(tab) + '</b> tab.', rows, [['Open the daily visitor details', adminUrl_(), '#1f4e9c']],
+      'Only the country is counted. No IP address or personal data is stored. Indian visits are counted but do not send an email. This email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.') });
+  sp.setProperty('VISIN', '0');
+}
 function cleanVisitMails() {
-  var th = GmailApp.search('in:sent subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd', 0, 100);
-  th.forEach(function (t) { t.moveToTrash(); });
-  var sp = PropertiesService.getScriptProperties(), all = sp.getProperties(), keep = Utilities.formatDate(new Date(Date.now() - 3 * 86400000), TZ, 'yyyyMMdd');
-  Object.keys(all).forEach(function (k) { if (k.indexOf('VISMAIL_') === 0 && k.slice(8) < keep) sp.deleteProperty(k); });
+  GmailApp.search('in:sent subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd', 0, 100).forEach(function (t) { t.moveToTrash(); });
+  var sp = PropertiesService.getScriptProperties(), all = sp.getProperties();
+  var keepMail = Utilities.formatDate(new Date(Date.now() - 3 * 86400000), TZ, 'yyyyMMdd'), keepDay = Utilities.formatDate(new Date(Date.now() - KEEP_DAYS * 86400000), TZ, 'yyyyMMdd');
+  Object.keys(all).forEach(function (k) { if ((k.indexOf('VISMAIL_') === 0 && k.slice(8) < keepMail) || (k.indexOf('VD_') === 0 && k.slice(3) < keepDay)) sp.deleteProperty(k); });
 }
 function setupVisitCleanup() {
   ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'cleanVisitMails') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('cleanVisitMails').timeBased().everyDays(1).atHour(3).inTimezone(TZ).create();
 }
 function visitorsHtml_(props, th, td, h2) {
-  var rows = [];
-  Object.keys(props).forEach(function (k) { if (k.indexOf('VIS_') === 0) { try { var r = JSON.parse(props[k]); rows.push(r); } catch (x) { } } });
-  rows.sort(function (a, b) { return b.n - a.n; });
-  var total = rows.reduce(function (a, r) { return a + r.n; }, 0), f = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
-  var body = rows.length ? rows.map(function (r, i) { return '<tr><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.name) + '</td><td style="' + td + '"><b>' + r.n + '</b></td><td style="' + td + '">' + f(r.f || r.t) + '</td><td style="' + td + '">' + f(r.t) + '</td></tr>'; }).join('')
-    : '<tr><td colspan="5" style="' + td + ';color:#7a8594">No visits counted yet.</td></tr>';
-  return h2('Visitors by country', 'Only the country is counted: ' + total + ' visit' + (total === 1 ? '' : 's') + ' from ' + rows.length + ' countr' + (rows.length === 1 ? 'y' : 'ies') + '. One count per browser session. No IP address or personal data is stored.')
-    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr>' + ['#', 'Country', 'Visits', 'First visit', 'Latest visit'].map(function (h) { return '<th style="' + th + '">' + h + '</th>'; }).join('') + '</tr></thead><tbody>' + body + '</tbody></table></div>';
+  var ctry = [], days = [];
+  Object.keys(props).forEach(function (k) {
+    try { if (k.indexOf('VIS_') === 0 && k !== 'VISIN') { var r = JSON.parse(props[k]); r.cc = k.slice(4); ctry.push(r); } else if (k.indexOf('VD_') === 0) { var q = JSON.parse(props[k]); q.day = k.slice(3); days.push(q); } } catch (x) { }
+  });
+  ctry.sort(function (a, b) { return b.n - a.n; }); days.sort(function (a, b) { return a.day < b.day ? 1 : -1; });
+  var name = {}; ctry.forEach(function (r) { name[r.cc] = r.name || r.cc; });
+  var total = ctry.reduce(function (a, r) { return a + r.n; }, 0), f = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
+  var cell = function (t, x) { return '<td style="' + td + (x || '') + '">' + t + '</td>'; }, head = function (a) { return '<thead><tr>' + a.map(function (h) { return '<th style="' + th + '">' + h + '</th>'; }).join('') + '</tr></thead>'; };
+  var crow = ctry.map(function (r, i) { return '<tr>' + cell(i + 1, ';color:#7a8594') + cell(esc_(r.name || r.cc)) + cell('<b>' + r.n + '</b>') + cell(f(r.f || r.t)) + cell(f(r.t)) + '</tr>'; }).join('') || '<tr>' + cell('No visits counted yet.', ';color:#7a8594" colspan="5') + '</tr>';
+  var dfmt = function (d) { return Utilities.formatDate(new Date(+d.slice(0, 4), +d.slice(4, 6) - 1, +d.slice(6, 8), 12), TZ, 'EEE, d MMM yyyy'); };
+  var drow = days.slice(0, 90).map(function (d) {
+    var ks = Object.keys(d.c).sort(function (a, b) { return d.c[b] - d.c[a]; }), inN = d.c[HOME_CC] || 0, tk = Object.keys(d.t).sort(function (a, b) { return d.t[b] - d.t[a]; }), views = tk.reduce(function (a, k) { return a + d.t[k]; }, 0);
+    return '<tr>' + cell(dfmt(d.day), ';white-space:nowrap') + cell('<b>' + d.v + '</b>') + cell(inN) + cell(d.v - inN) + cell(ks.map(function (c) { return esc_(name[c] || c) + ' ' + d.c[c]; }).join(', ') || '-')
+      + cell(views + ' (' + tk.map(function (k) { return esc_(k) + ' ' + d.t[k]; }).join(', ') + ')') + '</tr>';
+  }).join('') || '<tr>' + cell('No visits counted yet.', ';color:#7a8594" colspan="6') + '</tr>';
+  return h2('Visitors by country', 'Only the country and the tab are counted: ' + total + ' visitor' + (total === 1 ? '' : 's') + ' from ' + ctry.length + ' countr' + (ctry.length === 1 ? 'y' : 'ies') + '. One visitor is one browser session. No IP address or personal data is stored. Indian visits are counted but never emailed; they are added to the next email as a number.')
+    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%">' + head(['#', 'Country', 'Visitors', 'First visit', 'Latest visit']) + '<tbody>' + crow + '</tbody></table></div>'
+    + h2('Visits each day', 'Newest first (up to 90 days). Tab views count every page opened, including repeat pages in one session.')
+    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%">' + head(['Day', 'Visitors', 'India', 'Other countries', 'Countries', 'Tab views']) + '<tbody>' + drow + '</tbody></table></div>';
 }
 
 /* ---- new request (POST) ---- */

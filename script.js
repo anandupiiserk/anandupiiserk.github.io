@@ -188,7 +188,7 @@ function buildChrome() {
     return v && v.length === 2 ? 'Last Updated : ' + v[0] + ' | Time : ' + v[1] + ' (IST)' : '';
   }
   const foot = document.createElement('footer');
-  foot.innerHTML = `<div class="copy"><div class="cpwrap"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="upd" data-i18n-skip>${updatedText()}</div></div><div class="socials" aria-label="Social media">${socialsHTML(true)}</div></div><p class="ainote">This website was partially developed and is maintained with the help of Claude, an AI assistant made by Anthropic.</p><p class="ainote">This website counts visits by country only. No IP address or personal data is stored.</p>`;
+  foot.innerHTML = `<div class="copy"><div class="cpwrap"><div class="cp">&copy; <span id="yr">${new Date().getFullYear()}</span> <span class="nt">Anandu Prabhakaran.</span> <span>All rights reserved.</span></div><div class="upd" data-i18n-skip>${updatedText()}</div></div><div class="socials" aria-label="Social media">${socialsHTML(true)}</div></div><p class="ainote">This website was partially developed and is maintained with the help of Claude, an AI assistant made by Anthropic.</p><p class="ainote">This website counts visits by country and page only. No IP address or personal data is stored.</p>`;
   document.body.append(foot);
   document.body.insertAdjacentHTML('beforeend', `
     <button id="totop" aria-label="Back to top"><svg viewBox="0 0 50 50"><circle class="bg" cx="25" cy="25" r="22"/><circle class="fg" id="totop-fg" cx="25" cy="25" r="22"/></svg>&uarr;</button>
@@ -1683,21 +1683,28 @@ addEventListener('load', fitNav);
 
 })();
 
-/* Visit counter: one anonymous count per browser session, country only. The country is looked up in the visitor's browser and only the country is sent to the Apps Script. */
+/* Visit counter: country and tab only, no IP address is stored. The country is looked up in the visitor's browser and only the country, the tab and the language are sent to the Apps Script.
+   The first page of a browser session counts as one visitor; later pages in the same session are recorded as tab views. Open the site once with ?novisit to exclude your own browser. */
 (function () {
+  let first = false;
   try {
     if (!/^https?:$/.test(location.protocol) || /^(localhost|127\.|\[::1\])/.test(location.hostname) || !SITE.endpoint) return;
     if (/[?&]novisit\b/.test(location.search)) { try { localStorage.setItem('novisit', '1'); } catch (e) {} }
-    if (localStorage.getItem('novisit') || sessionStorage.getItem('visit')) return;
-    sessionStorage.setItem('visit', '1');
+    if (localStorage.getItem('novisit')) return;
+    first = !sessionStorage.getItem('visit'); sessionStorage.setItem('visit', '1');
   } catch (e) { return; }
   const get = async (u, f) => { const c = new AbortController(), t = setTimeout(() => c.abort(), 5000); try { const r = await fetch(u, { signal: c.signal, cache: 'no-store' }); return f(r); } finally { clearTimeout(t); } };
   (async () => {
-    let cc = '';
-    try { cc = await get('https://api.country.is/', async r => (await r.json()).country); } catch (e) {}
-    if (!/^[A-Z]{2}$/.test(cc || '')) { try { cc = await get('https://www.cloudflare.com/cdn-cgi/trace', async r => ((await r.text()).match(/^loc=([A-Z]{2})$/m) || [])[1]); } catch (e) {} }
-    if (!/^[A-Z]{2}$/.test(cc || '') || cc === 'XX' || cc === 'T1') return;
-    let name = cc; try { name = new Intl.DisplayNames(['en'], { type: 'region' }).of(cc) || cc; } catch (e) {}
-    try { await fetch(SITE.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'visit', cc, name, website: '' }) }); } catch (e) {}
+    let cc = '', name = '';
+    try { [cc, name] = (sessionStorage.getItem('visitcc') || '').split('|'); } catch (e) {}
+    if (!/^[A-Z]{2}$/.test(cc || '')) {
+      try { cc = await get('https://api.country.is/', async r => (await r.json()).country); } catch (e) {}
+      if (!/^[A-Z]{2}$/.test(cc || '')) { try { cc = await get('https://www.cloudflare.com/cdn-cgi/trace', async r => ((await r.text()).match(/^loc=([A-Z]{2})$/m) || [])[1]); } catch (e) {} }
+      if (!/^[A-Z]{2}$/.test(cc || '') || cc === 'XX' || cc === 'T1') return;
+      name = cc; try { name = new Intl.DisplayNames(['en'], { type: 'region' }).of(cc) || cc; } catch (e) {}
+      try { sessionStorage.setItem('visitcc', cc + '|' + name); } catch (e) {}
+    }
+    const page = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index';
+    try { await fetch(SITE.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'visit', cc, name, page, first, lang: document.documentElement.lang || 'en', website: '' }) }); } catch (e) {}
   })();
 })();
