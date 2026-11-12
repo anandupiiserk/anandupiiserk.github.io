@@ -95,7 +95,12 @@ var PORTAL_CSS = 'body{margin:0;background:#eef2f8}*{box-sizing:border-box}'
   + '.msg{margin-top:14px;font-size:14px;line-height:1.5;min-height:20px}.msg.bad{color:#c5221f}'
   + '.st{text-align:center;padding:14px 4px}.ic{width:68px;height:68px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;background:#2e9d57}.ic.info{background:#3b82c4}.ic.bad{background:#c5221f}'
   + '.ft{text-align:center;color:#7a8594;font-size:12px;margin-top:18px}.ft span{color:#e0245e;font-size:14px}';
-function shell_(title, sub, inner) {
+function navBar_() {
+  var a = function (t, u) { return '<a href="' + u + '" target="_top" style="color:#1f4e9c;font-weight:bold;font-size:13px;text-decoration:none;border:1.5px solid #c3d3ea;border-radius:20px;padding:6px 14px;background:#fff">' + t + '</a>'; };
+  return '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px">' + a('Subscribers', adminUrl_()) + a('Write an email', link_('compose', 'new')) + a('Messages', msgUrl_()) + a('Appointments', apptUrl_()) + a('Visitors', visUrl_()) + '</div>';
+}
+function shell_(title, sub, inner, nav) {
+  if (nav) inner = navBar_() + inner;
   return '<style>' + PORTAL_CSS + '</style><div class="pt"><div class="in"><div class="lg">AP</div><div><div class="t1">Website admin</div><div class="t2">Anandu Prabhakaran</div></div></div></div>'
     + '<div class="pw"><div class="cd">' + (title ? '<h1>' + title + '</h1>' : '') + (sub ? '<p class="sub">' + sub + '</p>' : '') + inner + '</div>'
     + '<div class="ft">Created with <span>&#10084;</span> by Anandu Prabhakaran</div></div>';
@@ -135,6 +140,9 @@ function act_(p) {
   if (action === 'compose') return composePage_(p);
   if (action === 'unsub') return nlUnsubPage_(p);
   if (action === 'admin') return adminPage_(p);
+  if (action === 'visitors') return visitorsPage_(p);
+  if (action === 'messages') return messagesPage_(p);
+  if (action === 'appts') return appointmentsPage_(p);
   if (action === 'acc_ok' || action === 'acc_no') return accessDecide_(p);
   if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
@@ -366,8 +374,8 @@ function editorPage_(mode, p, r) {
       : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":aw.checked?"__watch__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};')
     + '})();<\/script>';
   return reply
-    ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner), 'Reply to ' + r.n)
-    : out_(shell_('New email', 'Start a fresh conversation. It is sent as a formatted email from Anandu Prabhakaran, and replies come to your Gmail.', inner), 'New email');
+    ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner, true), 'Reply to ' + r.n)
+    : out_(shell_('New email', 'Start a fresh conversation. It is sent as a formatted email from Anandu Prabhakaran, and replies come to your Gmail.', inner, true), 'New email');
 }
 
 // Shared by reply and new-email: builds the styled HTML email and sends it as Anandu Prabhakaran.
@@ -646,7 +654,6 @@ function adminPage_(p) {
     + h2('Unsubscribed', 'People who unsubscribed. Their name and email are kept here (one record per address, so there are no duplicates) and they do not receive newsletters. You can still write to one of them individually.') + tbl('ub', ['#', 'Name', 'Email', 'Unsubscribed (and who did it)', ''], urows, 'Nobody has unsubscribed.')
     + h2('Approval requests', 'People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP. A decline is silent: they are not emailed.')
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">For</th><th style="' + th + '">Asked</th><th style="' + th + '">Status</th></tr></thead><tbody>' + (rq || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No requests.</td></tr>') + '</tbody></table></div><div id="m" class="msg"></div>'
-    + visitorsHtml_(props, th, td, h2)
     + '<script>(function(){var D=' + data + ',SIG=' + JSON.stringify(p.sig) + ',ADM=' + JSON.stringify(adminUrl_()) + ',m=document.getElementById("m"),G=google.script.run;'
     + 'function bad(t){m.className="msg bad";m.textContent=t||"That did not work. Try again.";}function reload(){window.open(ADM,"_top");}'
     + 'document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();var r=document.querySelectorAll("tr[data-s]");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
@@ -664,7 +671,7 @@ function adminPage_(p) {
     + 'b=e.target.closest(".x-sv");if(b){var t3=b.closest("tr"),nm=t3.querySelector(".cn input").value,em=t3.querySelector(".ce input").value;if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(em.trim())){bad("Enter a valid email address.");return;}b.disabled=true;G.withSuccessHandler(function(r){if(r&&r.ok)reload();else{b.disabled=false;bad(r&&r.error==="exists"?"Another subscriber already uses that email.":"Enter a valid email address.");}}).withFailureHandler(function(){b.disabled=false;bad();}).editSub(SIG,t3.getAttribute("data-id"),nm,em);}'
     + '});'
     + '})();<\/script>';
-  return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information, plus the yellow, banned and unsubscribed lists. Newest first.', inner), 'Subscribers');
+  return out_(shell_('Subscribers', 'Everyone who verified their email and subscribed to news and information, plus the yellow, banned and unsubscribed lists. Newest first.', inner, true), 'Subscribers');
 }
 // Called from the subscribers page.
 function setSub(sig, id, to) {   /* status changes from the subscribers page; the record is always kept */
@@ -723,84 +730,161 @@ function setupMonthlyReminder() {
 function enableReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); setupMonthlyReminder(); return true; }
 function testReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); reminderMail_(); return true; }
 
-/* ---- visitors by country: only a country name, a tab name and counts are stored (no IP address, no personal data) ----
-   A visit from any country other than India sends you ONE email (up to VISIT_MAIL_MAX a day) that lists every country's
-   visitor total and how many Indian visits came in since the last email. Indian visits are counted but never emailed.
-   A daily trigger moves these emails to the Trash after 30 days (needs Gmail permission once). */
-var VISIT_MAIL = true, VISIT_MAIL_MAX = 25, VISIT_MAIL_DAYS = 30, HOME_CC = 'IN', KEEP_DAYS = 400;
+/* ---- visitors: only the country, the tab and the time are stored (no IP address, no personal data) ----
+   Every page view is appended to a Google Sheet that the script creates in your Drive ("Website visits log"). Indian visits are
+   logged but never emailed. Once a day (21:00 IST) you get ONE summary email if anyone from another country visited: it lists
+   those countries and tabs, the number of Indian visits since the last email, and every country's visitor total. A daily trigger
+   also moves these emails to the Trash after 30 days. The Visitors portal shows minutes, hours, days, weeks, months, years and
+   any custom range. (Gmail and Sheets permission is asked once when you press "Turn on reminders".) */
+var VISIT_MAIL = true, VISIT_MAIL_DAYS = 30, HOME_CC = 'IN', SUMMARY_HOUR = 21;
 var TABS_ = { index: 'Home', home: 'Home', about: 'About me', research: 'Research', publications: 'Publications', workshops: 'Workshops', gallery: 'Gallery', contact: 'Contact' };
 var LANG_ = { en: 'English', ml: 'Malayalam', hi: 'Hindi', ar: 'Arabic', zh: 'Chinese', fr: 'French', de: 'German', ja: 'Japanese', pt: 'Portuguese', es: 'Spanish', sv: 'Swedish' };
+function visUrl_() { return ScriptApp.getService().getUrl() + '?action=visitors&sig=' + sign_('admin', 'visitors'); }
+function visSheet_() {
+  var sp = PropertiesService.getScriptProperties(), id = sp.getProperty('VISSHEET'), ss = null;
+  if (id) { try { ss = SpreadsheetApp.openById(id); } catch (x) { ss = null; } }
+  if (!ss) {
+    ss = SpreadsheetApp.create('Website visits log (written by the website script)');
+    ss.getSheets()[0].appendRow(['Time (ms)', 'Country code', 'Country', 'Tab', 'New visitor (1 = first page of a session)', 'Language', 'Date and time (IST)']);
+    sp.setProperty('VISSHEET', ss.getId());
+  }
+  return ss.getSheets()[0];
+}
+/* rows with from <= time < to, oldest first. Rows are appended in time order, so read from the bottom. */
+function visRows_(from, to) {
+  var sh = visSheet_(), last = sh.getLastRow(), out = [];
+  if (last < 2) return out;
+  var end = last;
+  while (end >= 2) {
+    var start = Math.max(2, end - 4999), v = sh.getRange(start, 1, end - start + 1, 6).getValues(), stop = false;
+    for (var j = v.length - 1; j >= 0; j--) { var t = +v[j][0]; if (t < from) { stop = true; break; } if (t < to) out.push({ t: t, cc: String(v[j][1]), n: String(v[j][2]), tab: String(v[j][3]), f: +v[j][4] === 1, l: String(v[j][5]) }); }
+    if (stop) break; end = start - 1;
+  }
+  return out.reverse();
+}
 function visit_(p) {
   var cc = String(p.cc || '').toUpperCase();
   if (!/^[A-Z]{2}$/.test(cc)) return json_({ ok: false });
   var nm = String(p.name || '').trim();
   if (!/^[A-Za-z .,'()\-]{2,45}$/.test(nm)) nm = cc;
-  var tab = TABS_[String(p.page || '').toLowerCase()] || 'Home', lang = LANG_[String(p.lang || '').toLowerCase()] || 'English', first = p.first === true;
-  var sp = PropertiesService.getScriptProperties(), now = Date.now(), day = Utilities.formatDate(new Date(now), TZ, 'yyyyMMdd');
-  var d = {}; try { d = JSON.parse(sp.getProperty('VD_' + day) || '{}'); } catch (x) { d = {}; }
-  d.c = d.c || {}; d.t = d.t || {}; d.v = d.v || 0;
-  d.t[tab] = (d.t[tab] || 0) + 1;                       // every tab view
-  var cur = {}; try { cur = JSON.parse(sp.getProperty('VIS_' + cc) || '{}'); } catch (x) { cur = {}; }
-  cur.name = nm; cur.f = cur.f || now; cur.t = now; cur.n = cur.n || 0;
-  if (first) { d.c[cc] = (d.c[cc] || 0) + 1; d.v++; cur.n++; }   // one visitor per browser session
-  sp.setProperty('VD_' + day, JSON.stringify(d)); sp.setProperty('VIS_' + cc, JSON.stringify(cur));
-  if (!first) return json_({ ok: true });
-  if (cc === HOME_CC) { sp.setProperty('VISIN', String(+(sp.getProperty('VISIN') || 0) + 1)); return json_({ ok: true }); }
-  if (VISIT_MAIL) {
-    var dk = 'VISMAIL_' + day, sent = +(sp.getProperty(dk) || 0);
-    if (sent < VISIT_MAIL_MAX) {
-      sp.setProperty(dk, String(sent + 1));
-      try { visitMail_(sp, cc, nm, tab, lang, now); } catch (x) { }
-    }
-  }
+  var tab = TABS_[String(p.page || '').toLowerCase()] || 'Home', lang = LANG_[String(p.lang || '').toLowerCase()] || 'English', first = p.first === true, now = Date.now();
+  visSheet_().appendRow([now, cc, nm, tab, first ? 1 : 0, lang, Utilities.formatDate(new Date(now), TZ, 'yyyy-MM-dd HH:mm:ss')]);
   return json_({ ok: true });
 }
-function visitMail_(sp, cc, nm, tab, lang, now) {
-  var inSince = +(sp.getProperty('VISIN') || 0), props = sp.getProperties(), list = [];
-  Object.keys(props).forEach(function (k) { if (k.indexOf('VIS_') === 0) { try { var r = JSON.parse(props[k]); r.cc = k.slice(4); list.push(r); } catch (x) { } } });
-  list.sort(function (a, b) { return b.n - a.n; });
-  var total = list.reduce(function (a, r) { return a + r.n; }, 0), when = Utilities.formatDate(new Date(now), TZ, 'd MMM yyyy, HH:mm') + ' IST';
-  var rows = [['Country', esc_(nm)], ['Tab visited', esc_(tab)], ['Time', esc_(when)], ['Language chosen', esc_(lang)],
-    ['Indian visits since the last email', String(inSince)]];
-  list.forEach(function (r) { rows.push([(r.cc === HOME_CC ? '• ' : '') + esc_(r.name || r.cc), String(r.n) + (r.n === 1 ? ' visitor' : ' visitors')]); });
-  rows.push(['All countries together', String(total) + ' visitors']);
-  var plain = 'Someone from ' + nm + ' visited your ' + tab + ' tab (' + when + ', ' + lang + ').\nIndian visits since the last email: ' + inSince + '\n\nVisitors so far:\n'
-    + list.map(function (r) { return ' - ' + (r.name || r.cc) + ': ' + r.n; }).join('\n') + '\nTotal: ' + total + '\n\nDaily details: ' + adminUrl_() + '\nThis email is moved to the Trash automatically after ' + VISIT_MAIL_DAYS + ' days.';
-  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: '[Site visit] Someone from ' + nm + ' visited your ' + tab + ' tab', body: plain,
-    htmlBody: mail_('Someone from ' + esc_(nm) + ' visited', 'Someone from <b>' + esc_(nm) + '</b> visited your <b>' + esc_(tab) + '</b> tab.', rows, [['Open the daily visitor details', adminUrl_(), '#1f4e9c']],
-      'Only the country is counted. No IP address or personal data is stored. Indian visits are counted but do not send an email. This email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.') });
-  sp.setProperty('VISIN', '0');
+function visitSummary_(force) {
+  var sp = PropertiesService.getScriptProperties(), last = +(sp.getProperty('VISLASTMAIL') || 0), now = Date.now(), rows = visRows_(last, now + 1);
+  var inN = 0, others = {}, order = [];
+  rows.forEach(function (r) {
+    if (r.cc === HOME_CC) { if (r.f) inN++; return; }
+    var o = others[r.cc] || (others[r.cc] = { n: r.n, v: 0, tabs: {} }); if (!others[r.cc].seen) { others[r.cc].seen = 1; order.push(r.cc); }
+    if (r.f) o.v++; o.tabs[r.tab] = (o.tabs[r.tab] || 0) + 1;
+  });
+  if (!order.length) return false;
+  var all = visRows_(0, now + 1), tot = {};
+  all.forEach(function (r) { if (r.f) { var o = tot[r.cc] || (tot[r.cc] = { n: r.n, v: 0 }); o.v++; } });
+  var tl = Object.keys(tot).sort(function (a, b) { return tot[b].v - tot[a].v; }), total = tl.reduce(function (a, c) { return a + tot[c].v; }, 0);
+  var since = last ? Utilities.formatDate(new Date(last), TZ, 'd MMM, HH:mm') : 'the beginning';
+  var rowsH = [['Period', esc_('Since ' + since + ' IST')], ['Indian visits since the last email', String(inN)]], plain = 'Visitors from other countries since ' + since + ' IST:\n';
+  order.forEach(function (c) { var o = others[c], tabs = Object.keys(o.tabs).map(function (k) { return k + ' ' + o.tabs[k]; }).join(', ');
+    rowsH.push([esc_(o.n), o.v + (o.v === 1 ? ' visitor' : ' visitors') + ' (tabs: ' + esc_(tabs) + ')']); plain += ' - ' + o.n + ': ' + o.v + ' (tabs: ' + tabs + ')\n'; });
+  plain += '\nIndian visits since the last email: ' + inN + '\n\nVisitors so far, all time:\n';
+  tl.forEach(function (c) { rowsH.push(['All time: ' + esc_(tot[c].n), String(tot[c].v)]); plain += ' - ' + tot[c].n + ': ' + tot[c].v + '\n'; });
+  rowsH.push(['All countries together', String(total)]); plain += 'Total: ' + total + '\n\nPortals:\nVisitors: ' + visUrl_() + '\nSubscribers: ' + adminUrl_() + '\nWrite an email: ' + link_('compose', 'new') + '\nThis email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.';
+  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: '[Site visit] Daily summary: ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' visited', body: plain,
+    htmlBody: mail_('Your website visitors', 'Visitors from ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' since the last email, and how many visits came from India.', rowsH,
+      [['Visitors portal', visUrl_(), '#1f4e9c'], ['Subscribers portal', adminUrl_(), '#1f4e9c'], ['Write an email', link_('compose', 'new'), '#1f4e9c'], ['Messages', msgUrl_(), '#1f4e9c'], ['Appointments', apptUrl_(), '#1f4e9c']],
+      'Only the country and the tab are counted. No IP address or personal data is stored. Indian visits are counted but never trigger an email. This email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.') });
+  sp.setProperty('VISLASTMAIL', String(now));
+  return true;
 }
+function dailyVisitSummary() { if (VISIT_MAIL) visitSummary_(false); }
 function cleanVisitMails() {
   GmailApp.search('in:sent subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd', 0, 100).forEach(function (t) { t.moveToTrash(); });
-  var sp = PropertiesService.getScriptProperties(), all = sp.getProperties();
-  var keepMail = Utilities.formatDate(new Date(Date.now() - 3 * 86400000), TZ, 'yyyyMMdd'), keepDay = Utilities.formatDate(new Date(Date.now() - KEEP_DAYS * 86400000), TZ, 'yyyyMMdd');
-  Object.keys(all).forEach(function (k) { if ((k.indexOf('VISMAIL_') === 0 && k.slice(8) < keepMail) || (k.indexOf('VD_') === 0 && k.slice(3) < keepDay)) sp.deleteProperty(k); });
 }
 function setupVisitCleanup() {
-  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'cleanVisitMails') ScriptApp.deleteTrigger(t); });
+  ScriptApp.getProjectTriggers().forEach(function (t) { var f = t.getHandlerFunction(); if (f === 'cleanVisitMails' || f === 'dailyVisitSummary') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('cleanVisitMails').timeBased().everyDays(1).atHour(3).inTimezone(TZ).create();
+  ScriptApp.newTrigger('dailyVisitSummary').timeBased().everyDays(1).atHour(SUMMARY_HOUR).inTimezone(TZ).create();
 }
-function visitorsHtml_(props, th, td, h2) {
-  var ctry = [], days = [];
-  Object.keys(props).forEach(function (k) {
-    try { if (k.indexOf('VIS_') === 0 && k !== 'VISIN') { var r = JSON.parse(props[k]); r.cc = k.slice(4); ctry.push(r); } else if (k.indexOf('VD_') === 0) { var q = JSON.parse(props[k]); q.day = k.slice(3); days.push(q); } } catch (x) { }
+var BKT_ = { minute: ['yyyyMMddHHmm', 'd MMM, HH:mm'], hour: ['yyyyMMddHH', 'd MMM, HH:00'], day: ['yyyyMMdd', 'EEE, d MMM yyyy'], week: ['yyyyMMdd', "'Week of' d MMM yyyy"], month: ['yyyyMM', 'MMMM yyyy'], year: ['yyyy', 'yyyy'] };
+function visitData(sig, from, to, bucket) {
+  if (sign_('admin', 'visitors') !== sig) throw new Error('Not allowed');
+  from = +from; to = +to; if (!BKT_[bucket]) bucket = 'day';
+  var spanMs = { minute: 6e4, hour: 36e5, day: 864e5, week: 6048e5, month: 2592e6, year: 31536e6 }[bucket];
+  if ((to - from) / spanMs > 1500) throw new Error('Too many rows for this unit. Choose a larger unit or a shorter range.');
+  var rows = visRows_(from, to), map = {}, keys = [], tc = {}, tt = {}, vis = 0, ind = 0, views = rows.length;
+  rows.forEach(function (r) {
+    var t = r.t; if (bucket === 'week') t = r.t - (+Utilities.formatDate(new Date(r.t), TZ, 'u') - 1) * 864e5;
+    var key = Utilities.formatDate(new Date(t), TZ, BKT_[bucket][0]), b = map[key];
+    if (!b) { b = map[key] = { k: key, label: (bucket === 'week' ? Utilities.formatDate(new Date(t), TZ, BKT_[bucket][1]) : Utilities.formatDate(new Date(r.t), TZ, BKT_[bucket][1])), v: 0, i: 0, o: 0, c: {}, t: {}, w: 0 }; keys.push(key); }
+    b.w++; b.t[r.tab] = (b.t[r.tab] || 0) + 1; tt[r.tab] = (tt[r.tab] || 0) + 1;
+    if (r.f) { b.v++; vis++; if (r.cc === HOME_CC) { b.i++; ind++; } else b.o++; var c = b.c[r.n] = (b.c[r.n] || 0) + 1; tc[r.n] = (tc[r.n] || 0) + 1; }
   });
-  ctry.sort(function (a, b) { return b.n - a.n; }); days.sort(function (a, b) { return a.day < b.day ? 1 : -1; });
-  var name = {}; ctry.forEach(function (r) { name[r.cc] = r.name || r.cc; });
-  var total = ctry.reduce(function (a, r) { return a + r.n; }, 0), f = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
-  var cell = function (t, x) { return '<td style="' + td + (x || '') + '">' + t + '</td>'; }, head = function (a) { return '<thead><tr>' + a.map(function (h) { return '<th style="' + th + '">' + h + '</th>'; }).join('') + '</tr></thead>'; };
-  var crow = ctry.map(function (r, i) { return '<tr>' + cell(i + 1, ';color:#7a8594') + cell(esc_(r.name || r.cc)) + cell('<b>' + r.n + '</b>') + cell(f(r.f || r.t)) + cell(f(r.t)) + '</tr>'; }).join('') || '<tr>' + cell('No visits counted yet.', ';color:#7a8594" colspan="5') + '</tr>';
-  var dfmt = function (d) { return Utilities.formatDate(new Date(+d.slice(0, 4), +d.slice(4, 6) - 1, +d.slice(6, 8), 12), TZ, 'EEE, d MMM yyyy'); };
-  var drow = days.slice(0, 90).map(function (d) {
-    var ks = Object.keys(d.c).sort(function (a, b) { return d.c[b] - d.c[a]; }), inN = d.c[HOME_CC] || 0, tk = Object.keys(d.t).sort(function (a, b) { return d.t[b] - d.t[a]; }), views = tk.reduce(function (a, k) { return a + d.t[k]; }, 0);
-    return '<tr>' + cell(dfmt(d.day), ';white-space:nowrap') + cell('<b>' + d.v + '</b>') + cell(inN) + cell(d.v - inN) + cell(ks.map(function (c) { return esc_(name[c] || c) + ' ' + d.c[c]; }).join(', ') || '-')
-      + cell(views + ' (' + tk.map(function (k) { return esc_(k) + ' ' + d.t[k]; }).join(', ') + ')') + '</tr>';
-  }).join('') || '<tr>' + cell('No visits counted yet.', ';color:#7a8594" colspan="6') + '</tr>';
-  return h2('Visitors by country', 'Only the country and the tab are counted: ' + total + ' visitor' + (total === 1 ? '' : 's') + ' from ' + ctry.length + ' countr' + (ctry.length === 1 ? 'y' : 'ies') + '. One visitor is one browser session. No IP address or personal data is stored. Indian visits are counted but never emailed; they are added to the next email as a number.')
-    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%">' + head(['#', 'Country', 'Visitors', 'First visit', 'Latest visit']) + '<tbody>' + crow + '</tbody></table></div>'
-    + h2('Visits each day', 'Newest first (up to 90 days). Tab views count every page opened, including repeat pages in one session.')
-    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%">' + head(['Day', 'Visitors', 'India', 'Other countries', 'Countries', 'Tab views']) + '<tbody>' + drow + '</tbody></table></div>';
+  keys.sort();
+  return { buckets: keys.map(function (k) { return map[k]; }), vis: vis, ind: ind, oth: vis - ind, views: views, countries: tc, tabs: tt };
+}
+function visitorsPage_(p) {
+  if (sign_('admin', 'visitors') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var inner = '<style>.vb{border:1.5px solid #c3d3ea;background:#fff;color:#1f4e9c;border-radius:20px;padding:7px 14px;font-weight:bold;cursor:pointer;font-size:13px}.vb.on{background:#1f4e9c;color:#fff}'
+    + '.vr{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;align-items:center}.vr input,.vr select{border:1.5px solid #d3dbe8;border-radius:10px;padding:8px;font-size:13px}'
+    + '.vt{border-collapse:collapse;width:100%}.vt th{text-align:left;padding:8px 10px;font-size:12px;color:#5b6675;border-bottom:2px solid #e1e8f3;white-space:nowrap}.vt td{padding:8px 10px;border-bottom:1px solid #eef2f8;font-size:13px;vertical-align:top}'
+    + '.bar{height:10px;background:#3b82c4;border-radius:5px;min-width:2px}.bar.i{background:#e0a030}</style>'
+    + '<div class="vr" id="pre"></div>'
+    + '<div class="vr">From <input type="datetime-local" id="f"> To <input type="datetime-local" id="t"> Unit <select id="u"><option value="minute">Minutes</option><option value="hour">Hours</option><option value="day" selected>Days</option><option value="week">Weeks</option><option value="month">Months</option><option value="year">Years</option></select><button class="b blue auto" id="go" style="padding:9px 18px;font-size:13px">Show</button></div>'
+    + '<div id="m" class="msg" style="display:none"></div><div id="out"><p class="sub">Loading...</p></div>'
+    + '<script>(function(){var SIG=' + JSON.stringify(p.sig) + ',G=google.script.run,IST=19800000,PRE=[["Last hour",3600000,"minute"],["Last 24 hours",86400000,"hour"],["Last 7 days",604800000,"day"],["Last 30 days",2592000000,"day"],["Last 12 months",31536000000,"month"],["All time",0,"year"]];'
+    + 'function $(i){return document.getElementById(i);}function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;"}[c];});}'
+    + 'function toIn(ms){var d=new Date(ms+IST),z=function(n){return(n<10?"0":"")+n;};return d.getUTCFullYear()+"-"+z(d.getUTCMonth()+1)+"-"+z(d.getUTCDate())+"T"+z(d.getUTCHours())+":"+z(d.getUTCMinutes());}'
+    + 'function fromIn(v){var m=/^(\\d+)-(\\d+)-(\\d+)T(\\d+):(\\d+)/.exec(v||"");return m?Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5])-IST:NaN;}'
+    + 'function run(){var a=fromIn($("f").value),b=fromIn($("t").value),m=$("m");if(isNaN(a)||isNaN(b)||b<=a){m.style.display="block";m.className="msg bad";m.textContent="Choose a valid From and To.";return;}m.style.display="none";$("go").disabled=true;$("out").style.opacity=".5";'
+    + 'G.withSuccessHandler(function(d){$("go").disabled=false;$("out").style.opacity="1";draw(d);}).withFailureHandler(function(e){$("go").disabled=false;$("out").style.opacity="1";m.style.display="block";m.className="msg bad";m.textContent=(e&&e.message||"That did not work.").replace(/^Error: /,"");}).visitData(SIG,a,b,$("u").value);}'
+    + 'function list(o){var k=Object.keys(o).sort(function(x,y){return o[y]-o[x];});return k.map(function(x){return esc(x)+" "+o[x];}).join(", ")||"-";}'
+    + 'function draw(d){var mx=Math.max.apply(null,d.buckets.map(function(b){return b.v;}).concat([1]));var h="<div class=\\"chips\\"><span class=\\"chip\\"><b>"+d.vis+"</b> visitors</span><span class=\\"chip\\"><b>"+d.ind+"</b> from India</span><span class=\\"chip\\"><b>"+d.oth+"</b> other countries</span><span class=\\"chip\\"><b>"+d.views+"</b> tab views</span></div>";'
+    + 'h+="<h2 style=\\"font-size:17px;margin:20px 0 8px\\">By period</h2><div style=\\"overflow-x:auto\\"><table class=\\"vt\\"><thead><tr><th>Period</th><th>Visitors</th><th></th><th>India</th><th>Other</th><th>Countries</th><th>Tab views</th></tr></thead><tbody>";'
+    + 'if(!d.buckets.length)h+="<tr><td colspan=\\"7\\" style=\\"color:#7a8594\\">No visits in this range.</td></tr>";'
+    + 'd.buckets.slice().reverse().forEach(function(b){h+="<tr><td style=\\"white-space:nowrap\\">"+esc(b.label)+"</td><td><b>"+b.v+"</b></td><td style=\\"width:110px\\"><div class=\\"bar\\" style=\\"width:"+Math.round(b.v/mx*100)+"px\\"></div></td><td>"+b.i+"</td><td>"+b.o+"</td><td>"+list(b.c)+"</td><td>"+b.w+" ("+list(b.t)+")</td></tr>";});'
+    + 'h+="</tbody></table></div><h2 style=\\"font-size:17px;margin:20px 0 8px\\">Countries in this range</h2><p class=\\"sub\\" style=\\"margin:0\\">"+list(d.countries)+"</p><h2 style=\\"font-size:17px;margin:20px 0 8px\\">Tabs in this range</h2><p class=\\"sub\\" style=\\"margin:0\\">"+list(d.tabs)+"</p>";$("out").innerHTML=h;}'
+    + 'function preset(i){var p=PRE[i],n=Date.now();$("f").value=toIn(p[1]?n-p[1]:Date.UTC(2024,0,1)-IST);$("t").value=toIn(n+60000);$("u").value=p[2];[].forEach.call(document.querySelectorAll("#pre .vb"),function(b,j){b.className="vb"+(j===i?" on":"");});run();}'
+    + 'PRE.forEach(function(p,i){var b=document.createElement("button");b.type="button";b.className="vb";b.textContent=p[0];b.onclick=function(){preset(i);};$("pre").appendChild(b);});'
+    + '$("go").onclick=function(){[].forEach.call(document.querySelectorAll("#pre .vb"),function(b){b.className="vb";});run();};preset(2);})();<\/script>';
+  return out_(shell_('Visitors', 'Only the country, the tab and the time are stored. Indian visits are counted here but never emailed. All times are IST. One visitor is the first page of a browser session; tab views count every page opened.', inner, true), 'Visitors');
+}
+
+/* ---- Messages and Appointments portals ---- */
+function msgUrl_() { return ScriptApp.getService().getUrl() + '?action=messages&sig=' + sign_('admin', 'messages'); }
+function apptUrl_() { return ScriptApp.getService().getUrl() + '?action=appts&sig=' + sign_('admin', 'appts'); }
+function listStyle_() { return '<style>.li{border:1.5px solid #e1e8f3;border-radius:12px;padding:12px 14px;margin:0 0 10px;background:#fff}.li .h{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin:0 0 6px}.li .n{font-weight:bold}.li .m{color:#5b6675;font-size:12px}.li .b{white-space:pre-wrap;font-size:14px;margin:6px 0 10px}.pl{display:inline-block;font-size:12px;font-weight:bold;border-radius:12px;padding:2px 10px;margin-left:6px}.pl.y{background:#fff3d6;color:#8a6a00}.pl.g{background:#dff3e6;color:#1e8e4e}.pl.x{background:#eef2f8;color:#5b6675}.ab{display:inline-block;text-decoration:none;border-radius:20px;padding:6px 14px;font-weight:bold;font-size:13px;margin:0 6px 4px 0;color:#fff}</style>'; }
+function messagesPage_(p) {
+  if (sign_('admin', 'messages') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var props = PropertiesService.getScriptProperties().getProperties(), list = [];
+  Object.keys(props).forEach(function (k) { if (k.indexOf('MSG_') === 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); list.push(r); } catch (x) { } } });
+  list.sort(function (a, b) { return b.t - a.t; });
+  var items = list.map(function (r) {
+    return '<div class="li" data-s="' + esc_((r.n + ' ' + r.e + ' ' + r.m).toLowerCase()) + '"><div class="h"><span class="n">' + esc_(r.n) + '</span><a href="mailto:' + esc_(r.e) + '" style="color:#1f4e9c;font-size:13px">' + esc_(r.e) + '</a><span class="m">' + Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy, HH:mm') + ' IST</span></div>'
+      + '<div class="b">' + esc_(r.m) + '</div><a class="ab" style="background:#1f4e9c" target="_top" href="' + link_('reply', r.id) + '">Reply</a></div>';
+  }).join('') || '<p class="sub">No messages yet.</p>';
+  var inner = listStyle_() + '<input id="q" class="tx" placeholder="Search name, email or message" style="margin:0 0 14px"><div id="l">' + items + '</div>'
+    + '<script>document.getElementById("q").oninput=function(){var v=this.value.toLowerCase(),r=document.querySelectorAll("#l .li");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};<\/script>';
+  return out_(shell_('Messages', list.length + ' message' + (list.length === 1 ? '' : 's') + ' from the contact form, newest first. They are kept for 120 days.', inner, true), 'Messages');
+}
+function appointmentsPage_(p) {
+  if (sign_('admin', 'appts') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var cal = CalendarApp.getDefaultCalendar(), now = new Date(), from = new Date(now.getTime() - 60 * 86400000), to = new Date(now.getTime() + (DAYS_AHEAD + 30) * 86400000);
+  var evs = cal.getEvents(from, to).filter(function (e) { return /^(REQUEST|Appointment:)/.test(e.getTitle()); });
+  var card = function (e) {
+    var pend = /^REQUEST/.test(e.getTitle()), past = e.getEndTime().getTime() < now.getTime(), name = e.getTag('name') || e.getTitle().replace(/^[^:]*:\s*/, ''), email = e.getTag('email') || '', id = e.getId();
+    var desc = String(e.getDescription() || '').replace(/^[\s\S]*Purpose:\s*/, '').slice(0, 1000);
+    return '<div class="li"><div class="h"><span class="n">' + esc_(name) + '</span>' + (email ? '<a href="mailto:' + esc_(email) + '" style="color:#1f4e9c;font-size:13px">' + esc_(email) + '</a>' : '')
+      + (pend ? '<span class="pl y">Waiting for your reply</span>' : (past ? '<span class="pl x">Past</span>' : '<span class="pl g">Confirmed</span>')) + '</div>'
+      + '<div class="m">' + esc_(whenText_(e.getStartTime(), e.getEndTime())) + '</div>' + (desc ? '<div class="b">' + esc_(desc) + '</div>' : '<div class="b"></div>')
+      + (pend && !past ? '<a class="ab" style="background:#1e8e3e" target="_top" href="' + link_('approve', id) + '">Approve</a><a class="ab" style="background:#c5221f" target="_top" href="' + link_('decline', id) + '">Decline</a>' : '')
+      + (email ? '<a class="ab" style="background:#1f4e9c" target="_top" href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(email) + '">Write to them</a>' : '') + '<a class="ab" style="background:#5b6675" target="_blank" href="' + calLink_(e) + '">Open in Calendar</a></div>';
+  };
+  var pend = evs.filter(function (e) { return /^REQUEST/.test(e.getTitle()) && e.getEndTime() >= now; }), up = evs.filter(function (e) { return /^Appointment:/.test(e.getTitle()) && e.getEndTime() >= now; }),
+    old = evs.filter(function (e) { return e.getEndTime() < now; }).reverse();
+  var sec = function (t, a, em) { return '<h2 style="font-size:17px;margin:22px 0 8px">' + t + ' (' + a.length + ')</h2>' + (a.length ? a.map(card).join('') : '<p class="sub" style="margin:0">' + em + '</p>'); };
+  var inner = listStyle_() + sec('Waiting for your reply', pend, 'No pending requests.') + sec('Upcoming appointments', up, 'No confirmed appointments ahead.') + sec('Past (last 60 days)', old, 'Nothing in the last 60 days.');
+  return out_(shell_('Appointments', 'Requests from the booking calendar. Approve or decline here, the same as from the email. Declined requests are removed from the calendar.', inner, true), 'Appointments');
 }
 
 /* ---- new request (POST) ---- */
