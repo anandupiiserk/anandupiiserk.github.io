@@ -1683,7 +1683,7 @@ addEventListener('load', fitNav);
 
 })();
 
-/* Visit counter: country and tab only, no IP address is stored. The country is looked up in the visitor's browser and only the country, the tab and the language are sent to the Apps Script.
+/* Visit counter: country and tab only, no IP address is stored. The country is looked up in the visitor's browser and only the country, the tab, the language and the seconds spent on the tab are sent to the Apps Script.
    The first page of a browser session counts as one visitor; later pages in the same session are recorded as tab views. Open the site once with ?novisit to exclude your own browser. */
 (function () {
   let first = false;
@@ -1706,5 +1706,15 @@ addEventListener('load', fitNav);
     }
     const page = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index';
     try { await fetch(SITE.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'visit', cc, name, page, first, lang: document.documentElement.lang || 'en', website: '' }) }); } catch (e) {}
+    /* time spent on this page: visible seconds, sent when the tab is hidden or closed */
+    let seg = document.visibilityState === 'visible' ? Date.now() : 0;
+    const send = () => {
+      if (!seg) return;
+      const secs = Math.round((Date.now() - seg) / 1000); seg = 0;
+      if (secs < 1) return;
+      try { fetch(SITE.endpoint, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'leave', cc, name, page, secs: Math.min(secs, 21600), website: '' }) }); } catch (e) {}
+    };
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') send(); else seg = Date.now(); });
+    addEventListener('pagehide', send);
   })();
 })();
