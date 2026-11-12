@@ -65,7 +65,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const page = document.body.dataset.page || 'home';
 const root = document.documentElement;
 const LS = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
-const LANGS = [{ c: 'en', n: 'English', s: 'EN' }, { c: 'ml', n: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', s: 'ML' }, { c: 'hi', n: '\u0939\u093f\u0928\u094d\u0926\u0940', s: 'HI' }, { c: 'fr', n: 'Fran\u00e7ais', s: 'FR' }, { c: 'de', n: 'Deutsch', s: 'DE' }, { c: 'ar', n: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', s: 'AR' }, { c: 'es', n: 'Espa\u00f1ol', s: 'ES' }, { c: 'pt', n: 'Portugu\u00eas', s: 'PT' }, { c: 'zh', n: '\u4e2d\u6587', s: 'ZH' }, { c: 'ja', n: '\u65e5\u672c\u8a9e', s: 'JA' }, { c: 'sv', n: 'Svenska', s: 'SV' }];
+const LANGS = [{ c: 'en', n: 'English', s: 'EN' }, { c: 'ml', n: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', s: 'ML' }, { c: 'hi', n: '\u0939\u093f\u0928\u094d\u0926\u0940', s: 'HI' }, { c: 'ar', n: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', s: 'AR' }, { c: 'zh', n: '\u4e2d\u6587', s: 'ZH' }, { c: 'fr', n: 'Fran\u00e7ais', s: 'FR' }, { c: 'de', n: 'Deutsch', s: 'DE' }, { c: 'ja', n: '\u65e5\u672c\u8a9e', s: 'JA' }, { c: 'pt', n: 'Portugu\u00eas', s: 'PT' }, { c: 'es', n: 'Espa\u00f1ol', s: 'ES' }, { c: 'sv', n: 'Svenska', s: 'SV' }];
 let LANG = 'en'; const DICT = window.I18N || {};
 const norm = s => String(s).replace(/\s+/g, ' ').trim();
 const KEEP = /^(Blogger|Anandu Prabhakaran|\S+@\S+|anandu|\.fire|LAT|LON|FWI|[a-z.]+\.(com|net|org)|Anandu P\.|anandu\.fire|GitHub|LinkedIn|ORCID|ResearchGate|Google Scholar|X|WRF-SFIRE|CMIP6|CoEDMM, IIT Roorkee|IIT Roorkee|CEFE-CNRS|DOI|you@example\.com)$/;
