@@ -804,6 +804,7 @@ function visitSummary_(force) {
   return true;
 }
 function dailyVisitSummary() { if (VISIT_MAIL) visitSummary_(false); }
+function testVisitSummary() { visitSummary_(true); }
 function cleanVisitMails() {
   GmailApp.search('in:sent subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd', 0, 100).forEach(function (t) { t.moveToTrash(); });
 }
