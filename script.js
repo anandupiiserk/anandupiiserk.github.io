@@ -1707,15 +1707,21 @@ addEventListener('load', fitNav);
     const page = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index';
     let sid = ''; try { sid = sessionStorage.getItem('vsid') || ''; if (!/^[a-f0-9]{12}$/.test(sid)) { sid = Array.from(crypto.getRandomValues(new Uint8Array(6)), b => b.toString(16).padStart(2, '0')).join(''); sessionStorage.setItem('vsid', sid); } } catch (e) { sid = ''; }
     try { await fetch(SITE.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'visit', cc, name, page, first, sid, lang: document.documentElement.lang || 'en', website: '' }) }); } catch (e) {}
-    /* time spent on this page: visible seconds, sent when the tab is hidden or closed */
-    let seg = document.visibilityState === 'visible' ? Date.now() : 0;
+    /* time spent on this page: visible seconds, sent when the tab is hidden or closed.
+       Stretches with no scroll, click, key or pointer activity longer than the limit are reported as idle
+       (10 minutes on normal tabs, 3 minutes on the gallery) so that a tab left open is not counted as reading. */
+    const LIM = (page === 'gallery' ? 180 : 600) * 1000;
+    let seg = document.visibilityState === 'visible' ? Date.now() : 0, last = Date.now(), idle = 0;
+    const act = () => { const n = Date.now(); if (seg && n - last > LIM) idle += n - last; last = n; };
+    ['pointerdown', 'pointermove', 'keydown', 'scroll', 'wheel', 'touchstart', 'touchmove'].forEach(ev => addEventListener(ev, act, { passive: true, capture: true }));
     const send = () => {
       if (!seg) return;
-      const secs = Math.round((Date.now() - seg) / 1000); seg = 0;
+      const n = Date.now(); if (n - last > LIM) idle += n - last;
+      const secs = Math.round((n - seg) / 1000), idl = Math.min(Math.round(idle / 1000), secs); seg = 0; idle = 0;
       if (secs < 1) return;
-      try { fetch(SITE.endpoint, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'leave', cc, name, page, sid, secs: Math.min(secs, 21600), website: '' }) }); } catch (e) {}
+      try { fetch(SITE.endpoint, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'leave', cc, name, page, sid, secs: Math.min(secs, 21600), idle: Math.min(idl, 21600), website: '' }) }); } catch (e) {}
     };
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') send(); else seg = Date.now(); });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') send(); else { seg = Date.now(); last = seg; idle = 0; } });
     addEventListener('pagehide', send);
   })();
 })();
