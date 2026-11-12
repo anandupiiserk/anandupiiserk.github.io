@@ -1,0 +1,284 @@
+# GALLERY CAPTIONS
+# One line per photo or per event:   ID | caption
+# Lines that start with # are ignored. Blank lines are ignored.
+#
+# Sections and file name prefixes (use the same capital letters as in the file names):
+#   PhD_     PhD: thesis work, presentation, defence
+#   Conf_    Conference: conferences, symposia, seminars, webinars I attended or presented at
+#   WORK_    Workshops: workshops and lectures I conducted
+#   Meet_    Meetings: meetings with other people
+#   Field_   Field: field trips
+#   MSpace_  My Space: other trips, expeditions, random shots
+#
+# One photo:      file  PhD_001.jpg            line  PhD_001 | Caption
+# Event photos:   files Conf_004_01.jpg, Conf_004_02.jpg, ... (up to 20)   line  Conf_004 | Caption for the event
+#                 Optional caption for one photo of the event:  Conf_004_02 | Caption for this photo
+# File types: jpg, jpeg, png, webp. Put the image files in this same folder (gallery/).
+# Dates: put [YYYY-MM-DD] (or [YYYY-MM]) first in an event's caption line, e.g.  Event_002 | [2026-11-02] Caption. The gallery shows newest first, left to right. Undated events come last.
+# A photo is shown only if its ID is listed here. A line with no caption is fine:  PhD_002 |
+# Lines below are the captions from the earlier website. They stay hidden until a file with that name is added.
+
+# ---- 22 October 2026: CoEDMM review at IIT Roorkee (newest first) ----
+Meet_075 | [2026-10-22] CoEDMM review, IIT Roorkee
+Meet_075_01 | At the WCRG Lab, CoEDMM, IIT Roorkee. From left: Sachin, Shiwam Singh, Arun Dev Singh, Saurabh Singh, Anandu Prabhakaran, Prof. Dhiman, Dr. Mrutyunjay Mohapatra (Director General, IMD), Dr. Arti Bhatt (Scientist-G, Associate Director, CFEES, DRDO), Viswanandan Kumar Singh and Ayush K. Bondwal. MausamDrishti forecast of WCRG in the background.
+Meet_075_02 | With the lab members. From left: Saurabh, Shiwam, Arun and Anandu.
+Meet_075_03 | With the Centre members and the delegates.
+PhD_025 | [2026-10-22] Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD
+PhD_025_01 | Presenting wildfire research to Dr. Mrutyunjay Mohapatra, Director General, IMD.
+PhD_025_02 | Discussing wildfire events over the Indian Himalayan Region with the Director General, IMD.
+PhD_025_03 | Discussing my work at the WCRG Lab, CoEDMM, IIT Roorkee, with Dr. Mrutyunjay Mohapatra, Director General, IMD.
+# ---- 13 October 2026: International Day for Disaster Risk Reduction and Research Scholars' Day ----
+Event_001 | [2026-10-13] IDDRR 2026 and Research Scholars' Day, CoEDMM, IIT Roorkee. Theme: Resilience starts at home.
+Event_001_01 | Prof. Piyush Srivastava, team lead, with the WCRG lab members on IDDRR Day.
+Event_001_02 | Group photo of the Research Scholars' Day participants.
+Event_001_03 | Prof. Piyush Srivastava, team lead, and the WCRG lab members with Prof. Dhiman, HOD.
+Event_001_04 | Group photo of the IDDRR Day celebration.
+Event_001_05 | The WCRG team at the registration desk.
+Event_001_06 | At the registration desk. From left: Anandu, Shiwam and Prof. Piyush Srivastava.
+Event_001_07 | Registration desk during IDDRR Day.
+Event_001_08 | Anandu and Shiwam at the registration desk.
+Event_001_09 | With Anagha at her poster, Research Scholars' Day.
+Event_002 | [2024-10-13] IDDRR 2024 and Research Scholars' Day, CoEDMM, IIT Roorkee. Theme: Empowering the next generation for a resilient future.
+Event_002_01 | The WCRG team on IDDRR Day.
+Event_002_02 | From left: Shiwam, Rajendra, Saurabh and Anandu.
+Event_002_03 | Poster session at Research Scholars' Day, with Anandu's poster.
+Event_003 | [2026-08-14] IIT Roorkee on the eve of the 80th Independence Day.
+Conf_001 | From Research Scholars Day at CoEDMM, IIT Roorkee
+Conf_002 | Team WeatherXplorers during Research Scholars Day at CoEDMM, IIT Roorkee.
+Conf_003 | CoEDMM team with Prof. Tatsuya Ishikawa at 9th Global Energy and Water EXchanges Open Science Conference, Hokkaido, Japan
+Conf_004 | From left Dr. Pattanaik, Dr. Srivastava and DG India Meteorological Department, Dr. Mohapatra, Anandu Prabhakaran at GEWEX OSC - 2024.
+Conf_005 | [2024-05-06] Workshop on Data Assimilation in Weather and Climate models, ICTS Bengaluru, 6 to 17 May 2024.
+Conf_005_01 | Group photo of the workshop participants at ICTS Bengaluru.
+Conf_005_02 | Another group photo of the participants.
+Conf_005_03 | In front of the ICTS sign (International Centre for Theoretical Sciences, Tata Institute of Fundamental Research), from left: Rajendra Singh Rawat, Shiwam Singh and me.
+Conf_006 | [2025-03-16] PMRF Annual Symposium, IIT Hyderabad, 16 and 17 March 2025. Several hundred PMRF fellows from across India attended.
+Conf_006_01 | Anandu at the PMRF Annual Symposium, IIT Hyderabad.
+Conf_006_02 | Anandu with his poster at the symposium.
+Conf_006_03 | Anandu with his poster at the symposium.
+Conf_007 | [2023-09] My presentation on forest fire events over the northwest Himalayan region and the Hawaii forest fires at the 13th International Conference of the International Society for Integrated Disaster Risk Management (IDRiM 2023), IIT Roorkee, 28 to 30 September 2023.
+WORK_001 | Online Lecture + Workshop at CCCES, Kerala Agricultural University, October 2025
+WORK_002 | [2025-02-03] Lecture series on Climate Change, Department of Environmental Studies, Kannur University, 3 to 7 February 2025.
+WORK_003 | Workshop at School of Environmental Studies, CUSAT
+WORK_004 | Workshop at Department of Environmental Sciences, Sharda University
+WORK_005 | Lecture on WRF-Model, during Hands on Workshop on Weather and Climate Modelling Organised by Dept. of Architecture & Planning, IIT Roorkee.
+WORK_006 | Attendees during Hands-on session on WRF Model
+WORK_007 | Lecture on Basics of Origin Pro Software at College of Engineering Roorkee.
+WORK_008 | Lecture on Post-processing of WRF Model.
+WORK_009 | [2024-09-24] Workshop Python Essentials: Foundations of Programming, Data Structures, and Analysis, School of Environmental Studies, Cochin University of Science and Technology (CUSAT), Cochin, 24 and 25 September 2024.
+WORK_009_01 | The lecture hall during the hands-on session.
+WORK_009_02 | Another view of the hall during the session.
+Field_001 | Visit to the IMD station at Ranichauri, Uttarakhand.
+Field_002 | At Ranichauri IMD Station, Uttarakhand with Prof. Piyush Srivastava
+Field_003 | At Ranichauri Climate Monitoring Station, Uttarakhand. From left, Rajendra, Shiwam, Prof. Piyush, Anandu
+Field_004 | Balasore beach on the eastern coast of India
+Field_005 | Clinometer in a pose during fieldwork.
+Field_006 | Chandipur during a low tide phenomenon.
+Field_007 | Ripples on the tidal flat of Chandipur
+Field_008 | Clinometer with readings of ripple lee and crust.
+Field_009 | Tidal flat with exposed beauty of aquatic organisms architecture.
+Field_010 | Bonfire before the dispersal of fieldwork.
+MSpace_001 | Top view of other hills in Ponmudi
+MSpace_002 | Ponmudi Hills
+MSpace_003 | Trip to Ponmudi
+MSpace_004 | Kallar Waterfalls Ponmudi
+MSpace_005 | [2024-05] IIT Roorkee on a fine evening
+MSpace_006 | [2026-09-26] Fit India Cyclothon 2026 at IIT Roorkee, a 50 km ride from the Main Campus to the Saharanpur Campus, with friends and colleagues from IIT Roorkee.
+MSpace_007 | [2026-08-13] WCRG workspace at CoEDMM, IIT Roorkee.
+MSpace_008 | [2026-08-23] Group dinner at Balu's home.
+MSpace_009 | [2026-09-27] A rainy evening at IIT Roorkee.
+MSpace_010 | [2024-03-01] Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.
+MSpace_011 | [2024-03-31] Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.
+MSpace_012 | [2025-07-29] Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.
+MSpace_012_01 | Gare de Strasbourg, the SNCF railway station.
+MSpace_012_02 | A city bus beside Gare de Strasbourg.
+MSpace_012_03 | Gare de Strasbourg at dusk.
+MSpace_012_04 | Strasbourg Cathedral.
+MSpace_012_05 | A view over the rooftops of Strasbourg.
+MSpace_012_06 | Sunset over Strasbourg, under a cloudy sky that contrasted with the sunny weather in Montpellier.
+MSpace_012_07 | Evening light near Esplanade.
+MSpace_012_08 | University of Strasbourg campus, with modern glass buildings under a cloudy blue sky.
+MSpace_012_09 | Exploring the canals of Strasbourg: half-timbered houses along the water on a sunny evening.
+MSpace_012_10 | A restaurant in Strasbourg, its facade covered in ivy and flowers; the sign reads L'Ami Schutz.
+MSpace_012_11 | The Ponts Couverts (Covered Bridges) of Strasbourg, with their towers and the cathedral spire in the background.
+MSpace_012_12 | A pair of mallards, male and female, swimming in a Strasbourg canal.
+MSpace_012_13 | 17 August 2025: the west facade and spire of Strasbourg Cathedral, with crowds in the square below.
+MSpace_012_14 | The west facade of Strasbourg Cathedral, with its rose window and three portals, under a clear blue sky.
+MSpace_012_15 | The facade again, a closer view of the portals and the carved sandstone.
+MSpace_012_16 | The north tower and the entrance, with the queue of visitors waiting outside.
+MSpace_012_17 | Inside the cathedral: the nave looking towards the choir, with the organ on the left.
+MSpace_012_18 | The nave from the entrance, with stained glass windows and rows of chairs.
+MSpace_012_19 | A statue of the Virgin and Child surrounded by votive candles.
+MSpace_012_20 | The astronomical clock inside the cathedral, with visitors gathered in front of it.
+MSpace_012_21 | A gilded altarpiece with carved panels and a central statue in a side chapel.
+MSpace_012_22 | The organ in the nave, mounted high on the wall like a swallow's nest, below stained glass windows.
+MSpace_012_23 | The Palais du Rhin on Place de la République, built as the Kaiserpalast (Imperial Palace) between 1884 and 1889 in neo-Renaissance style.
+MSpace_012_24 | Hey mate, nice reflections! A mute swan gliding through the colourful water.
+MSpace_012_25 | A colourfully decorated bus passing in front of the glass facade of Gare de Strasbourg at dusk.
+MSpace_012_26 | The street along the glass-fronted Gare de Strasbourg in the evening light.
+MSpace_012_27 | The station square in front of Gare de Strasbourg, with the tram entrance for lines A and D.
+MSpace_013 | [2025-07] Montpellier vibes: the view from my apartment balcony in the evening, in the Mediterranean summer.
+MSpace_013_01 | 1 July 2025: balcony view at about 6:30 pm.
+MSpace_013_02 | 23 July 2025: a scorching day at 35 °C, balcony view at 8 pm.
+MSpace_013_03 | 21 August 2025: balcony view at 8:25 pm, with clouds over the rooftops.
+MSpace_013_04 | 24 August 2025: the Saint-Éloi neighbourhood near my apartment, at 7:48 pm.
+MSpace_013_05 | 29 August 2025: balcony view at 8 pm, with the sun breaking through the clouds at sunset.
+MSpace_013_06 | 2 September 2025: balcony view at 8:28 pm, with a fiery red sunset sky.
+MSpace_013_07 | 18 September 2025: balcony view at 8:21 pm, with the last orange light of dusk. The days are getting shorter.
+MSpace_013_08 | 21 September 2025: a cloudy evening at 6:56 pm, with heavy clouds over the rooftops.
+MSpace_013_09 | 23 September 2025, 7:52 am: a double rainbow arching over the rooftops after rain, seen from my apartment balcony.
+MSpace_014 | [2025-07-19] Heart of Montpellier, France: Place de la Comédie, the cathedral and the Saint-Éloi district.
+MSpace_014_01 | Place de la Comédie, under a canopy of yellow umbrellas.
+MSpace_014_02 | Place de la Comédie, the main square of Montpellier.
+MSpace_014_03 | A pedestrian street leading to Place de la Comédie.
+MSpace_014_04 | An evening at Place de la Comédie, with a green ice cream.
+MSpace_014_05 | Montpellier Cathedral.
+MSpace_014_06 | Montpellier Cathedral, another view.
+MSpace_014_07 | Montpellier Cathedral (Cathédrale Saint-Pierre), seen from below: the fortified Gothic porch with its two round pillars and the bell tower, under a blue sky.
+MSpace_014_08 | Early morning, still dark, near Place de la Comédie: a floodlit building.
+MSpace_014_09 | Pines and cypresses near Saint-Éloi at dusk.
+MSpace_014_10 | An evening at Vert Bois, Montpellier, with heavy clouds over the street and a bus shelter.
+MSpace_014_11 | 28 August 2025, 5:46 pm: Place de la Comédie under grey clouds, with the Opéra Comédie at the far end of the square.
+MSpace_014_12 | L'Arbre Blanc (The White Tree) in Montpellier, a 17-storey residential tower with large cantilevered balconies, designed by Sou Fujimoto, Nicolas Laisné, Dimitri Roussel and OXO Architectes and completed around 2019.
+MSpace_014_13 | L'Arbre Blanc again, with its cantilevered balconies and rooftop shades, seen from the road near the Lez river.
+MSpace_014_14 | A large ring-shaped canopy of wooden slats over a fountain roundabout with tram tracks, on a cloudy day in Montpellier, believed to be near the Philippidès stadium.
+MSpace_014_15 | The Philippidès athletics stadium in Montpellier, with its blue synthetic track and covered grandstand. The stadium was inaugurated in 1988.
+MSpace_014_16 | 15 November 2025: a night-time light show projected on the Opéra Comédie at Place de la Comédie, with vintage trams and street scenes and crowds filming with their phones.
+MSpace_014_17 | 15 November 2025: the same event on the Arc de Triomphe of Montpellier (Porte du Peyrou), lit red, with the projected text "Gare de Montpellier Saint-Roch".
+MSpace_014_18 | 8 September 2025: Turkish food at Grill House (Falafel & Kebab) in Montpellier, with doner meat, salad, fries and sauces.
+MSpace_015 | [2025-07-19] The Mediterranean Sea on a scorching summer day.
+MSpace_016 | [2025-07] My self-cooking diary in France: Kerala puttu and egg curry, and French toast.
+MSpace_016_01 | Puttu and egg curry, cooked at home.
+MSpace_016_02 | Another plate of puttu and egg curry.
+MSpace_016_03 | Puttu and egg curry with a banana and tea.
+MSpace_016_04 | French toast, cooked in France. Very original of me 🙄
+MSpace_016_05 | Kerala palappam with boiled egg and potato korma.
+MSpace_016_06 | Tortilla with soya curry.
+MSpace_017 | [2025-06-30] Trips to Paris, France, as part of the Raman-Charpak Fellowship: I reached Paris on 30 June 2025 and visited again in November 2025.
+MSpace_017_01 | Desserts at the lounge of Trivandrum domestic airport, on the way to Paris.
+MSpace_017_02 | Snacks at the lounge of Trivandrum domestic airport.
+MSpace_017_03 | A Lufthansa Airbus A380 at the gate, for the flight from New Delhi to Munich.
+MSpace_017_04 | Munich Airport, seen from the plane window.
+MSpace_017_05 | 30 June 2025: passport and boarding pass for flight LH2228 from Munich to Paris Charles de Gaulle.
+MSpace_017_06 | Mighty Paris from the air, on the flight from Munich.
+MSpace_017_07 | 10 July 2025: the Arc de Triomphe in Paris.
+MSpace_017_08 | 10 July 2025: another view of the Arc de Triomphe.
+MSpace_017_09 | November 2025: A street artist blowing giant soap bubbles for children in the Tuileries Garden, with the Ferris wheel behind.
+MSpace_017_10 | November 2025: Children chasing the bubbles in the Tuileries Garden, with the Ferris wheel behind.
+MSpace_017_11 | November 2025: The Arc de Triomphe du Carrousel, built from 1806 to 1808 to commemorate Napoleon's 1805 victories, with the Louvre Pyramid visible through the arch.
+MSpace_017_12 | November 2025: Another view of the Arc de Triomphe du Carrousel and its bronze quadriga. The original Horses of Saint Mark were returned to Venice in 1815, and the present group is by François-Joseph Bosio.
+MSpace_017_13 | November 2025: The Louvre Pyramid held between two fingers, a forced-perspective shot in the Cour Napoléon.
+MSpace_017_14 | November 2025: The Louvre Pyramid and the palace wings around the Cour Napoléon, with queue barriers in front.
+MSpace_017_15 | November 2025: In front of the Pavillon Richelieu of the Louvre, whose name is carved above the arch.
+MSpace_017_16 | November 2025: Sitting by the Louvre Pyramid.
+MSpace_017_17 | November 2025: The Pavillon Richelieu of the Louvre, seen across the pools and fountain jets of the courtyard.
+MSpace_017_18 | November 2025: The Louvre Pyramid seen from close to its base, with the palace wings behind.
+MSpace_017_19 | November 2025: Detail of the Wall of Love (Mur des je t'aime) in Montmartre, with "I love you" written in many scripts.
+MSpace_017_20 | November 2025: The Wall of Love, created in 2000 by Frédéric Baron and Claire Kito: "I love you" appears 311 times in 250 languages, and the red pieces are fragments of a broken heart.
+MSpace_017_21 | November 2025: Inside Notre-Dame de Paris, which reopened to the public in December 2024 after the 2019 fire: gilded chandeliers hang in the nave, and a rose window is visible on the right.
+MSpace_017_22 | November 2025: A side chapel in Notre-Dame, with a golden disc and votive candles in front of stained glass.
+MSpace_017_23 | November 2025: A gilded chandelier in Notre-Dame, seen up close with stained glass windows behind.
+MSpace_017_24 | November 2025: The west facade of Notre-Dame de Paris, with its two towers, rose window and three portals, and a construction crane still on the square.
+MSpace_017_25 | November 2025: The Arc de Triomphe at night, with French and European Union flags at its base.
+MSpace_017_26 | November 2025: The Eiffel Tower lit at night, with the beam of light from its top and a bare tree in front.
+MSpace_017_27 | November 2025: The Eiffel Tower in the dusk, seen through the trees with its lights on.
+MSpace_017_28 | November 2025: The Eiffel Tower seen from a street near Rue de la Fédération, under a cloudy sky.
+MSpace_017_29 | November 2025: Gare du Nord, designed by Jacques Ignace Hittorff and built from 1861 to 1865. The statues on the facade represent cities served by the Chemin de Fer du Nord, and an orange winged sculpture stands near the entrance.
+MSpace_017_30 | November 2025: Another view of the Gare du Nord facade, with the clock in the large arch above the entrance.
+MSpace_017_31 | November 2025: Under the neo-Byzantine glass dome of the Galeries Lafayette Haussmann, completed in 1912 and designed by Ferdinand Chanut, with a large red festive ribbon hanging below.
+MSpace_017_32 | Shopping at Carrefour Saint-Eloi, Montpellier, after three flights and a long SNCF train ride to Montpellier.
+MSpace_018 | [2025-07] Montpellier, views near the CNRS campus, close to the Parc Zoologique de Lunaret (Lunaret Zoo) and Vert Bois.
+MSpace_018_01 | Near the CNRS campus and the Parc Zoologique de Lunaret, under blue skies.
+MSpace_018_02 | Near the CNRS campus again, with blue skies.
+MSpace_018_03 | 25 August 2025: a cloudy evening at Vert Bois, at 5:26 pm.
+MSpace_018_04 | The CNRS building with signs for four research institutes, seen from across the road.
+MSpace_018_05 | 28 August 2025, around 5 pm: dark storm clouds over Vert Bois, near the CNRS campus.
+MSpace_019 | [2025-07-06] Montpellier historical monuments: the Promenade du Peyrou and its Arc de Triomphe (Porte du Peyrou), the Palais de Justice, and Carré Sainte-Anne.
+MSpace_019_01 | Equestrian statue of Louis XIV on the Promenade du Peyrou, with the Château d'eau (Saint-Clément water tower) behind.
+MSpace_019_02 | Close-up of the equestrian statue of Louis XIV, installed in 1718.
+MSpace_019_03 | A tree-lined garden walk nearby.
+MSpace_019_04 | Wide-angle view across the Peyrou towards the Arc de Triomphe.
+MSpace_019_05 | The Palais de Justice (law courts), completed in 1853, with its Corinthian portico and sculpted pediment.
+MSpace_019_06 | Carré Sainte-Anne, hosting JR's exhibition Adventice.
+MSpace_019_07 | Inside, JR's Adventice: a tree made of thousands of hand scans under the vault.
+MSpace_019_08 | 5 September 2025, 8:17 pm: the Saint-Clément Aqueduct (Aqueduc Saint-Clément) in Montpellier at sunset. Built between 1753 and 1765, its two tiers of stone arches carry water from the Saint-Clément springs to the Peyrou water tower.
+MSpace_019_09 | The Saint-Clément Aqueduct ending at the Château d'eau (water tower) of the Promenade du Peyrou in Montpellier, under a deep blue sky.
+Visit_001 | [2025-08-07] Montpellier, France: my host institute CEFE-CNRS during the Raman-Charpak Fellowship (31 July to 31 December 2025), and the University of Montpellier campus nearby.
+Visit_001_01 | Entrance of CEFE-CNRS in Montpellier.
+Visit_001_02 | The picnic area on the CEFE-CNRS campus.
+Visit_001_03 | Leisure time on the CEFE-CNRS campus with my colleague Dr. Georgie Elias.
+Visit_001_04 | A covered walkway on the University of Montpellier campus.
+Visit_001_05 | Colourful pillars along a path on the University of Montpellier campus.
+Visit_001_06 | University of Montpellier, Triolet campus.
+Visit_001_07 | After lunch, roaming the campus with Dr. Georgie Elias, who calls this place the Viking space.
+Visit_001_08 | A CEFE-CNRS building on the Montpellier campus, among pines and oaks.
+Visit_001_09 | Campus Triolet of the University of Montpellier: a large red sculpture on the roundabout in front of the white perforated building.
+Visit_001_10 | 5 September 2025, 2:15 pm: the lecture hall before Dr. Georgie Elias's doctoral thesis defence at the CNRS campus in Montpellier.
+Visit_001_11 | Dr. Georgie Elias presenting his doctoral thesis defence, pointing to his slide.
+Visit_001_12 | Georgie Elias at the start of his defence, "Functional Geography of Drought in Lebanon for the Study of the Vulnerability of Agro-Ecosystems to Climate Change", 5 September 2025, Montpellier.
+Visit_001_13 | The defence under way: the session is introduced at the CNRS lectern, while jury members also join remotely on the side screen.
+MSpace_020 | [2025-07] Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.
+MSpace_020_01 | Fried calamari on pasta, my favourite dish during the stay.
+MSpace_020_02 | Another day, another meal: breaded fish with couscous and vegetables, with chocolate cake and fruit for dessert.
+MSpace_020_03 | Another meal: fish with potatoes and mixed vegetables, with fruit for dessert.
+MSpace_020_04 | Another meal: fish in a light sauce with green beans and broccoli, with chocolate cake and fruit for dessert.
+MSpace_020_05 | Another lunch: roast chicken leg in tomato sauce with penne and broccoli, and fruit for dessert.
+MSpace_020_06 | Another lunch: glazed carrots with a baked meat dish and cream, with fruit and an orange layered cake for dessert.
+MSpace_020_07 | A vegetarian lunch: couscous salad with boiled egg, feta, corn and melon, with fruit and a choux pastry ring for dessert.
+Visit_002 | [2025-08] Entrance of the CNRS campus in Montpellier.
+Visit_002_01 | Entrance of the CNRS campus in Montpellier.
+Visit_002_02 | A building on the CNRS campus in Montpellier, with signs for four research institutes: infectiology, cell biology, molecular genetics, and infectious diseases and anti-infective pharmacology.
+Visit_002_03 | 28 August 2025, 5:06 pm: a CEFE-CNRS building on the campus, among pines and oaks.
+Visit_002_04 | 26 September 2025, 4:46 pm: the CNRS building on the Montpellier campus, beside the tram line, with signs for the research institutes on its wall.
+Visit_002_05 | 8 October 2025, 12:45 pm: a white building on the CNRS campus in Montpellier with an external spiral staircase, under a sky of scattered clouds.
+Visit_002_06 | 23 October 2025: picnic tables under holm oaks and pines on the CEFE-CNRS campus in Montpellier, in the afternoon sun.
+Visit_002_07 | 28 October 2025: a white building on the CNRS campus in Montpellier, with a facade of hexagonal sunshades under a deep blue sky.
+MSpace_021 | [2025-08-30] Trip to Nîmes, in southern France, starting with breakfast: an americano with a palmier and a croissant.
+MSpace_021_01 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the main attraction of the city.
+MSpace_021_02 | The square in front of the Arena of Nîmes, with a bronze statue of a bullfighter on the left.
+MSpace_021_03 | Breakfast: an americano with a palmier and a croissant.
+MSpace_021_04 | The Musée des Beaux-Arts de Nîmes, with its neoclassical facade and the inscription Sculpture, Architecture, Peinture.
+MSpace_021_05 | The Musée de la Romanité in Nîmes, in its rippled glass and tile facade, standing opposite the Roman arena.
+MSpace_021_06 | The Arena of Nîmes (Arènes de Nîmes), the Roman amphitheatre and the city's main attraction, seen from the upper tiers.
+MSpace_021_07 | Rooftops of Nîmes seen from the top of the arena, with terracotta tiles under a deep blue sky.
+MSpace_021_08 | Inside the Arena of Nîmes: the oval sand arena ringed by tiers of stone seating, set up with chairs and a stage.
+MSpace_021_09 | The Église Saint-Paul in Nîmes, a 19th-century church with a rose window and three arched portals.
+MSpace_021_10 | The Maison Carrée in Nîmes, a Roman temple from the 1st century with its Corinthian columns.
+MSpace_021_11 | The Maison Carrée again, seen from the steps of the temple.
+MSpace_021_12 | The Carré d'Art in Nîmes, designed by Norman Foster and opened in 1993, which houses the municipal library and a contemporary art museum, facing the Maison Carrée.
+MSpace_021_13 | A historic garden in Nîmes, the Jardins de la Fontaine: stone bridges with arches over a canal, framed by balustrades and stone urns.
+MSpace_021_14 | The Jardins de la Fontaine, with a palm tree, stone staircases and the water basin beyond.
+MSpace_021_15 | The basin of the Jardins de la Fontaine seen from above, with fountains, terraces and a swan on the water.
+MSpace_021_16 | Gardens at the foot of the hill: the trek up to the heights was worth it for this view over the Jardins de la Fontaine.
+MSpace_021_17 | A short coffee break at a motorway service area with a Starbucks, on the way back to Montpellier.
+MSpace_022 | [2025-09-06] Trip to Marseille, France: a trek through the limestone hills to the Calanques.
+MSpace_022_01 | 6 September 2025, 11:54 am: the trek begins, with pine-covered slopes and white limestone ridges under a deep blue sky.
+MSpace_022_02 | A rocky limestone peak rising above the pines on the trail.
+MSpace_022_03 | A white dog stopping to look over the valley on the trek.
+MSpace_022_04 | The trek ends at a viewpoint above the Calanques of Marseille, in Calanques National Park: white limestone cliffs dropping into the deep blue Mediterranean.
+MSpace_022_05 | An information panel, "La naissance des Calanques" (The birth of the Calanques). It explains that the Grande Candelle, 454 m high, is separated from the Candelon by a fault, and that rivers cut deep valleys into the limestone during the ice ages, when the sea was over 100 m lower. Rising seas after the last glaciation flooded these valleys and created the calanques.
+MSpace_022_06 | View from the top: limestone pinnacles above a calanque, with boats on the water below.
+MSpace_022_07 | Another view from the top, with the narrow inlet opening into the open sea.
+MSpace_022_08 | The small harbour at the head of the calanque, seen from above: fishing and pleasure boats moored along the quays, with kayaks and small boats pulled up on the shore.
+MSpace_022_09 | The Vieux-Port (Old Port) of Marseille, with a Le Bateau ferry on the left and yachts moored along the quays.
+MSpace_022_10 | A Croisières Marseille Calanques boat at the Vieux-Port, the kind of cruise that takes visitors along the calanques.
+MSpace_022_11 | Adios, Marseille: Saint-Charles metro station, on the way back to the train to Montpellier.
+MSpace_023 | [2025-09-07] Onam 2025 in Montpellier, France: a Kerala breakfast and a festive lunch.
+MSpace_023_01 | Onam breakfast: idli served with egg curry and a vegetable curry.
+MSpace_023_02 | Onam lunch: the full spread laid out on the table, with rice, curries, thoran, pickles, banana chips, papadam and bananas, and a banana-leaf-print plate ready to serve.
+MSpace_023_03 | Onam lunch: a plate served on a banana-leaf-print plate with rice, curries, a bean thoran, pickle and papadam.
+MSpace_024 | [2026-09-27] Onam 2026 at IIT Roorkee, on the Sunday after the Fit India Cyclothon.
+MSpace_024_01 | The pookalam (flower carpet) at the entrance of the Onam celebration, with the letters M.I.I.T.R.A in rose petals.
+MSpace_024_02 | Onam in a mundu and kurta, with an umbrella in the rain in front of the Main Building of IIT Roorkee.
+MSpace_024_03 | The Onasadhya on a banana-leaf-style mat, with the guest coupon dated 27 September 2026: curries, thoran, pickles, banana chips, papadam and a banana.
+MSpace_025 | [2026-03-04] Holi 2026 at IIT Roorkee, a day of colours with friends and colleagues on the campus.
+MSpace_025_01 | Holi at IIT Roorkee: covered in colour in front of the Main Building, with the lawn and the crowd behind.
+MSpace_025_02 | With two friends, all three of us thoroughly coloured, next to a tree on the campus.
+MSpace_025_03 | A moment of calm in the middle of the colour, meditating on the road in front of the Main Building.
+MSpace_025_04 | Holi with a friend, with a blue-painted arm and faces covered in pink and red.
+MSpace_025_05 | Sitting cross-legged on the road, with colour on my face and arms and friends celebrating behind.
+MSpace_025_06 | With a friend by the low wall, the colours fully spread over clothes and hands.
+MSpace_025_07 | Relaxing on the road after the colours, with the Main Building and the celebrating crowd behind.
+MSpace_025_08 | Colour all over, a thoughtful pose in front of the Main Building.
+WORK_010 | [2026-10-28] Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study, School of Environment and Natural Resources, Doon University, 28 to 31 October 2026.
+WORK_011 | [2026-11-04] Climate Change Science and Weather Extremes: How Numerical Models Predict What Comes Next?, School of Earth and Environmental Sciences (SEES), Babasaheb Bhimrao Ambedkar University, Lucknow, November 2026.
+WORK_012 | [2023-04-10] Technical Workshop on Earthquake Early Warning System (EEWS), CoEDMM, IIT Roorkee, 10 to 12 April 2023.
