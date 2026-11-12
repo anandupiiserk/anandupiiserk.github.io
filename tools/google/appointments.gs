@@ -748,7 +748,9 @@ function visSheet_() {
     ss.getSheets()[0].appendRow(['Time (ms)', 'Country code', 'Country', 'Tab', 'New visitor (1 = first page of a session)', 'Language', 'Date and time (IST)']);
     sp.setProperty('VISSHEET', ss.getId());
   }
-  return ss.getSheets()[0];
+  var sh0 = ss.getSheets()[0];
+  if (sh0.getRange(1, 8).getValue() === '') sh0.getRange(1, 8, 1, 2).setValues([['Seconds on the tab (rows where Event = x)', 'Event (blank = tab opened, x = tab left or closed)']]);
+  return sh0;
 }
 /* rows with from <= time < to, oldest first. Rows are appended in time order, so read from the bottom. */
 function visRows_(from, to) {
@@ -756,11 +758,20 @@ function visRows_(from, to) {
   if (last < 2) return out;
   var end = last;
   while (end >= 2) {
-    var start = Math.max(2, end - 4999), v = sh.getRange(start, 1, end - start + 1, 6).getValues(), stop = false;
-    for (var j = v.length - 1; j >= 0; j--) { var t = +v[j][0]; if (t < from) { stop = true; break; } if (t < to) out.push({ t: t, cc: String(v[j][1]), n: String(v[j][2]), tab: String(v[j][3]), f: +v[j][4] === 1, l: String(v[j][5]) }); }
+    var start = Math.max(2, end - 4999), v = sh.getRange(start, 1, end - start + 1, 9).getValues(), stop = false;
+    for (var j = v.length - 1; j >= 0; j--) { var t = +v[j][0]; if (t < from) { stop = true; break; } if (t < to) out.push({ t: t, cc: String(v[j][1]), n: String(v[j][2]), tab: String(v[j][3]), f: +v[j][4] === 1, l: String(v[j][5]), s: +v[j][7] || 0, x: String(v[j][8]) === 'x' }); }
     if (stop) break; end = start - 1;
   }
   return out.reverse();
+}
+function leave_(p) {
+  var cc = String(p.cc || '').toUpperCase(), secs = Math.round(+p.secs);
+  if (!/^[A-Z]{2}$/.test(cc) || !(secs >= 1)) return json_({ ok: false });
+  secs = Math.min(secs, 21600);
+  var nm = String(p.name || '').trim(); if (!/^[A-Za-z .,'()\-]{2,45}$/.test(nm)) nm = cc;
+  var tab = TABS_[String(p.page || '').toLowerCase()] || 'Home', now = Date.now();
+  visSheet_().appendRow([now, cc, nm, tab, 0, '', Utilities.formatDate(new Date(now), TZ, 'yyyy-MM-dd HH:mm:ss'), secs, 'x']);
+  return json_({ ok: true });
 }
 function visit_(p) {
   var cc = String(p.cc || '').toUpperCase();
@@ -775,6 +786,7 @@ function visitSummary_(force) {
   var sp = PropertiesService.getScriptProperties(), last = +(sp.getProperty('VISLASTMAIL') || 0), now = Date.now(), rows = visRows_(last, now + 1);
   var inN = 0, others = {}, order = [];
   rows.forEach(function (r) {
+    if (r.x) return;
     if (r.cc === HOME_CC) { if (r.f) inN++; return; }
     var o = others[r.cc] || (others[r.cc] = { n: r.n, v: 0, tabs: {} }); if (!others[r.cc].seen) { others[r.cc].seen = 1; order.push(r.cc); }
     if (r.f) o.v++; o.tabs[r.tab] = (o.tabs[r.tab] || 0) + 1;
@@ -819,16 +831,20 @@ function visitData(sig, from, to, bucket) {
   from = +from; to = +to; if (!BKT_[bucket]) bucket = 'day';
   var spanMs = { minute: 6e4, hour: 36e5, day: 864e5, week: 6048e5, month: 2592e6, year: 31536e6 }[bucket];
   if ((to - from) / spanMs > 1500) throw new Error('Too many rows for this unit. Choose a larger unit or a shorter range.');
-  var rows = visRows_(from, to), map = {}, keys = [], tc = {}, tt = {}, vis = 0, ind = 0, views = rows.length;
+  var rows = visRows_(from, to), map = {}, keys = [], tc = {}, tt = {}, cm = {}, ts = {}, vis = 0, ind = 0, views = 0;
   rows.forEach(function (r) {
+    if (r.x) { ts[r.tab] = (ts[r.tab] || 0) + r.s; return; }
+    views++;
     var t = r.t; if (bucket === 'week') t = r.t - (+Utilities.formatDate(new Date(r.t), TZ, 'u') - 1) * 864e5;
     var key = Utilities.formatDate(new Date(t), TZ, BKT_[bucket][0]), b = map[key];
     if (!b) { b = map[key] = { k: key, label: (bucket === 'week' ? Utilities.formatDate(new Date(t), TZ, BKT_[bucket][1]) : Utilities.formatDate(new Date(r.t), TZ, BKT_[bucket][1])), v: 0, i: 0, o: 0, c: {}, t: {}, w: 0 }; keys.push(key); }
     b.w++; b.t[r.tab] = (b.t[r.tab] || 0) + 1; tt[r.tab] = (tt[r.tab] || 0) + 1;
-    if (r.f) { b.v++; vis++; if (r.cc === HOME_CC) { b.i++; ind++; } else b.o++; var c = b.c[r.n] = (b.c[r.n] || 0) + 1; tc[r.n] = (tc[r.n] || 0) + 1; }
+    if (r.f) { b.v++; vis++; if (r.cc === HOME_CC) { b.i++; ind++; } else b.o++; cm[r.n] = r.cc; var c = b.c[r.n] = (b.c[r.n] || 0) + 1; tc[r.n] = (tc[r.n] || 0) + 1; }
   });
   keys.sort();
-  return { buckets: keys.map(function (k) { return map[k]; }), vis: vis, ind: ind, oth: vis - ind, views: views, countries: tc, tabs: tt };
+  var log = rows.slice(-400).reverse().map(function (r) { return { w: Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy, HH:mm:ss'), cc: r.cc, n: r.n, tab: r.tab, f: r.f, x: r.x, s: r.s }; });
+  rows.forEach(function (r) { cm[r.n] = r.cc; });
+  return { ts: ts, log: log, cm: cm, buckets: keys.map(function (k) { return map[k]; }), vis: vis, ind: ind, oth: vis - ind, views: views, countries: tc, tabs: tt };
 }
 function visitorsPage_(p) {
   if (sign_('admin', 'visitors') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
@@ -845,16 +861,16 @@ function visitorsPage_(p) {
     + 'function fromIn(v){var m=/^(\\d+)-(\\d+)-(\\d+)T(\\d+):(\\d+)/.exec(v||"");return m?Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5])-IST:NaN;}'
     + 'function run(){var a=fromIn($("f").value),b=fromIn($("t").value),m=$("m");if(isNaN(a)||isNaN(b)||b<=a){m.style.display="block";m.className="msg bad";m.textContent="Choose a valid From and To.";return;}m.style.display="none";$("go").disabled=true;$("out").style.opacity=".5";'
     + 'G.withSuccessHandler(function(d){$("go").disabled=false;$("out").style.opacity="1";draw(d);}).withFailureHandler(function(e){$("go").disabled=false;$("out").style.opacity="1";m.style.display="block";m.className="msg bad";m.textContent=(e&&e.message||"That did not work.").replace(/^Error: /,"");}).visitData(SIG,a,b,$("u").value);}'
-    + 'function list(o){var k=Object.keys(o).sort(function(x,y){return o[y]-o[x];});return k.map(function(x){return esc(x)+" "+o[x];}).join(", ")||"-";}'
-    + 'function draw(d){var mx=Math.max.apply(null,d.buckets.map(function(b){return b.v;}).concat([1]));var h="<div class=\\"chips\\"><span class=\\"chip\\"><b>"+d.vis+"</b> visitors</span><span class=\\"chip\\"><b>"+d.ind+"</b> from India</span><span class=\\"chip\\"><b>"+d.oth+"</b> other countries</span><span class=\\"chip\\"><b>"+d.views+"</b> tab views</span></div>";'
+    + 'var CM={};function dur(s){s=Math.round(s);if(s<60)return s+" s";var m=Math.floor(s/60);if(m<60)return m+" min "+(s%60)+" s";return Math.floor(m/60)+" h "+(m%60)+" min";}function fl(cc){cc=String(cc||"").toLowerCase();return "<img src=\\"https://flagcdn.com/w20/"+cc+".png\\" width=\\"20\\" height=\\"15\\" alt=\\""+cc.toUpperCase()+"\\" style=\\"vertical-align:-2px;margin-right:5px;border:1px solid #d9e0ec\\">";}function list(o){var k=Object.keys(o).sort(function(x,y){return o[y]-o[x];});return k.map(function(x){return fl(CM[x])+esc(x)+" "+o[x];}).join("<br>")||"-";}'
+    + 'function draw(d){CM=d.cm||{};var mx=Math.max.apply(null,d.buckets.map(function(b){return b.v;}).concat([1]));var h="<div class=\\"chips\\"><span class=\\"chip\\"><b>"+d.vis+"</b> visitors</span><span class=\\"chip\\"><b>"+d.ind+"</b> from India</span><span class=\\"chip\\"><b>"+d.oth+"</b> other countries</span><span class=\\"chip\\"><b>"+d.views+"</b> tab views</span></div>";'
     + 'h+="<h2 style=\\"font-size:17px;margin:20px 0 8px\\">By period</h2><div style=\\"overflow-x:auto\\"><table class=\\"vt\\"><thead><tr><th>Period</th><th>Visitors</th><th></th><th>India</th><th>Other</th><th>Countries</th><th>Tab views</th></tr></thead><tbody>";'
     + 'if(!d.buckets.length)h+="<tr><td colspan=\\"7\\" style=\\"color:#7a8594\\">No visits in this range.</td></tr>";'
     + 'd.buckets.slice().reverse().forEach(function(b){h+="<tr><td style=\\"white-space:nowrap\\">"+esc(b.label)+"</td><td><b>"+b.v+"</b></td><td style=\\"width:110px\\"><div class=\\"bar\\" style=\\"width:"+Math.round(b.v/mx*100)+"px\\"></div></td><td>"+b.i+"</td><td>"+b.o+"</td><td>"+list(b.c)+"</td><td>"+b.w+" ("+list(b.t)+")</td></tr>";});'
-    + 'h+="</tbody></table></div><h2 style=\\"font-size:17px;margin:20px 0 8px\\">Countries in this range</h2><p class=\\"sub\\" style=\\"margin:0\\">"+list(d.countries)+"</p><h2 style=\\"font-size:17px;margin:20px 0 8px\\">Tabs in this range</h2><p class=\\"sub\\" style=\\"margin:0\\">"+list(d.tabs)+"</p>";$("out").innerHTML=h;}'
+    + 'h+="</tbody></table></div><h2 style=\\"font-size:17px;margin:20px 0 8px\\">Each visit (latest "+d.log.length+", IST, approximate time)</h2><div style=\\"overflow-x:auto\\"><table class=\\"vt\\"><thead><tr><th>Time</th><th>Country</th><th>Tab</th><th>What happened</th></tr></thead><tbody>";d.log.forEach(function(r){h+="<tr><td style=\\"white-space:nowrap\\">"+esc(r.w)+"</td><td style=\\"white-space:nowrap\\">"+fl(r.cc)+esc(r.n)+"</td><td>"+esc(r.tab)+"</td><td>"+(r.x?"Left the tab after "+dur(r.s):(r.f?"Opened (new visitor)":"Opened (tab view)"))+"</td></tr>";});if(!d.log.length)h+="<tr><td colspan=\\"4\\" style=\\"color:#7a8594\\">No visits in this range.</td></tr>";h+="</tbody></table></div><h2 style=\\"font-size:17px;margin:20px 0 8px\\">Countries in this range</h2><p class=\\"sub\\" style=\\"margin:0\\">"+list(d.countries)+"</p><h2 style=\\"font-size:17px;margin:20px 0 8px\\">Tabs in this range</h2><p class=\\"sub\\" style=\\"margin:0\\">"+Object.keys(d.tabs).sort(function(x,y){return d.tabs[y]-d.tabs[x];}).map(function(k){var t=(d.ts&&d.ts[k])||0;return esc(k)+": "+d.tabs[k]+" views, total time "+dur(t)+", average "+dur(t/d.tabs[k]);}).join("<br>")+"</p>";$("out").innerHTML=h;}'
     + 'function preset(i){var p=PRE[i],n=Date.now();$("f").value=toIn(p[1]?n-p[1]:Date.UTC(2024,0,1)-IST);$("t").value=toIn(n+60000);$("u").value=p[2];[].forEach.call(document.querySelectorAll("#pre .vb"),function(b,j){b.className="vb"+(j===i?" on":"");});run();}'
     + 'PRE.forEach(function(p,i){var b=document.createElement("button");b.type="button";b.className="vb";b.textContent=p[0];b.onclick=function(){preset(i);};$("pre").appendChild(b);});'
     + '$("go").onclick=function(){[].forEach.call(document.querySelectorAll("#pre .vb"),function(b){b.className="vb";});run();};preset(2);})();<\/script>';
-  return out_(shell_('Visitors', 'Only the country, the tab and the time are stored. Indian visits are counted here but never emailed. All times are IST. One visitor is the first page of a browser session; tab views count every page opened.', inner, true), 'Visitors');
+  return out_(shell_('Visitors', 'Only the country, the tab, the time and the time spent on each tab are stored. Indian visits are counted here but never emailed. All times are IST. One visitor is the first page of a browser session; tab views count every page opened.', inner, true), 'Visitors');
 }
 
 /* ---- Messages and Appointments portals ---- */
@@ -907,6 +923,7 @@ function doPost(e) {
     if (p.kind === 'subscribe') return subscribe_(p);
     if (p.kind === 'access') return accessRequest_(p);
     if (p.kind === 'visit') return visit_(p);
+    if (p.kind === 'leave') return leave_(p);
     var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), topic = String(p.topic || '').trim().slice(0, 1000);
     var len = +p.len, start = new Date(+p.start);
     if (!name || !topic || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });
