@@ -1705,14 +1705,15 @@ addEventListener('load', fitNav);
       try { sessionStorage.setItem('visitcc', cc + '|' + name); } catch (e) {}
     }
     const page = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index';
-    try { await fetch(SITE.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'visit', cc, name, page, first, lang: document.documentElement.lang || 'en', website: '' }) }); } catch (e) {}
+    let sid = ''; try { sid = sessionStorage.getItem('vsid') || ''; if (!/^[a-f0-9]{12}$/.test(sid)) { sid = Array.from(crypto.getRandomValues(new Uint8Array(6)), b => b.toString(16).padStart(2, '0')).join(''); sessionStorage.setItem('vsid', sid); } } catch (e) { sid = ''; }
+    try { await fetch(SITE.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'visit', cc, name, page, first, sid, lang: document.documentElement.lang || 'en', website: '' }) }); } catch (e) {}
     /* time spent on this page: visible seconds, sent when the tab is hidden or closed */
     let seg = document.visibilityState === 'visible' ? Date.now() : 0;
     const send = () => {
       if (!seg) return;
       const secs = Math.round((Date.now() - seg) / 1000); seg = 0;
       if (secs < 1) return;
-      try { fetch(SITE.endpoint, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'leave', cc, name, page, secs: Math.min(secs, 21600), website: '' }) }); } catch (e) {}
+      try { fetch(SITE.endpoint, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ kind: 'leave', cc, name, page, sid, secs: Math.min(secs, 21600), website: '' }) }); } catch (e) {}
     };
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') send(); else seg = Date.now(); });
     addEventListener('pagehide', send);
