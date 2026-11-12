@@ -14,6 +14,14 @@ var DAYS_AHEAD = 75;
 var START_H = 10, END_H = 18;
 var LENGTHS = [30, 60];
 var MIN_LEAD_HOURS = 24;
+/* Online booking blocks that are kept here, not on the calendar. BLOCK_DAYS: whole days (YYYY-MM-DD). BLOCK_FROM: a day blocked from that hour (IST, 24-hour clock) to the end of the day. */
+var BLOCK_DAYS = ['2026-12-17'];
+var BLOCK_FROM = { '2026-11-18': 15 };
+function blockedSlot_(start, end) {
+  var d = ymd_(start); if (BLOCK_DAYS.indexOf(d) >= 0) return true;
+  if (BLOCK_FROM[d] !== undefined) { var eh = +Utilities.formatDate(end, TZ, 'H') + (+Utilities.formatDate(end, TZ, 'm')) / 60; if (ymd_(end) !== d || eh > BLOCK_FROM[d]) return true; }
+  return false;
+}
 var HOLIDAY_CAL = 'en.indian#holiday@group.v.calendar.google.com';
 var MSG_SENDER = 'No-Reply-Website-Admin-Anandu';
 var OWNER_NAME = 'Anandu Prabhakaran';
@@ -147,6 +155,8 @@ function doGet(e) {
       for (var d = new Date(s); d < t; d = new Date(d.getTime() + 86400000)) daysOff[Utilities.formatDate(d, TZ, 'yyyy-MM-dd')] = 1;
     });
   } catch (err) { }
+  BLOCK_DAYS.forEach(function (d) { daysOff[d] = 1; });
+  Object.keys(BLOCK_FROM).forEach(function (d) { busy.push([new Date(d + 'T' + ('0' + BLOCK_FROM[d]).slice(-2) + ':00:00+05:30').getTime(), new Date(d + 'T23:59:59+05:30').getTime()]); });
   return json_({ busy: busy, daysOff: Object.keys(daysOff), now: now.getTime() });
 }
 
@@ -972,7 +982,7 @@ function doPost(e) {
     var clash = cal.getEvents(start, end).some(function (ev) { return !(ev.getMyStatus && ev.getMyStatus() === CalendarApp.GuestStatus.NO); });
     var offDay = cal.getEventsForDay(start).some(function (ev) { return ev.isAllDayEvent(); });
     if (!offDay) { try { var h = CalendarApp.getCalendarById(HOLIDAY_CAL); if (h) offDay = h.getEventsForDay(start).length > 0; } catch (err) { } }
-    if (clash || offDay) return json_({ ok: false, error: 'taken' });
+    if (clash || offDay || blockedSlot_(start, end)) return json_({ ok: false, error: 'taken' });
     var ev = cal.createEvent('REQUEST (pending): ' + name, start, end, {
       description: 'Appointment request from the website\n\nName: ' + name + '\nEmail: ' + email + '\nLength: ' + len + ' minutes\n\nPurpose:\n' + topic
     });
