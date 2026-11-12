@@ -604,7 +604,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "മോംപെലിയറിലെ CNRS ക്യാമ്പസ് റെസ്റ്റോറന്റിലെ ഉച്ചഭക്ഷണം; 2025 ജൂലൈ മുതൽ ഡിസംബർ വരെ CNRS ജീവനക്കാർക്ക് പ്രവേശനമുണ്ടായിരുന്നു.",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee-ലെ Fit India Half Marathon 2024 (Sangram 2024), 21 കിലോമീറ്റർ; പൂർത്തീകരണ മെഡലും വഴിയിൽ നിന്നുള്ള ചില പ്രകൃതി ചിത്രങ്ങളും.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "ഫ്രാൻസിലെ സ്ട്രാസ്ബർഗ്: റെയിൽവേ സ്റ്റേഷൻ, കത്തീഡ്രൽ, മേൽക്കൂരകൾ, സായാഹ്ന-അസ്തമയ ആകാശങ്ങൾ.",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "ഉത്തരാഖണ്ഡിലെ ഹർസിൽ, ഗംഗോത്രി എന്നിവിടങ്ങളിലേക്കുള്ള യാത്ര (2024 മാർച്ച് 1, 2), സഹപ്രവർത്തകരായ Shiwam Singh, Anamika Sekar, Shivani Joshi, Saurabh Singh എന്നിവർക്കൊപ്പം."
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "ഉത്തരാഖണ്ഡിലെ ഹർസിൽ, ഗംഗോത്രി എന്നിവിടങ്ങളിലേക്കുള്ള യാത്ര (2024 മാർച്ച് 1, 2), സഹപ്രവർത്തകരായ Shiwam Singh, Anamika Sekar, Shivani Joshi, Saurabh Singh എന്നിവർക്കൊപ്പം.",
+"This website counts visits by country only. No IP address or personal data is stored.": "ഈ വെബ്സൈറ്റ് സന്ദർശനങ്ങൾ രാജ്യം അടിസ്ഥാനമാക്കി മാത്രം എണ്ണുന്നു. IP വിലാസമോ വ്യക്തിഗത വിവരങ്ങളോ സൂക്ഷിക്കുന്നില്ല."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -1210,7 +1211,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "मोंपेलिए में CNRS परिसर के रेस्तरां में दोपहर का भोजन, जो जुलाई से दिसंबर 2025 तक CNRS कर्मचारियों के लिए खुला था।",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee में Fit India Half Marathon 2024 (Sangram 2024), 21 किमी; मेरा पूर्णता पदक और मार्ग की कुछ प्रकृति तस्वीरें।",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "स्ट्रासबर्ग, फ़्रांस: रेलवे स्टेशन, कैथेड्रल, छतें और शाम तथा सूर्यास्त का आकाश।",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "उत्तराखंड के हर्षिल और गंगोत्री की यात्रा (1 और 2 मार्च 2024), सहकर्मियों Shiwam Singh, Anamika Sekar, Shivani Joshi और Saurabh Singh के साथ।"
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "उत्तराखंड के हर्षिल और गंगोत्री की यात्रा (1 और 2 मार्च 2024), सहकर्मियों Shiwam Singh, Anamika Sekar, Shivani Joshi और Saurabh Singh के साथ।",
+"This website counts visits by country only. No IP address or personal data is stored.": "यह वेबसाइट केवल देश के आधार पर विज़िट गिनती है। कोई IP पता या व्यक्तिगत डेटा संग्रहीत नहीं किया जाता।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1816,7 +1818,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "Déjeuner au restaurant du campus du CNRS à Montpellier, ouvert aux employés du CNRS de juillet à décembre 2025.",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) à l'IIT Roorkee, 21 km, avec ma médaille de finisher et quelques photos de nature prises sur le parcours.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Strasbourg, en France : la gare, la cathédrale, les toits, et le ciel du soir et du coucher de soleil.",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Excursion à Harsil et à Gangotri, dans l'Uttarakhand (1 et 2 mars 2024), avec mes collègues Shiwam Singh, Anamika Sekar, Shivani Joshi et Saurabh Singh."
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Excursion à Harsil et à Gangotri, dans l'Uttarakhand (1 et 2 mars 2024), avec mes collègues Shiwam Singh, Anamika Sekar, Shivani Joshi et Saurabh Singh.",
+"This website counts visits by country only. No IP address or personal data is stored.": "Ce site ne compte les visites que par pays. Aucune adresse IP ni donnée personnelle n'est conservée."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -2422,7 +2425,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "Mittagessen im Restaurant des CNRS-Campus in Montpellier, von Juli bis Dezember 2025 für CNRS-Beschäftigte geöffnet.",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) am IIT Roorkee, 21 km, mit meiner Finisher-Medaille und einigen Naturfotos von der Strecke.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Straßburg, Frankreich: der Bahnhof, das Münster, die Dächer sowie der Abend- und Sonnenunterganghimmel.",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Ausflug nach Harsil und Gangotri in Uttarakhand (1. und 2. März 2024) mit meinen Kollegen Shiwam Singh, Anamika Sekar, Shivani Joshi und Saurabh Singh."
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Ausflug nach Harsil und Gangotri in Uttarakhand (1. und 2. März 2024) mit meinen Kollegen Shiwam Singh, Anamika Sekar, Shivani Joshi und Saurabh Singh.",
+"This website counts visits by country only. No IP address or personal data is stored.": "Diese Website zählt Besuche ausschließlich nach Land. Es werden keine IP-Adressen oder personenbezogenen Daten gespeichert."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -3028,7 +3032,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "غداء في مطعم حرم CNRS بمونبلييه، المتاح لموظفي CNRS من يوليو إلى ديسمبر 2025.",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) في IIT Roorkee، 21 كم، مع ميدالية إتمام السباق وبعض صور الطبيعة من المسار.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "ستراسبورغ بفرنسا: محطة القطار والكاتدرائية والأسطح وسماء المساء والغروب.",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "رحلة إلى هارسيل وغانغوتري في أوتاراخاند (1 و2 مارس 2024) مع زملائي Shiwam Singh وAnamika Sekar وShivani Joshi وSaurabh Singh."
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "رحلة إلى هارسيل وغانغوتري في أوتاراخاند (1 و2 مارس 2024) مع زملائي Shiwam Singh وAnamika Sekar وShivani Joshi وSaurabh Singh.",
+"This website counts visits by country only. No IP address or personal data is stored.": "يحصي هذا الموقع الزيارات حسب البلد فقط. ولا تُخزَّن أي عناوين IP أو بيانات شخصية."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -3511,7 +3516,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "Almuerzo en el restaurante del campus del CNRS en Montpellier, abierto a los empleados del CNRS de julio a diciembre de 2025.",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) en el IIT Roorkee, 21 km, con mi medalla de finalista y algunas fotos de naturaleza del recorrido.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Estrasburgo, Francia: la estación de tren, la catedral, los tejados y los cielos del atardecer.",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Viaje a Harsil y Gangotri, en Uttarakhand (1 y 2 de marzo de 2024), con mis colegas Shiwam Singh, Anamika Sekar, Shivani Joshi y Saurabh Singh."
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Viaje a Harsil y Gangotri, en Uttarakhand (1 y 2 de marzo de 2024), con mis colegas Shiwam Singh, Anamika Sekar, Shivani Joshi y Saurabh Singh.",
+"This website counts visits by country only. No IP address or personal data is stored.": "Este sitio web solo cuenta las visitas por país. No se almacena ninguna dirección IP ni dato personal."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -3994,7 +4000,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "在蒙彼利埃 CNRS 校区餐厅用午餐，2025 年 7 月至 12 月向 CNRS 员工开放。",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee 的 Fit India Half Marathon 2024（Sangram 2024），21 公里，附我的完赛奖牌和沿途的几张自然风光照片。",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "法国斯特拉斯堡：火车站、大教堂、屋顶，以及傍晚和日落时分的天空。",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "北阿坎德邦哈西尔和根戈特里之行（2024年3月1日和2日），同行的有同事 Shiwam Singh、Anamika Sekar、Shivani Joshi 和 Saurabh Singh。"
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "北阿坎德邦哈西尔和根戈特里之行（2024年3月1日和2日），同行的有同事 Shiwam Singh、Anamika Sekar、Shivani Joshi 和 Saurabh Singh。",
+"This website counts visits by country only. No IP address or personal data is stored.": "本网站仅按国家统计访问次数，不存储 IP 地址或任何个人数据。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -4477,7 +4484,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "モンペリエの CNRS キャンパスのレストランでの昼食。2025年7月から12月まで CNRS の職員に開放されていました。",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee での Fit India Half Marathon 2024（Sangram 2024）、21 km。完走メダルと、コース沿いの自然の写真をいくつか。",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "フランス・ストラスブール：駅、大聖堂、屋根、そして夕暮れと日没の空。",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "ウッタラーカンド州のハルシルとガンゴートリーへの旅（2024年3月1日と2日）。同僚の Shiwam Singh、Anamika Sekar、Shivani Joshi、Saurabh Singh と一緒でした。"
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "ウッタラーカンド州のハルシルとガンゴートリーへの旅（2024年3月1日と2日）。同僚の Shiwam Singh、Anamika Sekar、Shivani Joshi、Saurabh Singh と一緒でした。",
+"This website counts visits by country only. No IP address or personal data is stored.": "このウェブサイトは訪問数を国別にのみ集計しており、IP アドレスや個人データは保存しません。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -4960,7 +4968,8 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "Almoço no restaurante do campus do CNRS em Montpellier, aberto aos funcionários do CNRS de julho a dezembro de 2025.",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) no IIT Roorkee, 21 km, com minha medalha de conclusão e algumas fotos da natureza ao longo do percurso.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Estrasburgo, na França: a estação de trem, a catedral, os telhados e os céus do entardecer e do pôr do sol.",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Viagem a Harsil e Gangotri, em Uttarakhand (1 e 2 de março de 2024), com meus colegas Shiwam Singh, Anamika Sekar, Shivani Joshi e Saurabh Singh."
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Viagem a Harsil e Gangotri, em Uttarakhand (1 e 2 de março de 2024), com meus colegas Shiwam Singh, Anamika Sekar, Shivani Joshi e Saurabh Singh.",
+"This website counts visits by country only. No IP address or personal data is stored.": "Este site conta as visitas apenas por país. Nenhum endereço IP ou dado pessoal é armazenado."
 },
 "sv": {
 "Skip to content": "Hoppa till innehållet",
@@ -5566,6 +5575,7 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "Lunch på CNRS-campus restaurang i Montpellier, öppen för CNRS-anställda från juli till december 2025.",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) vid IIT Roorkee, 21 km, med min målgångsmedalj och några naturbilder från banan.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Strasbourg i Frankrike: järnvägsstationen, katedralen, hustaken samt kvälls- och solnedgångshimlen.",
-"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Resa till Harsil och Gangotri i Uttarakhand (1 och 2 mars 2024) med mina kollegor Shiwam Singh, Anamika Sekar, Shivani Joshi och Saurabh Singh."
+"Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Resa till Harsil och Gangotri i Uttarakhand (1 och 2 mars 2024) med mina kollegor Shiwam Singh, Anamika Sekar, Shivani Joshi och Saurabh Singh.",
+"This website counts visits by country only. No IP address or personal data is stored.": "Den här webbplatsen räknar bara besök per land. Inga IP-adresser eller personuppgifter sparas."
 }
 };

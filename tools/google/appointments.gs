@@ -646,6 +646,7 @@ function adminPage_(p) {
     + h2('Unsubscribed', 'People who unsubscribed. Their name and email are kept here (one record per address, so there are no duplicates) and they do not receive newsletters. You can still write to one of them individually.') + tbl('ub', ['#', 'Name', 'Email', 'Unsubscribed (and who did it)', ''], urows, 'Nobody has unsubscribed.')
     + h2('Approval requests', 'People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP. A decline is silent: they are not emailed.')
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">For</th><th style="' + th + '">Asked</th><th style="' + th + '">Status</th></tr></thead><tbody>' + (rq || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No requests.</td></tr>') + '</tbody></table></div><div id="m" class="msg"></div>'
+    + visitorsHtml_(props, th, td, h2)
     + '<script>(function(){var D=' + data + ',SIG=' + JSON.stringify(p.sig) + ',ADM=' + JSON.stringify(adminUrl_()) + ',m=document.getElementById("m"),G=google.script.run;'
     + 'function bad(t){m.className="msg bad";m.textContent=t||"That did not work. Try again.";}function reload(){window.open(ADM,"_top");}'
     + 'document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();var r=document.querySelectorAll("tr[data-s]");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
@@ -716,10 +717,55 @@ function setupMonthlyReminder() {
   ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'monthlyReminder') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('monthlyReminder').timeBased().onMonthDay(15).atHour(9).inTimezone(TZ).create();
   setupPendingCheck();
+  try { setupVisitCleanup(); } catch (x) { }
 }
 // Called from the subscribers page.
 function enableReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); setupMonthlyReminder(); return true; }
 function testReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error('Not allowed'); reminderMail_(); return true; }
+
+/* ---- visitors by country: only a country name and a count are stored (no IP address, no personal data) ----
+   Each counted visit also sends you one short email, up to VISIT_MAIL_MAX a day (the rest are still counted).
+   A daily trigger moves those emails to the Trash after 30 days (needs Gmail permission once). */
+var VISIT_MAIL = true, VISIT_MAIL_MAX = 25, VISIT_MAIL_DAYS = 30;
+function visit_(p) {
+  var cc = String(p.cc || '').toUpperCase();
+  if (!/^[A-Z]{2}$/.test(cc)) return json_({ ok: false });
+  var nm = String(p.name || '').trim();
+  if (!/^[A-Za-z .,'()\-]{2,45}$/.test(nm)) nm = cc;
+  var sp = PropertiesService.getScriptProperties(), k = 'VIS_' + cc, cur = {};
+  try { cur = JSON.parse(sp.getProperty(k) || '{}'); } catch (x) { cur = {}; }
+  cur.n = (cur.n || 0) + 1; cur.t = Date.now(); cur.name = nm; cur.f = cur.f || cur.t;
+  sp.setProperty(k, JSON.stringify(cur));
+  if (VISIT_MAIL) {
+    var dk = 'VISMAIL_' + Utilities.formatDate(new Date(), TZ, 'yyyyMMdd'), sent = +(sp.getProperty(dk) || 0);
+    if (sent < VISIT_MAIL_MAX) {
+      sp.setProperty(dk, String(sent + 1));
+      try { MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: '[Site visit] ' + nm,
+        body: 'Someone visited your website from ' + nm + ' (' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy, HH:mm') + ' IST). Visits from ' + nm + ' so far: ' + cur.n + '.\nThis email is moved to the Trash automatically after ' + VISIT_MAIL_DAYS + ' days.' }); } catch (x) { }
+    }
+  }
+  return json_({ ok: true });
+}
+function cleanVisitMails() {
+  var th = GmailApp.search('in:sent subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd', 0, 100);
+  th.forEach(function (t) { t.moveToTrash(); });
+  var sp = PropertiesService.getScriptProperties(), all = sp.getProperties(), keep = Utilities.formatDate(new Date(Date.now() - 3 * 86400000), TZ, 'yyyyMMdd');
+  Object.keys(all).forEach(function (k) { if (k.indexOf('VISMAIL_') === 0 && k.slice(8) < keep) sp.deleteProperty(k); });
+}
+function setupVisitCleanup() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'cleanVisitMails') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('cleanVisitMails').timeBased().everyDays(1).atHour(3).inTimezone(TZ).create();
+}
+function visitorsHtml_(props, th, td, h2) {
+  var rows = [];
+  Object.keys(props).forEach(function (k) { if (k.indexOf('VIS_') === 0) { try { var r = JSON.parse(props[k]); rows.push(r); } catch (x) { } } });
+  rows.sort(function (a, b) { return b.n - a.n; });
+  var total = rows.reduce(function (a, r) { return a + r.n; }, 0), f = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm'); };
+  var body = rows.length ? rows.map(function (r, i) { return '<tr><td style="' + td + ';color:#7a8594">' + (i + 1) + '</td><td style="' + td + '">' + esc_(r.name) + '</td><td style="' + td + '"><b>' + r.n + '</b></td><td style="' + td + '">' + f(r.f || r.t) + '</td><td style="' + td + '">' + f(r.t) + '</td></tr>'; }).join('')
+    : '<tr><td colspan="5" style="' + td + ';color:#7a8594">No visits counted yet.</td></tr>';
+  return h2('Visitors by country', 'Only the country is counted: ' + total + ' visit' + (total === 1 ? '' : 's') + ' from ' + rows.length + ' countr' + (rows.length === 1 ? 'y' : 'ies') + '. One count per browser session. No IP address or personal data is stored.')
+    + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr>' + ['#', 'Country', 'Visits', 'First visit', 'Latest visit'].map(function (h) { return '<th style="' + th + '">' + h + '</th>'; }).join('') + '</tr></thead><tbody>' + body + '</tbody></table></div>';
+}
 
 /* ---- new request (POST) ---- */
 function doPost(e) {
@@ -733,6 +779,7 @@ function doPost(e) {
     if (p.kind === 'message') return message_(p);
     if (p.kind === 'subscribe') return subscribe_(p);
     if (p.kind === 'access') return accessRequest_(p);
+    if (p.kind === 'visit') return visit_(p);
     var name = String(p.name || '').trim().slice(0, 80), email = String(p.email || '').trim().slice(0, 120), topic = String(p.topic || '').trim().slice(0, 1000);
     var len = +p.len, start = new Date(+p.start);
     if (!name || !topic || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json_({ ok: false, error: 'invalid' });
