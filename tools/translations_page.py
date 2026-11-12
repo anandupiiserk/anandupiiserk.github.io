@@ -460,3 +460,15 @@ cap("Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my co
  f"ウッタラーカンド州のハルシルとガンゴートリーへの旅（{rng('ja',1,3,2,3,2024,'and')}）。同僚の Shiwam Singh、Anamika Sekar、Shivani Joshi、Saurabh Singh と一緒でした。",
  f"Viagem a Harsil e Gangotri, em Uttarakhand ({rng('pt',1,3,2,3,2024,'and')}), com meus colegas Shiwam Singh, Anamika Sekar, Shivani Joshi e Saurabh Singh.",
  f"Resa till Harsil och Gangotri i Uttarakhand ({rng('sv',1,3,2,3,2024,'and')}) med mina kollegor Shiwam Singh, Anamika Sekar, Shivani Joshi och Saurabh Singh.")
+
+addp("This website counts visits by country only. No IP address or personal data is stored.",
+ "ഈ വെബ്സൈറ്റ് സന്ദർശനങ്ങൾ രാജ്യം അടിസ്ഥാനമാക്കി മാത്രം എണ്ണുന്നു. IP വിലാസമോ വ്യക്തിഗത വിവരങ്ങളോ സൂക്ഷിക്കുന്നില്ല.",
+ "यह वेबसाइट केवल देश के आधार पर विज़िट गिनती है। कोई IP पता या व्यक्तिगत डेटा संग्रहीत नहीं किया जाता।",
+ "Ce site ne compte les visites que par pays. Aucune adresse IP ni donnée personnelle n'est conservée.",
+ "Diese Website zählt Besuche ausschließlich nach Land. Es werden keine IP-Adressen oder personenbezogenen Daten gespeichert.",
+ "يحصي هذا الموقع الزيارات حسب البلد فقط. ولا تُخزَّن أي عناوين IP أو بيانات شخصية.",
+ "Este sitio web solo cuenta las visitas por país. No se almacena ninguna dirección IP ni dato personal.",
+ "本网站仅按国家统计访问次数，不存储 IP 地址或任何个人数据。",
+ "このウェブサイトは訪問数を国別にのみ集計しており、IP アドレスや個人データは保存しません。",
+ "Este site conta as visitas apenas por país. Nenhum endereço IP ou dado pessoal é armazenado.",
+ "Den här webbplatsen räknar bara besök per land. Inga IP-adresser eller personuppgifter sparas.")
