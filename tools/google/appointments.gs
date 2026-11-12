@@ -779,19 +779,25 @@ function visitSummary_(force) {
     var o = others[r.cc] || (others[r.cc] = { n: r.n, v: 0, tabs: {} }); if (!others[r.cc].seen) { others[r.cc].seen = 1; order.push(r.cc); }
     if (r.f) o.v++; o.tabs[r.tab] = (o.tabs[r.tab] || 0) + 1;
   });
-  if (!order.length) return false;
+  var quiet = !order.length;
+  if (quiet) {
+    /* monthly reminder: no visitor from outside India since the last email (or since set-up) for 30 days */
+    var st = +(sp.getProperty('VISSTART') || 0); if (!st) { sp.setProperty('VISSTART', String(now)); st = now; }
+    if (!force && now - (last || st) < VISIT_MAIL_DAYS * 86400000) return false;
+  }
   var all = visRows_(0, now + 1), tot = {};
   all.forEach(function (r) { if (r.f) { var o = tot[r.cc] || (tot[r.cc] = { n: r.n, v: 0 }); o.v++; } });
   var tl = Object.keys(tot).sort(function (a, b) { return tot[b].v - tot[a].v; }), total = tl.reduce(function (a, c) { return a + tot[c].v; }, 0);
   var since = last ? Utilities.formatDate(new Date(last), TZ, 'd MMM, HH:mm') : 'the beginning';
-  var rowsH = [['Period', esc_('Since ' + since + ' IST')], ['Indian visits since the last email', String(inN)]], plain = 'Visitors from other countries since ' + since + ' IST:\n';
+  var rowsH = [['Period', esc_('Since ' + since + ' IST')], ['Indian visits since the last email', String(inN)]], plain = quiet ? 'Monthly reminder: no visitors from other countries since ' + since + ' IST.\n' : 'Visitors from other countries since ' + since + ' IST:\n';
+  if (quiet) rowsH.splice(1, 0, ['Other countries', 'No visitors in this period']);
   order.forEach(function (c) { var o = others[c], tabs = Object.keys(o.tabs).map(function (k) { return k + ' ' + o.tabs[k]; }).join(', ');
     rowsH.push([esc_(o.n), o.v + (o.v === 1 ? ' visitor' : ' visitors') + ' (tabs: ' + esc_(tabs) + ')']); plain += ' - ' + o.n + ': ' + o.v + ' (tabs: ' + tabs + ')\n'; });
   plain += '\nIndian visits since the last email: ' + inN + '\n\nVisitors so far, all time:\n';
   tl.forEach(function (c) { rowsH.push(['All time: ' + esc_(tot[c].n), String(tot[c].v)]); plain += ' - ' + tot[c].n + ': ' + tot[c].v + '\n'; });
   rowsH.push(['All countries together', String(total)]); plain += 'Total: ' + total + '\n\nPortals:\nVisitors: ' + visUrl_() + '\nSubscribers: ' + adminUrl_() + '\nWrite an email: ' + link_('compose', 'new') + '\nThis email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.';
-  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: '[Site visit] Daily summary: ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' visited', body: plain,
-    htmlBody: mail_('Your website visitors', 'Visitors from ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' since the last email, and how many visits came from India.', rowsH,
+  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: quiet ? '[Site visit] Monthly reminder: no visitors from other countries' : '[Site visit] Daily summary: ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' visited', body: plain,
+    htmlBody: mail_('Your website visitors', quiet ? 'No visitor from outside India since the last email. Here is the Indian count and the all-time totals.' : 'Visitors from ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' since the last email, and how many visits came from India.', rowsH,
       [['Visitors portal', visUrl_(), '#1f4e9c'], ['Subscribers portal', adminUrl_(), '#1f4e9c'], ['Write an email', link_('compose', 'new'), '#1f4e9c'], ['Messages', msgUrl_(), '#1f4e9c'], ['Appointments', apptUrl_(), '#1f4e9c']],
       'Only the country and the tab are counted. No IP address or personal data is stored. Indian visits are counted but never trigger an email. This email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.') });
   sp.setProperty('VISLASTMAIL', String(now));
