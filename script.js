@@ -1075,7 +1075,7 @@ else (function loop() {
 /* ---------- Contact: appointment request (30-minute slots, rolling window, IST). Busy dates come from data-blocked on the page. ---------- */
 (function () {
   const root = $('#appt'); if (!root) return;
-  const D = root.dataset, DAYS = D.days.split(',').map(Number), STEP = +D.step || 30, hm = t => { const x = t.split(':').map(Number); return x[0] * 60 + x[1]; }, T0 = hm(D.start), T1 = hm(D.end);
+  const D = root.dataset, DAYS = D.days.split(',').map(Number), STEP = +D.step || 30, hm = t => { const x = t.split(':').map(Number); return x[0] * 60 + x[1]; }, T0 = hm(D.start), T1 = hm(D.end), S0 = hm(D.satStart || D.start), S1 = hm(D.satEnd || D.end), rng = d => d.getDay() === 6 ? [S0, S1] : [T0, T1];
   let LEN = 30; const lenNow = () => { const r = $('input[name="aplen"]:checked', root); return r ? +r.value : 30; };
   const BLK = (D.blocked || '').split(',').filter(Boolean).map(r => r.split('/'));
   const pad2 = n => String(n).padStart(2, '0'), ymd = d => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
@@ -1087,7 +1087,7 @@ else (function loop() {
   const open = d => d >= first && d <= last && DAYS.includes(d.getDay()) && !blocked(d);
   const stamp = (d, lab) => Date.parse(ymd(d) + 'T' + lab + ':00+05:30');
   const free = (d, lab, len) => { const s = stamp(d, lab), e = s + len * 60000; return s > Date.now() + 24 * 3600e3 && !BUSY.some(([a, b]) => s < b && e > a); };
-  const anyFree = d => { if (!live) return true; for (let t = T0; t + 30 <= T1; t += STEP) if (free(d, pad2(Math.floor(t / 60)) + ':' + pad2(t % 60), 30)) return true; return false; };
+  const anyFree = d => { if (!live) return true; const [a, z] = rng(d); for (let t = a; t + 30 <= z; t += STEP) if (free(d, pad2(Math.floor(t / 60)) + ':' + pad2(t % 60), 30)) return true; return false; };
   const cal = $('#ap-cal'), slots = $('#ap-slots'), mon = $('#ap-month'), sel = $('#ap-sel'), stat = $('#ap-stat');
   const loc = () => { let l = document.documentElement.lang || 'en'; return l === 'en' ? 'en-GB' : l; };
   let chosen = null, day = null, view = new Date(first.getFullYear(), first.getMonth(), 1);
@@ -1106,8 +1106,8 @@ else (function loop() {
   }
   function drawSlots() {
     if (!day) { slots.innerHTML = ''; return; }
-    let h = `<div class="apd">${fmtD(day)}</div><div class="apt">`;
-    for (let t = T0; t + LEN <= T1; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); if (live && !free(day, lab, LEN)) { h += `<button type="button" class="as taken" data-t="${lab}" data-taken="1" aria-disabled="true" title="${tr('Booked / unavailable')}">${lab}</button>`; continue; } h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
+    const [a, z] = rng(day); let h = `<div class="apd">${fmtD(day)}</div>` + (day.getDay() === 6 ? `<div class="apwk" role="alert">${tr('Weekend appointments may or may not be available and will be confirmed upon submission.')}</div>` : '') + '<div class="apt">';
+    for (let t = a; t + LEN <= z; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); if (live && !free(day, lab, LEN)) { h += `<button type="button" class="as taken" data-t="${lab}" data-taken="1" aria-disabled="true" title="${tr('Booked / unavailable')}">${lab}</button>`; continue; } h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
     slots.innerHTML = h + '</div>';
   }
   cal.addEventListener('click', e => { const b = e.target.closest('.ad'); if (!b || b.disabled) return; const [y, m, n] = b.dataset.d.split('-').map(Number); day = new Date(y, m - 1, n); chosen = null; sel.textContent = tr('No slot chosen yet'); drawCal(); drawSlots(); });

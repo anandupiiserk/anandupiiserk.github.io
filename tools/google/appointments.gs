@@ -11,7 +11,7 @@
 var TZ = 'Asia/Kolkata';
 var OWNER_NOTIFY = true;
 var DAYS_AHEAD = 75;
-var START_H = 10, END_H = 18;
+var START_H = 10, END_H = 18, SAT_START_H = 10.5, SAT_END_H = 17;   /* Saturday 10:30 to 17:00, Sunday closed */
 var LENGTHS = [30, 60];
 var MIN_LEAD_HOURS = 24;
 /* Online booking blocks that are kept here, not on the calendar. BLOCK_DAYS: whole days (YYYY-MM-DD). BLOCK_FROM: a day blocked from that hour (IST, 24-hour clock) to the end of the day. */
@@ -977,7 +977,7 @@ function doPost(e) {
     var sh = +Utilities.formatDate(start, TZ, 'H') + (+Utilities.formatDate(start, TZ, 'm')) / 60;
     var eh = +Utilities.formatDate(end, TZ, 'H') + (+Utilities.formatDate(end, TZ, 'm')) / 60;
     if (ymd_(start) !== ymd_(end)) eh = 24;
-    if (wd > 5 || sh < START_H || eh > END_H) return json_({ ok: false, error: 'hours' });
+    if (wd > 6 || sh < (wd === 6 ? SAT_START_H : START_H) || eh > (wd === 6 ? SAT_END_H : END_H)) return json_({ ok: false, error: 'hours' });
     var cal = CalendarApp.getDefaultCalendar();
     var clash = cal.getEvents(start, end).some(function (ev) { return !(ev.getMyStatus && ev.getMyStatus() === CalendarApp.GuestStatus.NO); });
     var offDay = cal.getEventsForDay(start).some(function (ev) { return ev.isAllDayEvent(); });
