@@ -45,7 +45,7 @@ function sign_(action, id) {
 /* The portal pages (Subscribers, Visitors, Messages, Appointments, compose, reply, approve and decline) are served by a second deployment of this script
    that runs as the signed-in visitor and is open only to OWNER_EMAIL. Its address is kept in the script property PORTAL_URL. The public site keeps using the first deployment. */
 var OWNER_EMAIL = 'anandupiiserk@gmail.com';
-var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, approve: 1, decline: 1 };
+var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1 };
 function portalBase_() { return PropertiesService.getScriptProperties().getProperty('PORTAL_URL') || ScriptApp.getService().getUrl(); }
 function gate_(p) {
   var base = PropertiesService.getScriptProperties().getProperty('PORTAL_URL');
@@ -171,6 +171,7 @@ function act_(p) {
   if (action === 'messages') return messagesPage_(p);
   if (action === 'appts') return appointmentsPage_(p);
   if (action === 'acc_ok' || action === 'acc_no') return accessDecide_(p);
+  if (action === 'acc_rv') return accessRevoke_(p);
   if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev) return page_('Already handled', 'This request is no longer on the calendar. It was probably approved or declined already.', 'info');
@@ -261,10 +262,18 @@ function blockedEmail_(email) {
   if (!restricted_(email)) return false;
   return !PropertiesService.getScriptProperties().getProperty('ALLOW_' + subId_(email));
 }
+/* An address the owner approved is on the portal list and skips the OTP (not for newsletter subscriptions). Every appointment is still confirmed by the owner by email. */
+function bypass_(email) {
+  if (!restricted_(email)) return false;
+  var props = PropertiesService.getScriptProperties(), id = subId_(email);
+  if (!props.getProperty('ALLOW_' + id)) return false;
+  try { var r = JSON.parse(props.getProperty('ACC_' + id) || '{}'); return r.s === 'approved' && normEmail_(r.e) === normEmail_(email); } catch (x) { return false; }
+}
 function otpSend_(p) {
   var email = normEmail_(p.email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120) return json_({ ok: false, error: 'invalid' });
   if (blockedEmail_(email)) return json_({ ok: false, error: 'blocked' });
+  if (p.purpose !== 'subscribe' && bypass_(email)) { var bexp = Date.now() + OTP_VALID_MIN * 60000; return json_({ ok: true, bypass: true, token: bexp + '.' + sign_('tok', email + '|' + bexp), exp: bexp }); }
   if (p.purpose === 'subscribe') { var cs = subGet_(subId_(email)); if (cs && cs.s === 'ban') return json_({ ok: false, error: 'banned' }); if (cs && (cs.s === 'active' || cs.s === 'watch')) return json_({ ok: false, error: 'subscribed' }); }
   var cache = CacheService.getScriptCache(), props = PropertiesService.getScriptProperties();
   var nk = 'otpn_' + sign_('n', email).slice(0, 32), n = +(cache.get(nk) || 0);
@@ -545,8 +554,8 @@ function accessRequest_(p) {
   try {
     MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: 'Approval request: ' + email,
       body: name + ' (' + email + ') asks to use the website (' + purpose + '). Approve: ' + link_('acc_ok', id) + '\nDecline: ' + link_('acc_no', id),
-      htmlBody: mail_('Approval request', 'Someone whose address is on the restricted list asks to use the website. No OTP was needed to send this request. If you approve, they still have to verify the address with an OTP before anything is sent.', [['Name', esc_(name)], ['Email', esc_(email)], ['For', esc_(purpose)]],
-        [['Approve', link_('acc_ok', id), '#1e8e4e'], ['Decline', link_('acc_no', id), '#c5221f'], ['Subscribers and requests', adminUrl_(), '#1f4e9c']], 'Approving allows only this exact address.') });
+      htmlBody: mail_('Approval request', 'Someone whose address is on the restricted list asks to use the website. No OTP was needed to send this request. If you approve, this exact address is added to the approved list on the Subscribers portal and can book an appointment or send a message without an OTP. You still confirm every appointment by email.', [['Name', esc_(name)], ['Email', esc_(email)], ['For', esc_(purpose)]],
+        [['Approve', link_('acc_ok', id), '#1e8e4e'], ['Decline', link_('acc_no', id), '#c5221f'], ['Subscribers and requests', adminUrl_(), '#1f4e9c']], 'Approving allows only this exact address. You can remove it again from the Subscribers portal.') });
   } catch (x) { console.error('access mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
   return json_({ ok: true, status: 'pending' });
 }
@@ -561,11 +570,19 @@ function accessDecide_(p) {
   if (ok) props.setProperty('ALLOW_' + id, '1'); else props.deleteProperty('ALLOW_' + id);
   if (ok) try {   /* a decline is silent: the person is not emailed */
     MailApp.sendEmail({ to: r.e, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: 'Your request was approved',
-      body: ok ? 'Hello ' + r.n + ', your request is approved. Go back to the website and verify your email with the one-time code to continue: ' + SITE_URL : 'Hello ' + r.n + ', your request for this email address was not approved. You are welcome to use a different email address.',
-      htmlBody: ok ? mail_('Request approved', 'Hello ' + esc_(r.n) + ', your request is approved. Go back to the website and verify your email address with the one-time code to continue.', [], [['Open the website', SITE_URL, '#1f4e9c']], 'Only this email address was approved.')
+      body: ok ? 'Hello ' + r.n + ', your request is approved. Go back to the website, enter this email address and press Send OTP; no code is needed for this address. You can then request an appointment, which I will confirm by email: ' + SITE_URL : 'Hello ' + r.n + ', your request for this email address was not approved. You are welcome to use a different email address.',
+      htmlBody: ok ? mail_('Request approved', 'Hello ' + esc_(r.n) + ', your request is approved. Go back to the website, enter this email address and press Send OTP; no code is needed for this address. You can then request an appointment, which I will confirm by email.', [], [['Open the website', SITE_URL, '#1f4e9c']], 'Only this email address was approved.')
                    : mail_('About your request', 'Hello ' + esc_(r.n) + ', your request to use this email address on the website was not approved. You are welcome to use a different email address.', [], [], '') });
   } catch (x) { }
-  return page_(ok ? 'Approved' : 'Declined', (ok ? esc_(r.e) + ' can now be verified by OTP on the website. They were notified by email.' : esc_(r.e) + ' was declined. They were not notified.'), ok ? 'ok' : 'info');
+  return page_(ok ? 'Approved' : 'Declined', (ok ? esc_(r.e) + ' is now on the approved list and skips the OTP on the website. They were notified by email. You still confirm each appointment yourself.' : esc_(r.e) + ' was declined. They were not notified.'), ok ? 'ok' : 'info');
+}
+function accessRevoke_(p) {
+  var id = p.id || '';
+  if (!id || sign_(p.action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var props = PropertiesService.getScriptProperties(), raw = props.getProperty('ACC_' + id);
+  if (!raw) return page_('Not found', 'This request is no longer stored.', 'info');
+  var r = JSON.parse(raw); r.s = 'revoked'; r.t = Date.now(); props.setProperty('ACC_' + id, JSON.stringify(r)); props.deleteProperty('ALLOW_' + id);
+  return page_('Removed', esc_(r.e) + ' was removed from the approved list. It needs a new approval before it can be used again.', 'ok');
 }
 /* ---- pending OTP verifications: someone asked for a subscription OTP but did not finish. The admin can approve them without the OTP. ---- */
 var PEND_KEEP_DAYS = 30;
@@ -663,7 +680,7 @@ function adminPage_(p) {
   var urows = unsubs.map(function (r, i) { return row(r, i, (r.u ? fmt(r.u) : '') + '<br><span style="display:inline-block;margin-top:3px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:bold;background:' + (r.by === 'self' ? '#eef2f8;color:#5b6675' : '#fdecea;color:#c5221f') + '">' + (BY[r.by] || 'Unsubscribed') + '</span>', write(r) + edit(r) + pill('x-st', 'active', r.id, 'Move to subscribers', GRN, r.by === 'self') + pill('x-st', 'ban', r.id, 'Ban', RED) + pill('x-del', '', r.id, 'Delete data', RED)); }).join('');
   var prow = pends.map(function (r) { return '<tr data-s="' + esc_(r.e.toLowerCase()) + '"><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + ';color:#5b6675;white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + ';text-align:right;white-space:nowrap"><button class="x-ap" data-id="' + esc_(r.id) + '" style="border:1px solid #bfe0cc;background:#fff;color:#1e8e4e;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:bold;cursor:pointer;margin-right:8px">Approve</button><button class="x-dp" data-id="' + esc_(r.id) + '" style="border:1px solid #e3b3b1;background:#fff;color:#c5221f;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer">Dismiss</button></td></tr>'; }).join('');
   var rq = reqs.map(function (r) {
-    var st = r.s === 'pending' ? '<a href="' + link_('acc_ok', r.id) + '" target="_top" style="color:#1e8e4e;font-weight:bold;text-decoration:none">Approve</a> &nbsp; <a href="' + link_('acc_no', r.id) + '" target="_top" style="color:#c5221f;font-weight:bold;text-decoration:none">Decline</a>' : '<span style="color:#5b6675">' + esc_(r.s) + '</span>';
+    var st = r.s === 'pending' ? '<a href="' + link_('acc_ok', r.id) + '" target="_top" style="color:#1e8e4e;font-weight:bold;text-decoration:none">Approve</a> &nbsp; <a href="' + link_('acc_no', r.id) + '" target="_top" style="color:#c5221f;font-weight:bold;text-decoration:none">Decline</a>' : (r.s === 'approved' ? '<span style="color:#1e8e4e;font-weight:bold">Approved, no OTP needed</span> &nbsp; <a href="' + link_('acc_rv', r.id) + '" target="_top" style="color:#c5221f;font-weight:bold;text-decoration:none">Remove</a>' : '<span style="color:#5b6675">' + esc_(r.s) + '</span>');
     return '<tr><td style="' + td + '">' + esc_(r.n) + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + '">' + esc_(r.p) + '</td><td style="' + td + ';white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + '">' + st + '</td></tr>';
   }).join('');
   var data = JSON.stringify(all.filter(function (r) { return r.s !== 'pending'; }).map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), { active: 'Subscribed', watch: 'Yellow list', ban: 'Banned', unsub: 'Unsubscribed' }[r.s] || r.s]; })).replace(/</g, '\\u003c');
@@ -679,7 +696,7 @@ function adminPage_(p) {
     + h2('Pending OTP verification', 'People who asked for a subscription code but did not enter it. Approve to subscribe them without the OTP (they get a confirmation email with an unsubscribe link), or dismiss. You get one reminder email a day around 12:00 while someone is waiting.')
     + tbl('pb', ['Email', 'Asked', ''], prow, 'Nobody is waiting.')
     + h2('Unsubscribed', 'People who unsubscribed. Their name and email are kept here (one record per address, so there are no duplicates) and they do not receive newsletters. You can still write to one of them individually.') + tbl('ub', ['#', 'Name', 'Email', 'Unsubscribed (and who did it)', ''], urows, 'Nobody has unsubscribed.')
-    + h2('Approval requests', 'People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving allows that exact address to continue with an OTP. A decline is silent: they are not emailed.')
+    + h2('Approval requests', 'People whose address is on the restricted list (director, dean, HOD and similar) can ask here without an OTP. Approving adds that exact address to the approved list below: it skips the OTP, and you still confirm every appointment by email. Remove an address to take that away. A decline is silent: they are not emailed.')
     + '<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr><th style="' + th + '">Name</th><th style="' + th + '">Email</th><th style="' + th + '">For</th><th style="' + th + '">Asked</th><th style="' + th + '">Status</th></tr></thead><tbody>' + (rq || '<tr><td colspan="5" style="' + td + ';color:#7a8594;text-align:center">No requests.</td></tr>') + '</tbody></table></div><div id="m" class="msg"></div>'
     + '<script>(function(){var D=' + data + ',SIG=' + JSON.stringify(p.sig) + ',ADM=' + JSON.stringify(adminUrl_()) + ',m=document.getElementById("m"),G=google.script.run;'
     + 'function bad(t){m.className="msg bad";m.textContent=t||"That did not work. Try again.";}function reload(){window.open(ADM,"_top");}'
