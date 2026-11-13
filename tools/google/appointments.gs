@@ -11,6 +11,7 @@
 var TZ = 'Asia/Kolkata';
 var OWNER_NOTIFY = true;
 var DAYS_AHEAD = 75;
+var EXTRA_DAYS = ['2026-11-15'];   /* Sundays opened as a special case, booked like a Saturday */
 var START_H = 10, END_H = 18, SAT_START_H = 10.5, SAT_END_H = 17;   /* Saturday 10:30 to 17:00, Sunday closed */
 var LENGTHS = [30, 60];
 var MIN_LEAD_HOURS = 24;
@@ -977,7 +978,8 @@ function doPost(e) {
     var sh = +Utilities.formatDate(start, TZ, 'H') + (+Utilities.formatDate(start, TZ, 'm')) / 60;
     var eh = +Utilities.formatDate(end, TZ, 'H') + (+Utilities.formatDate(end, TZ, 'm')) / 60;
     if (ymd_(start) !== ymd_(end)) eh = 24;
-    if (wd > 6 || sh < (wd === 6 ? SAT_START_H : START_H) || eh > (wd === 6 ? SAT_END_H : END_H)) return json_({ ok: false, error: 'hours' });
+    var wkEnd = wd === 6 || EXTRA_DAYS.indexOf(ymd_(start)) >= 0;
+    if ((wd === 7 && !wkEnd) || sh < (wkEnd ? SAT_START_H : START_H) || eh > (wkEnd ? SAT_END_H : END_H)) return json_({ ok: false, error: 'hours' });
     var cal = CalendarApp.getDefaultCalendar();
     var clash = cal.getEvents(start, end).some(function (ev) { return !(ev.getMyStatus && ev.getMyStatus() === CalendarApp.GuestStatus.NO); });
     var offDay = cal.getEventsForDay(start).some(function (ev) { return ev.isAllDayEvent(); });
