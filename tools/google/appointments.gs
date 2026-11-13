@@ -541,12 +541,13 @@ function sendNews_(subject, bodyHtml, files, header, yellow) {
 
 /* ---- restricted addresses: request approval by email (no OTP), approve or decline, subscribers platform ---- */
 function adminUrl_() { return portalBase_() + '?action=admin&sig=' + sign_('admin', 'subs'); }
+var ACC_COOL_DAYS = 30;   /* a declined address cannot ask again for 30 days; a decline is never emailed */
 function accessRequest_(p) {
   var email = normEmail_(p.email), name = String(p.name || '').trim().slice(0, 80), purpose = { Message: 1, Appointment: 1, Newsletter: 1 }[p.purpose] ? p.purpose : 'Website';
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 120 || !name) return json_({ ok: false, error: 'invalid' });
   if (!blockedEmail_(email)) return json_({ ok: true, status: 'allowed' });
   var props = PropertiesService.getScriptProperties(), id = subId_(email), cur = props.getProperty('ACC_' + id);
-  if (cur) { var r0 = JSON.parse(cur); if (r0.s === 'pending') return json_({ ok: true, status: 'pending' }); if (r0.s === 'declined' && Date.now() - r0.t < 7 * 86400000) return json_({ ok: false, error: 'declined' }); }
+  if (cur) { var r0 = JSON.parse(cur); if (r0.s === 'pending') return json_({ ok: true, status: 'pending' }); if (r0.s === 'declined' && Date.now() - r0.t < ACC_COOL_DAYS * 86400000) return json_({ ok: false, error: 'declined' }); }
   var dk = 'ACCDAY_' + ymd_(new Date()), dn = +(props.getProperty(dk) || 0);
   if (dn >= 15) return json_({ ok: false, error: 'busy' });
   props.setProperty(dk, String(dn + 1));
