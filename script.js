@@ -1176,7 +1176,7 @@ else (function loop() {
     emailEl.closest('.frow').after(box);
     const sendB = $('.otp-send', box), reqB = $('.otp-req', box), note = $('.otp-note', box), ver = $('.otp-ver', box), inp = $('.otp-in', box), okB = $('.otp-ok', box), reB = $('.otp-re', box);
     sendB.textContent = tr('Send OTP'); reqB.textContent = tr('Request approval');
-    const PURPOSE = NLK(key) ? 'Newsletter' : key === 'ap' ? 'Appointment' : 'Message', APPR = 'This email address needs my approval first. Press Request approval; the request reaches me by email. Once I approve it, send the OTP.';
+    const PURPOSE = NLK(key) ? 'Newsletter' : key === 'ap' ? 'Appointment' : 'Message', APPR = 'This email address needs my approval first. Press Request approval; the request reaches me by email. Once I approve it, press Send OTP and you can continue without a code.';
     const showReq = on => { reqB.hidden = !on; }; okB.textContent = tr(VL); reB.textContent = tr('Resend');
     let tok = '', exp = 0, vEmail = '', vName = '', timer = 0, cool = 0, needSub = false;
     const lock = on => {
@@ -1210,13 +1210,15 @@ else (function loop() {
       const e = emailNow(), lab = btn === sendB ? 'Send OTP' : 'Resend';
       if (!valid(e)) { say('Enter a valid email address.', 'bad'); return; }
       sendB.disabled = reB.disabled = true; clearInterval(cool); start(btn, tr('Sending...')); say('');
-      let ok = false, msg = '';
+      let ok = false, msg = '', byp = null;
       try {
         const r = await post({ kind: 'otp', email: e, purpose: NLK(key) ? 'subscribe' : '' });
-        if (r.ok) ok = true;
+        if (r.ok && r.bypass && r.token) { byp = r; ok = true; }
+        else if (r.ok) ok = true;
         else msg = r.error === 'blocked' ? (showReq(true), APPR) : r.error === 'banned' ? 'Unfortunately, you cannot subscribe here.' : r.error === 'subscribed' ? 'This email is already subscribed.' : r.error === 'rate' ? 'Too many codes requested for this address. Please try again in an hour.' : r.error === 'busy' ? 'The OTP service is busy today. Please try again tomorrow or email me directly.' : r.error === 'invalid' ? 'Enter a valid email address.' : 'Could not send the OTP. Please try again.';
       } catch (err) { msg = 'Could not send the OTP. Please try again.'; }
-      await finish(btn, ok, tr(lab), 'Sent');
+      await finish(btn, ok, tr(lab), byp ? 'Approved' : 'Sent');
+      if (byp) { const nm = nameEl.value.trim(); if (!nm) { say('Enter your name first.', 'bad'); sendB.disabled = false; reB.disabled = false; nameEl.focus(); return; } accept(byp.token, byp.exp, nm, e, false); say('✓ This address is approved, so no code is needed. You can request the appointment now.', 'ok'); return; }
       if (live()) return;
       if (ok) { ver.hidden = false; sendB.hidden = true; say(tr('OTP sent to {email}. Enter OTP to proceed.').replace('{email}', e)); inp.focus(); cooldown(); }
       else { say(msg, 'bad'); sendB.disabled = !valid(emailNow()); reB.disabled = false; }
