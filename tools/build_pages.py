@@ -117,15 +117,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261113a">
+<link rel="stylesheet" href="style.css?v=20261113b">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261113a"></script>
-<script src="script.js?v=20261113a"></script>
+<script src="i18n.js?v=20261113b"></script>
+<script src="script.js?v=20261113b"></script>
 </body>
 </html>
 '''
@@ -459,7 +459,7 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 </div>
 </div>
 <div class="eyebrow reveal" style="margin-top:36px"><span class="n">04</span> Request an appointment</div>
-<div class="appt reveal" id="appt" data-to="anandupiiserk@gmail.com" data-endpoint="@@APPTEP@@" data-days="1,2,3,4,5,6" data-start="10:00" data-end="18:00" data-sat-start="10:30" data-sat-end="17:00" data-step="30" data-lens="30,60" data-months="2" data-lead="2" data-blocked="@@BLOCKED@@">
+<div class="appt reveal" id="appt" data-to="anandupiiserk@gmail.com" data-endpoint="@@APPTEP@@" data-days="1,2,3,4,5,6" data-start="10:00" data-end="18:00" data-sat-start="10:30" data-sat-end="17:00" data-extra="2026-11-15" data-step="30" data-lens="30,60" data-months="2" data-lead="2" data-blocked="@@BLOCKED@@">
   <p class="appt-note">Appointments of 30 or 60 minutes, Monday to Friday, 10:00 to 18:00, and Saturday, 10:30 to 17:00, Indian Standard Time (IST), over the next two months. Sundays, public holidays and days when I am away are not available. Choose a length, a day and a time, add your details and send the request. The slot is confirmed by email once I reply.</p>
   <div class="frow appt-len"><span class="lbl-s">Length</span><label class="rd"><input type="radio" name="aplen" value="30" checked> 30 minutes</label><label class="rd"><input type="radio" name="aplen" value="60"> 60 minutes</label></div>
   <div class="appt-cols">

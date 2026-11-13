@@ -1075,7 +1075,7 @@ else (function loop() {
 /* ---------- Contact: appointment request (30-minute slots, rolling window, IST). Busy dates come from data-blocked on the page. ---------- */
 (function () {
   const root = $('#appt'); if (!root) return;
-  const D = root.dataset, DAYS = D.days.split(',').map(Number), STEP = +D.step || 30, hm = t => { const x = t.split(':').map(Number); return x[0] * 60 + x[1]; }, T0 = hm(D.start), T1 = hm(D.end), S0 = hm(D.satStart || D.start), S1 = hm(D.satEnd || D.end), rng = d => d.getDay() === 6 ? [S0, S1] : [T0, T1];
+  const D = root.dataset, DAYS = D.days.split(',').map(Number), STEP = +D.step || 30, hm = t => { const x = t.split(':').map(Number); return x[0] * 60 + x[1]; }, T0 = hm(D.start), T1 = hm(D.end), S0 = hm(D.satStart || D.start), S1 = hm(D.satEnd || D.end), XT = (D.extra || '').split(',').filter(Boolean), wkd = d => d.getDay() === 6 || XT.includes(ymd(d)), rng = d => wkd(d) ? [S0, S1] : [T0, T1];
   let LEN = 30; const lenNow = () => { const r = $('input[name="aplen"]:checked', root); return r ? +r.value : 30; };
   const BLK = (D.blocked || '').split(',').filter(Boolean).map(r => r.split('/'));
   const pad2 = n => String(n).padStart(2, '0'), ymd = d => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
@@ -1084,7 +1084,7 @@ else (function loop() {
   const today = nowIST(), first = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (+D.lead || 0)), last = new Date(today.getFullYear(), today.getMonth() + (+D.months || 2), today.getDate());
   const EP = D.endpoint || ''; let BUSY = [], OFF = new Set(), live = false;   /* live = availability and booking go through the Google Calendar script */
   const blocked = d => BLK.some(([a, b]) => ymd(d) >= a && ymd(d) <= (b || a)) || OFF.has(ymd(d));
-  const open = d => d >= first && d <= last && DAYS.includes(d.getDay()) && !blocked(d);
+  const open = d => d >= first && d <= last && (DAYS.includes(d.getDay()) || XT.includes(ymd(d))) && !blocked(d);
   const stamp = (d, lab) => Date.parse(ymd(d) + 'T' + lab + ':00+05:30');
   const free = (d, lab, len) => { const s = stamp(d, lab), e = s + len * 60000; return s > Date.now() + 24 * 3600e3 && !BUSY.some(([a, b]) => s < b && e > a); };
   const anyFree = d => { if (!live) return true; const [a, z] = rng(d); for (let t = a; t + 30 <= z; t += STEP) if (free(d, pad2(Math.floor(t / 60)) + ':' + pad2(t % 60), 30)) return true; return false; };
@@ -1106,7 +1106,7 @@ else (function loop() {
   }
   function drawSlots() {
     if (!day) { slots.innerHTML = ''; return; }
-    const [a, z] = rng(day); let h = `<div class="apd">${fmtD(day)}</div>` + (day.getDay() === 6 ? `<div class="apwk" role="alert">${tr('Weekend appointments may or may not be available and will be confirmed upon submission.')}</div>` : '') + '<div class="apt">';
+    const [a, z] = rng(day); let h = `<div class="apd">${fmtD(day)}</div>` + (wkd(day) ? `<div class="apwk" role="alert">${tr('Weekend appointments may or may not be available and will be confirmed upon submission.')}</div>` : '') + '<div class="apt">';
     for (let t = a; t + LEN <= z; t += STEP) { const lab = pad2(Math.floor(t / 60)) + ':' + pad2(t % 60); if (live && !free(day, lab, LEN)) { h += `<button type="button" class="as taken" data-t="${lab}" data-taken="1" aria-disabled="true" title="${tr('Booked / unavailable')}">${lab}</button>`; continue; } h += `<button type="button" class="as${chosen === ymd(day) + ' ' + lab ? ' on' : ''}" data-t="${lab}">${lab}</button>`; }
     slots.innerHTML = h + '</div>';
   }
