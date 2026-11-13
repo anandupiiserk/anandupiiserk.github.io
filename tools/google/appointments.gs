@@ -867,6 +867,7 @@ function testVisitSummary() { visitSummary_(true); }
    and the body carries the script's own footer sentence. Every other email is left alone. */
 var VISIT_MARK_ = 'This email is moved to the Trash after';
 function cleanVisitMails() {
+  try { cleanOtpMails_(); } catch (x) { console.error('otp clean failed: ' + x); }
   GmailApp.search('in:sent from:me subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd', 0, 100).forEach(function (t) {
     var ms = t.getMessages();
     if (ms.length !== 1) return;
@@ -874,6 +875,20 @@ function cleanVisitMails() {
     if (m.getSubject().indexOf('[Site visit] ') !== 0) return;
     if (String(m.getFrom()).indexOf(MSG_SENDER) < 0) return;
     if (m.getPlainBody().indexOf(VISIT_MARK_) < 0) return;
+    t.moveToTrash();
+  });
+}
+/* Same rule for the OTP emails: only this script's own "Your verification code" mails are moved to the Trash, after OTP_MAIL_DAYS (2 months). Nothing else is touched. */
+var OTP_MAIL_DAYS = 60;
+function cleanOtpMails_() {
+  GmailApp.search('in:sent from:me subject:"Your verification code" older_than:' + OTP_MAIL_DAYS + 'd', 0, 100).forEach(function (t) {
+    var ms = t.getMessages();
+    if (ms.length !== 1) return;
+    var m = ms[0];
+    if (m.getSubject() !== 'Your verification code') return;
+    if (String(m.getFrom()).indexOf(MSG_SENDER) < 0) return;
+    var b = m.getPlainBody();
+    if (b.indexOf('Your OTP is ') !== 0 || b.indexOf('This is system generated mail and do not respond here.') < 0 || b.indexOf('custom domain developed and maintained by') < 0) return;
     t.moveToTrash();
   });
 }
