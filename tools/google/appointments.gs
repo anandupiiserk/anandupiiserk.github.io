@@ -46,7 +46,7 @@ function sign_(action, id) {
 /* The portal pages (Subscribers, Visitors, Messages, Appointments, compose, reply, approve and decline) are served by a second deployment of this script
    that runs as the signed-in visitor and is open only to OWNER_EMAIL. Its address is kept in the script property PORTAL_URL. The public site keeps using the first deployment. */
 var OWNER_EMAIL = 'anandupiiserk@gmail.com';
-var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1, msgarc: 1 };
+var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1, msgarc: 1, mail: 1, draft: 1 };
 function portalBase_() { return PropertiesService.getScriptProperties().getProperty('PORTAL_URL') || ScriptApp.getService().getUrl(); }
 function gate_(p) {
   var base = PropertiesService.getScriptProperties().getProperty('PORTAL_URL');
@@ -132,13 +132,13 @@ var PHOTO_URL_ = 'https://anandu-prabhakaran.pages.dev/home';
 var NAV_JS_ = "(function(){var n=document.querySelector('.nv');if(!n)return;var ind=n.querySelector('.ind'),cur=n.querySelector('a.cur');function mv(a,show){if(!a||!ind)return;ind.style.width=a.offsetWidth+'px';ind.style.transform='translateX('+a.offsetLeft+'px)';ind.style.opacity=show?'1':'0'}function rest(){mv(cur,!!cur)}[].forEach.call(n.querySelectorAll('a'),function(a){a.addEventListener('mouseenter',function(){mv(a,true)});a.addEventListener('focus',function(){mv(a,true)})});n.addEventListener('mouseleave',rest);n.addEventListener('mousemove',function(e){var r=n.getBoundingClientRect();n.style.setProperty('--mx',(e.clientX-r.left+n.scrollLeft)+'px')});window.addEventListener('resize',rest);if(cur){try{var l=cur.offsetLeft-(n.clientWidth-cur.offsetWidth)/2;n.scrollLeft=Math.max(0,l)}catch(e){}}rest();setTimeout(rest,250);})();";
 function navBar_(cur) {
   var a = function (k, t, u, x) { return '<a href="' + u + '" target="_top"' + (k === cur ? ' class="cur" aria-current="page"' : '') + (x || '') + '><span class="t"><span>' + t + '</span><span>' + t + '</span></span></a>'; };
-  return '<nav class="nv" aria-label="Admin menu"><span class="ind"></span>' + a('site', 'Go to website', SITE_URL_, ' rel="noopener"') + a('home', 'Home', portalBase_() + '?action=go') + a('admin', 'Subscribers', adminUrl_()) + a('compose', 'Write an email', link_('compose', 'new')) + a('messages', 'Messages', msgUrl_()) + a('appts', 'Appointments', apptUrl_()) + a('visitors', 'Visitors', visUrl_()) + '</nav>';
+  return '<nav class="nv" aria-label="Admin menu"><span class="ind"></span>' + a('site', 'Go to website', SITE_URL_, ' rel="noopener"') + a('home', 'Home', portalBase_() + '?action=go') + a('admin', 'Subscribers', adminUrl_()) + a('compose', 'Email', mailUrl_()) + a('messages', 'Messages', msgUrl_()) + a('appts', 'Appointments', apptUrl_()) + a('visitors', 'Visitors', visUrl_()) + '</nav>';
 }
 function topbar_(nav, cur) {
   return '<header class="pt"><div class="in"><a class="lgl" href="' + PHOTO_URL_ + '" target="_top" title="Go to the website" aria-label="Go to the website"><div class="lg"><img src="data:image/jpeg;base64,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" alt="Anandu Prabhakaran" width="38" height="38"></div></a><div><div class="t1">Website admin</div><div class="t2">Anandu Prabhakaran</div></div><span class="sp"></span>' + (nav ? navBar_(cur) : '') + THEME_TOGGLE_ + '</div></header>' + (nav ? '<script>' + NAV_JS_ + FX_JS_ + '<\/script>' : '');
 }
 function shell_(title, sub, inner, nav, curOv) {
-  var cur = curOv || (/^Subscribers/.test(title) ? 'admin' : /^(New email|Reply)/.test(title) ? 'compose' : /^Messages/.test(title) ? 'messages' : /^Appointments/.test(title) ? 'appts' : '');
+  var cur = curOv || (/^Subscribers/.test(title) ? 'admin' : /^(New email|Reply|Email)/.test(title) ? 'compose' : /^Messages/.test(title) ? 'messages' : /^Appointments/.test(title) ? 'appts' : '');
   return '<script>' + THEME_JS_ + '<\/script><style>' + PORTAL_CSS + '</style>' + topbar_(nav, cur)
     + '<div class="pw"><div class="cd" style="padding:28px">' + (title ? '<h1>' + title + '</h1>' : '') + (sub ? '<p class="sub">' + sub + '</p>' : '') + inner + '</div>'
     + '<div class="ft">Created with <span>&#10084;</span> by Anandu Prabhakaran</div></div>';
@@ -178,6 +178,8 @@ function act_(p) {
   var action = p.action, id = p.id || '';
   if (action === 'reply') return replyPage_(p);
   if (action === 'compose') return composePage_(p);
+  if (action === 'mail') return mailHubPage_(p);
+  if (action === 'draft') return draftPage_(p);
   if (action === 'unsub') return nlUnsubPage_(p);
   if (action === 'go') return homePage_(); /* owner-only: gate_ has already checked the signed-in account */
   if (action === 'admin') return adminPage_(p);
@@ -340,13 +342,13 @@ function replyPage_(p) {
   if (!id || sign_('reply', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return page_('Not found', 'This message is no longer stored (messages are kept for ' + MSG_KEEP_DAYS + ' days).', 'info');
-  return editorPage_('reply', p, JSON.parse(raw));
+  return editorPage_('reply', p, JSON.parse(raw), null);
 }
 function composePage_(p) {
   if (sign_('compose', 'new') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
-  return editorPage_('compose', p, null);
+  return editorPage_('compose', p, null, null);
 }
-function editorPage_(mode, p, r) {
+function editorPage_(mode, p, r, D) {
   var id = p.id || '', reply = mode === 'reply';
   var fonts = ['Arial', 'Georgia', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Courier New', 'Tahoma'];
   var tbtn = function (c, label, st, tip) { return '<button type="button" data-c="' + c + '" title="' + tip + '" style="' + (st || '') + '">' + label + '</button>'; };
@@ -380,6 +382,11 @@ function editorPage_(mode, p, r) {
     + '<label class="l" style="margin-top:18px">Attachments <span class="hint">(up to 15 MB in total)</span></label>'
     + '<div id="lkm" style="display:none;position:fixed;inset:0;background:rgba(15,25,45,.45);z-index:50;align-items:center;justify-content:center;padding:16px"><div style="background:#fff;border-radius:14px;padding:22px;max-width:420px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)"><h3 style="margin:0 0 14px;font-size:17px">Add a hyperlink</h3><label class="l" for="lkt">Text to show</label><input id="lkt" class="tx" placeholder="For example: my website" style="margin-bottom:12px"><label class="l" for="lku">Web address</label><input id="lku" class="tx" placeholder="https://example.com" style="margin-bottom:16px"><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" id="lkx" class="b auto" style="background:var(--soft);color:var(--text);padding:10px 18px">Cancel</button><button type="button" id="lko" class="b blue auto" style="padding:10px 18px">Insert link</button></div></div></div>'
     + '<div id="dz" class="dz"><b>Click to add files</b> or drop them here</div><input type="file" id="fl" multiple style="display:none"><div id="fls" class="fl"></div>'
+    + '<div style="margin:18px 0 0;padding:12px 14px;border:1px solid var(--bd,#d5dce8);border-radius:12px"><b style="font-size:14px">Send options</b>'
+    + '<label style="display:flex;gap:8px;align-items:center;margin:10px 0 0;font-size:14px"><input type="checkbox" id="sl"> Send later (one person only, no meeting, attachments allowed)</label>'
+    + '<div id="slb" style="display:none;gap:12px;flex-wrap:wrap;margin:8px 0 0"><label class="l" style="flex:1 1 150px">Date<input id="sld" class="tx" style="min-height:0" type="date" min="' + Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd') + '"></label><label class="l" style="flex:1 1 120px">Time (IST)<input id="slt" class="tx" style="min-height:0" type="time" step="300"></label></div>'
+    + '<label class="l" for="dad" style="margin-top:12px">Delete my copy from Gmail Sent after <input id="dad" class="tx" type="number" min="1" max="365" placeholder="days" style="width:90px;display:inline-block;min-height:0;margin:0 4px"> days <span class="hint">(leave empty to keep it; the recipient is not told, one person only)</span></label>'
+    + '<div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button type="button" id="sd" class="b auto">Save draft</button><span id="ds" class="sub" style="margin:0"></span></div></div>'
     + '<div style="margin-top:22px"><button id="send" class="b blue auto">' + (reply ? 'Send reply' : 'Send email') + '</button></div><div id="m" class="msg"></div>'
     + '<script>(function(){var ed=document.getElementById("ed"),m=document.getElementById("m"),files=[],MAX=15*1024*1024;'
     + 'function ex(c,v){ed.focus();document.execCommand(c,false,v||null);}'
@@ -405,11 +412,20 @@ function editorPage_(mode, p, r) {
     + 'dz.ondragover=function(e){e.preventDefault();dz.className="dz on";};dz.ondragleave=function(){dz.className="dz";};dz.ondrop=function(e){e.preventDefault();dz.className="dz";add(e.dataTransfer.files);};'
     + 'var mton=document.getElementById("mton"),mtbox=document.getElementById("mtbox");mton.onchange=function(){mtbox.style.display=mton.checked?"block":"none";};'
     + 'function MT(){if(!mton.checked)return null;var mm=document.getElementById("mtm");return {on:true,date:document.getElementById("mtd").value,time:document.getElementById("mtt").value,len:document.getElementById("mtn").value,meet:mm?mm.checked:false,agenda:document.getElementById("mta").value};}'
-    + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
+    + 'var MODE=' + JSON.stringify(mode) + ',RID=' + JSON.stringify(id) + ',SIG=' + JSON.stringify(p.sig) + ',D=' + JSON.stringify(D || null) + ',DID=(D&&D.id)||"",sentFlag=false,sl=document.getElementById("sl"),slb=document.getElementById("slb"),sbtn=document.getElementById("send"),q2=function(i){return document.getElementById(i);};'
+    + 'sl.onchange=function(){slb.style.display=sl.checked?"flex":"none";sbtn.textContent=sl.checked?"Schedule email":(MODE==="reply"?"Send reply":"Send email");};'
+    + 'function OPT(){return {draft:DID,da:+q2("dad").value||0,at:sl.checked?(q2("sld").value+"T"+q2("slt").value):""};}'
+    + 'function aud2(){return (typeof ao!=="undefined"&&ao.checked)?"all":(typeof aw!=="undefined"&&aw.checked)?"watch":"one";}'
+    + 'function fv(i){var e=q2(i);return e?e.value:"";}'
+    + 'function snap(){return JSON.stringify([aud2(),fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML]);}'
+    + 'if(D){if(D.aud==="all"&&typeof ao!=="undefined"){ao.checked=true;ao.onchange&&ao.onchange();}else if(D.aud==="watch"&&typeof aw!=="undefined"){aw.checked=true;aw.onchange&&aw.onchange();}if(q2("to"))q2("to").value=D.to||"";if(q2("cc"))q2("cc").value=D.cc||"";if(q2("bcc"))q2("bcc").value=D.bcc||"";if(q2("sub"))q2("sub").value=D.s||"";if(q2("hd")){q2("hd").value=D.h||"";if(typeof hc!=="undefined")hc=true;}ed.innerHTML=D.body||"";}'
+    + 'var lastSnap=snap();function saveDraft(manual){if(sentFlag)return;var s0=snap();var ds=q2("ds");if(!manual&&s0===lastSnap)return;lastSnap=s0;ds.textContent="Saving draft...";google.script.run.withSuccessHandler(function(id){DID=id;ds.textContent="Draft saved at "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});}).withFailureHandler(function(e){ds.textContent="Draft not saved: "+(e&&e.message?e.message:"try again");}).saveDraft(MODE,RID,SIG,DID,fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML,aud2());}'
+    + 'q2("sd").onclick=function(){saveDraft(true);};setInterval(function(){saveDraft(false);},15000);'
+    + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}sentFlag=true;b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
-    + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
-    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value,MT());};'
-      : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":aw.checked?"__watch__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value,MT());};')
+    + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(e){sentFlag=false;b.disabled=false;b.textContent=sl.checked?"Schedule email":"Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
+    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value,MT(),OPT());};'
+      : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":aw.checked?"__watch__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value,MT(),OPT());};')
     + '})();<\/script>';
   return reply
     ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner, true), 'Reply to ' + r.n)
@@ -449,36 +465,46 @@ function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, heade
   return blobs.length;
 }
 function sentHtml_(n, to, nb) {
-  return statusHtml_('Email sent', 'Your email was sent to ' + esc_(n ? n + ' (' + to + ')' : to) + (nb ? ' with ' + nb + ' attachment' + (nb > 1 ? 's' : '') : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
+  return statusHtml_('Email sent', 'Your email was sent to ' + esc_(n ? n + ' (' + to + ')' : to) + (nb ? ' with ' + nb + ' attachment' + (nb > 1 ? 's' : '') : '') + '. You can close this tab, <a href="' + link_('compose', 'new') + '" target="_top">write another email</a> or <a href="' + mailUrl_() + '" target="_top">see your Sent emails</a>.', 'ok');
 }
 
 // Called from the reply editor.
-function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header, mt) {
+function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header, mt, opt) {
   if (!id || sign_('reply', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return statusHtml_('Not found', 'This message is no longer stored.', 'info');
   var r = JSON.parse(raw);
-  return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject || 'Re: your message', bodyHtml + extra, files, r.m, cc, bcc, '', header); });
+  opt = opt || {}; subject = subject || 'Re: your message';
+  if (opt.at) return scheduleMail_({ to: r.e, cc: cc, bcc: bcc, s: subject, h: header, ri: id }, bodyHtml, files, mt, opt);
+  return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject, bodyHtml + extra, files, r.m, cc, bcc, '', header); }, '', { to: r.e, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: id, draft: opt.draft });
 }
 
 // Called from the new-email editor (fresh conversation).
-function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header, mt) {
+function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header, mt, opt) {
   if (sign_('compose', 'new') !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   to = String(to || '').trim();
   if ((to === '__subscribers__' || to === '__watch__') && mt && mt.on) throw new Error('A meeting can only be scheduled when the email goes to one person.');
-  if (to === '__subscribers__') return sendNews_(subject, bodyHtml, files, header);
-  if (to === '__watch__') return sendNews_(subject, bodyHtml, files, header, true);
+  opt = opt || {};
+  if ((to === '__subscribers__' || to === '__watch__') && opt.at) throw new Error('Send later works for one person only. Remove the schedule to send to a group.');
+  if (to === '__subscribers__' || to === '__watch__') {
+    var bulk = sendNews_(subject, bodyHtml, files, header, to === '__watch__');
+    recordSent_({ to: to === '__watch__' ? 'Yellow list' : 'Newsletter subscribers', s: subject, h: header, body: bodyHtml, files: files, da: 0 });
+    deleteDraft_(opt.draft);
+    return bulk;
+  }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
+  if (opt.at) return scheduleMail_({ to: to, cc: cc, bcc: bcc, s: subject, h: header, ri: '' }, bodyHtml, files, mt, opt);
   var nm = to.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
-  return sendWithMeeting_('', to, mt, function (extra) { return deliver_(to, subject, bodyHtml + extra, files, '', cc, bcc, '', header); }, nm);
+  return sendWithMeeting_('', to, mt, function (extra) { return deliver_(to, subject, bodyHtml + extra, files, '', cc, bcc, '', header); }, nm, { to: to, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: '', draft: opt.draft });
 }
 /* Optional meeting attached to an email: creates the calendar event (with a Meet link if asked), so the slot is busy on the booking calendar. */
-function sendWithMeeting_(n, to, mt, send, nm) {
-  if (!mt || !mt.on) return sentHtml_(n, to, send(''));
+function sendWithMeeting_(n, to, mt, send, nm, rec) {
+  if (!mt || !mt.on) { var nb0 = send(''); finishSend_(rec); return sentHtml_(n, to, nb0); }
   return locked_(function () {
     var m = scheduleMeeting_(nm || n || to.split('@')[0], to, mt), nb;
     try { nb = send(meetingBlock_(m)); } catch (x) { removeMeeting_(m); throw x; }
+    finishSend_(rec);
     var h = sentHtml_(n, to, nb);
     return h.replace('You can close this tab', 'The meeting on ' + esc_(m.when) + ' is in your calendar' + (m.meet ? ' with a Google Meet link' : '') + ' and the slot is blocked on the website. You can close this tab');
   });
@@ -586,7 +612,7 @@ function sendNews_(subject, bodyHtml, files, header, yellow) {
   var ok = 0, bad = 0;
   subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header); ok++; } catch (err) { bad++; } });
   if (ok && !yellow) PropertiesService.getScriptProperties().setProperty('LASTNEWS', String(Date.now()));
-  return statusHtml_(yellow ? 'Sent to the yellow list' : 'Sent to subscribers', 'Your email went to ' + ok + (yellow ? ' yellow-listed person' : ' subscriber') + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, or <a href="' + link_('compose', 'new') + '" target="_top">write another email</a>.', 'ok');
+  return statusHtml_(yellow ? 'Sent to the yellow list' : 'Sent to subscribers', 'Your email went to ' + ok + (yellow ? ' yellow-listed person' : ' subscriber') + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, <a href="' + link_('compose', 'new') + '" target="_top">write another email</a> or <a href="' + mailUrl_() + '" target="_top">see your Sent emails</a>.', 'ok');
 }
 
 /* ---- restricted addresses: request approval by email (no OTP), approve or decline, subscribers platform ---- */
@@ -1018,7 +1044,7 @@ function homePage_() {
     + tile(adminUrl_(), 'var(--teal)', ic('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M17 11.5a3 3 0 1 0-1-5.8M21.5 19c-.3-2.2-1.4-3.6-3.2-4.4"/>'), subs, 'Subscribers', 'People on your newsletter list', 'Manage subscribers')
     + tile(msgUrl_(), 'var(--amber)', ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'), msgs, 'Messages', 'From the contact form, archived after 60 days', 'Read messages')
     + tile(apptUrl_(), 'var(--violet)', ic('<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/>'), null, 'Appointments', 'Requests and the booking calendar', 'Open appointments')
-    + tile(link_('compose', 'new'), 'var(--sky)', ic('<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14 7l3 3"/>'), null, 'Write an email', 'Send to one person or all subscribers', 'Start writing')
+    + tile(mailUrl_(), 'var(--sky)', ic('<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14 7l3 3"/>'), null, 'Email', 'Sent, drafts and scheduled emails, and a new email', 'Open Email')
     + tile(SITE_URL_, 'var(--brick)', ic('<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'), null, 'Your website', 'Open the live site', 'Go to website')
     + '</div>';
   var inner = '<div class="hero"><div class="hi">' + Utilities.formatDate(new Date(), TZ, 'EEEE, d MMMM yyyy') + '</div><h1>' + hi + ', Anandu</h1><p>Everything for your website in one place. Pick a tile to open it.</p></div>' + tiles;
@@ -1137,8 +1163,181 @@ function sendReminders() {
           htmlBody: mail_('A gentle reminder', 'Hello ' + esc_(name) + ', our meeting starts soon.', rows, meet ? [['Join Google Meet', meet, '#1e8e3e']] : [], 'See you soon. ' + OWNER_NAME) });
       } catch (x) { console.error('reminder mail failed: ' + x); try { ev.deleteTag('rem'); } catch (y) { } }
     });
+    mailJobs_();
   } finally { try { lock.releaseLock(); } catch (x) { } }
 }
+
+
+/* ===================== Email tab: Sent, Drafts, Scheduled =====================
+ * Sent records and the small draft/schedule records live in Script Properties (SENT_, DRAFT_, SCH_).
+ * Draft and scheduled bodies (and scheduled attachments) are held in Gmail drafts, so they are not limited by the property size.
+ * A 5-minute trigger (the same one as the meeting reminders) sends due scheduled emails and removes sent emails from Gmail Sent after the chosen days. */
+var SENT_MAX = 60;
+function mailUrl_() { return portalBase_() + '?action=mail&sig=' + sign_('admin', 'mail'); }
+function plainOf_(h) { return String(h || '').replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\n{3,}/g, '\n\n').trim(); }
+function mailId_() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function propRecs_(prefix) {
+  var props = PropertiesService.getScriptProperties().getProperties(), out = [];
+  Object.keys(props).forEach(function (k) { if (k.indexOf(prefix) === 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(prefix.length); out.push(r); } catch (x) { } } });
+  return out;
+}
+function recordSent_(rec) {
+  var props = PropertiesService.getScriptProperties(), id = mailId_(), da = +rec.da || 0;
+  if (da < 1 || da > 365 || /^(Newsletter|Yellow)/.test(rec.to)) da = 0;
+  props.setProperty('SENT_' + id, JSON.stringify({ t: Date.now(), to: String(rec.to || '').slice(0, 200), cc: String(rec.cc || '').slice(0, 200), s: String(rec.s || '').slice(0, 150), h: String(rec.h || '').slice(0, 80), x: plainOf_(rec.body).slice(0, 1200), a: (rec.files || []).length, da: da, g: 0 }));
+  var all = propRecs_('SENT_').sort(function (a, b) { return b.t - a.t; });
+  all.slice(SENT_MAX).forEach(function (r) { props.deleteProperty('SENT_' + r.id); });
+  if (da) ensureReminderTrigger_();
+}
+function deleteDraft_(id) {
+  if (!id) return;
+  var props = PropertiesService.getScriptProperties(), raw = props.getProperty('DRAFT_' + id);
+  if (!raw) return;
+  try { var r = JSON.parse(raw); if (r.gid) { try { GmailApp.getDraft(r.gid).deleteDraft(); } catch (x) { } } } catch (x) { }
+  props.deleteProperty('DRAFT_' + id);
+}
+function finishSend_(rec) { if (!rec) return; try { recordSent_(rec); } catch (x) { console.error('sent record failed: ' + x); } try { deleteDraft_(rec.draft); } catch (x) { } }
+
+/* ---- drafts (auto-saved from the editor) ---- */
+function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, aud) {
+  if (!owner_()) throw new Error('Not allowed.');
+  if (mode === 'reply' ? sign_('reply', rid) !== sig : sign_('compose', 'new') !== sig) throw new Error('This link is not valid.');
+  body = String(body || '').slice(0, 200000); subject = String(subject || '').trim().slice(0, 150);
+  var props = PropertiesService.getScriptProperties(), me = Session.getEffectiveUser().getEmail(), id = String(draftId || ''), old = null;
+  if (id) { var raw = props.getProperty('DRAFT_' + id); if (raw) { try { old = JSON.parse(raw); } catch (x) { } } }
+  var rcpt = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(to || '').trim()) ? String(to).trim() : me, gid = '';
+  var opts = { htmlBody: body || '<p></p>' };
+  if (old && old.gid) { try { GmailApp.getDraft(old.gid).update(rcpt, subject || '(no subject)', plainOf_(body) || ' ', opts); gid = old.gid; } catch (x) { gid = ''; } }
+  if (!gid) { var d = GmailApp.createDraft(rcpt, subject || '(no subject)', plainOf_(body) || ' ', opts); gid = d.getId(); }
+  if (!old) id = mailId_();
+  props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: gid, to: String(to || '').slice(0, 200), cc: String(cc || '').slice(0, 200), bcc: String(bcc || '').slice(0, 200), s: subject, h: String(header || '').slice(0, 80), ri: mode === 'reply' ? rid : '', aud: aud === 'all' || aud === 'watch' ? aud : 'one' }));
+  return id;
+}
+function draftPage_(p) {
+  var id = p.id || '';
+  if (!id || sign_('draft', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var raw = PropertiesService.getScriptProperties().getProperty('DRAFT_' + id);
+  if (!raw) return page_('Not found', 'This draft no longer exists.', 'info');
+  var r = JSON.parse(raw), body = '';
+  try { body = GmailApp.getDraft(r.gid).getMessage().getBody(); } catch (x) { body = ''; }
+  var D = { id: id, to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, aud: r.aud, body: body };
+  if (r.ri) {
+    var m = PropertiesService.getScriptProperties().getProperty('MSG_' + r.ri);
+    if (m) return editorPage_('reply', { id: r.ri, sig: sign_('reply', r.ri) }, JSON.parse(m), D);
+  }
+  return editorPage_('compose', { sig: sign_('compose', 'new') }, null, D);
+}
+
+/* ---- scheduled emails ---- */
+function scheduleMail_(base, bodyHtml, files, mt, opt) {
+  if (mt && mt.on) throw new Error('A meeting cannot be added to a scheduled email. Send it now, or remove the meeting.');
+  var to = String(base.to || '').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
+  if (!String(base.s || '').trim()) throw new Error('Add a subject.');
+  addrs_(base.cc, 'Cc'); addrs_(base.bcc, 'Bcc');
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(String(opt.at))) throw new Error('Choose a date and time to send.');
+  var at = Date.parse(opt.at + ':00+05:30'); if (isNaN(at) || at < Date.now() + 60000) throw new Error('Choose a time in the future.');
+  var blobs = (files || []).map(function (f) { return Utilities.newBlob(Utilities.base64Decode(f.data), String(f.type || 'application/octet-stream'), String(f.name || 'attachment').slice(0, 120)); });
+  var o = { htmlBody: String(bodyHtml || '').slice(0, 200000) || '<p></p>' }; if (blobs.length) o.attachments = blobs;
+  var d = GmailApp.createDraft(to, String(base.s).trim().slice(0, 150), plainOf_(bodyHtml) || ' ', o), props = PropertiesService.getScriptProperties(), id = mailId_();
+  props.setProperty('SCH_' + id, JSON.stringify({ t: Date.now(), at: at, gid: d.getId(), to: to, cc: String(base.cc || '').slice(0, 200), bcc: String(base.bcc || '').slice(0, 200), s: String(base.s).trim().slice(0, 150), h: String(base.h || '').slice(0, 80), ri: base.ri || '', da: +opt.da > 0 ? Math.min(365, +opt.da) : 0, a: blobs.length, f: 0 }));
+  deleteDraft_(opt.draft); ensureReminderTrigger_();
+  return statusHtml_('Scheduled', 'Your email to ' + esc_(to) + ' will be sent on ' + esc_(Utilities.formatDate(new Date(at), TZ, 'EEEE d MMMM yyyy, HH:mm')) + ' IST (within about 5 minutes of that time). It is listed under Scheduled in <a href="' + mailUrl_() + '" target="_top">Email</a>, where you can send it now, move it back to drafts or delete it.', 'ok');
+}
+function sendScheduledOne_(id) {
+  var props = PropertiesService.getScriptProperties(), raw = props.getProperty('SCH_' + id); if (!raw) return false;
+  var r = JSON.parse(raw);
+  try {
+    var msg = GmailApp.getDraft(r.gid).getMessage(), files = msg.getAttachments().map(function (b) { return { name: b.getName(), type: b.getContentType(), data: Utilities.base64Encode(b.getBytes()) }; });
+    var quoted = ''; if (r.ri) { try { quoted = JSON.parse(props.getProperty('MSG_' + r.ri) || '{}').m || ''; } catch (x) { } }
+    var body = msg.getBody();
+    deliver_(r.to, r.s, body, files, quoted, r.cc, r.bcc, '', r.h);
+    recordSent_({ to: r.to, cc: r.cc, s: r.s, h: r.h, body: body, files: files, da: r.da });
+    try { GmailApp.getDraft(r.gid).deleteDraft(); } catch (x) { }
+    props.deleteProperty('SCH_' + id);
+    return true;
+  } catch (x) {
+    console.error('scheduled send failed: ' + x);
+    r.f = (r.f || 0) + 1; r.err = String(x).slice(0, 200); props.setProperty('SCH_' + id, JSON.stringify(r));
+    if (r.f === 3) { try { MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: 'A scheduled email could not be sent', body: 'Your scheduled email to ' + r.to + ' ("' + r.s + '") could not be sent: ' + r.err + '\nOpen Email: ' + mailUrl_() }); } catch (y) { } }
+    return false;
+  }
+}
+function sendDue_() {
+  var now = Date.now();
+  propRecs_('SCH_').forEach(function (r) { if (r.at <= now && (r.f || 0) < 3) sendScheduledOne_(r.id); });
+}
+/* remove sent emails from the Gmail Sent folder once their chosen number of days has passed (only the one message, never a thread with replies) */
+function sentCleanup_() {
+  var now = Date.now(), props = PropertiesService.getScriptProperties(), me = String(Session.getEffectiveUser().getEmail() || '').toLowerCase(), n = 0;
+  propRecs_('SENT_').forEach(function (r) {
+    if (!r.da || r.g || n >= 8 || r.t + r.da * 86400000 > now) return;
+    n++;
+    var found = 0, d1 = Utilities.formatDate(new Date(r.t - 86400000), TZ, 'yyyy/MM/dd'), d2 = Utilities.formatDate(new Date(r.t + 2 * 86400000), TZ, 'yyyy/MM/dd');
+    try {
+      GmailApp.search('in:sent to:' + String(r.to).split(/[,\s]+/)[0] + ' after:' + d1 + ' before:' + d2, 0, 20).forEach(function (th) {
+        th.getMessages().forEach(function (m) {
+          if (String(m.getFrom()).toLowerCase().indexOf(me) < 0) return;
+          if (m.getSubject() !== r.s || Math.abs(m.getDate().getTime() - r.t) > 15 * 60000) return;
+          m.moveToTrash(); found++;
+        });
+      });
+      r.g = found ? 1 : 2;
+    } catch (x) { console.error('sent cleanup failed: ' + x); r.g = (r.g || 0); return; }
+    var id = r.id; delete r.id; props.setProperty('SENT_' + id, JSON.stringify(r));
+  });
+}
+function mailJobs_() { try { sendDue_(); } catch (x) { console.error('due failed: ' + x); } try { sentCleanup_(); } catch (x) { console.error('cleanup failed: ' + x); } }
+
+/* ---- hub page: Sent, Drafts, Scheduled ---- */
+function mailHubHtml_(tab) {
+  tab = tab === 'drafts' || tab === 'sched' ? tab : 'sent';
+  var fmt = function (t) { return Utilities.formatDate(new Date(t), TZ, 'd MMM yyyy, HH:mm') + ' IST'; };
+  var sent = propRecs_('SENT_').sort(function (a, b) { return b.t - a.t; }), drafts = propRecs_('DRAFT_').sort(function (a, b) { return b.t - a.t; }), sch = propRecs_('SCH_').sort(function (a, b) { return a.at - b.at; });
+  var gm = function (r) { return 'https://mail.google.com/mail/u/0/#search/' + encodeURIComponent('in:sent to:' + String(r.to).split(/[,\s]+/)[0] + ' subject:"' + r.s + '"'); };
+  var chip = function (t) { return '<span class="m">' + t + '</span>'; };
+  var sentH = sent.map(function (r) {
+    var note = r.da ? (r.g === 1 ? 'Removed from Gmail Sent' : r.g === 2 ? 'Was not found in Gmail Sent' : 'Leaves Gmail Sent on ' + Utilities.formatDate(new Date(r.t + r.da * 86400000), TZ, 'd MMM yyyy')) : '';
+    return '<div class="li"><div class="h"><span class="n">' + esc_(r.s || '(no subject)') + '</span>' + chip('To ' + esc_(r.to) + (r.cc ? ', Cc ' + esc_(r.cc) : '')) + chip(fmt(r.t)) + (r.a ? chip(r.a + ' attachment' + (r.a > 1 ? 's' : '')) : '') + (note ? chip(esc_(note)) : '') + '</div>'
+      + '<div class="b">' + esc_(r.x || '').replace(/\n/g, '<br>') + '</div>' + (r.g === 1 ? '' : '<a class="ab" style="background:var(--a)" target="_blank" href="' + gm(r) + '">Find in Gmail</a>') + '</div>';
+  }).join('') || '<p class="sub">Nothing sent from here yet. The latest ' + SENT_MAX + ' are kept.</p>';
+  var btn = function (cls, fn, id, label, extra) { return '<button type="button" class="ab ' + cls + '" style="' + (extra || '') + 'border:0;cursor:pointer" data-fn="' + fn + '" data-id="' + id + '">' + label + '</button> '; };
+  var draftH = drafts.map(function (r) {
+    return '<div class="li"><div class="h"><span class="n">' + esc_(r.s || '(no subject)') + '</span>' + chip((r.aud === 'all' ? 'To all subscribers' : r.aud === 'watch' ? 'To the yellow list' : 'To ' + esc_(r.to || 'nobody yet'))) + chip('Saved ' + fmt(r.t)) + '</div>'
+      + '<a class="ab" style="background:var(--a)" target="_top" href="' + link_('draft', r.id) + '">Open and edit</a> ' + btn('dl', 'draftDelete', r.id, 'Delete', 'background:var(--red,#b94700);') + '</div>';
+  }).join('') || '<p class="sub">No drafts. Anything you type in a new email is saved here automatically.</p>';
+  var schH = sch.map(function (r) {
+    return '<div class="li"><div class="h"><span class="n">' + esc_(r.s || '(no subject)') + '</span>' + chip('To ' + esc_(r.to)) + chip('Sends ' + fmt(r.at)) + (r.a ? chip(r.a + ' attachment' + (r.a > 1 ? 's' : '')) : '') + (r.f ? chip('Failed ' + r.f + ' time' + (r.f > 1 ? 's' : '') + ': ' + esc_(r.err || '')) : '') + '</div>'
+      + btn('sn', 'schedSendNow', r.id, 'Send now', 'background:var(--a);') + btn('sb', 'schedToDraft', r.id, 'Move back to drafts', 'background:var(--muted2);') + btn('dl', 'schedDelete', r.id, 'Delete', 'background:var(--red,#b94700);') + '</div>';
+  }).join('') || '<p class="sub">Nothing is scheduled. Tick &ldquo;Send later&rdquo; when you write an email.</p>';
+  var tabB = function (k, label, n) { return '<button type="button" class="ab tb" data-t="' + k + '" style="border:0;cursor:pointer;background:' + (tab === k ? 'var(--a)' : 'var(--muted2)') + '">' + label + ' (' + n + ')</button> '; };
+  var inner = listStyle_() + '<p style="margin:0 0 14px"><a class="ab" style="background:var(--a)" target="_top" href="' + link_('compose', 'new') + '">Write a new email</a></p>'
+    + '<p style="margin:0 0 14px">' + tabB('sent', 'Sent', sent.length) + tabB('drafts', 'Drafts', drafts.length) + tabB('sched', 'Scheduled', sch.length) + '</p>'
+    + '<div id="p-sent"' + (tab === 'sent' ? '' : ' style="display:none"') + '>' + sentH + '</div><div id="p-drafts"' + (tab === 'drafts' ? '' : ' style="display:none"') + '>' + draftH + '</div><div id="p-sched"' + (tab === 'sched' ? '' : ' style="display:none"') + '>' + schH + '</div><div id="hm" class="msg"></div>'
+    + '<script>'
+    + 'document.addEventListener("click",function(e){var t=e.target.closest(".tb");if(t){var k=t.getAttribute("data-t");["sent","drafts","sched"].forEach(function(x){document.getElementById("p-"+x).style.display=x===k?"":"none";});var bs=document.querySelectorAll(".tb");for(var i=0;i<bs.length;i++)bs[i].style.background=bs[i]===t?"var(--a)":"var(--muted2)";return;}'
+    + 'var b=e.target.closest("[data-fn]");if(!b)return;var fn=b.getAttribute("data-fn");if(b.classList.contains("dl")&&!b.armed){b.armed=true;b.textContent="Click again to delete";return;}'
+    + 'var all=document.querySelectorAll("[data-fn]");for(var j=0;j<all.length;j++)all[j].disabled=true;b.textContent="Working...";'
+    + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(er){for(var j=0;j<all.length;j++)all[j].disabled=false;b.textContent="Try again";var m=document.getElementById("hm");m.className="msg bad";m.textContent=(er&&er.message)||"Something went wrong.";})[fn](b.getAttribute("data-id"),' + JSON.stringify(sign_('admin', 'mailact')) + ');});<\/script>';
+  return shell_('Email', 'Emails you sent from here, drafts that were saved automatically, and emails scheduled to go out later.', inner, true);
+}
+function mailHubPage_(p) {
+  if (sign_('admin', 'mail') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  return out_(mailHubHtml_(p.tab), 'Email');
+}
+function mailAct_(id, sig, fn, tab) {
+  if (!owner_() || sign_('admin', 'mailact') !== sig) throw new Error('Not allowed.');
+  var props = PropertiesService.getScriptProperties(), raw;
+  if (fn === 'draftDelete') deleteDraft_(id);
+  else if (fn === 'schedDelete') { raw = props.getProperty('SCH_' + id); if (raw) { try { GmailApp.getDraft(JSON.parse(raw).gid).deleteDraft(); } catch (x) { } props.deleteProperty('SCH_' + id); } }
+  else if (fn === 'schedToDraft') { raw = props.getProperty('SCH_' + id); if (raw) { var r = JSON.parse(raw); props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: r.gid, to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, ri: r.ri, aud: 'one' })); props.deleteProperty('SCH_' + id); } }
+  else if (fn === 'schedSendNow') locked_(function () { return sendScheduledOne_(id); });
+  return mailHubHtml_(tab);
+}
+function draftDelete(id, sig) { return mailAct_(id, sig, 'draftDelete', 'drafts'); }
+function schedDelete(id, sig) { return mailAct_(id, sig, 'schedDelete', 'sched'); }
+function schedToDraft(id, sig) { return mailAct_(id, sig, 'schedToDraft', 'drafts'); }
+function schedSendNow(id, sig) { return mailAct_(id, sig, 'schedSendNow', 'sent'); }
 
 /* approve: a page with a box for the meeting agenda, then approveWith() creates the invited event (with a Google Meet link when the Calendar service is on) */
 function approvePage_(p, name, email, when, len) {
