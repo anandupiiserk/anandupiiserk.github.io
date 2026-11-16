@@ -353,10 +353,10 @@ function editorPage_(mode, p, r, D) {
   var fonts = ['Arial', 'Georgia', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Courier New', 'Tahoma'];
   var tbtn = function (c, label, st, tip) { return '<button type="button" data-c="' + c + '" title="' + tip + '" style="' + (st || '') + '">' + label + '</button>'; };
   var inner = (reply
-      ? '<div class="chips"><span class="chip"><b>' + esc_(r.n) + '</b></span><span class="chip">' + esc_(r.e) + '</span><span class="chip">Sending as Anandu Prabhakaran</span></div>'
+      ? '<div class="chips"><span class="chip"><b>' + esc_(r.n) + '</b></span><span class="chip">' + esc_(r.e) + '</span><span class="chip">Sending from your own email address</span></div>'
         + '<div class="q"><small>Their message</small>' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
         + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>' + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" value="Re: your message on my website" style="margin-bottom:16px">'
-      : '<div class="chips"><span class="chip">Sending as <b>Anandu Prabhakaran</b></span><span class="chip">New conversation</span></div>'
+      : '<div class="chips"><span class="chip">Sending from your own email address</span><span class="chip">New conversation</span></div>'
         + '<label class="l">Send to</label><div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-size:14px"><label><input type="radio" name="aud" id="aud-one" checked> One person</label><label><input type="radio" name="aud" id="aud-all"> All newsletter subscribers (<b>' + nlActive_().length + '</b>)</label><label><input type="radio" name="aud" id="aud-watch"> Yellow list (<b>' + nlWatch_().length + '</b>)</label><a href="' + adminUrl_() + '" target="_top" style="color:#1f4e9c;text-decoration:none">View subscribers</a></div>'
         + '<div id="tow"><label class="l" for="to">To</label><input id="to" class="tx" list="subl" value="' + esc_(p.to || '') + '" placeholder="name@example.com, or type a name to search your subscribers" autocomplete="off" style="margin-bottom:14px"><datalist id="subl">' + nlActive_().map(function (r) { return '<option value="' + esc_(r.e) + '">' + esc_(r.n || '') + '</option>'; }).join('') + '</datalist></div>' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
         + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
@@ -383,6 +383,7 @@ function editorPage_(mode, p, r, D) {
     + '<div id="lkm" style="display:none;position:fixed;inset:0;background:rgba(15,25,45,.45);z-index:50;align-items:center;justify-content:center;padding:16px"><div style="background:#fff;border-radius:14px;padding:22px;max-width:420px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)"><h3 style="margin:0 0 14px;font-size:17px">Add a hyperlink</h3><label class="l" for="lkt">Text to show</label><input id="lkt" class="tx" placeholder="For example: my website" style="margin-bottom:12px"><label class="l" for="lku">Web address</label><input id="lku" class="tx" placeholder="https://example.com" style="margin-bottom:16px"><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" id="lkx" class="b auto" style="background:var(--soft);color:var(--text);padding:10px 18px">Cancel</button><button type="button" id="lko" class="b blue auto" style="padding:10px 18px">Insert link</button></div></div></div>'
     + '<div id="dz" class="dz"><b>Click to add files</b> or drop them here</div><input type="file" id="fl" multiple style="display:none"><div id="fls" class="fl"></div>'
     + '<div style="margin:18px 0 0;padding:12px 14px;border:1px solid var(--bd,#d5dce8);border-radius:12px"><b style="font-size:14px">Send options</b>'
+    + '<label class="l" for="fn" style="margin-top:10px">Sender name <span class="hint">(the name recipients see; the email address stays the same)</span></label><input id="fn" class="tx" maxlength="60" value="' + esc_(OWNER_NAME) + '" style="margin-bottom:4px">'
     + '<label style="display:flex;gap:8px;align-items:center;margin:10px 0 0;font-size:14px"><input type="checkbox" id="sl"> Send later (one person only, no meeting, attachments allowed)</label>'
     + '<div id="slb" style="display:none;gap:12px;flex-wrap:wrap;margin:8px 0 0"><label class="l" style="flex:1 1 150px">Date<input id="sld" class="tx" style="min-height:0" type="date" min="' + Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd') + '"></label><label class="l" style="flex:1 1 120px">Time (IST)<input id="slt" class="tx" style="min-height:0" type="time" step="300"></label></div>'
     + '<label class="l" for="dad" style="margin-top:12px">Delete my copy from Gmail Sent after <input id="dad" class="tx" type="number" min="1" max="365" placeholder="days" style="width:90px;display:inline-block;min-height:0;margin:0 4px"> days <span class="hint">(leave empty to keep it; the recipient is not told, one person only)</span></label>'
@@ -414,12 +415,12 @@ function editorPage_(mode, p, r, D) {
     + 'function MT(){if(!mton.checked)return null;var mm=document.getElementById("mtm");return {on:true,date:document.getElementById("mtd").value,time:document.getElementById("mtt").value,len:document.getElementById("mtn").value,meet:mm?mm.checked:false,agenda:document.getElementById("mta").value};}'
     + 'var MODE=' + JSON.stringify(mode) + ',RID=' + JSON.stringify(id) + ',SIG=' + JSON.stringify(p.sig) + ',D=' + JSON.stringify(D || null) + ',DID=(D&&D.id)||"",sentFlag=false,sl=document.getElementById("sl"),slb=document.getElementById("slb"),sbtn=document.getElementById("send"),q2=function(i){return document.getElementById(i);};'
     + 'sl.onchange=function(){slb.style.display=sl.checked?"flex":"none";sbtn.textContent=sl.checked?"Schedule email":(MODE==="reply"?"Send reply":"Send email");};'
-    + 'function OPT(){return {draft:DID,da:+q2("dad").value||0,at:sl.checked?(q2("sld").value+"T"+q2("slt").value):""};}'
+    + 'function OPT(){return {draft:DID,fn:q2("fn").value,da:+q2("dad").value||0,at:sl.checked?(q2("sld").value+"T"+q2("slt").value):""};}'
     + 'function aud2(){return (typeof ao!=="undefined"&&ao.checked)?"all":(typeof aw!=="undefined"&&aw.checked)?"watch":"one";}'
     + 'function fv(i){var e=q2(i);return e?e.value:"";}'
-    + 'function snap(){return JSON.stringify([aud2(),fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML]);}'
-    + 'if(D){if(D.aud==="all"&&typeof ao!=="undefined"){ao.checked=true;ao.onchange&&ao.onchange();}else if(D.aud==="watch"&&typeof aw!=="undefined"){aw.checked=true;aw.onchange&&aw.onchange();}if(q2("to"))q2("to").value=D.to||"";if(q2("cc"))q2("cc").value=D.cc||"";if(q2("bcc"))q2("bcc").value=D.bcc||"";if(q2("sub"))q2("sub").value=D.s||"";if(q2("hd")){q2("hd").value=D.h||"";if(typeof hc!=="undefined")hc=true;}ed.innerHTML=D.body||"";}'
-    + 'var lastSnap=snap();function saveDraft(manual){if(sentFlag)return;var s0=snap();var ds=q2("ds");if(!manual&&s0===lastSnap)return;lastSnap=s0;ds.textContent="Saving draft...";google.script.run.withSuccessHandler(function(id){DID=id;ds.textContent="Draft saved at "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});}).withFailureHandler(function(e){ds.textContent="Draft not saved: "+(e&&e.message?e.message:"try again");}).saveDraft(MODE,RID,SIG,DID,fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML,aud2());}'
+    + 'function snap(){return JSON.stringify([fv("fn"),aud2(),fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML]);}'
+    + 'if(D){if(D.aud==="all"&&typeof ao!=="undefined"){ao.checked=true;ao.onchange&&ao.onchange();}else if(D.aud==="watch"&&typeof aw!=="undefined"){aw.checked=true;aw.onchange&&aw.onchange();}if(q2("to"))q2("to").value=D.to||"";if(q2("cc"))q2("cc").value=D.cc||"";if(q2("bcc"))q2("bcc").value=D.bcc||"";if(q2("sub"))q2("sub").value=D.s||"";if(D.fn&&q2("fn"))q2("fn").value=D.fn;if(q2("hd")){q2("hd").value=D.h||"";if(typeof hc!=="undefined")hc=true;}ed.innerHTML=D.body||"";}'
+    + 'var lastSnap=snap();function saveDraft(manual){if(sentFlag)return;var s0=snap();var ds=q2("ds");if(!manual&&s0===lastSnap)return;lastSnap=s0;ds.textContent="Saving draft...";google.script.run.withSuccessHandler(function(id){DID=id;ds.textContent="Draft saved at "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});}).withFailureHandler(function(e){ds.textContent="Draft not saved: "+(e&&e.message?e.message:"try again");}).saveDraft(MODE,RID,SIG,DID,fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML,aud2(),fv("fn"));}'
     + 'q2("sd").onclick=function(){saveDraft(true);};setInterval(function(){saveDraft(false);},15000);'
     + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}sentFlag=true;b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
@@ -439,7 +440,8 @@ function addrs_(v, label) {
   if (list.length > 20) throw new Error(label + ': too many addresses (max 20).');
   return list.join(',');
 }
-function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, header) {
+function fromName_(v) { var n = String(v || '').replace(/[<>"\r\n]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60); return n || OWNER_NAME; }
+function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, header, fromName) {
   header = String(header || '').trim().slice(0, 80) || 'Email from ' + OWNER_NAME;
   cc = addrs_(cc, 'Cc'); bcc = addrs_(bcc, 'Bcc');
   var blobs = [], total = 0;
@@ -457,7 +459,7 @@ function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, heade
     + (quoted ? '<div style="margin:0 28px 24px;padding:12px 14px;background:#f7f9fc;border-left:4px solid #c9d0da;border-radius:4px;color:#5b6675;font-size:13px;line-height:1.5"><b>Your message</b><br>' + esc_(quoted).replace(/\n/g, '<br>') + '</div>' : '')
     + (unsubUrl ? '<div style="padding:0 28px 18px;color:#7a8594;font-size:12px;line-height:1.5">You are receiving this email because you subscribed to news and information from Anandu Prabhakaran on his website. <a href="' + unsubUrl + '" style="color:#1f4e9c">Unsubscribe</a></div>' : '')
     + '<div style="background:#f7f9fc;padding:14px 28px;text-align:center;color:#7a8594;font-size:12px;border-top:1px solid #e6ebf2">This email is sent from a custom domain developed and maintained by Anandu Prabhakaran.</div></div></div>';
-  var opts = { to: to, name: OWNER_NAME, replyTo: Session.getEffectiveUser().getEmail(), subject: subject, body: plain + (quoted ? '\n\n---\nYour message:\n' + quoted : '') + (unsubUrl ? '\n\n---\nYou are receiving this because you subscribed on the website. Unsubscribe: ' + unsubUrl : ''), htmlBody: html };
+  var opts = { to: to, name: fromName_(fromName), replyTo: Session.getEffectiveUser().getEmail(), subject: subject, body: plain + (quoted ? '\n\n---\nYour message:\n' + quoted : '') + (unsubUrl ? '\n\n---\nYou are receiving this because you subscribed on the website. Unsubscribe: ' + unsubUrl : ''), htmlBody: html };
   if (blobs.length) opts.attachments = blobs;
   if (cc) opts.cc = cc;
   if (bcc) opts.bcc = bcc;
@@ -476,7 +478,7 @@ function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header, mt, opt) 
   var r = JSON.parse(raw);
   opt = opt || {}; subject = subject || 'Re: your message'; if (mt && mt.on) mt.subject = subject;
   if (opt.at) return scheduleMail_({ to: r.e, cc: cc, bcc: bcc, s: subject, h: header, ri: id }, bodyHtml, files, mt, opt);
-  return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject, bodyHtml + extra, files, r.m, cc, bcc, '', header); }, '', { to: r.e, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: id, draft: opt.draft });
+  return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject, bodyHtml + extra, files, r.m, cc, bcc, '', header, opt.fn); }, '', { fn: opt.fn, to: r.e, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: id, draft: opt.draft });
 }
 
 // Called from the new-email editor (fresh conversation).
@@ -487,7 +489,7 @@ function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header, mt, opt) {
   opt = opt || {}; if (mt && mt.on) mt.subject = subject;
   if ((to === '__subscribers__' || to === '__watch__') && opt.at) throw new Error('Send later works for one person only. Remove the schedule to send to a group.');
   if (to === '__subscribers__' || to === '__watch__') {
-    var bulk = sendNews_(subject, bodyHtml, files, header, to === '__watch__');
+    var bulk = sendNews_(subject, bodyHtml, files, header, to === '__watch__', opt.fn);
     recordSent_({ to: to === '__watch__' ? 'Yellow list' : 'Newsletter subscribers', s: subject, h: header, body: bodyHtml, files: files, da: 0 });
     deleteDraft_(opt.draft);
     return bulk;
@@ -496,7 +498,7 @@ function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header, mt, opt) {
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
   if (opt.at) return scheduleMail_({ to: to, cc: cc, bcc: bcc, s: subject, h: header, ri: '' }, bodyHtml, files, mt, opt);
   var nm = to.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
-  return sendWithMeeting_('', to, mt, function (extra) { return deliver_(to, subject, bodyHtml + extra, files, '', cc, bcc, '', header); }, nm, { to: to, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: '', draft: opt.draft });
+  return sendWithMeeting_('', to, mt, function (extra) { return deliver_(to, subject, bodyHtml + extra, files, '', cc, bcc, '', header, opt.fn); }, nm, { fn: opt.fn, to: to, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: '', draft: opt.draft });
 }
 /* Optional meeting attached to an email: creates the calendar event (with a Meet link if asked), so the slot is busy on the booking calendar. */
 function sendWithMeeting_(n, to, mt, send, nm, rec) {
@@ -603,14 +605,14 @@ function nlUnsub(id, sig) {
   return statusHtml_('You have been unsubscribed', 'You will no longer receive emails from Anandu Prabhakaran. You can subscribe again at any time on the website.', 'ok');
 }
 // Sends one email to every confirmed subscriber, each with its own unsubscribe link.
-function sendNews_(subject, bodyHtml, files, header, yellow) {
+function sendNews_(subject, bodyHtml, files, header, yellow, fn) {
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
   var subs = yellow ? nlWatch_() : nlActive_();
   if (!subs.length) throw new Error(yellow ? 'Nobody is on the yellow list.' : 'There are no confirmed subscribers yet.');
   var left = MailApp.getRemainingDailyQuota();
   if (subs.length > left) throw new Error('Gmail allows ' + left + ' more recipients today, and there are ' + subs.length + ' subscribers. Try again tomorrow.');
   var ok = 0, bad = 0;
-  subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header); ok++; } catch (err) { bad++; } });
+  subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header, fn); ok++; } catch (err) { bad++; } });
   if (ok && !yellow) PropertiesService.getScriptProperties().setProperty('LASTNEWS', String(Date.now()));
   return statusHtml_(yellow ? 'Sent to the yellow list' : 'Sent to subscribers', 'Your email went to ' + ok + (yellow ? ' yellow-listed person' : ' subscriber') + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, <a href="' + link_('compose', 'new') + '" target="_top">write another email</a> or <a href="' + mailUrl_() + '" target="_top">see your Sent emails</a>.', 'ok');
 }
@@ -1064,22 +1066,78 @@ function messagesPage_(p, arc) {
   var props = PropertiesService.getScriptProperties().getProperties(), all = [], cut = Date.now() - MSG_ARCHIVE_DAYS * 86400000;
   Object.keys(props).forEach(function (k) { if (k.indexOf('MSG_') === 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); all.push(r); } catch (x) { } } });
   all.sort(function (a, b) { return b.t - a.t; });
-  var list = all.filter(function (r) { return arc ? r.t < cut : r.t >= cut; }), nArc = all.filter(function (r) { return r.t < cut; }).length;
-  var delSig = function (id) { return sign_('msgdel', id); };
+  var isArc = function (r) { return r.ar === 1 || (r.t < cut && r.ar !== 2); };
+  var list = all.filter(function (r) { return arc ? isArc(r) : !isArc(r); }), nArc = all.filter(isArc).length;
+  var api = hasCalApi_(), STN = { unread: 'Unread', read: 'Read', responded: 'Responded', ignored: 'Ignored' };
+  var today = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
   var items = list.map(function (r) {
-    return '<div class="li" id="m' + r.id + '" data-s="' + esc_((r.n + ' ' + r.e + ' ' + r.m).toLowerCase()) + '"><div class="h"><span class="n">' + esc_(r.n) + '</span><a href="mailto:' + esc_(r.e) + '" style="color:var(--a);font-size:13px">' + esc_(r.e) + '</a><span class="m">' + Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy, HH:mm') + ' IST</span></div>'
-      + '<div class="b">' + esc_(r.m) + '</div><a class="ab" style="background:var(--a)" target="_top" href="' + link_('reply', r.id) + '">Reply</a> '
-      + '<button type="button" class="ab md" style="background:var(--red,#b94700);border:0;cursor:pointer" data-id="' + r.id + '" data-sg="' + delSig(r.id) + '">Delete</button></div>';
-  }).join('') || '<p class="sub">' + (arc ? 'Nothing is archived yet. Messages move here after ' + MSG_ARCHIVE_DAYS + ' days.' : 'No messages yet.') + '</p>';
+    var st = STN[r.st] ? r.st : 'unread', id = r.id, asg = sign_('msgact', id);
+    var ab = function (act, label, bg) { return '<button type="button" class="ab" data-a="' + act + '" style="background:' + bg + ';border:0;cursor:pointer">' + label + '</button> '; };
+    return '<div class="li mg" id="m' + id + '" data-id="' + id + '" data-st="' + st + '" data-ar="' + (arc ? 1 : 0) + '" data-asg="' + asg + '" data-dsg="' + sign_('msgdel', id) + '" data-rsg="' + sign_('reply', id) + '" data-s="' + esc_((r.n + ' ' + r.e + ' ' + r.m).toLowerCase()) + '">'
+      + '<div class="h tg" style="cursor:pointer"><span class="n">' + esc_(r.n) + '</span><a href="mailto:' + esc_(r.e) + '" style="color:var(--a);font-size:13px">' + esc_(r.e) + '</a><span class="m">' + Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy, HH:mm') + ' IST</span><span class="stc">' + STN[st] + '</span></div>'
+      + '<div class="b pv">' + esc_(String(r.m).slice(0, 180)) + (String(r.m).length > 180 ? '...' : '') + '</div>'
+      + '<div class="dt" style="display:none"><div class="b">' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
+      + '<div class="ac">' + ab('unread', 'Mark unread', 'var(--muted2)') + ab('read', 'Mark read', 'var(--muted2)') + ab('ignored', 'Ignore', 'var(--muted2)') + ab(arc ? 'inbox' : 'arc', arc ? 'Move to inbox' : 'Archive', 'var(--muted2)')
+      + '<button type="button" class="ab md" style="background:var(--red,#b94700);border:0;cursor:pointer">Delete</button> <a class="ab" style="background:var(--a)" target="_top" href="' + link_('reply', id) + '">Reply</a> <span class="sub" style="font-size:12px">(Reply opens the full editor with fonts, attachments and send later)</span></div>'
+      + '<div class="rb"><label class="l">Your response <span class="hint">(sent as an email with their message quoted below it)</span></label>'
+      + '<input class="tx rfn" maxlength="60" value="' + esc_(OWNER_NAME) + '" title="Sender name" style="margin-bottom:8px" placeholder="Sender name">'
+      + '<input class="tx rs" value="Re: your message on my website" style="margin-bottom:8px"><textarea class="tx rt" style="min-height:110px">Hello ' + esc_(r.n) + ',\n\n\n\nBest regards,\nAnandu Prabhakaran</textarea>'
+      + '<div style="margin:8px 0;font-size:14px"><label style="display:flex;gap:8px;align-items:center;margin:0 0 6px"><input type="checkbox" class="rbk"> Ask them to book an appointment on my website (adds a Book an appointment button)</label>'
+      + '<label style="display:flex;gap:8px;align-items:center;margin:0 0 6px"><input type="checkbox" class="rct"> Add a link to my website contact form (adds a Send me a message button)</label>'
+      + '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="rmt"> Schedule a meeting with them now (blocks the time on the website calendar)</label></div>'
+      + '<div class="mtb" style="display:none;margin:0 0 10px"><div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 10px"><label class="l" style="flex:1 1 140px">Date<input class="tx mtd" style="min-height:0" type="date" min="' + today + '"></label><label class="l" style="flex:1 1 110px">Start time (IST)<input class="tx mtt" style="min-height:0" type="time" step="300"></label><label class="l" style="flex:1 1 110px">Length<select class="tx mtn" style="min-height:0"><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label></div>'
+      + '<label class="l">Meeting agenda <span class="hint">(optional)</span></label><textarea class="tx mta" style="min-height:60px"></textarea>'
+      + (api ? '<label style="display:flex;gap:8px;align-items:center;margin:8px 0 0;font-size:14px"><input type="checkbox" class="mtm" checked> Include a Google Meet link</label>' : '') + '</div>'
+      + '<button type="button" class="b blue auto snd">Send response</button><span class="sub rm" style="margin-left:10px"></span></div></div></div>';
+  }).join('') || '<p class="sub">' + (arc ? 'Nothing is archived yet. Messages move here after ' + MSG_ARCHIVE_DAYS + ' days, or when you archive them.' : 'No messages yet.') + '</p>';
   var other = arc ? '<a class="ab" style="background:var(--a)" target="_top" href="' + msgUrl_() + '">Back to messages</a>'
     : '<a class="ab" style="background:var(--a)" target="_top" href="' + portalBase_() + '?action=msgarc&sig=' + sign_('admin', 'msgarc') + '">Archive (' + nArc + ')</a>';
-  var inner = listStyle_() + '<p style="margin:0 0 12px">' + other + '</p><input id="q" class="tx" placeholder="Search name, email or message" style="margin:0 0 14px"><div id="l">' + items + '</div><div id="dm" class="msg"></div>'
-    + '<script>document.getElementById("q").oninput=function(){var v=this.value.toLowerCase(),r=document.querySelectorAll("#l .li");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
-    + 'document.getElementById("l").addEventListener("click",function(e){var b=e.target.closest(".md");if(!b)return;if(!b.armed){b.armed=true;b.textContent="Click again to delete for good";return;}b.disabled=true;b.textContent="Deleting...";'
-    + 'google.script.run.withSuccessHandler(function(ok){var c=document.getElementById("m"+b.getAttribute("data-id"));if(ok&&c)c.parentNode.removeChild(c);else{b.disabled=false;b.armed=false;b.textContent="Delete";}}).withFailureHandler(function(){b.disabled=false;b.armed=false;b.textContent="Delete";}).msgDelete(b.getAttribute("data-id"),b.getAttribute("data-sg"));});<\/script>';
-  var head = arc ? list.length + ' archived message' + (list.length === 1 ? '' : 's') + ', older than ' + MSG_ARCHIVE_DAYS + ' days. You can still reply to them or delete them. They are removed automatically after ' + MSG_KEEP_DAYS + ' days.'
-    : list.length + ' message' + (list.length === 1 ? '' : 's') + ' from the contact form in the last ' + MSG_ARCHIVE_DAYS + ' days, newest first. Older ones are in the Archive.';
+  var chips = ['all', 'unread', 'read', 'responded', 'ignored'].map(function (k) { return '<button type="button" class="ab fl" data-f="' + k + '" style="border:0;cursor:pointer;background:' + (k === 'all' ? 'var(--a)' : 'var(--muted2)') + '">' + (k === 'all' ? 'All' : STN[k]) + ' (<span class="fc">0</span>)</button> '; }).join('');
+  var css = '<style>.mg .stc{font-size:12px;font-weight:bold;padding:2px 9px;border-radius:99px;border:1.5px solid var(--muted2);color:var(--muted2)}.mg[data-st=unread]{border-left:5px solid var(--a)}.mg[data-st=unread] .stc{background:var(--a);color:#fff;border-color:var(--a)}.mg[data-st=unread] .n{font-weight:800}.mg[data-st=responded] .stc{color:var(--green);border-color:var(--green)}.mg[data-st=ignored]{opacity:.7}.mg[data-st=ignored] .stc{border-style:dashed}.mg .ac{margin:10px 0}.mg .rb{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}.mg.open .pv{display:none}.mg .ac .ab{margin:0 4px 6px 0}</style>';
+  var js = '<script>(function(){var L=document.getElementById("l"),dm=document.getElementById("dm"),ARC=' + (arc ? 'true' : 'false') + ',NAMES={unread:"Unread",read:"Read",responded:"Responded",ignored:"Ignored"},cur="all";'
+    + 'function say(t,bad){dm.className=bad?"msg bad":"msg";dm.textContent=t||"";}'
+    + 'function recount(){var c={all:0,unread:0,read:0,responded:0,ignored:0},cs=L.querySelectorAll(".mg");for(var i=0;i<cs.length;i++){c.all++;c[cs[i].getAttribute("data-st")]++;}var f=document.querySelectorAll(".fl");for(var j=0;j<f.length;j++)f[j].querySelector(".fc").textContent=c[f[j].getAttribute("data-f")];}'
+    + 'function apply(){var v=document.getElementById("q").value.toLowerCase(),cs=L.querySelectorAll(".mg");for(var i=0;i<cs.length;i++){var ok=cs[i].getAttribute("data-s").indexOf(v)>=0&&(cur==="all"||cs[i].getAttribute("data-st")===cur);cs[i].style.display=ok?"":"none";}var f=document.querySelectorAll(".fl");for(var j=0;j<f.length;j++)f[j].style.background=f[j].getAttribute("data-f")===cur?"var(--a)":"var(--muted2)";}'
+    + 'function setSt(c,st){c.setAttribute("data-st",st);c.querySelector(".stc").textContent=NAMES[st];recount();apply();}'
+    + 'function callSt(c,st){google.script.run.withSuccessHandler(function(){setSt(c,st);}).withFailureHandler(function(e){say((e&&e.message)||"Could not update.",true);}).msgSetStatus(c.getAttribute("data-id"),c.getAttribute("data-asg"),st);}'
+    + 'document.getElementById("q").oninput=apply;'
+    + 'document.addEventListener("click",function(e){var f=e.target.closest(".fl");if(f){cur=f.getAttribute("data-f");apply();return;}var c=e.target.closest(".mg");if(!c)return;'
+    + 'if(e.target.closest("a"))return;'
+    + 'if(e.target.closest(".tg")){var d=c.querySelector(".dt"),open=d.style.display==="none";d.style.display=open?"block":"none";c.classList.toggle("open",open);if(open&&c.getAttribute("data-st")==="unread")callSt(c,"read");return;}'
+    + 'var a=e.target.closest("[data-a]");if(a){var k=a.getAttribute("data-a");if(k==="unread"||k==="read"||k==="ignored"){callSt(c,k);}else{google.script.run.withSuccessHandler(function(){c.parentNode.removeChild(c);recount();say(k==="arc"?"Moved to the Archive.":"Moved back to the inbox.");}).withFailureHandler(function(er){say((er&&er.message)||"Could not move it.",true);}).msgArchive(c.getAttribute("data-id"),c.getAttribute("data-asg"),k);}return;}'
+    + 'var dl=e.target.closest(".md");if(dl){if(!dl.armed){dl.armed=true;dl.textContent="Click again to delete for good";return;}dl.disabled=true;google.script.run.withSuccessHandler(function(ok){if(ok){c.parentNode.removeChild(c);recount();}else{dl.disabled=false;dl.armed=false;dl.textContent="Delete";}}).withFailureHandler(function(){dl.disabled=false;dl.armed=false;dl.textContent="Delete";}).msgDelete(c.getAttribute("data-id"),c.getAttribute("data-dsg"));return;}'
+    + 'var sb=e.target.closest(".snd");if(sb){var rm=c.querySelector(".rm"),on=c.querySelector(".rmt").checked,mt=on?{on:true,date:c.querySelector(".mtd").value,time:c.querySelector(".mtt").value,len:c.querySelector(".mtn").value,agenda:c.querySelector(".mta").value,meet:c.querySelector(".mtm")?c.querySelector(".mtm").checked:false}:null;'
+    + 'sb.disabled=true;sb.textContent="Sending...";rm.textContent="";google.script.run.withSuccessHandler(function(r){sb.disabled=false;sb.textContent="Send response";rm.textContent=r;setSt(c,"responded");}).withFailureHandler(function(er){sb.disabled=false;sb.textContent="Send response";rm.textContent="Not sent: "+((er&&er.message)||"try again.");}).msgRespond(c.getAttribute("data-id"),c.getAttribute("data-rsg"),c.querySelector(".rs").value,c.querySelector(".rt").value,c.querySelector(".rbk").checked,c.querySelector(".rct").checked,mt,c.querySelector(".rfn").value);return;}});'
+    + 'document.addEventListener("change",function(e){var m=e.target.closest(".rmt");if(m){var c=m.closest(".mg");c.querySelector(".mtb").style.display=m.checked?"block":"none";}});recount();apply();})();<\/script>';
+  var inner = listStyle_() + css + '<p style="margin:0 0 12px">' + other + '</p><p style="margin:0 0 12px">' + chips + '</p><input id="q" class="tx" placeholder="Search name, email or message" style="margin:0 0 14px"><div id="l">' + items + '</div><div id="dm" class="msg"></div>' + js;
+  var head = arc ? list.length + ' archived message' + (list.length === 1 ? '' : 's') + ', archived by you or older than ' + MSG_ARCHIVE_DAYS + ' days. They are removed automatically after ' + MSG_KEEP_DAYS + ' days.'
+    : list.length + ' message' + (list.length === 1 ? '' : 's') + ' in the inbox, newest first. Click a message to open it, read it and respond right here. Older ones move to the Archive.';
   return out_(shell_(arc ? 'Messages archive' : 'Messages', head, inner, true), arc ? 'Messages archive' : 'Messages');
+}
+function msgSave_(id, fn) {
+  var props = PropertiesService.getScriptProperties(), raw = props.getProperty('MSG_' + id); if (!raw) throw new Error('This message no longer exists.');
+  var r = JSON.parse(raw); fn(r); props.setProperty('MSG_' + id, JSON.stringify(r)); return r;
+}
+function msgSetStatus(id, sig, st) {
+  if (!id || !owner_() || sign_('msgact', id) !== sig) throw new Error('Not allowed.');
+  if (['unread', 'read', 'responded', 'ignored'].indexOf(st) < 0) throw new Error('Unknown status.');
+  msgSave_(id, function (r) { r.st = st; }); return true;
+}
+function msgArchive(id, sig, mode) {
+  if (!id || !owner_() || sign_('msgact', id) !== sig) throw new Error('Not allowed.');
+  msgSave_(id, function (r) { r.ar = mode === 'inbox' ? 2 : 1; }); return true;
+}
+/* answer a contact-form message right from the Messages page: same email as the reply editor, plus optional booking and contact links and a meeting */
+function msgRespond(id, sig, subject, text, book, contact, mt, fn) {
+  if (!id || !owner_() || sign_('reply', id) !== sig) throw new Error('Not allowed.');
+  text = String(text || '').trim(); if (text.length < 2) throw new Error('Write a response first.');
+  var html = '<p>' + esc_(text.slice(0, 20000)).replace(/\n/g, '<br>') + '</p>';
+  var btn = function (intro, href, label) { return '<div style="margin:16px 0 0"><p>' + intro + '</p><p><a href="' + href + '" style="display:inline-block;background:#1f4e9c;color:#ffffff;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif">' + label + '</a></p></div>'; };
+  if (book) html += btn('To book an appointment with me, please choose a convenient time here:', SITE_URL + '#appt', 'Book an appointment');
+  if (contact) html += btn('To send me a message, please use the contact form here:', SITE_URL + '#cform', 'Send me a message');
+  sendReply(id, sig, String(subject || 'Re: your message').slice(0, 150), html, [], '', '', 'Reply from ' + OWNER_NAME, mt && mt.on ? mt : null, { fn: fn });
+  msgSave_(id, function (r) { r.st = 'responded'; });
+  return 'Sent.' + (mt && mt.on ? ' The meeting is in your calendar and the slot is blocked on the website.' : '');
 }
 /* delete one stored contact message (called from the Messages page) */
 function msgDelete(id, sig) {
@@ -1184,7 +1242,7 @@ function propRecs_(prefix) {
 function recordSent_(rec) {
   var props = PropertiesService.getScriptProperties(), id = mailId_(), da = +rec.da || 0;
   if (da < 1 || da > 365 || /^(Newsletter|Yellow)/.test(rec.to)) da = 0;
-  props.setProperty('SENT_' + id, JSON.stringify({ t: Date.now(), to: String(rec.to || '').slice(0, 200), cc: String(rec.cc || '').slice(0, 200), s: String(rec.s || '').slice(0, 150), h: String(rec.h || '').slice(0, 80), x: plainOf_(rec.body).slice(0, 1200), a: (rec.files || []).length, da: da, g: 0 }));
+  props.setProperty('SENT_' + id, JSON.stringify({ t: Date.now(), to: String(rec.to || '').slice(0, 200), cc: String(rec.cc || '').slice(0, 200), s: String(rec.s || '').slice(0, 150), h: String(rec.h || '').slice(0, 80), x: plainOf_(rec.body).slice(0, 1200), a: (rec.files || []).length, da: da, g: 0, fn: rec.fn && fromName_(rec.fn) !== OWNER_NAME ? fromName_(rec.fn) : '' }));
   var all = propRecs_('SENT_').sort(function (a, b) { return b.t - a.t; });
   all.slice(SENT_MAX).forEach(function (r) { props.deleteProperty('SENT_' + r.id); });
   if (da) ensureReminderTrigger_();
@@ -1199,7 +1257,7 @@ function deleteDraft_(id) {
 function finishSend_(rec) { if (!rec) return; try { recordSent_(rec); } catch (x) { console.error('sent record failed: ' + x); } try { deleteDraft_(rec.draft); } catch (x) { } }
 
 /* ---- drafts (auto-saved from the editor) ---- */
-function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, aud) {
+function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, aud, fn) {
   if (!owner_()) throw new Error('Not allowed.');
   if (mode === 'reply' ? sign_('reply', rid) !== sig : sign_('compose', 'new') !== sig) throw new Error('This link is not valid.');
   body = String(body || '').slice(0, 200000); subject = String(subject || '').trim().slice(0, 150);
@@ -1210,7 +1268,7 @@ function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, 
   if (old && old.gid) { try { GmailApp.getDraft(old.gid).update(rcpt, subject || '(no subject)', plainOf_(body) || ' ', opts); gid = old.gid; } catch (x) { gid = ''; } }
   if (!gid) { var d = GmailApp.createDraft(rcpt, subject || '(no subject)', plainOf_(body) || ' ', opts); gid = d.getId(); }
   if (!old) id = mailId_();
-  props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: gid, to: String(to || '').slice(0, 200), cc: String(cc || '').slice(0, 200), bcc: String(bcc || '').slice(0, 200), s: subject, h: String(header || '').slice(0, 80), ri: mode === 'reply' ? rid : '', aud: aud === 'all' || aud === 'watch' ? aud : 'one' }));
+  props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: gid, to: String(to || '').slice(0, 200), cc: String(cc || '').slice(0, 200), bcc: String(bcc || '').slice(0, 200), s: subject, h: String(header || '').slice(0, 80), ri: mode === 'reply' ? rid : '', aud: aud === 'all' || aud === 'watch' ? aud : 'one', fn: fn ? fromName_(fn) : '' }));
   return id;
 }
 function draftPage_(p) {
@@ -1220,7 +1278,7 @@ function draftPage_(p) {
   if (!raw) return page_('Not found', 'This draft no longer exists.', 'info');
   var r = JSON.parse(raw), body = '';
   try { body = GmailApp.getDraft(r.gid).getMessage().getBody(); } catch (x) { body = ''; }
-  var D = { id: id, to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, aud: r.aud, body: body };
+  var D = { id: id, fn: r.fn || '', to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, aud: r.aud, body: body };
   if (r.ri) {
     var m = PropertiesService.getScriptProperties().getProperty('MSG_' + r.ri);
     if (m) return editorPage_('reply', { id: r.ri, sig: sign_('reply', r.ri) }, JSON.parse(m), D);
@@ -1240,7 +1298,7 @@ function scheduleMail_(base, bodyHtml, files, mt, opt) {
   var blobs = (files || []).map(function (f) { return Utilities.newBlob(Utilities.base64Decode(f.data), String(f.type || 'application/octet-stream'), String(f.name || 'attachment').slice(0, 120)); });
   var o = { htmlBody: String(bodyHtml || '').slice(0, 200000) || '<p></p>' }; if (blobs.length) o.attachments = blobs;
   var d = GmailApp.createDraft(to, String(base.s).trim().slice(0, 150), plainOf_(bodyHtml) || ' ', o), props = PropertiesService.getScriptProperties(), id = mailId_();
-  props.setProperty('SCH_' + id, JSON.stringify({ t: Date.now(), at: at, gid: d.getId(), to: to, cc: String(base.cc || '').slice(0, 200), bcc: String(base.bcc || '').slice(0, 200), s: String(base.s).trim().slice(0, 150), h: String(base.h || '').slice(0, 80), ri: base.ri || '', da: +opt.da > 0 ? Math.min(365, +opt.da) : 0, a: blobs.length, f: 0 }));
+  props.setProperty('SCH_' + id, JSON.stringify({ t: Date.now(), at: at, gid: d.getId(), to: to, cc: String(base.cc || '').slice(0, 200), bcc: String(base.bcc || '').slice(0, 200), s: String(base.s).trim().slice(0, 150), h: String(base.h || '').slice(0, 80), ri: base.ri || '', da: +opt.da > 0 ? Math.min(365, +opt.da) : 0, a: blobs.length, f: 0, fn: opt.fn ? fromName_(opt.fn) : '' }));
   deleteDraft_(opt.draft); ensureReminderTrigger_();
   return statusHtml_('Scheduled', 'Your email to ' + esc_(to) + ' will be sent on ' + esc_(Utilities.formatDate(new Date(at), TZ, 'EEEE d MMMM yyyy, HH:mm')) + ' IST (within about 5 minutes of that time). It is listed under Scheduled in <a href="' + mailUrl_() + '" target="_top">Email</a>, where you can send it now, move it back to drafts or delete it.', 'ok');
 }
@@ -1251,8 +1309,8 @@ function sendScheduledOne_(id) {
     var msg = GmailApp.getDraft(r.gid).getMessage(), files = msg.getAttachments().map(function (b) { return { name: b.getName(), type: b.getContentType(), data: Utilities.base64Encode(b.getBytes()) }; });
     var quoted = ''; if (r.ri) { try { quoted = JSON.parse(props.getProperty('MSG_' + r.ri) || '{}').m || ''; } catch (x) { } }
     var body = msg.getBody();
-    deliver_(r.to, r.s, body, files, quoted, r.cc, r.bcc, '', r.h);
-    recordSent_({ to: r.to, cc: r.cc, s: r.s, h: r.h, body: body, files: files, da: r.da });
+    deliver_(r.to, r.s, body, files, quoted, r.cc, r.bcc, '', r.h, r.fn);
+    recordSent_({ fn: r.fn, to: r.to, cc: r.cc, s: r.s, h: r.h, body: body, files: files, da: r.da });
     try { GmailApp.getDraft(r.gid).deleteDraft(); } catch (x) { }
     props.deleteProperty('SCH_' + id);
     return true;
@@ -1298,7 +1356,7 @@ function mailHubHtml_(tab) {
   var chip = function (t) { return '<span class="m">' + t + '</span>'; };
   var sentH = sent.map(function (r) {
     var note = r.da ? (r.g === 1 ? 'Removed from Gmail Sent' : r.g === 2 ? 'Was not found in Gmail Sent' : 'Leaves Gmail Sent on ' + Utilities.formatDate(new Date(r.t + r.da * 86400000), TZ, 'd MMM yyyy')) : '';
-    return '<div class="li"><div class="h"><span class="n">' + esc_(r.s || '(no subject)') + '</span>' + chip('To ' + esc_(r.to) + (r.cc ? ', Cc ' + esc_(r.cc) : '')) + chip(fmt(r.t)) + (r.a ? chip(r.a + ' attachment' + (r.a > 1 ? 's' : '')) : '') + (note ? chip(esc_(note)) : '') + '</div>'
+    return '<div class="li"><div class="h"><span class="n">' + esc_(r.s || '(no subject)') + '</span>' + chip('To ' + esc_(r.to) + (r.cc ? ', Cc ' + esc_(r.cc) : '')) + chip(fmt(r.t)) + (r.fn ? chip('From name: ' + esc_(r.fn)) : '') + (r.a ? chip(r.a + ' attachment' + (r.a > 1 ? 's' : '')) : '') + (note ? chip(esc_(note)) : '') + '</div>'
       + '<div class="b">' + esc_(r.x || '').replace(/\n/g, '<br>') + '</div>' + (r.g === 1 ? '' : '<a class="ab" style="background:var(--a)" target="_blank" href="' + gm(r) + '">Find in Gmail</a>') + '</div>';
   }).join('') || '<p class="sub">Nothing sent from here yet. The latest ' + SENT_MAX + ' are kept.</p>';
   var btn = function (cls, fn, id, label, extra) { return '<button type="button" class="ab ' + cls + '" style="' + (extra || '') + 'border:0;cursor:pointer" data-fn="' + fn + '" data-id="' + id + '">' + label + '</button> '; };
@@ -1330,7 +1388,7 @@ function mailAct_(id, sig, fn, tab) {
   var props = PropertiesService.getScriptProperties(), raw;
   if (fn === 'draftDelete') deleteDraft_(id);
   else if (fn === 'schedDelete') { raw = props.getProperty('SCH_' + id); if (raw) { try { GmailApp.getDraft(JSON.parse(raw).gid).deleteDraft(); } catch (x) { } props.deleteProperty('SCH_' + id); } }
-  else if (fn === 'schedToDraft') { raw = props.getProperty('SCH_' + id); if (raw) { var r = JSON.parse(raw); props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: r.gid, to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, ri: r.ri, aud: 'one' })); props.deleteProperty('SCH_' + id); } }
+  else if (fn === 'schedToDraft') { raw = props.getProperty('SCH_' + id); if (raw) { var r = JSON.parse(raw); props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: r.gid, to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, ri: r.ri, aud: 'one', fn: r.fn || '' })); props.deleteProperty('SCH_' + id); } }
   else if (fn === 'schedSendNow') locked_(function () { return sendScheduledOne_(id); });
   return mailHubHtml_(tab);
 }
