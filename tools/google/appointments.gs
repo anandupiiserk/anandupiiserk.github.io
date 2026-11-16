@@ -45,7 +45,7 @@ function sign_(action, id) {
 /* The portal pages (Subscribers, Visitors, Messages, Appointments, compose, reply, approve and decline) are served by a second deployment of this script
    that runs as the signed-in visitor and is open only to OWNER_EMAIL. Its address is kept in the script property PORTAL_URL. The public site keeps using the first deployment. */
 var OWNER_EMAIL = 'anandupiiserk@gmail.com';
-var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, arch: 1, unarch: 1, apthist: 1 };
+var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1 };
 function portalBase_() { return PropertiesService.getScriptProperties().getProperty('PORTAL_URL') || ScriptApp.getService().getUrl(); }
 function gate_(p) {
   var base = PropertiesService.getScriptProperties().getProperty('PORTAL_URL');
@@ -184,6 +184,7 @@ function act_(p) {
   if (action === 'messages') return messagesPage_(p);
   if (action === 'appts') return appointmentsPage_(p);
   if (action === 'apedit') return apptEditPage_(p);
+  if (action === 'apdel') return apptDelPage_(p);
   if (action === 'arch') return apptArchive_(p);
   if (action === 'unarch') return apptUnarchive_(p);
   if (action === 'apthist') return apptHistoryPage_(p);
@@ -1225,6 +1226,45 @@ function apptCancel(id, sig, note) {
   }
   return statusHtml_('Cancelled', 'The appointment with ' + esc_(name) + ' on ' + esc_(when) + ' was cancelled and removed from your calendar. ' + (email ? 'An email' + (note ? ' with your note' : '') + ' was sent to ' + esc_(email) + '. ' : '') + 'It is saved in History.');
 }
+/* delete a meeting that has already happened, with an optional message to the visitor */
+function apptDelPage_(p) {
+  var id = p.id || '';
+  if (!id || sign_('apdel', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var ev = CalendarApp.getDefaultCalendar().getEventById(id);
+  if (!ev || !/^Appointment:/.test(ev.getTitle())) return page_('Not found', 'This appointment is no longer on the calendar.', 'info');
+  if (ev.getEndTime().getTime() > Date.now()) return page_('Not finished yet', 'Only appointments that have already happened can be deleted here. Use Change time, agenda or cancel for an upcoming one.', 'info');
+  var name = ev.getTag('name') || ev.getTitle().replace(/^[^:]*:\s*/, ''), email = ev.getTag('email') || '';
+  var inner = '<div class="chips"><span class="chip"><b>' + esc_(name) + '</b></span>' + (email ? '<span class="chip">' + esc_(email) + '</span>' : '<span class="chip">No email stored, no message can be sent</span>') + '<span class="chip">' + esc_(whenText_(ev.getStartTime(), ev.getEndTime())) + '</span></div>'
+    + '<label class="l" for="nt">Message to them <span class="hint">(optional, emailed to them as &ldquo;Note from Anandu&rdquo;. Leave it empty to delete without sending anything.)</span></label>'
+    + '<textarea id="nt" class="tx" placeholder="For example: Thank you for the meeting. I have shared the notes by email."></textarea>'
+    + '<div class="acts"><div class="act"><h3>Delete permanently</h3><p>Removes it from your Google Calendar and from History. This cannot be undone. To keep a record, use Archive instead.</p><button id="dl" class="b red">Delete this appointment</button></div></div><div id="m" class="msg"></div>'
+    + '<script>var armed=false,q=function(i){return document.getElementById(i);};q("dl").onclick=function(){var b=this;if(!armed){armed=true;b.textContent="Click again to delete permanently";return;}b.disabled=true;b.textContent="Deleting...";'
+    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent="Delete this appointment";q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";})'
+    + '.apptDelete(' + JSON.stringify(id) + ',' + JSON.stringify(sign_('apdelgo', id)) + ',q("nt").value);};<\/script>';
+  return out_(shell_('Delete appointment', 'Delete a meeting that has already happened, and send them a message if you wish.', inner, false, 'appts'), 'Delete appointment');
+}
+function apptDelete(id, sig, note) { return locked_(function () {
+  if (!id || sign_('apdelgo', id) !== sig || !owner_()) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
+  var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
+  if (!ev || !/^Appointment:/.test(ev.getTitle())) return statusHtml_('Not found', 'This appointment is no longer on the calendar.', 'info');
+  if (ev.getEndTime().getTime() > Date.now()) return statusHtml_('Not finished yet', 'Only appointments that have already happened can be deleted here.', 'info');
+  note = String(note || '').trim().slice(0, 1500);
+  var name = ev.getTag('name') || ev.getTitle().replace(/^[^:]*:\s*/, ''), email = ev.getTag('email') || '', when = whenText_(ev.getStartTime(), ev.getEndTime());
+  var api = apiEvent_(ev), gone = false;
+  if (api) { try { Calendar.Events.remove('primary', api.id, { sendUpdates: 'none' }); gone = true; } catch (x) { console.error('api remove failed: ' + x); } }
+  if (!gone) { try { ev.deleteEvent(); } catch (x) { return statusHtml_('Could not delete', 'The calendar event could not be removed: ' + esc_(String(x)), 'bad'); } }
+  try { PropertiesService.getScriptProperties().deleteProperty(arcKey_(id)); } catch (x) { }
+  var sent = false;
+  if (note && email) {
+    try {
+      MailApp.sendEmail({ to: email, name: OWNER_NAME, subject: 'A message about our meeting on ' + when,
+        body: 'Hello ' + name + ',\n\nNote from Anandu:\n' + note + '\n\n(About our meeting on ' + when + '.)\n\n' + OWNER_NAME,
+        htmlBody: mail_('A message from Anandu', 'Hello ' + esc_(name) + ',' + noteBox_(note), [['Meeting', esc_(when)]], [], OWNER_NAME) });
+      sent = true;
+    } catch (x) { console.error('delete mail failed: ' + x); }
+  }
+  return statusHtml_('Deleted', 'The appointment with ' + esc_(name) + ' on ' + esc_(when) + ' was deleted from your calendar and from History. ' + (sent ? 'Your message was emailed to ' + esc_(email) + '.' : (note && !email ? 'No email address is stored, so your message could not be sent.' : (note ? 'Your message could not be sent.' : 'No message was sent.'))));
+}); }
 function apptArchive_(p) {
   var id = p.id || '';
   if (!id || sign_('arch', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
@@ -1271,6 +1311,7 @@ function appointmentsPage_(p) {
       + (pend && !past ? '<a class="ab" style="background:var(--green)" target="_top" href="' + link_('approve', id) + '">Approve</a><a class="ab" style="background:var(--red)" target="_top" href="' + link_('decline', id) + '">Decline</a>' : '')
       + (!pend && !past ? '<a class="ab" style="background:var(--a)" target="_top" href="' + portalBase_() + '?action=apedit&id=' + encodeURIComponent(id) + '&sig=' + sign_('apedit', id) + '">Change time, agenda or cancel</a>' : '')
       + (meet && !past ? '<a class="ab" style="background:var(--green)" target="_blank" href="' + esc_(meet) + '">Join Meet</a>' : '')
+      + (!pend && past ? '<a class="ab" style="background:var(--red)" target="_top" href="' + portalBase_() + '?action=apdel&id=' + encodeURIComponent(id) + '&sig=' + sign_('apdel', id) + '">Delete</a>' : '')
       + (!pend ? '<a class="ab" style="background:var(--muted2)" target="_top" href="' + portalBase_() + '?action=arch&id=' + encodeURIComponent(id) + '&sig=' + sign_('arch', id) + '">Archive</a>' : '')
       + (email ? '<a class="ab" style="background:var(--a)" target="_top" href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(email) + '">Write to them</a>' : '') + '<a class="ab" style="background:var(--muted2)" target="_blank" href="' + calLink_(e) + '">Open in Calendar</a></div>';
   };
