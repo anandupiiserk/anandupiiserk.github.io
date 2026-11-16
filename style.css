@@ -1148,6 +1148,6 @@ a.inst:hover, a.inst:focus-visible { color: var(--a); background-size: 100% 2px;
 /* admin login link under the social icons */
 .copy .socwrap { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 .copy .socwrap .socials { margin: 0; }
-.admlnk { font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--line2); padding-bottom: 1px; transition: color .3s, border-color .3s; }
-.admlnk:hover, .admlnk:focus-visible { color: var(--a); border-color: var(--a); }
+.btn.admlnk { padding: 9px 18px; font-size: .8rem; gap: 8px; min-height: 40px; }
+.btn.admlnk svg { width: 15px; height: 15px; transform: none !important; }
 @media (max-width: 620px) { .copy .socwrap { margin: 0; align-items: center; } }
