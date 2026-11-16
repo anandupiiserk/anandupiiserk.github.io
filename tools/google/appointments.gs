@@ -24,6 +24,7 @@ function blockedSlot_(start, end) {
   return false;
 }
 var HOLIDAY_CAL = 'en.indian#holiday@group.v.calendar.google.com';
+var MSG_ARCHIVE_DAYS = 60, MSG_KEEP_DAYS = 365;   /* messages older than 60 days move to the Archive, and are removed after a year unless you delete them sooner */
 var MSG_SENDER = 'No-Reply-Website-Admin-Anandu';
 var OWNER_NAME = 'Anandu Prabhakaran';
 var SITE_URL = 'https://anandupiiserk.github.io/contact';
@@ -45,7 +46,7 @@ function sign_(action, id) {
 /* The portal pages (Subscribers, Visitors, Messages, Appointments, compose, reply, approve and decline) are served by a second deployment of this script
    that runs as the signed-in visitor and is open only to OWNER_EMAIL. Its address is kept in the script property PORTAL_URL. The public site keeps using the first deployment. */
 var OWNER_EMAIL = 'anandupiiserk@gmail.com';
-var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1 };
+var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1, msgarc: 1 };
 function portalBase_() { return PropertiesService.getScriptProperties().getProperty('PORTAL_URL') || ScriptApp.getService().getUrl(); }
 function gate_(p) {
   var base = PropertiesService.getScriptProperties().getProperty('PORTAL_URL');
@@ -188,6 +189,7 @@ function act_(p) {
   if (action === 'arch') return apptArchive_(p);
   if (action === 'unarch') return apptUnarchive_(p);
   if (action === 'apthist') return apptHistoryPage_(p);
+  if (action === 'msgarc') return messagesPage_(p, true);
   if (action === 'acc_ok' || action === 'acc_no') return accessDecide_(p);
   if (action === 'acc_rv') return accessRevoke_(p);
   if ((action !== 'approve' && action !== 'decline') || !id || sign_(action, id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
@@ -311,7 +313,7 @@ function message_(p) {
   var rid = Utilities.getUuid().replace(/-/g, '').slice(0, 12);
   try {
     props.setProperty('MSG_' + rid, JSON.stringify({ n: name, e: email, m: msg, t: Date.now() }));
-    var all = props.getProperties(), cut = Date.now() - 120 * 86400000;
+    var all = props.getProperties(), cut = Date.now() - MSG_KEEP_DAYS * 86400000;
     Object.keys(all).forEach(function (k) { if (k.indexOf('MSG_') === 0) { try { if (JSON.parse(all[k]).t < cut) props.deleteProperty(k); } catch (z) { props.deleteProperty(k); } } });
   } catch (x) { console.error('store failed: ' + x); }
   var html = esc_(msg).replace(/\n/g, '<br>'), sent = Utilities.formatDate(new Date(), TZ, 'EEEE d MMMM yyyy, HH:mm') + ' IST';
@@ -337,7 +339,7 @@ function replyPage_(p) {
   var id = p.id || '';
   if (!id || sign_('reply', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
-  if (!raw) return page_('Not found', 'This message is no longer stored (messages are kept for 120 days).', 'info');
+  if (!raw) return page_('Not found', 'This message is no longer stored (messages are kept for ' + MSG_KEEP_DAYS + ' days).', 'info');
   return editorPage_('reply', p, JSON.parse(raw));
 }
 function composePage_(p) {
@@ -1014,7 +1016,7 @@ function homePage_() {
   var tiles = '<div class="tiles">'
     + tile(visUrl_(), 'var(--a)', ic('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'), v7, 'Visitors, last 7 days', in7 + ' from India, ' + ot7 + ' from other countries', 'Open visitors')
     + tile(adminUrl_(), 'var(--teal)', ic('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M17 11.5a3 3 0 1 0-1-5.8M21.5 19c-.3-2.2-1.4-3.6-3.2-4.4"/>'), subs, 'Subscribers', 'People on your newsletter list', 'Manage subscribers')
-    + tile(msgUrl_(), 'var(--amber)', ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'), msgs, 'Messages', 'From the contact form, kept 120 days', 'Read messages')
+    + tile(msgUrl_(), 'var(--amber)', ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'), msgs, 'Messages', 'From the contact form, archived after 60 days', 'Read messages')
     + tile(apptUrl_(), 'var(--violet)', ic('<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/>'), null, 'Appointments', 'Requests and the booking calendar', 'Open appointments')
     + tile(link_('compose', 'new'), 'var(--sky)', ic('<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14 7l3 3"/>'), null, 'Write an email', 'Send to one person or all subscribers', 'Start writing')
     + tile(SITE_URL_, 'var(--brick)', ic('<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'), null, 'Your website', 'Open the live site', 'Go to website')
@@ -1031,18 +1033,33 @@ function visitorsPage_(p) {
 function msgUrl_() { return portalBase_() + '?action=messages&sig=' + sign_('admin', 'messages'); }
 function apptUrl_() { return portalBase_() + '?action=appts&sig=' + sign_('admin', 'appts'); }
 function listStyle_() { return '<style>.li{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px;background:var(--surface)}.li .h{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin:0 0 6px}.li .n{font-weight:bold}.li .m{color:var(--muted2);font-size:12px}.li .b{white-space:pre-wrap;font-size:14px;margin:6px 0 10px}.pl{display:inline-block;font-size:12px;font-weight:bold;border-radius:12px;padding:2px 10px;margin-left:6px}.pl.y{background:var(--tw);color:var(--warn)}.pl.g{background:var(--tg);color:var(--green)}.pl.x{background:var(--soft);color:var(--muted2)}.ab{display:inline-block;text-decoration:none;border-radius:20px;padding:6px 14px;font-weight:bold;font-size:13px;margin:0 6px 4px 0;color:var(--on)}</style>'; }
-function messagesPage_(p) {
-  if (sign_('admin', 'messages') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
-  var props = PropertiesService.getScriptProperties().getProperties(), list = [];
-  Object.keys(props).forEach(function (k) { if (k.indexOf('MSG_') === 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); list.push(r); } catch (x) { } } });
-  list.sort(function (a, b) { return b.t - a.t; });
+function messagesPage_(p, arc) {
+  if (sign_('admin', arc ? 'msgarc' : 'messages') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var props = PropertiesService.getScriptProperties().getProperties(), all = [], cut = Date.now() - MSG_ARCHIVE_DAYS * 86400000;
+  Object.keys(props).forEach(function (k) { if (k.indexOf('MSG_') === 0) { try { var r = JSON.parse(props[k]); r.id = k.slice(4); all.push(r); } catch (x) { } } });
+  all.sort(function (a, b) { return b.t - a.t; });
+  var list = all.filter(function (r) { return arc ? r.t < cut : r.t >= cut; }), nArc = all.filter(function (r) { return r.t < cut; }).length;
+  var delSig = function (id) { return sign_('msgdel', id); };
   var items = list.map(function (r) {
-    return '<div class="li" data-s="' + esc_((r.n + ' ' + r.e + ' ' + r.m).toLowerCase()) + '"><div class="h"><span class="n">' + esc_(r.n) + '</span><a href="mailto:' + esc_(r.e) + '" style="color:var(--a);font-size:13px">' + esc_(r.e) + '</a><span class="m">' + Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy, HH:mm') + ' IST</span></div>'
-      + '<div class="b">' + esc_(r.m) + '</div><a class="ab" style="background:var(--a)" target="_top" href="' + link_('reply', r.id) + '">Reply</a></div>';
-  }).join('') || '<p class="sub">No messages yet.</p>';
-  var inner = listStyle_() + '<input id="q" class="tx" placeholder="Search name, email or message" style="margin:0 0 14px"><div id="l">' + items + '</div>'
-    + '<script>document.getElementById("q").oninput=function(){var v=this.value.toLowerCase(),r=document.querySelectorAll("#l .li");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};<\/script>';
-  return out_(shell_('Messages', list.length + ' message' + (list.length === 1 ? '' : 's') + ' from the contact form, newest first. They are kept for 120 days.', inner, true), 'Messages');
+    return '<div class="li" id="m' + r.id + '" data-s="' + esc_((r.n + ' ' + r.e + ' ' + r.m).toLowerCase()) + '"><div class="h"><span class="n">' + esc_(r.n) + '</span><a href="mailto:' + esc_(r.e) + '" style="color:var(--a);font-size:13px">' + esc_(r.e) + '</a><span class="m">' + Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy, HH:mm') + ' IST</span></div>'
+      + '<div class="b">' + esc_(r.m) + '</div><a class="ab" style="background:var(--a)" target="_top" href="' + link_('reply', r.id) + '">Reply</a> '
+      + '<button type="button" class="ab md" style="background:var(--red,#b94700);border:0;cursor:pointer" data-id="' + r.id + '" data-sg="' + delSig(r.id) + '">Delete</button></div>';
+  }).join('') || '<p class="sub">' + (arc ? 'Nothing is archived yet. Messages move here after ' + MSG_ARCHIVE_DAYS + ' days.' : 'No messages yet.') + '</p>';
+  var other = arc ? '<a class="ab" style="background:var(--a)" target="_top" href="' + msgUrl_() + '">Back to messages</a>'
+    : '<a class="ab" style="background:var(--a)" target="_top" href="' + portalBase_() + '?action=msgarc&sig=' + sign_('admin', 'msgarc') + '">Archive (' + nArc + ')</a>';
+  var inner = listStyle_() + '<p style="margin:0 0 12px">' + other + '</p><input id="q" class="tx" placeholder="Search name, email or message" style="margin:0 0 14px"><div id="l">' + items + '</div><div id="dm" class="msg"></div>'
+    + '<script>document.getElementById("q").oninput=function(){var v=this.value.toLowerCase(),r=document.querySelectorAll("#l .li");for(var i=0;i<r.length;i++)r[i].style.display=r[i].getAttribute("data-s").indexOf(v)<0?"none":"";};'
+    + 'document.getElementById("l").addEventListener("click",function(e){var b=e.target.closest(".md");if(!b)return;if(!b.armed){b.armed=true;b.textContent="Click again to delete for good";return;}b.disabled=true;b.textContent="Deleting...";'
+    + 'google.script.run.withSuccessHandler(function(ok){var c=document.getElementById("m"+b.getAttribute("data-id"));if(ok&&c)c.parentNode.removeChild(c);else{b.disabled=false;b.armed=false;b.textContent="Delete";}}).withFailureHandler(function(){b.disabled=false;b.armed=false;b.textContent="Delete";}).msgDelete(b.getAttribute("data-id"),b.getAttribute("data-sg"));});<\/script>';
+  var head = arc ? list.length + ' archived message' + (list.length === 1 ? '' : 's') + ', older than ' + MSG_ARCHIVE_DAYS + ' days. You can still reply to them or delete them. They are removed automatically after ' + MSG_KEEP_DAYS + ' days.'
+    : list.length + ' message' + (list.length === 1 ? '' : 's') + ' from the contact form in the last ' + MSG_ARCHIVE_DAYS + ' days, newest first. Older ones are in the Archive.';
+  return out_(shell_(arc ? 'Messages archive' : 'Messages', head, inner, true), arc ? 'Messages archive' : 'Messages');
+}
+/* delete one stored contact message (called from the Messages page) */
+function msgDelete(id, sig) {
+  if (!id || sign_('msgdel', id) !== sig || !owner_()) return false;
+  PropertiesService.getScriptProperties().deleteProperty('MSG_' + id);
+  return true;
 }
 /* ---------------- appointment management: agenda, change time, cancel, archive and history ---------------- */
 var ARC_MAX = 200;
