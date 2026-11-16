@@ -364,7 +364,7 @@ function editorPage_(mode, p, r, D) {
     + '<div style="margin:0 0 16px;padding:12px 14px;border:1px solid var(--bd,#d5dce8);border-radius:12px"><label style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600"><input type="checkbox" id="mton"> Schedule a meeting with them (blocks the time on the website calendar)</label>'
     + '<div id="mtbox" style="display:none;margin-top:12px"><div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 12px"><label class="l" style="flex:1 1 150px">Date<input id="mtd" class="tx" style="min-height:0" type="date" min="' + Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd') + '"></label>'
     + '<label class="l" style="flex:1 1 120px">Start time (IST)<input id="mtt" class="tx" style="min-height:0" type="time" step="300"></label>'
-    + '<label class="l" style="flex:1 1 120px">Length<select id="mtn" class="tx" style="min-height:0"><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label></div>'
+    + '<label class="l" style="flex:1 1 120px">Length in minutes<input id="mtn" class="tx" style="min-height:0" type="number" min="1" max="1440" step="1" value="30"></label></div><p class="sub" style="margin:-4px 0 10px">Any length from 1 to 1440 minutes. Booking slots that overlap the meeting are blocked on the website, so 75 minutes from 10:00 blocks 10:00, 10:30 and 11:00 (until 11:30).</p>'
     + '<label class="l" for="mta">Meeting agenda <span class="hint">(optional, added to the calendar event and the email)</span></label><textarea id="mta" class="tx" style="min-height:70px"></textarea>'
     + (hasCalApi_() ? '<label style="display:flex;gap:8px;align-items:center;margin:10px 0 0;font-size:14px"><input type="checkbox" id="mtm" checked> Include a Google Meet link</label>' : '<p class="sub" style="margin:10px 0 0">Google Meet links need the Google Calendar service to be switched on in the script.</p>')
     + '<p class="sub" style="margin:10px 0 0">A calendar invitation is sent to them, the meeting details are added at the end of your email, and the slot becomes unavailable on the booking calendar.</p></div></div>'
@@ -513,7 +513,8 @@ function sendWithMeeting_(n, to, mt, send, nm, rec) {
   });
 }
 function scheduleMeeting_(name, email, mt) {
-  var cal = CalendarApp.getDefaultCalendar(), len = +mt.len; if (LENGTHS.indexOf(len) < 0) len = 30;
+  var cal = CalendarApp.getDefaultCalendar(), len = Math.round(+mt.len);
+  if (!(len >= 1 && len <= 1440)) throw new Error('Enter the meeting length in minutes, from 1 to 1440.');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(mt.date)) || !/^\d{2}:\d{2}$/.test(String(mt.time))) throw new Error('Choose a date and a start time for the meeting.');
   var ns = new Date(Date.parse(mt.date + 'T' + mt.time + ':00+05:30')); if (isNaN(ns.getTime())) throw new Error('Choose a valid meeting date and time.');
   if (ns.getTime() < Date.now()) throw new Error('The meeting time has already passed. Choose a time in the future.');
@@ -544,7 +545,7 @@ function removeMeeting_(m) {
   try { if (m.api) Calendar.Events.remove('primary', m.id, { sendUpdates: 'all' }); else CalendarApp.getDefaultCalendar().getEventById(m.id).deleteEvent(); } catch (x) { console.error('meeting rollback failed: ' + x); }
 }
 function meetingBlock_(m) {
-  return '<div style="margin:22px 0 0;padding:14px 16px;background:#f3f6fb;border-left:4px solid #1f4e9c;border-radius:4px;line-height:1.6"><b>Meeting</b><br>When: ' + esc_(m.when) + '<br>Length: ' + m.len + ' minutes'
+  return '<div style="margin:22px 0 0;padding:14px 16px;background:#f3f6fb;border-left:4px solid #1f4e9c;border-radius:4px;line-height:1.6"><b>Meeting</b><br>When: ' + esc_(m.when) + '<br>Length: ' + m.len + (m.len === 1 ? ' minute' : ' minutes')
     + (m.agenda ? '<br>Agenda: ' + esc_(m.agenda).replace(/\n/g, '<br>') : '')
     + (m.meet ? '<br>Google Meet: <a href="' + esc_(m.meet) + '" style="color:#1f4e9c">' + esc_(m.meet) + '</a>' : '') + '<br><span style="color:#5b6675;font-size:13px">A Google Calendar invitation has also been sent to you.</span></div>';
 }
@@ -1086,7 +1087,7 @@ function messagesPage_(p, arc) {
       + '<div style="margin:8px 0;font-size:14px"><label style="display:flex;gap:8px;align-items:center;margin:0 0 6px"><input type="checkbox" class="rbk"> Ask them to book an appointment on my website (adds a Book an appointment button)</label>'
       + '<label style="display:flex;gap:8px;align-items:center;margin:0 0 6px"><input type="checkbox" class="rct"> Add a link to my website contact form (adds a Send me a message button)</label>'
       + '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="rmt"> Schedule a meeting with them now (blocks the time on the website calendar)</label></div>'
-      + '<div class="mtb" style="display:none;margin:0 0 10px"><div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 10px"><label class="l" style="flex:1 1 140px">Date<input class="tx mtd" style="min-height:0" type="date" min="' + today + '"></label><label class="l" style="flex:1 1 110px">Start time (IST)<input class="tx mtt" style="min-height:0" type="time" step="300"></label><label class="l" style="flex:1 1 110px">Length<select class="tx mtn" style="min-height:0"><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label></div>'
+      + '<div class="mtb" style="display:none;margin:0 0 10px"><div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 10px"><label class="l" style="flex:1 1 140px">Date<input class="tx mtd" style="min-height:0" type="date" min="' + today + '"></label><label class="l" style="flex:1 1 110px">Start time (IST)<input class="tx mtt" style="min-height:0" type="time" step="300"></label><label class="l" style="flex:1 1 110px">Length in minutes<input class="tx mtn" style="min-height:0" type="number" min="1" max="1440" step="1" value="30"></label></div>'
       + '<label class="l">Meeting agenda <span class="hint">(optional)</span></label><textarea class="tx mta" style="min-height:60px"></textarea>'
       + (api ? '<label style="display:flex;gap:8px;align-items:center;margin:8px 0 0;font-size:14px"><input type="checkbox" class="mtm" checked> Include a Google Meet link</label>' : '') + '</div>'
       + '<button type="button" class="b blue auto snd">Send response</button><span class="sub rm" style="margin-left:10px"></span></div></div></div>';
@@ -1474,7 +1475,7 @@ function apptEditPage_(p) {
     + (meet ? '<p class="sub" style="margin:0 0 8px">Google Meet: <a style="color:var(--a)" target="_blank" href="' + esc_(meet) + '">' + esc_(meet) + '</a></p>' + (hasCalApi_() ? '<div style="margin:0 0 14px;font-size:14px"><label style="display:flex;gap:8px;align-items:center;margin:0 0 6px"><input type="radio" name="mk" id="mk0" checked> Keep the same Google Meet link (also when the time changes)</label><label style="display:flex;gap:8px;align-items:center"><input type="radio" name="mk" id="mk1"> Generate a new Google Meet link and email it to them</label></div>' : '') : '')
     + '<div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 14px"><label class="l" style="flex:1 1 150px">Date<input id="d" class="tx" style="min-height:0" type="date" value="' + Utilities.formatDate(s, TZ, 'yyyy-MM-dd') + '"></label>'
     + '<label class="l" style="flex:1 1 120px">Start time (IST)<input id="t" class="tx" style="min-height:0" type="time" step="300" value="' + Utilities.formatDate(s, TZ, 'HH:mm') + '"></label>'
-    + '<label class="l" style="flex:1 1 120px">Length<select id="n" class="tx" style="min-height:0"><option value="30"' + (len === 30 ? ' selected' : '') + '>30 minutes</option><option value="60"' + (len === 60 ? ' selected' : '') + '>60 minutes</option></select></label></div>'
+    + '<label class="l" style="flex:1 1 120px">Length in minutes<input id="n" class="tx" style="min-height:0" type="number" min="1" max="1440" step="1" value="' + len + '"></label></div>'
     + '<label class="l" for="ag">Meeting agenda <span class="hint">(shown in the calendar event and in the email)</span></label>'
     + '<textarea id="ag" class="tx" style="min-height:90px" placeholder="What the meeting is about">' + esc_(agenda) + '</textarea>'
     + '<label class="l" for="nt" style="margin-top:14px">Note from Anandu <span class="hint">(sent to them in the email as &ldquo;Note from Anandu&rdquo;, for example the reason for the change)</span></label>'
@@ -1498,7 +1499,7 @@ function apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev || !/^Appointment:/.test(ev.getTitle())) return statusHtml_('Not found', 'This appointment is no longer on the calendar.', 'info');
   var name = ev.getTag('name') || ev.getTitle().replace(/^[^:]*:\s*/, ''), email = ev.getTag('email') || '', oldS = ev.getStartTime(), oldE = ev.getEndTime();
-  var oldLen = Math.round((oldE.getTime() - oldS.getTime()) / 60000); len = +len; if (LENGTHS.indexOf(len) < 0) len = oldLen;
+  var oldLen = Math.round((oldE.getTime() - oldS.getTime()) / 60000); len = Math.round(+len); if (!(len >= 1 && len <= 1440)) len = oldLen;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dateStr)) || !/^\d{2}:\d{2}$/.test(String(timeStr))) return statusHtml_('Check the time', 'Please choose a valid date and start time.', 'bad');
   var ns = new Date(Date.parse(dateStr + 'T' + timeStr + ':00+05:30')); if (isNaN(ns.getTime())) return statusHtml_('Check the time', 'Please choose a valid date and start time.', 'bad');
   var ne = new Date(ns.getTime() + len * 60000), timeChanged = ns.getTime() !== oldS.getTime() || ne.getTime() !== oldE.getTime();
