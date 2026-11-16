@@ -144,7 +144,7 @@ function shell_(title, sub, inner, nav, curOv) {
 }
 function statusHtml_(title, msg, kind) {
   var sym = kind === 'bad' ? '!' : (kind === 'info' ? 'i' : '&#10003;');
-  return shell_('', '', '<div class="st"><div class="ic ' + (kind || 'ok') + '">' + sym + '</div><h1 style="margin:0 0 8px;font-size:22px">' + esc_(title) + '</h1><p class="sub" style="margin:0">' + msg + '</p></div>');
+  return shell_('', '', '<div class="st"><div class="ic ' + (kind || 'ok') + '">' + sym + '</div><h1 style="margin:0 0 8px;font-size:22px">' + esc_(title) + '</h1><p class="sub" style="margin:0">' + msg + '</p></div>', owner_(), 'appts');
 }
 function out_(html, title) { return HtmlService.createHtmlOutput(html).setTitle(title || 'Website admin').addMetaTag('viewport', 'width=device-width, initial-scale=1'); }
 function page_(title, msg, kind) { return out_(statusHtml_(title, msg, kind), title); }
@@ -206,10 +206,10 @@ function act_(p) {
     + '<div class="act"><h3>Free this slot</h3><p>Decline and open the time again so someone else can book it.</p><button id="b0" class="b blue">Unblock slot and decline</button></div>'
     + '</div><div id="m" class="msg"></div>'
     + '<script>function go(btn,blk){var bs=document.querySelectorAll(".b");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Sending...";'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";})'
+    + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";})'
     + '.declineWith(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("r").value,blk);}'
     + 'document.getElementById("b1").onclick=function(){go(this,true);};document.getElementById("b0").onclick=function(){go(this,false);};<\/script>';
-  return out_(shell_('Decline this request', 'The visitor gets a polite email. Choose what happens to the time slot.', inner), 'Decline request');
+  return out_(shell_('Decline this request', 'The visitor gets a polite email. Choose what happens to the time slot.', inner, true, 'appts'), 'Decline request');
 }
 
 // Called from the decline page. Verifies the signed link again, removes the request and emails the visitor with the reason.
@@ -396,7 +396,7 @@ function editorPage_(mode, p, r) {
     + 'dz.ondragover=function(e){e.preventDefault();dz.className="dz on";};dz.ondragleave=function(){dz.className="dz";};dz.ondrop=function(e){e.preventDefault();dz.className="dz";add(e.dataTransfer.files);};'
     + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
+    + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
     + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};'
       : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":aw.checked?"__watch__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};')
     + '})();<\/script>';
@@ -507,7 +507,7 @@ function nlUnsubPage_(p) {
   if (!id || sign_('unsub', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var cu = subGet_(id); if (!cu || (cu.s !== 'active' && cu.s !== 'watch')) return page_('Already unsubscribed', 'This address is not subscribed. To receive emails again, subscribe on the website.', 'info');
   var inner = '<div class="acts" style="display:block"><div class="act"><h3>Unsubscribe from news and information</h3><p>You will stop receiving emails from Anandu Prabhakaran. To receive them again later, you will need to subscribe again on the website.</p><button id="u" class="b red">Unsubscribe</button></div></div><div id="m" class="msg"></div>'
-    + '<script>document.getElementById("u").onclick=function(){var b=this;b.disabled=true;b.textContent="Working...";google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent="Unsubscribe";var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";}).nlUnsub(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ');};<\/script>';
+    + '<script>document.getElementById("u").onclick=function(){var b=this;b.disabled=true;b.textContent="Working...";google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){b.disabled=false;b.textContent="Unsubscribe";var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";}).nlUnsub(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ');};<\/script>';
   return out_(shell_('Unsubscribe', 'Click the button below to unsubscribe.', inner), 'Unsubscribe');
 }
 // Called from the unsubscribe page. Deletes the record.
@@ -1074,9 +1074,9 @@ function approvePage_(p, name, email, when, len) {
     + '<textarea id="ag" class="tx" placeholder="For example: Review the WRF-SFIRE set-up and plan the next steps."></textarea>'
     + '<div class="acts"><div class="act"><h3>Approve</h3><p>Confirms the slot, sends a Google Calendar invitation' + (hasCalApi_() ? ' with a Google Meet link' : '') + ' and a confirmation email.</p><button id="ap" class="b blue">Approve and send</button></div></div><div id="m" class="msg"></div>'
     + '<script>document.getElementById("ap").onclick=function(){var b=this;b.disabled=true;var t=b.textContent;b.textContent="Sending...";'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent=t;var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";})'
+    + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){b.disabled=false;b.textContent=t;var m=document.getElementById("m");m.className="msg bad";m.textContent="Something went wrong. Please try again.";})'
     + '.approveWith(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("ag").value);};<\/script>';
-  return out_(shell_('Approve this request', 'Add a meeting agenda if you like, then approve.', inner, false, 'appts'), 'Approve request');
+  return out_(shell_('Approve this request', 'Add a meeting agenda if you like, then approve.', inner, true, 'appts'), 'Approve request');
 }
 function approveWith(id, sig, agenda) { return locked_(function () { return approveImpl_(id, sig, agenda); }); }
 function approveImpl_(id, sig, agenda) {
@@ -1152,10 +1152,10 @@ function apptEditPage_(p) {
     + '<div class="acts"><div class="act"><h3>Save and notify</h3><p>Updates the calendar event and emails them the new details with your note.</p><button id="sv" class="b blue">Save changes and email them</button></div>'
     + '<div class="act"><h3>Cancel appointment</h3><p>Removes it from the calendar, emails them with your note and saves it in History.</p><button id="cx" class="b red">Cancel this appointment</button></div></div><div id="m" class="msg"></div>'
     + '<script>var ID=' + JSON.stringify(id) + ',S1=' + JSON.stringify(p.sig) + ',S2=' + JSON.stringify(sign_('apcancel', id)) + ',q=function(i){return document.getElementById(i);};'
-    + 'function run(btn,fn){var bs=document.querySelectorAll(".b");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Sending...";var r=google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";});fn(r);}'
+    + 'function run(btn,fn){var bs=document.querySelectorAll(".b");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Sending...";var r=google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";});fn(r);}'
     + 'q("sv").onclick=function(){run(this,function(r){r.apptSave(ID,S1,q("d").value,q("t").value,q("n").value,q("ag").value,q("nt").value,q("am")?q("am").checked:false);});};'
     + 'var armed=false;q("cx").onclick=function(){if(!armed){armed=true;this.textContent="Click again to confirm the cancellation";return;}run(this,function(r){r.apptCancel(ID,S2,q("nt").value);});};<\/script>';
-  return out_(shell_('Manage appointment', 'Change the time, add or edit the agenda, send a note or cancel. They are emailed and their calendar is updated.', inner, false, 'appts'), 'Manage appointment');
+  return out_(shell_('Manage appointment', 'Change the time, add or edit the agenda, send a note or cancel. They are emailed and their calendar is updated.', inner, true, 'appts'), 'Manage appointment');
 }
 function apptSave(id, sig, dateStr, timeStr, len, agenda, note, addMeet) { return locked_(function () { return apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet); }); }
 function apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
@@ -1239,9 +1239,9 @@ function apptDelPage_(p) {
     + '<textarea id="nt" class="tx" placeholder="For example: Thank you for the meeting. I have shared the notes by email."></textarea>'
     + '<div class="acts"><div class="act"><h3>Delete permanently</h3><p>Removes it from your Google Calendar and from History. This cannot be undone. To keep a record, use Archive instead.</p><button id="dl" class="b red">Delete this appointment</button></div></div><div id="m" class="msg"></div>'
     + '<script>var armed=false,q=function(i){return document.getElementById(i);};q("dl").onclick=function(){var b=this;if(!armed){armed=true;b.textContent="Click again to delete permanently";return;}b.disabled=true;b.textContent="Deleting...";'
-    + 'google.script.run.withSuccessHandler(function(h){document.body.innerHTML=h;}).withFailureHandler(function(){b.disabled=false;b.textContent="Delete this appointment";q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";})'
+    + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){b.disabled=false;b.textContent="Delete this appointment";q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";})'
     + '.apptDelete(' + JSON.stringify(id) + ',' + JSON.stringify(sign_('apdelgo', id)) + ',q("nt").value);};<\/script>';
-  return out_(shell_('Delete appointment', 'Delete a meeting that has already happened, and send them a message if you wish.', inner, false, 'appts'), 'Delete appointment');
+  return out_(shell_('Delete appointment', 'Delete a meeting that has already happened, and send them a message if you wish.', inner, true, 'appts'), 'Delete appointment');
 }
 function apptDelete(id, sig, note) { return locked_(function () {
   if (!id || sign_('apdelgo', id) !== sig || !owner_()) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
