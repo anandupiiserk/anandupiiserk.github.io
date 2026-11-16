@@ -1082,12 +1082,12 @@ else (function loop() {
   const pad2 = n => String(n).padStart(2, '0'), ymd = d => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   /* "today" in IST regardless of the visitor's own time zone */
   const nowIST = () => new Date(Date.now() + 330 * 60000 + new Date().getTimezoneOffset() * 60000);
-  const today = nowIST(), first = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (+D.lead || 0)), last = new Date(today.getFullYear(), today.getMonth() + (+D.months || 2), today.getDate());
+  const today = nowIST(), first = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (today.getHours() < 8 ? 1 : 2)), last = new Date(today.getFullYear(), today.getMonth() + (+D.months || 2), today.getDate());
   const EP = D.endpoint || ''; let BUSY = [], OFF = new Set(), live = false;   /* live = availability and booking go through the Google Calendar script */
   const blocked = d => BLK.some(([a, b]) => ymd(d) >= a && ymd(d) <= (b || a)) || OFF.has(ymd(d));
   const open = d => d >= first && d <= last && (DAYS.includes(d.getDay()) || XT.includes(ymd(d))) && !blocked(d);
   const stamp = (d, lab) => Date.parse(ymd(d) + 'T' + lab + ':00+05:30');
-  const free = (d, lab, len) => { const s = stamp(d, lab), e = s + len * 60000; return s > Date.now() + 24 * 3600e3 && !BUSY.some(([a, b]) => s < b && e > a); };
+  const free = (d, lab, len) => { const s = stamp(d, lab), e = s + len * 60000; return Date.now() < Date.parse(ymd(d) + 'T00:00:00+05:30') - 16 * 3600e3 && !BUSY.some(([a, b]) => s < b && e > a); };
   const anyFree = d => { if (!live) return true; const [a, z] = rng(d); for (let t = a; t + 30 <= z; t += STEP) if (free(d, pad2(Math.floor(t / 60)) + ':' + pad2(t % 60), 30)) return true; return false; };
   const cal = $('#ap-cal'), slots = $('#ap-slots'), mon = $('#ap-month'), sel = $('#ap-sel'), stat = $('#ap-stat');
   const loc = () => { let l = document.documentElement.lang || 'en'; return l === 'en' ? 'en-GB' : l; };
