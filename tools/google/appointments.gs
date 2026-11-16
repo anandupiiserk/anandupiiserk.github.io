@@ -988,6 +988,12 @@ function messagesPage_(p) {
 }
 /* ---------------- appointment management: agenda, change time, cancel, archive and history ---------------- */
 var ARC_MAX = 200;
+/* one request at a time, so a double click can never create two events or two Google Meet links */
+function locked_(fn) {
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(25000); } catch (x) { return statusHtml_('Please wait', 'Another change is still being saved. Try again in a moment.', 'info'); }
+  try { return fn(); } finally { try { lock.releaseLock(); } catch (x) { } }
+}
 function owner_() { try { return String(Session.getActiveUser().getEmail() || '').toLowerCase() === OWNER_EMAIL; } catch (x) { return false; } }
 function iso_(d) { return Utilities.formatDate(d, TZ, "yyyy-MM-dd'T'HH:mm:ssXXX"); }
 function hasCalApi_() { try { return typeof Calendar !== 'undefined' && !!Calendar.Events; } catch (x) { return false; } }
@@ -1026,6 +1032,39 @@ function arcList_() {
   return out.sort(function (a, b) { return b.t - a.t; });
 }
 
+/* ---- gentle reminder, about 20 minutes before an approved meeting ---- */
+var REMIND_MIN = 20;
+function ensureReminderTrigger_() {
+  try {
+    var has = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'sendReminders'; });
+    if (!has) ScriptApp.newTrigger('sendReminders').timeBased().everyMinutes(5).create();
+  } catch (x) { console.error('reminder trigger failed: ' + x); }
+}
+function setupReminders() { ensureReminderTrigger_(); }
+function sendReminders() {
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (x) { return; }
+  try {
+    var now = Date.now(), cal = CalendarApp.getDefaultCalendar();
+    cal.getEvents(new Date(now), new Date(now + (REMIND_MIN + 10) * 60000)).forEach(function (ev) {
+      if (!/^Appointment:/.test(ev.getTitle()) || ev.getTag('rem') || ev.getTag('arch') === '1') return;
+      var lead = ev.getStartTime().getTime() - now; if (lead <= 0 || lead > REMIND_MIN * 60000) return;
+      var email = ev.getTag('email') || ''; ev.setTag('rem', '1');
+      if (!email) return;
+      var name = ev.getTag('name') || 'there', mins = Math.max(1, Math.round(lead / 60000)), at = Utilities.formatDate(ev.getStartTime(), TZ, 'HH:mm') + ' IST', agenda = ev.getTag('agenda') || '';
+      var meet = ev.getTag('meet') || ((/Google Meet: (\S+)/.exec(String(ev.getDescription() || '')) || [])[1] || '');
+      try {
+        var rows = [['Starts', esc_(at) + ' (in about ' + mins + ' minutes)'], ['Length', Math.round((ev.getEndTime().getTime() - ev.getStartTime().getTime()) / 60000) + ' minutes']];
+        if (agenda) rows.push(['Agenda', esc_(agenda).replace(/\n/g, '<br>')]);
+        if (meet) rows.push(['Google Meet', '<a href="' + esc_(meet) + '">' + esc_(meet) + '</a>']);
+        MailApp.sendEmail({ to: email, name: OWNER_NAME, subject: 'Reminder: our meeting starts at ' + at,
+          body: 'Hello ' + name + ', a gentle reminder that our meeting starts at ' + at + ' (in about ' + mins + ' minutes).' + (agenda ? '\n\nAgenda:\n' + agenda : '') + (meet ? '\n\nGoogle Meet: ' + meet : '') + '\n\nSee you soon. ' + OWNER_NAME,
+          htmlBody: mail_('A gentle reminder', 'Hello ' + esc_(name) + ', our meeting starts soon.', rows, meet ? [['Join Google Meet', meet, '#1e8e3e']] : [], 'See you soon. ' + OWNER_NAME) });
+      } catch (x) { console.error('reminder mail failed: ' + x); try { ev.deleteTag('rem'); } catch (y) { } }
+    });
+  } finally { try { lock.releaseLock(); } catch (x) { } }
+}
+
 /* approve: a page with a box for the meeting agenda, then approveWith() creates the invited event (with a Google Meet link when the Calendar service is on) */
 function approvePage_(p, name, email, when, len) {
   var id = p.id;
@@ -1038,7 +1077,8 @@ function approvePage_(p, name, email, when, len) {
     + '.approveWith(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("ag").value);};<\/script>';
   return out_(shell_('Approve this request', 'Add a meeting agenda if you like, then approve.', inner, false, 'appts'), 'Approve request');
 }
-function approveWith(id, sig, agenda) {
+function approveWith(id, sig, agenda) { return locked_(function () { return approveImpl_(id, sig, agenda); }); }
+function approveImpl_(id, sig, agenda) {
   if (!id || sign_('approve', id) !== sig || !owner_()) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev || !/^REQUEST/.test(ev.getTitle())) return statusHtml_('Already handled', 'This request was already approved or declined.', 'info');
@@ -1054,10 +1094,10 @@ function approveWith(id, sig, agenda) {
         extendedProperties: { private: { name: name, email: email, agenda: agenda } },
         conferenceData: { createRequest: { requestId: Utilities.getUuid(), conferenceSolutionKey: { type: 'hangoutsMeet' } } }
       }, 'primary', { conferenceDataVersion: 1, sendUpdates: email ? 'all' : 'none' });
-      meet = meetOf_(res);
+      done = true; meet = meetOf_(res);
       for (var k = 0; k < 3 && !meet; k++) { Utilities.sleep(900); try { meet = meetOf_(Calendar.Events.get('primary', res.id)); } catch (x) { } }
       if (meet) { try { Calendar.Events.patch({ description: descFor_(name, email, len, purpose, agenda, meet), extendedProperties: { private: { name: name, email: email, agenda: agenda, meet: meet } } }, 'primary', res.id, { sendUpdates: 'none' }); } catch (x) { } }
-      ev.deleteEvent(); done = true;
+      try { ev.deleteEvent(); } catch (x) { console.error('pending delete failed: ' + x); }
     } catch (x) { console.error('api approve failed: ' + x); }
   }
   if (!done && email) {
@@ -1074,6 +1114,7 @@ function approveWith(id, sig, agenda) {
     try { ev.setTag('agenda', agenda); } catch (x) { }
     if (email) { try { ev.addGuest(email); } catch (x) { console.error('addGuest failed: ' + x); } }
   }
+  ensureReminderTrigger_();
   if (email) {
     try {
       var rows = [['When', esc_(when)], ['Length', len + ' minutes']];
@@ -1094,7 +1135,7 @@ function apptEditPage_(p) {
   if (!id || sign_('apedit', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var ev = CalendarApp.getDefaultCalendar().getEventById(id);
   if (!ev || !/^Appointment:/.test(ev.getTitle())) return page_('Not found', 'This appointment is no longer on the calendar.', 'info');
-  var name = ev.getTag('name') || ev.getTitle().replace(/^[^:]*:\s*/, ''), email = ev.getTag('email') || '', meet = ev.getTag('meet') || '', agenda = ev.getTag('agenda') || '';
+  var name = ev.getTag('name') || ev.getTitle().replace(/^[^:]*:\s*/, ''), email = ev.getTag('email') || '', meet = ev.getTag('meet') || ((/Google Meet: (\S+)/.exec(String(ev.getDescription() || '')) || [])[1] || ''), agenda = ev.getTag('agenda') || '';
   var s = ev.getStartTime(), len = Math.round((ev.getEndTime().getTime() - s.getTime()) / 60000);
   var inner = '<div class="chips"><span class="chip"><b>' + esc_(name) + '</b></span>' + (email ? '<span class="chip">' + esc_(email) + '</span>' : '<span class="chip">No email stored, nobody can be notified</span>') + '<span class="chip">Now: ' + esc_(whenText_(s, ev.getEndTime())) + '</span></div>'
     + (meet ? '<p class="sub" style="margin:0 0 14px">Google Meet: <a style="color:var(--a)" target="_blank" href="' + esc_(meet) + '">' + esc_(meet) + '</a> (it stays the same when you change the time)</p>' : '')
@@ -1115,7 +1156,8 @@ function apptEditPage_(p) {
     + 'var armed=false;q("cx").onclick=function(){if(!armed){armed=true;this.textContent="Click again to confirm the cancellation";return;}run(this,function(r){r.apptCancel(ID,S2,q("nt").value);});};<\/script>';
   return out_(shell_('Manage appointment', 'Change the time, add or edit the agenda, send a note or cancel. They are emailed and their calendar is updated.', inner, false, 'appts'), 'Manage appointment');
 }
-function apptSave(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
+function apptSave(id, sig, dateStr, timeStr, len, agenda, note, addMeet) { return locked_(function () { return apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet); }); }
+function apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
   if (!id || sign_('apedit', id) !== sig || !owner_()) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev || !/^Appointment:/.test(ev.getTitle())) return statusHtml_('Not found', 'This appointment is no longer on the calendar.', 'info');
@@ -1130,9 +1172,9 @@ function apptSave(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
     if (clash) return statusHtml_('That time is taken', 'Another event on your calendar overlaps the new time. Choose a different time.', 'bad');
   }
   agenda = String(agenda || '').trim().slice(0, 2000); note = String(note || '').trim().slice(0, 1500);
-  var agendaChanged = agenda !== String(ev.getTag('agenda') || ''), meet = ev.getTag('meet') || '', wantMeet = !!addMeet && !meet && hasCalApi_();
+  var api = apiEvent_(ev), agendaChanged = agenda !== String(ev.getTag('agenda') || ''), meet = ev.getTag('meet') || meetOf_(api) || '', wantMeet = !!addMeet && !meet && hasCalApi_();
   if (!timeChanged && !agendaChanged && !note && !wantMeet) return statusHtml_('Nothing to change', 'You did not change the time or the agenda, and wrote no note.', 'info');
-  var done = false, api = apiEvent_(ev);
+  var done = false;
   if (api) {
     try {
       var patch = { description: descFor_(name, email, len, purposeOf_(ev), agenda, meet), extendedProperties: { private: { name: name, email: email, agenda: agenda, meet: meet } } };
@@ -1148,7 +1190,8 @@ function apptSave(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
     } catch (x) { console.error('api save failed: ' + x); }
   }
   if (!done) { try { if (timeChanged) ev.setTime(ns, ne); ev.setDescription(descFor_(name, email, len, purposeOf_(ev), agenda, meet)); } catch (x) { return statusHtml_('Could not update', 'The calendar event could not be updated: ' + esc_(String(x)), 'bad'); } }
-  try { ev.setTag('agenda', agenda); if (meet) ev.setTag('meet', meet); } catch (x) { }
+  try { ev.setTag('agenda', agenda); if (meet) ev.setTag('meet', meet); if (timeChanged) ev.deleteTag('rem'); } catch (x) { }
+  ensureReminderTrigger_();
   var when = whenText_(ns, ne), oldWhen = whenText_(oldS, oldE);
   if (email) {
     try {
