@@ -474,7 +474,7 @@ function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header, mt, opt) 
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return statusHtml_('Not found', 'This message is no longer stored.', 'info');
   var r = JSON.parse(raw);
-  opt = opt || {}; subject = subject || 'Re: your message';
+  opt = opt || {}; subject = subject || 'Re: your message'; if (mt && mt.on) mt.subject = subject;
   if (opt.at) return scheduleMail_({ to: r.e, cc: cc, bcc: bcc, s: subject, h: header, ri: id }, bodyHtml, files, mt, opt);
   return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject, bodyHtml + extra, files, r.m, cc, bcc, '', header); }, '', { to: r.e, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: id, draft: opt.draft });
 }
@@ -484,7 +484,7 @@ function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header, mt, opt) {
   if (sign_('compose', 'new') !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   to = String(to || '').trim();
   if ((to === '__subscribers__' || to === '__watch__') && mt && mt.on) throw new Error('A meeting can only be scheduled when the email goes to one person.');
-  opt = opt || {};
+  opt = opt || {}; if (mt && mt.on) mt.subject = subject;
   if ((to === '__subscribers__' || to === '__watch__') && opt.at) throw new Error('Send later works for one person only. Remove the schedule to send to a group.');
   if (to === '__subscribers__' || to === '__watch__') {
     var bulk = sendNews_(subject, bodyHtml, files, header, to === '__watch__');
@@ -516,7 +516,7 @@ function scheduleMeeting_(name, email, mt) {
   if (ns.getTime() < Date.now()) throw new Error('The meeting time has already passed. Choose a time in the future.');
   var ne = new Date(ns.getTime() + len * 60000);
   if (cal.getEvents(ns, ne).some(function (x) { return !(x.getMyStatus && x.getMyStatus() === CalendarApp.GuestStatus.NO); })) throw new Error('Another event on your calendar overlaps that time. Choose a different time.');
-  var agenda = String(mt.agenda || '').trim().slice(0, 2000), purpose = 'Meeting arranged by ' + OWNER_NAME + ' by email.', meet = '', id = '', api = false;
+  var agenda = String(mt.agenda || '').trim().slice(0, 2000), purpose = 'Meeting arranged by ' + OWNER_NAME + ' by email' + (mt.subject ? ': ' + String(mt.subject).slice(0, 150) : '.'), meet = '', id = '', api = false;
   if (hasCalApi_()) {
     try {
       var body = { summary: 'Appointment: ' + name, description: descFor_(name, email, len, purpose, agenda, ''), colorId: '10',
@@ -1580,11 +1580,12 @@ function appointmentsPage_(p) {
   var evs = cal.getEvents(from, to).filter(function (e) { return /^(REQUEST|Appointment:)/.test(e.getTitle()) && e.getTag('arch') !== '1'; });
   var card = function (e) {
     var pend = /^REQUEST/.test(e.getTitle()), past = e.getEndTime().getTime() < now.getTime(), name = e.getTag('name') || e.getTitle().replace(/^[^:]*:\s*/, ''), email = e.getTag('email') || '', id = e.getId();
-    var desc = purposeOf_(e) || String(e.getDescription() || '').replace(/^[\s\S]*Purpose:\s*/, '').slice(0, 1000), agenda = e.getTag('agenda') || '', meet = e.getTag('meet') || '';
+    var desc = purposeOf_(e) || String(e.getDescription() || '').replace(/^[\s\S]*Purpose:\s*/, '').slice(0, 1000), agenda = e.getTag('agenda') || '', meet = e.getTag('meet') || ((/Google Meet: (\S+)/.exec(String(e.getDescription() || '')) || [])[1] || '');
     return '<div class="li"><div class="h"><span class="n">' + esc_(name) + '</span>' + (email ? '<a href="mailto:' + esc_(email) + '" style="color:var(--a);font-size:13px">' + esc_(email) + '</a>' : '')
       + (pend ? '<span class="pl y">Waiting for your reply</span>' : (past ? '<span class="pl x">Past</span>' : '<span class="pl g">Confirmed</span>')) + '</div>'
       + '<div class="m">' + esc_(whenText_(e.getStartTime(), e.getEndTime())) + '</div>' + (desc ? '<div class="b">' + esc_(desc.slice(0, 1000)) + '</div>' : '<div class="b"></div>')
       + (agenda ? '<div class="b" style="margin-top:-4px"><b>Agenda:</b> ' + esc_(agenda) + '</div>' : '')
+      + (meet ? '<div class="b" style="margin-top:-4px;word-break:break-all"><b>Google Meet:</b> <a style="color:var(--a)" target="_blank" href="' + esc_(meet) + '">' + esc_(meet) + '</a></div>' : '')
       + (pend && !past ? '<a class="ab" style="background:var(--green)" target="_top" href="' + link_('approve', id) + '">Approve</a><a class="ab" style="background:var(--red)" target="_top" href="' + link_('decline', id) + '">Decline</a>' : '')
       + (!pend && !past ? '<a class="ab" style="background:var(--a)" target="_top" href="' + portalBase_() + '?action=apedit&id=' + encodeURIComponent(id) + '&sig=' + sign_('apedit', id) + '">Change time, agenda or cancel</a>' : '')
       + (meet && !past ? '<a class="ab" style="background:var(--green)" target="_blank" href="' + esc_(meet) + '">Join Meet</a>' : '')
