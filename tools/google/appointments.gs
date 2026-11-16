@@ -45,7 +45,7 @@ function sign_(action, id) {
 /* The portal pages (Subscribers, Visitors, Messages, Appointments, compose, reply, approve and decline) are served by a second deployment of this script
    that runs as the signed-in visitor and is open only to OWNER_EMAIL. Its address is kept in the script property PORTAL_URL. The public site keeps using the first deployment. */
 var OWNER_EMAIL = 'anandupiiserk@gmail.com';
-var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1 };
+var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1 };
 function portalBase_() { return PropertiesService.getScriptProperties().getProperty('PORTAL_URL') || ScriptApp.getService().getUrl(); }
 function gate_(p) {
   var base = PropertiesService.getScriptProperties().getProperty('PORTAL_URL');
@@ -177,6 +177,7 @@ function act_(p) {
   if (action === 'reply') return replyPage_(p);
   if (action === 'compose') return composePage_(p);
   if (action === 'unsub') return nlUnsubPage_(p);
+  if (action === 'go') return visitorsPage_({ sig: sign_('admin', 'visitors') }); /* owner-only: gate_ has already checked the signed-in account */
   if (action === 'admin') return adminPage_(p);
   if (action === 'visitors') return visitorsPage_(p);
   if (action === 'messages') return messagesPage_(p);
