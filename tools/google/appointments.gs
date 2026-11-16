@@ -357,6 +357,13 @@ function editorPage_(mode, p, r) {
         + '<div id="tow"><label class="l" for="to">To</label><input id="to" class="tx" list="subl" value="' + esc_(p.to || '') + '" placeholder="name@example.com, or type a name to search your subscribers" autocomplete="off" style="margin-bottom:14px"><datalist id="subl">' + nlActive_().map(function (r) { return '<option value="' + esc_(r.e) + '">' + esc_(r.n || '') + '</option>'; }).join('') + '</datalist></div>' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
         + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
     + '<label class="l" for="hd">Email header <span class="hint">(the title bar at the top of the email)</span></label><input id="hd" class="tx" maxlength="80" value="Email from ' + OWNER_NAME + '" style="margin-bottom:16px">'
+    + '<div style="margin:0 0 16px;padding:12px 14px;border:1px solid var(--bd,#d5dce8);border-radius:12px"><label style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600"><input type="checkbox" id="mton"> Schedule a meeting with them (blocks the time on the website calendar)</label>'
+    + '<div id="mtbox" style="display:none;margin-top:12px"><div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 12px"><label class="l" style="flex:1 1 150px">Date<input id="mtd" class="tx" style="min-height:0" type="date" min="' + Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd') + '"></label>'
+    + '<label class="l" style="flex:1 1 120px">Start time (IST)<input id="mtt" class="tx" style="min-height:0" type="time" step="300"></label>'
+    + '<label class="l" style="flex:1 1 120px">Length<select id="mtn" class="tx" style="min-height:0"><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label></div>'
+    + '<label class="l" for="mta">Meeting agenda <span class="hint">(optional, added to the calendar event and the email)</span></label><textarea id="mta" class="tx" style="min-height:70px"></textarea>'
+    + (hasCalApi_() ? '<label style="display:flex;gap:8px;align-items:center;margin:10px 0 0;font-size:14px"><input type="checkbox" id="mtm" checked> Include a Google Meet link</label>' : '<p class="sub" style="margin:10px 0 0">Google Meet links need the Google Calendar service to be switched on in the script.</p>')
+    + '<p class="sub" style="margin:10px 0 0">A calendar invitation is sent to them, the meeting details are added at the end of your email, and the slot becomes unavailable on the booking calendar.</p></div></div>'
     + '<label class="l">' + (reply ? 'Your reply' : 'Message') + '</label>'
     + '<div class="tb">'
     + '<div class="tg"><select id="ff"><option value="">Font</option>' + fonts.map(function (f) { return '<option>' + f + '</option>'; }).join('') + '</select>'
@@ -394,11 +401,13 @@ function editorPage_(mode, p, r) {
     + 'function add(list){for(var i=0;i<list.length;i++){(function(f){var rd=new FileReader();rd.onload=function(){files.push({name:f.name,type:f.type||"application/octet-stream",size:f.size,data:String(rd.result).split(",")[1]});paint();};rd.readAsDataURL(f);})(list[i]);}}'
     + 'var dz=document.getElementById("dz"),fl=document.getElementById("fl");dz.onclick=function(){fl.click();};fl.onchange=function(){add(this.files);this.value="";};'
     + 'dz.ondragover=function(e){e.preventDefault();dz.className="dz on";};dz.ondragleave=function(){dz.className="dz";};dz.ondrop=function(e){e.preventDefault();dz.className="dz";add(e.dataTransfer.files);};'
+    + 'var mton=document.getElementById("mton"),mtbox=document.getElementById("mtbox");mton.onchange=function(){mtbox.style.display=mton.checked?"block":"none";};'
+    + 'function MT(){if(!mton.checked)return null;var mm=document.getElementById("mtm");return {on:true,date:document.getElementById("mtd").value,time:document.getElementById("mtt").value,len:document.getElementById("mtn").value,meet:mm?mm.checked:false,agenda:document.getElementById("mta").value};}'
     + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
     + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(e){b.disabled=false;b.textContent="Send";m.className="msg bad";m.textContent="Could not send: "+(e&&e.message?e.message:"please try again.");})'
-    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};'
-      : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":aw.checked?"__watch__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value);};')
+    + (reply ? '.sendReply(' + JSON.stringify(id) + ',' + JSON.stringify(p.sig) + ',document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value,MT());};'
+      : '.sendNew(' + JSON.stringify(p.sig) + ',(ao.checked?"__subscribers__":aw.checked?"__watch__":document.getElementById("to").value),document.getElementById("sub").value,ed.innerHTML,out,document.getElementById("cc").value,document.getElementById("bcc").value,document.getElementById("hd").value,MT());};')
     + '})();<\/script>';
   return reply
     ? out_(shell_('Reply to ' + esc_(r.n), 'Your reply is sent as a formatted email from Anandu Prabhakaran, with their message quoted underneath.', inner, true), 'Reply to ' + r.n)
@@ -442,23 +451,71 @@ function sentHtml_(n, to, nb) {
 }
 
 // Called from the reply editor.
-function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header) {
+function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header, mt) {
   if (!id || sign_('reply', id) !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var raw = PropertiesService.getScriptProperties().getProperty('MSG_' + id);
   if (!raw) return statusHtml_('Not found', 'This message is no longer stored.', 'info');
   var r = JSON.parse(raw);
-  return sentHtml_(r.n, r.e, deliver_(r.e, subject || 'Re: your message', bodyHtml, files, r.m, cc, bcc, '', header));
+  return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject || 'Re: your message', bodyHtml + extra, files, r.m, cc, bcc, '', header); });
 }
 
 // Called from the new-email editor (fresh conversation).
-function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header) {
+function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header, mt) {
   if (sign_('compose', 'new') !== sig) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   to = String(to || '').trim();
+  if ((to === '__subscribers__' || to === '__watch__') && mt && mt.on) throw new Error('A meeting can only be scheduled when the email goes to one person.');
   if (to === '__subscribers__') return sendNews_(subject, bodyHtml, files, header);
   if (to === '__watch__') return sendNews_(subject, bodyHtml, files, header, true);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
-  return sentHtml_('', to, deliver_(to, subject, bodyHtml, files, '', cc, bcc, '', header));
+  var nm = to.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+  return sendWithMeeting_('', to, mt, function (extra) { return deliver_(to, subject, bodyHtml + extra, files, '', cc, bcc, '', header); }, nm);
+}
+/* Optional meeting attached to an email: creates the calendar event (with a Meet link if asked), so the slot is busy on the booking calendar. */
+function sendWithMeeting_(n, to, mt, send, nm) {
+  if (!mt || !mt.on) return sentHtml_(n, to, send(''));
+  return locked_(function () {
+    var m = scheduleMeeting_(nm || n || to.split('@')[0], to, mt), nb;
+    try { nb = send(meetingBlock_(m)); } catch (x) { removeMeeting_(m); throw x; }
+    var h = sentHtml_(n, to, nb);
+    return h.replace('You can close this tab', 'The meeting on ' + esc_(m.when) + ' is in your calendar' + (m.meet ? ' with a Google Meet link' : '') + ' and the slot is blocked on the website. You can close this tab');
+  });
+}
+function scheduleMeeting_(name, email, mt) {
+  var cal = CalendarApp.getDefaultCalendar(), len = +mt.len; if (LENGTHS.indexOf(len) < 0) len = 30;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(mt.date)) || !/^\d{2}:\d{2}$/.test(String(mt.time))) throw new Error('Choose a date and a start time for the meeting.');
+  var ns = new Date(Date.parse(mt.date + 'T' + mt.time + ':00+05:30')); if (isNaN(ns.getTime())) throw new Error('Choose a valid meeting date and time.');
+  if (ns.getTime() < Date.now()) throw new Error('The meeting time has already passed. Choose a time in the future.');
+  var ne = new Date(ns.getTime() + len * 60000);
+  if (cal.getEvents(ns, ne).some(function (x) { return !(x.getMyStatus && x.getMyStatus() === CalendarApp.GuestStatus.NO); })) throw new Error('Another event on your calendar overlaps that time. Choose a different time.');
+  var agenda = String(mt.agenda || '').trim().slice(0, 2000), purpose = 'Meeting arranged by ' + OWNER_NAME + ' by email.', meet = '', id = '', api = false;
+  if (hasCalApi_()) {
+    try {
+      var body = { summary: 'Appointment: ' + name, description: descFor_(name, email, len, purpose, agenda, ''), colorId: '10',
+        start: { dateTime: iso_(ns), timeZone: TZ }, end: { dateTime: iso_(ne), timeZone: TZ }, attendees: [{ email: email }],
+        extendedProperties: { private: { name: name, email: email, agenda: agenda } } };
+      if (mt.meet) body.conferenceData = { createRequest: { requestId: Utilities.getUuid(), conferenceSolutionKey: { type: 'hangoutsMeet' } } };
+      var res = Calendar.Events.insert(body, 'primary', { conferenceDataVersion: 1, sendUpdates: 'all' });
+      api = true; id = res.id; meet = meetOf_(res);
+      for (var k = 0; mt.meet && k < 3 && !meet; k++) { Utilities.sleep(900); try { meet = meetOf_(Calendar.Events.get('primary', res.id)); } catch (x) { } }
+      if (meet) { try { Calendar.Events.patch({ description: descFor_(name, email, len, purpose, agenda, meet), extendedProperties: { private: { name: name, email: email, agenda: agenda, meet: meet } } }, 'primary', res.id, { sendUpdates: 'none' }); } catch (x) { } }
+    } catch (x) { console.error('meeting insert failed: ' + x); if (!id) api = false; }
+  }
+  if (!api) {
+    var ev = cal.createEvent('Appointment: ' + name, ns, ne, { description: descFor_(name, email, len, purpose, agenda, ''), guests: email, sendInvites: true });
+    try { ev.setColor(CalendarApp.EventColor.GREEN); } catch (x) { }
+    ev.setTag('name', name); ev.setTag('email', email); ev.setTag('agenda', agenda); id = ev.getId();
+  }
+  ensureReminderTrigger_();
+  return { id: id, api: api, when: whenText_(ns, ne), len: len, agenda: agenda, meet: meet };
+}
+function removeMeeting_(m) {
+  try { if (m.api) Calendar.Events.remove('primary', m.id, { sendUpdates: 'all' }); else CalendarApp.getDefaultCalendar().getEventById(m.id).deleteEvent(); } catch (x) { console.error('meeting rollback failed: ' + x); }
+}
+function meetingBlock_(m) {
+  return '<div style="margin:22px 0 0;padding:14px 16px;background:#f3f6fb;border-left:4px solid #1f4e9c;border-radius:4px;line-height:1.6"><b>Meeting</b><br>When: ' + esc_(m.when) + '<br>Length: ' + m.len + ' minutes'
+    + (m.agenda ? '<br>Agenda: ' + esc_(m.agenda).replace(/\n/g, '<br>') : '')
+    + (m.meet ? '<br>Google Meet: <a href="' + esc_(m.meet) + '" style="color:#1f4e9c">' + esc_(m.meet) + '</a>' : '') + '<br><span style="color:#5b6675;font-size:13px">A Google Calendar invitation has also been sent to you.</span></div>';
 }
 
 /* ---- newsletter: subscribe (email OTP, same check as the forms), unsubscribe, send to all ----
