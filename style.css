@@ -1144,3 +1144,10 @@ a.inst:hover, a.inst:focus-visible { color: var(--a); background-size: 100% 2px;
 .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar:hover, .avatar:focus-visible { transform: rotate(-6deg) scale(1.08); border-color: var(--a); box-shadow: 0 0 0 4px var(--a-soft); }
 @media (max-width: 560px) { .avatar { width: 36px; height: 36px; } .idw { gap: 9px; } }
+
+/* admin login link under the social icons */
+.copy .socwrap { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.copy .socwrap .socials { margin: 0; }
+.admlnk { font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--line2); padding-bottom: 1px; transition: color .3s, border-color .3s; }
+.admlnk:hover, .admlnk:focus-visible { color: var(--a); border-color: var(--a); }
+@media (max-width: 620px) { .copy .socwrap { margin: 0; align-items: center; } }
