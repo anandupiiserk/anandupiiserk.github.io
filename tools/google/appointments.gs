@@ -95,7 +95,7 @@ function mail_(heading, intro, rows, buttons, footer) {
   return h;
 }
 /* ---- admin portal pages (decline, reply, results) ---- */
-var PORTAL_CSS = 'body{margin:0;background:var(--bg);font-family:Calibri,Carlito,"Segoe UI",system-ui,Arial,sans-serif}*{box-sizing:border-box}'
+var PORTAL_CSS = '.nu{background:var(--surface)!important;color:var(--text)!important;border:2px solid var(--muted)!important}.nu:hover{border-color:var(--a)!important}.on{background:var(--a)!important;color:var(--on)!important;border:2px solid var(--a)!important}body{margin:0;background:var(--bg);font-family:Calibri,Carlito,"Segoe UI",system-ui,Arial,sans-serif}*{box-sizing:border-box}'
   + '.pt{background:var(--surface);border-bottom:1px solid var(--line);color:var(--text);padding:16px 20px 64px;font-family:Calibri,Carlito,"Segoe UI",system-ui,Arial,sans-serif}'
   + '.pt .in{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:12px}.pt .lg{width:38px;height:38px;border:1.5px solid var(--text);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;letter-spacing:.04em}'
   + '.pt .t1{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}.pt .t2{font-size:18px;margin-top:2px}'
@@ -1072,12 +1072,12 @@ function messagesPage_(p, arc) {
   var today = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
   var items = list.map(function (r) {
     var st = STN[r.st] ? r.st : 'unread', id = r.id, asg = sign_('msgact', id);
-    var ab = function (act, label, bg) { return '<button type="button" class="ab" data-a="' + act + '" style="background:' + bg + ';border:0;cursor:pointer">' + label + '</button> '; };
+    var ab = function (act, label) { return '<button type="button" class="ab nu" data-a="' + act + '" style="cursor:pointer">' + label + '</button> '; };
     return '<div class="li mg" id="m' + id + '" data-id="' + id + '" data-st="' + st + '" data-ar="' + (arc ? 1 : 0) + '" data-asg="' + asg + '" data-dsg="' + sign_('msgdel', id) + '" data-rsg="' + sign_('reply', id) + '" data-s="' + esc_((r.n + ' ' + r.e + ' ' + r.m).toLowerCase()) + '">'
       + '<div class="h tg" style="cursor:pointer"><span class="n">' + esc_(r.n) + '</span><a href="mailto:' + esc_(r.e) + '" style="color:var(--a);font-size:13px">' + esc_(r.e) + '</a><span class="m">' + Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy, HH:mm') + ' IST</span><span class="stc">' + STN[st] + '</span></div>'
       + '<div class="b pv">' + esc_(String(r.m).slice(0, 180)) + (String(r.m).length > 180 ? '...' : '') + '</div>'
       + '<div class="dt" style="display:none"><div class="b">' + esc_(r.m).replace(/\n/g, '<br>') + '</div>'
-      + '<div class="ac">' + ab('unread', 'Mark unread', 'var(--muted2)') + ab('read', 'Mark read', 'var(--muted2)') + ab('ignored', 'Ignore', 'var(--muted2)') + ab(arc ? 'inbox' : 'arc', arc ? 'Move to inbox' : 'Archive', 'var(--muted2)')
+      + '<div class="ac">' + ab('unread', 'Mark unread') + ab('read', 'Mark read') + ab('ignored', 'Ignore') + ab(arc ? 'inbox' : 'arc', arc ? 'Move to inbox' : 'Archive')
       + '<button type="button" class="ab md" style="background:var(--red,#b94700);border:0;cursor:pointer">Delete</button> <a class="ab" style="background:var(--a)" target="_top" href="' + link_('reply', id) + '">Reply</a> <span class="sub" style="font-size:12px">(Reply opens the full editor with fonts, attachments and send later)</span></div>'
       + '<div class="rb"><label class="l">Your response <span class="hint">(sent as an email with their message quoted below it)</span></label>'
       + '<input class="tx rfn" maxlength="60" value="' + esc_(OWNER_NAME) + '" title="Sender name" style="margin-bottom:8px" placeholder="Sender name">'
@@ -1092,12 +1092,12 @@ function messagesPage_(p, arc) {
   }).join('') || '<p class="sub">' + (arc ? 'Nothing is archived yet. Messages move here after ' + MSG_ARCHIVE_DAYS + ' days, or when you archive them.' : 'No messages yet.') + '</p>';
   var other = arc ? '<a class="ab" style="background:var(--a)" target="_top" href="' + msgUrl_() + '">Back to messages</a>'
     : '<a class="ab" style="background:var(--a)" target="_top" href="' + portalBase_() + '?action=msgarc&sig=' + sign_('admin', 'msgarc') + '">Archive (' + nArc + ')</a>';
-  var chips = ['all', 'unread', 'read', 'responded', 'ignored'].map(function (k) { return '<button type="button" class="ab fl" data-f="' + k + '" style="border:0;cursor:pointer;background:' + (k === 'all' ? 'var(--a)' : 'var(--muted2)') + '">' + (k === 'all' ? 'All' : STN[k]) + ' (<span class="fc">0</span>)</button> '; }).join('');
+  var chips = ['all', 'unread', 'read', 'responded', 'ignored'].map(function (k) { return '<button type="button" class="ab fl ' + (k === 'all' ? 'on' : 'nu') + '" data-f="' + k + '" style="cursor:pointer;font-size:14px;padding:7px 16px">' + (k === 'all' ? 'All' : STN[k]) + ' (<span class="fc">0</span>)</button> '; }).join('');
   var css = '<style>.mg .stc{font-size:12px;font-weight:bold;padding:2px 9px;border-radius:99px;border:1.5px solid var(--muted2);color:var(--muted2)}.mg[data-st=unread]{border-left:5px solid var(--a)}.mg[data-st=unread] .stc{background:var(--a);color:#fff;border-color:var(--a)}.mg[data-st=unread] .n{font-weight:800}.mg[data-st=responded] .stc{color:var(--green);border-color:var(--green)}.mg[data-st=ignored]{opacity:.7}.mg[data-st=ignored] .stc{border-style:dashed}.mg .ac{margin:10px 0}.mg .rb{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}.mg.open .pv{display:none}.mg .ac .ab{margin:0 4px 6px 0}</style>';
   var js = '<script>(function(){var L=document.getElementById("l"),dm=document.getElementById("dm"),ARC=' + (arc ? 'true' : 'false') + ',NAMES={unread:"Unread",read:"Read",responded:"Responded",ignored:"Ignored"},cur="all";'
     + 'function say(t,bad){dm.className=bad?"msg bad":"msg";dm.textContent=t||"";}'
     + 'function recount(){var c={all:0,unread:0,read:0,responded:0,ignored:0},cs=L.querySelectorAll(".mg");for(var i=0;i<cs.length;i++){c.all++;c[cs[i].getAttribute("data-st")]++;}var f=document.querySelectorAll(".fl");for(var j=0;j<f.length;j++)f[j].querySelector(".fc").textContent=c[f[j].getAttribute("data-f")];}'
-    + 'function apply(){var v=document.getElementById("q").value.toLowerCase(),cs=L.querySelectorAll(".mg");for(var i=0;i<cs.length;i++){var ok=cs[i].getAttribute("data-s").indexOf(v)>=0&&(cur==="all"||cs[i].getAttribute("data-st")===cur);cs[i].style.display=ok?"":"none";}var f=document.querySelectorAll(".fl");for(var j=0;j<f.length;j++)f[j].style.background=f[j].getAttribute("data-f")===cur?"var(--a)":"var(--muted2)";}'
+    + 'function apply(){var v=document.getElementById("q").value.toLowerCase(),cs=L.querySelectorAll(".mg");for(var i=0;i<cs.length;i++){var ok=cs[i].getAttribute("data-s").indexOf(v)>=0&&(cur==="all"||cs[i].getAttribute("data-st")===cur);cs[i].style.display=ok?"":"none";}var f=document.querySelectorAll(".fl");for(var j=0;j<f.length;j++)var on=f[j].getAttribute("data-f")===cur;f[j].className="ab fl "+(on?"on":"nu");}'
     + 'function setSt(c,st){c.setAttribute("data-st",st);c.querySelector(".stc").textContent=NAMES[st];recount();apply();}'
     + 'function callSt(c,st){google.script.run.withSuccessHandler(function(){setSt(c,st);}).withFailureHandler(function(e){say((e&&e.message)||"Could not update.",true);}).msgSetStatus(c.getAttribute("data-id"),c.getAttribute("data-asg"),st);}'
     + 'document.getElementById("q").oninput=apply;'
@@ -1366,14 +1366,14 @@ function mailHubHtml_(tab) {
   }).join('') || '<p class="sub">No drafts. Anything you type in a new email is saved here automatically.</p>';
   var schH = sch.map(function (r) {
     return '<div class="li"><div class="h"><span class="n">' + esc_(r.s || '(no subject)') + '</span>' + chip('To ' + esc_(r.to)) + chip('Sends ' + fmt(r.at)) + (r.a ? chip(r.a + ' attachment' + (r.a > 1 ? 's' : '')) : '') + (r.f ? chip('Failed ' + r.f + ' time' + (r.f > 1 ? 's' : '') + ': ' + esc_(r.err || '')) : '') + '</div>'
-      + btn('sn', 'schedSendNow', r.id, 'Send now', 'background:var(--a);') + btn('sb', 'schedToDraft', r.id, 'Move back to drafts', 'background:var(--muted2);') + btn('dl', 'schedDelete', r.id, 'Delete', 'background:var(--red,#b94700);') + '</div>';
+      + btn('sn', 'schedSendNow', r.id, 'Send now', 'background:var(--a);') + btn('sb nu', 'schedToDraft', r.id, 'Move back to drafts', '') + btn('dl', 'schedDelete', r.id, 'Delete', 'background:var(--red,#b94700);') + '</div>';
   }).join('') || '<p class="sub">Nothing is scheduled. Tick &ldquo;Send later&rdquo; when you write an email.</p>';
-  var tabB = function (k, label, n) { return '<button type="button" class="ab tb" data-t="' + k + '" style="border:0;cursor:pointer;background:' + (tab === k ? 'var(--a)' : 'var(--muted2)') + '">' + label + ' (' + n + ')</button> '; };
+  var tabB = function (k, label, n) { return '<button type="button" class="ab tb ' + (tab === k ? 'on' : 'nu') + '" data-t="' + k + '" style="cursor:pointer;font-size:14px;padding:7px 16px">' + label + ' (' + n + ')</button> '; };
   var inner = listStyle_() + '<p style="margin:0 0 14px"><a class="ab" style="background:var(--a)" target="_top" href="' + link_('compose', 'new') + '">Write a new email</a></p>'
     + '<p style="margin:0 0 14px">' + tabB('sent', 'Sent', sent.length) + tabB('drafts', 'Drafts', drafts.length) + tabB('sched', 'Scheduled', sch.length) + '</p>'
     + '<div id="p-sent"' + (tab === 'sent' ? '' : ' style="display:none"') + '>' + sentH + '</div><div id="p-drafts"' + (tab === 'drafts' ? '' : ' style="display:none"') + '>' + draftH + '</div><div id="p-sched"' + (tab === 'sched' ? '' : ' style="display:none"') + '>' + schH + '</div><div id="hm" class="msg"></div>'
     + '<script>'
-    + 'document.addEventListener("click",function(e){var t=e.target.closest(".tb");if(t){var k=t.getAttribute("data-t");["sent","drafts","sched"].forEach(function(x){document.getElementById("p-"+x).style.display=x===k?"":"none";});var bs=document.querySelectorAll(".tb");for(var i=0;i<bs.length;i++)bs[i].style.background=bs[i]===t?"var(--a)":"var(--muted2)";return;}'
+    + 'document.addEventListener("click",function(e){var t=e.target.closest(".tb");if(t){var k=t.getAttribute("data-t");["sent","drafts","sched"].forEach(function(x){document.getElementById("p-"+x).style.display=x===k?"":"none";});var bs=document.querySelectorAll(".tb");for(var i=0;i<bs.length;i++)bs[i].className="ab tb "+(bs[i]===t?"on":"nu");return;}'
     + 'var b=e.target.closest("[data-fn]");if(!b)return;var fn=b.getAttribute("data-fn");if(b.classList.contains("dl")&&!b.armed){b.armed=true;b.textContent="Click again to delete";return;}'
     + 'var all=document.querySelectorAll("[data-fn]");for(var j=0;j<all.length;j++)all[j].disabled=true;b.textContent="Working...";'
     + 'google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(er){for(var j=0;j<all.length;j++)all[j].disabled=false;b.textContent="Try again";var m=document.getElementById("hm");m.className="msg bad";m.textContent=(er&&er.message)||"Something went wrong.";})[fn](b.getAttribute("data-id"),' + JSON.stringify(sign_('admin', 'mailact')) + ');});<\/script>';
@@ -1483,7 +1483,7 @@ function apptEditPage_(p) {
     + '<div class="acts"><div class="act"><h3>Save and notify</h3><p>Updates the calendar event and emails them the new details with your note.</p><button id="sv" class="b blue">Save changes and email them</button></div>'
     + '<div class="act"><h3>Cancel appointment</h3><p>Removes it from your calendar and saves it in History. Their Google Calendar is updated too.</p>'
     + '<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 10px;font-size:14px"><input type="checkbox" id="an" checked style="margin-top:3px"> When I cancel and notify, ask them to choose a new time (adds a schedule button to the email)</label>'
-    + '<button id="cx" class="b red" style="margin:0 6px 6px 0">Cancel and notify them</button><button id="co" class="b">Cancel only, no email from me</button></div></div><div id="m" class="msg"></div>'
+    + '<button id="cx" class="b red" style="margin:0 6px 6px 0">Cancel and notify them</button><button id="co" class="b nu">Cancel only, no email from me</button></div></div><div id="m" class="msg"></div>'
     + '<script>var ID=' + JSON.stringify(id) + ',S1=' + JSON.stringify(p.sig) + ',S2=' + JSON.stringify(sign_('apcancel', id)) + ',q=function(i){return document.getElementById(i);};'
     + 'function run(btn,fn){var bs=document.querySelectorAll(".b");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Working...";var r=google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";});fn(r);}'
     + 'q("sv").onclick=function(){run(this,function(r){r.apptSave(ID,S1,q("d").value,q("t").value,q("n").value,q("ag").value,q("nt").value,q("mk1")?q("mk1").checked:(q("am")?q("am").checked:false));});};'
@@ -1624,7 +1624,7 @@ function apptHistoryPage_(p) {
       + '<div class="m">' + esc_(whenText_(new Date(r.s), new Date(r.x))) + ' &middot; saved ' + esc_(Utilities.formatDate(new Date(r.t), TZ, 'd MMM yyyy')) + '</div>'
       + (r.a ? '<div class="b"><b>Agenda:</b> ' + esc_(r.a) + '</div>' : '') + (r.nt ? '<div class="b"><b>Note from Anandu:</b> ' + esc_(r.nt) + '</div>' : '') + (r.p && !r.a ? '<div class="b">' + esc_(r.p) + '</div>' : '')
       + (r.st === 'Archived' ? '<a class="ab" style="background:var(--a)" target="_top" href="' + portalBase_() + '?action=unarch&id=' + encodeURIComponent(r.k) + '&sig=' + sign_('unarch', r.k) + '">Restore to Appointments</a>' : '')
-      + (r.e ? '<a class="ab" style="background:var(--muted2)" target="_top" href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '">Write to them</a>' : '') + '</div>';
+      + (r.e ? '<a class="ab nu" target="_top" href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(r.e) + '">Write to them</a>' : '') + '</div>';
   }).join('') || '<p class="sub">Nothing in History yet. Archived and cancelled appointments are saved here.</p>';
   var inner = listStyle_() + '<p style="margin:0 0 14px"><a class="ab" style="background:var(--a)" target="_top" href="' + apptUrl_() + '">&larr; Back to Appointments</a></p>'
     + '<input id="q" class="tx" style="min-height:0;margin:0 0 14px" placeholder="Search name, email or agenda"><div id="l">' + items + '</div>'
@@ -1648,7 +1648,7 @@ function appointmentsPage_(p) {
       + (!pend && !past ? '<a class="ab" style="background:var(--a)" target="_top" href="' + portalBase_() + '?action=apedit&id=' + encodeURIComponent(id) + '&sig=' + sign_('apedit', id) + '">Change time, agenda or cancel</a>' : '')
       + (meet && !past ? '<a class="ab" style="background:var(--green)" target="_blank" href="' + esc_(meet) + '">Join Meet</a>' : '')
       + (!pend && past ? '<a class="ab" style="background:var(--red)" target="_top" href="' + portalBase_() + '?action=apdel&id=' + encodeURIComponent(id) + '&sig=' + sign_('apdel', id) + '">Delete</a>' : '')
-      + (!pend ? '<a class="ab" style="background:var(--muted2)" target="_top" href="' + portalBase_() + '?action=arch&id=' + encodeURIComponent(id) + '&sig=' + sign_('arch', id) + '">Archive</a>' : '')
+      + (!pend ? '<a class="ab nu" target="_top" href="' + portalBase_() + '?action=arch&id=' + encodeURIComponent(id) + '&sig=' + sign_('arch', id) + '">Archive</a>' : '')
       + (email ? '<a class="ab" style="background:var(--a)" target="_top" href="' + link_('compose', 'new') + '&to=' + encodeURIComponent(email) + '">Write to them</a>' : '') + '<a class="ab" style="background:var(--muted2)" target="_blank" href="' + calLink_(e) + '">Open in Calendar</a></div>';
   };
   var pend = evs.filter(function (e) { return /^REQUEST/.test(e.getTitle()) && e.getEndTime() >= now; }), up = evs.filter(function (e) { return /^Appointment:/.test(e.getTitle()) && e.getEndTime() >= now; }),
