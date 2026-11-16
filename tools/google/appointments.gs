@@ -1136,10 +1136,10 @@ function apptEditPage_(p) {
   if (!id || sign_('apedit', id) !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
   var ev = CalendarApp.getDefaultCalendar().getEventById(id);
   if (!ev || !/^Appointment:/.test(ev.getTitle())) return page_('Not found', 'This appointment is no longer on the calendar.', 'info');
-  var name = ev.getTag('name') || ev.getTitle().replace(/^[^:]*:\s*/, ''), email = ev.getTag('email') || '', meet = ev.getTag('meet') || ((/Google Meet: (\S+)/.exec(String(ev.getDescription() || '')) || [])[1] || ''), agenda = ev.getTag('agenda') || '';
+  var name = ev.getTag('name') || ev.getTitle().replace(/^[^:]*:\s*/, ''), email = ev.getTag('email') || '', meet = ev.getTag('meet') || ((/Google Meet: (\S+)/.exec(String(ev.getDescription() || '')) || [])[1] || ''), agenda = ev.getTag('agenda') || ((/Meeting agenda:\n([\s\S]*)$/.exec(String(ev.getDescription() || '')) || [])[1] || '').trim();
   var s = ev.getStartTime(), len = Math.round((ev.getEndTime().getTime() - s.getTime()) / 60000);
   var inner = '<div class="chips"><span class="chip"><b>' + esc_(name) + '</b></span>' + (email ? '<span class="chip">' + esc_(email) + '</span>' : '<span class="chip">No email stored, nobody can be notified</span>') + '<span class="chip">Now: ' + esc_(whenText_(s, ev.getEndTime())) + '</span></div>'
-    + (meet ? '<p class="sub" style="margin:0 0 14px">Google Meet: <a style="color:var(--a)" target="_blank" href="' + esc_(meet) + '">' + esc_(meet) + '</a> (it stays the same when you change the time)</p>' : '')
+    + (meet ? '<p class="sub" style="margin:0 0 8px">Google Meet: <a style="color:var(--a)" target="_blank" href="' + esc_(meet) + '">' + esc_(meet) + '</a></p>' + (hasCalApi_() ? '<div style="margin:0 0 14px;font-size:14px"><label style="display:flex;gap:8px;align-items:center;margin:0 0 6px"><input type="radio" name="mk" id="mk0" checked> Keep the same Google Meet link (also when the time changes)</label><label style="display:flex;gap:8px;align-items:center"><input type="radio" name="mk" id="mk1"> Generate a new Google Meet link and email it to them</label></div>' : '') : '')
     + '<div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 14px"><label class="l" style="flex:1 1 150px">Date<input id="d" class="tx" style="min-height:0" type="date" value="' + Utilities.formatDate(s, TZ, 'yyyy-MM-dd') + '"></label>'
     + '<label class="l" style="flex:1 1 120px">Start time (IST)<input id="t" class="tx" style="min-height:0" type="time" step="300" value="' + Utilities.formatDate(s, TZ, 'HH:mm') + '"></label>'
     + '<label class="l" style="flex:1 1 120px">Length<select id="n" class="tx" style="min-height:0"><option value="30"' + (len === 30 ? ' selected' : '') + '>30 minutes</option><option value="60"' + (len === 60 ? ' selected' : '') + '>60 minutes</option></select></label></div>'
@@ -1150,11 +1150,14 @@ function apptEditPage_(p) {
     + (!meet && hasCalApi_() ? '<label style="display:flex;gap:8px;align-items:center;margin:14px 0 0;font-size:14px"><input type="checkbox" id="am"> Add a Google Meet link to this appointment</label>' : '')
     + (!hasCalApi_() ? '<p class="sub" style="margin:14px 0 0">Google Meet links need the Google Calendar service to be switched on in the script. Time changes and notes still work without it.</p>' : '')
     + '<div class="acts"><div class="act"><h3>Save and notify</h3><p>Updates the calendar event and emails them the new details with your note.</p><button id="sv" class="b blue">Save changes and email them</button></div>'
-    + '<div class="act"><h3>Cancel appointment</h3><p>Removes it from the calendar, emails them with your note and saves it in History.</p><button id="cx" class="b red">Cancel this appointment</button></div></div><div id="m" class="msg"></div>'
+    + '<div class="act"><h3>Cancel appointment</h3><p>Removes it from your calendar and saves it in History. Their Google Calendar is updated too.</p>'
+    + '<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 10px;font-size:14px"><input type="checkbox" id="an" checked style="margin-top:3px"> When I cancel and notify, ask them to choose a new time (adds a schedule button to the email)</label>'
+    + '<button id="cx" class="b red" style="margin:0 6px 6px 0">Cancel and notify them</button><button id="co" class="b">Cancel only, no email from me</button></div></div><div id="m" class="msg"></div>'
     + '<script>var ID=' + JSON.stringify(id) + ',S1=' + JSON.stringify(p.sig) + ',S2=' + JSON.stringify(sign_('apcancel', id)) + ',q=function(i){return document.getElementById(i);};'
-    + 'function run(btn,fn){var bs=document.querySelectorAll(".b");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Sending...";var r=google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";});fn(r);}'
-    + 'q("sv").onclick=function(){run(this,function(r){r.apptSave(ID,S1,q("d").value,q("t").value,q("n").value,q("ag").value,q("nt").value,q("am")?q("am").checked:false);});};'
-    + 'var armed=false;q("cx").onclick=function(){if(!armed){armed=true;this.textContent="Click again to confirm the cancellation";return;}run(this,function(r){r.apptCancel(ID,S2,q("nt").value);});};<\/script>';
+    + 'function run(btn,fn){var bs=document.querySelectorAll(".b");for(var i=0;i<bs.length;i++)bs[i].disabled=true;var t=btn.textContent;btn.textContent="Working...";var r=google.script.run.withSuccessHandler(function(h){document.open();document.write(h);document.close();}).withFailureHandler(function(){for(var i=0;i<bs.length;i++)bs[i].disabled=false;btn.textContent=t;q("m").className="msg bad";q("m").textContent="Something went wrong. Please try again.";});fn(r);}'
+    + 'q("sv").onclick=function(){run(this,function(r){r.apptSave(ID,S1,q("d").value,q("t").value,q("n").value,q("ag").value,q("nt").value,q("mk1")?q("mk1").checked:(q("am")?q("am").checked:false));});};'
+    + 'function arm(b,txt,notify){var a=false;b.onclick=function(){if(!a){a=true;this.textContent=txt;return;}run(this,function(r){r.apptCancel(ID,S2,q("nt").value,notify,q("an").checked);});};}'
+    + 'arm(q("cx"),"Click again to cancel and email them",true);arm(q("co"),"Click again to cancel without an email",false);<\/script>';
   return out_(shell_('Manage appointment', 'Change the time, add or edit the agenda, send a note or cancel. They are emailed and their calendar is updated.', inner, true, 'appts'), 'Manage appointment');
 }
 function apptSave(id, sig, dateStr, timeStr, len, agenda, note, addMeet) { return locked_(function () { return apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet); }); }
@@ -1173,13 +1176,14 @@ function apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
     if (clash) return statusHtml_('That time is taken', 'Another event on your calendar overlaps the new time. Choose a different time.', 'bad');
   }
   agenda = String(agenda || '').trim().slice(0, 2000); note = String(note || '').trim().slice(0, 1500);
-  var api = apiEvent_(ev), agendaChanged = agenda !== String(ev.getTag('agenda') || ''), meet = ev.getTag('meet') || meetOf_(api) || '', wantMeet = !!addMeet && !meet && hasCalApi_();
+  var api = apiEvent_(ev), agendaChanged = agenda !== String(ev.getTag('agenda') || ''), meet = ev.getTag('meet') || meetOf_(api) || '', wantMeet = !!addMeet && hasCalApi_() && !!api, replaceMeet = wantMeet && !!meet, oldMeet = meet;
   if (!timeChanged && !agendaChanged && !note && !wantMeet) return statusHtml_('Nothing to change', 'You did not change the time or the agenda, and wrote no note.', 'info');
   var done = false;
   if (api) {
     try {
       var patch = { description: descFor_(name, email, len, purposeOf_(ev), agenda, meet), extendedProperties: { private: { name: name, email: email, agenda: agenda, meet: meet } } };
       if (timeChanged) { patch.start = { dateTime: iso_(ns), timeZone: TZ }; patch.end = { dateTime: iso_(ne), timeZone: TZ }; }
+      if (replaceMeet) { try { Calendar.Events.patch({ conferenceData: null }, 'primary', api.id, { conferenceDataVersion: 1, sendUpdates: 'none' }); } catch (x) { console.error('old meet removal failed: ' + x); } meet = ''; patch.description = descFor_(name, email, len, purposeOf_(ev), agenda, ''); patch.extendedProperties.private.meet = ''; }
       if (wantMeet) patch.conferenceData = { createRequest: { requestId: Utilities.getUuid(), conferenceSolutionKey: { type: 'hangoutsMeet' } } };
       var res = Calendar.Events.patch(patch, 'primary', api.id, { conferenceDataVersion: 1, sendUpdates: email ? 'all' : 'none' });
       if (wantMeet) {
@@ -1191,12 +1195,12 @@ function apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
     } catch (x) { console.error('api save failed: ' + x); }
   }
   if (!done) { try { if (timeChanged) ev.setTime(ns, ne); ev.setDescription(descFor_(name, email, len, purposeOf_(ev), agenda, meet)); } catch (x) { return statusHtml_('Could not update', 'The calendar event could not be updated: ' + esc_(String(x)), 'bad'); } }
-  try { ev.setTag('agenda', agenda); if (meet) ev.setTag('meet', meet); if (timeChanged) ev.deleteTag('rem'); } catch (x) { }
+  try { ev.setTag('agenda', agenda); if (replaceMeet) ev.deleteTag('meet'); if (meet) ev.setTag('meet', meet); if (replaceMeet) ev.deleteTag('rem'); if (timeChanged) ev.deleteTag('rem'); } catch (x) { }
   ensureReminderTrigger_();
   var when = whenText_(ns, ne), oldWhen = whenText_(oldS, oldE);
   if (email) {
     try {
-      var intro = 'Hello ' + esc_(name) + ', ' + (timeChanged ? 'your appointment has been moved to a new time.' : agendaChanged ? 'the agenda for your appointment has been updated.' : 'I have a note about your appointment.') + noteBox_(note);
+      var intro = 'Hello ' + esc_(name) + ', ' + (timeChanged ? 'your appointment has been moved to a new time.' : agendaChanged ? 'the agenda for your appointment has been updated.' : 'I have a note about your appointment.') + (replaceMeet && meet ? ' A new Google Meet link was created. Please use it instead of the earlier one.' : '') + noteBox_(note);
       var rows = [['When', esc_(when)]]; if (timeChanged) rows.push(['Was', esc_(oldWhen)]); rows.push(['Length', len + ' minutes']);
       if (agenda) rows.push(['Agenda', esc_(agenda).replace(/\n/g, '<br>')]); if (meet) rows.push(['Google Meet', '<a href="' + esc_(meet) + '">' + esc_(meet) + '</a>']);
       MailApp.sendEmail({ to: email, name: OWNER_NAME, subject: (timeChanged ? 'Appointment time changed: ' : 'Update about your appointment: ') + when,
@@ -1205,9 +1209,9 @@ function apptSaveImpl_(id, sig, dateStr, timeStr, len, agenda, note, addMeet) {
     } catch (x) { console.error('update mail failed: ' + x); }
   }
   return statusHtml_('Saved', 'The appointment with ' + esc_(name) + ' is now ' + esc_(when) + '. ' + (email ? 'An email with your ' + (note ? 'note and the ' : '') + 'details was sent to ' + esc_(email) + (api && done ? ', and their Google Calendar was updated.' : '.') : 'No email address is stored, so nobody was notified.')
-    + (wantMeet ? (meet ? ' A Google Meet link was added.' : ' The Google Meet link could not be created.') : '') + (done || !email ? '' : ' The calendar event was updated, but Google did not send its own update email because the Calendar service is off in the script.'));
+    + (wantMeet ? (meet ? (replaceMeet ? ' A new Google Meet link replaced the old one.' : ' A Google Meet link was added.') : (replaceMeet ? ' The new Google Meet link could not be created, and the old one was removed. Try again.' : ' The Google Meet link could not be created.')) : '') + (done || !email ? '' : ' The calendar event was updated, but Google did not send its own update email because the Calendar service is off in the script.'));
 }
-function apptCancel(id, sig, note) {
+function apptCancel(id, sig, note, notify, askNew) {
   if (!id || sign_('apcancel', id) !== sig || !owner_()) return statusHtml_('Link not valid', 'This link is not valid.', 'bad');
   var cal = CalendarApp.getDefaultCalendar(), ev = cal.getEventById(id);
   if (!ev || !/^Appointment:/.test(ev.getTitle())) return statusHtml_('Not found', 'This appointment is no longer on the calendar.', 'info');
@@ -1217,14 +1221,14 @@ function apptCancel(id, sig, note) {
   var api = apiEvent_(ev), gone = false;
   if (api) { try { Calendar.Events.remove('primary', api.id, { sendUpdates: email ? 'all' : 'none' }); gone = true; } catch (x) { console.error('api remove failed: ' + x); } }
   if (!gone) { try { ev.deleteEvent(); } catch (x) { return statusHtml_('Could not cancel', 'The calendar event could not be removed: ' + esc_(String(x)), 'bad'); } }
-  if (email) {
+  if (email && notify) {
     try {
       MailApp.sendEmail({ to: email, name: OWNER_NAME, subject: 'Appointment cancelled: ' + when,
-        body: 'Hello ' + name + ', I am sorry, I have to cancel our appointment on ' + when + '.' + (note ? '\n\nNote from Anandu:\n' + note : '') + '\n\nYou are welcome to choose another time at ' + SITE_URL,
-        htmlBody: mail_('Appointment cancelled', 'Hello ' + esc_(name) + ', I am sorry, I have to cancel our appointment on ' + esc_(when) + '.' + noteBox_(note), [], [['Choose another time', SITE_URL, '#1f4e9c']], OWNER_NAME) });
+        body: 'Hello ' + name + ', I am sorry, I have to cancel our appointment on ' + when + '.' + (note ? '\n\nNote from Anandu:\n' + note : '') + (askNew ? '\n\nPlease choose a new time at ' + SITE_URL : ''),
+        htmlBody: mail_('Appointment cancelled', 'Hello ' + esc_(name) + ', I am sorry, I have to cancel our appointment on ' + esc_(when) + '.' + (askNew ? ' Please choose a new time that suits you.' : '') + noteBox_(note), [], askNew ? [['Choose a new time', SITE_URL, '#1f4e9c']] : [], OWNER_NAME) });
     } catch (x) { console.error('cancel mail failed: ' + x); }
   }
-  return statusHtml_('Cancelled', 'The appointment with ' + esc_(name) + ' on ' + esc_(when) + ' was cancelled and removed from your calendar. ' + (email ? 'An email' + (note ? ' with your note' : '') + ' was sent to ' + esc_(email) + '. ' : '') + 'It is saved in History.');
+  return statusHtml_('Cancelled', 'The appointment with ' + esc_(name) + ' on ' + esc_(when) + ' was cancelled and removed from your calendar. ' + (email && notify ? 'An email' + (note ? ' with your note' : '') + (askNew ? ' asking them to choose a new time' : '') + ' was sent to ' + esc_(email) + '. ' : (email ? 'No email was sent from you, but Google updated their calendar. ' : '')) + 'It is saved in History.');
 }
 /* delete a meeting that has already happened, with an optional message to the visitor */
 function apptDelPage_(p) {
