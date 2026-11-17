@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261117c">
+<link rel="stylesheet" href="style.css?v=20261117h">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261117c"></script>
-<script src="script.js?v=20261117c"></script>
+<script src="i18n.js?v=20261117h"></script>
+<script src="script.js?v=20261117h"></script>
 </body>
 </html>
 '''
@@ -205,7 +205,7 @@ LOADER = '''<div id="loader" aria-hidden="true">
 LOADER = '' if LITE else LOADER.replace('{{','{').replace('}}','}')
 home = f'''{LOADER}
 
-<section class="hero">
+<section class="hero" data-fs>
   <canvas class="contours" data-contours="hero" aria-hidden="true"></canvas>
   <div class="grat" aria-hidden="true"></div><div class="scan" aria-hidden="true"></div><div class="vig" aria-hidden="true"></div>
   <div class="wrap hero-inner">

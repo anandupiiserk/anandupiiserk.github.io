@@ -1162,3 +1162,54 @@ html.nc .mtools .mlist[hidden] { display: none; }
 html.nc .mtools .mlist button { min-height: 44px; padding: 0 14px; font-weight: 500; }
 html.nc .mtools .mlist button[aria-checked="true"] { background: var(--a-soft); border-color: var(--a); font-weight: 700; }
 html.nc .mtools .mlist .mvc { grid-column: 1 / -1; }
+
+/* ---------- Home hero: forest fire story animation (fire-story.js) ---------- */
+.hero.fs-on { padding-bottom: 176px; }
+.hero.fs-on :is(canvas.contours, .grat, .scan, .vig, .cartouche, .readout) { display: none; }
+.fs-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; transform-origin: 50% 65%; animation: fsdrift 70s ease-in-out infinite alternate; will-change: transform; }
+@keyframes fsdrift { from { transform: scale(1) translate3d(0, 0, 0); } to { transform: scale(1.045) translate3d(-.5%, .3%, 0); } }
+.fs-scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: opacity .7s; background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 92%, transparent) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 34%, color-mix(in srgb, var(--bg) 20%, transparent) 62%, transparent 78%); }
+.fs-vig { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at 50% 55%, transparent 58%, rgba(0,0,0,.2) 100%); }
+.hero.fs-on .hero-inner { transition: opacity .7s, transform .7s var(--ease), visibility .7s; }
+.hero.fs-clean .hero-inner { opacity: 0 !important; visibility: hidden; pointer-events: none; transform: translateY(10px) !important; }
+.hero.fs-clean .fs-scrim { opacity: 0; }
+.fs-hud { position: absolute; z-index: 3; left: clamp(14px, 3vw, 40px); right: 84px; bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; pointer-events: none; font-family: var(--sans); }
+.fs-card { background: color-mix(in srgb, var(--bg) 84%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: .74rem; color: var(--muted); line-height: 1.35; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.fs-cap { flex: 1 1 250px; max-width: 440px; }
+.fs-cap .t { color: var(--text); font-weight: 700; font-size: .78rem; margin-bottom: 2px; }
+.fs-gs { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.fs-gs .g { min-width: 70px; }
+.fs-gs .l { font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; }
+.fs-gs .b2 { height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--muted) 30%, transparent); overflow: hidden; margin: 3px 0 2px; }
+.fs-gs .b2 i { display: block; height: 100%; width: 0; background: var(--a); transition: width .4s; }
+.fs-gs .b2.veg i { background: #009E73; }
+.fs-gs .v { font-size: .74rem; color: var(--text); font-weight: 600; }
+.fs-gs .wg { display: flex; align-items: center; gap: 7px; } .fs-gs .wg svg { width: 26px; height: 26px; }
+.dbar { position: relative; width: 96px; height: 8px; border-radius: 4px; margin: 4px 0; background: linear-gradient(90deg, #009E73 0%, #F0E442 30%, #E69F00 55%, #D55E00 78%, #8B1A4A 100%); }
+.dbar i { position: absolute; top: -3px; left: 0; width: 3px; height: 14px; background: var(--text); border-radius: 2px; transform: translateX(-50%); transition: left .4s; box-shadow: 0 0 0 1px var(--bg); }
+.dgw .v::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--dc, #009E73); margin-right: 5px; box-shadow: 0 0 0 1px var(--text); vertical-align: -1px; }
+.fs-chap { position: absolute; z-index: 3; left: clamp(20px, 5vw, 56px); bottom: 150px; pointer-events: none; opacity: 0; transform: translateY(8px); transition: opacity 1s, transform 1s; max-width: min(520px, 80%); display: none; }
+.hero.fs-clean .fs-chap { display: block; } .hero.fs-clean .fs-chap.show { opacity: 1; transform: none; }
+.fs-chap .k { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; color: var(--a); }
+.fs-chap .h { font-size: clamp(1.15rem, 2.4vw, 1.7rem); color: var(--text); margin-top: 3px; text-shadow: 0 1px 14px var(--bg); }
+.fs-toggle { position: absolute !important; z-index: 4; right: clamp(14px, 3vw, 40px); bottom: 18px; width: 46px; height: 46px; padding: 0 !important; justify-content: center; border-radius: 50%; background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.fs-toggle svg { width: 20px; height: 20px; } .fs-toggle:hover svg { transform: none; }
+.fs-toggle .eyeoff { display: none; } .hero.fs-clean .fs-toggle .eyeoff { display: block; } .hero.fs-clean .fs-toggle .eye { display: none; }
+.fs-toggle::after { content: attr(data-tip); position: absolute; right: 0; bottom: calc(100% + 10px); white-space: nowrap; padding: 7px 12px; border-radius: 8px; background: var(--surface); color: var(--text); border: 1px solid var(--line2); font-size: .8rem; font-weight: 600; box-shadow: var(--shadow); opacity: 0; transform: translateY(4px); pointer-events: none; transition: opacity .25s, transform .25s; }
+@media (hover: hover) { .fs-toggle:hover::after { opacity: 1; transform: none; } }
+.fs-toggle:focus-visible::after { opacity: 1; transform: none; }
+@media (max-width: 900px) { .fs-cap { display: none; } }
+@media (max-width: 760px) {
+  .hero.fs-on { padding-bottom: 214px; }
+  .fs-scrim { background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 90%, transparent) 0%, color-mix(in srgb, var(--bg) 72%, transparent) 46%, transparent 78%); }
+  .fs-hud { right: 70px; left: 12px; bottom: 12px; } .fs-gs { gap: 8px 10px; padding: 7px 9px; } .fs-gs .g { min-width: 58px; }
+  .fs-chap { bottom: 130px; } .fs-toggle { bottom: 14px; width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .fs-canvas { animation: none; } }
+html[dir="rtl"] :is(.fs-hud, .fs-toggle, .fs-chap) { direction: ltr; }
+.fs-disc { position: absolute; z-index: 3; left: clamp(14px, 3vw, 40px); right: 84px; bottom: 5px; font-size: .64rem; line-height: 1.25; color: var(--muted); pointer-events: none; }
+.fs-hud { bottom: 30px; }
+@media (max-width: 760px) { .fs-hud { bottom: 40px; } .fs-disc { bottom: 4px; right: 66px; font-size: .6rem; } .hero.fs-on { padding-bottom: 232px; } .fs-chap { bottom: 150px; } }
+.hero.fs-on { padding-bottom: 190px; }
+.hero.fs-on { padding-top: 104px; padding-bottom: 150px; }
+@media (max-width: 760px) { .hero.fs-on { padding-top: 100px; padding-bottom: 236px; } }
