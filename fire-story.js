@@ -3,8 +3,9 @@ if (!CanvasRenderingContext2D.prototype.roundRect) CanvasRenderingContext2D.prot
 function run(hero, cv, opts) {
   "use strict";
   const FONT = opts.font;
-  let DPRMAX = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 2 ? 1.25 : 2;
-  const stage = hero; let cx = cv.getContext('2d');
+  const LOWEND = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 2;
+  let DPRMAX = LOWEND ? 1.25 : 2, PXB = LOWEND ? 9e5 : 1.6e6;
+  const stage = hero; let cx = cv.getContext('2d', { alpha: false });
   const $ = id => hero.querySelector('#fs-' + id);
   const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let W = 0, H = 0, SK = 0, dpr = 1, G = 5, GW = 0, GH = 0, N = 0;
@@ -453,30 +454,48 @@ function run(hero, cv, opts) {
       if (lf > .02) {
         cx.globalAlpha = lf;
         const ccx = bx + sway * .55, ccy = by - hh * .68, sx = w * .98, sy = hh * .3, bl = [[-.6, .12, .46], [.6, .14, .46], [0, .22, .5], [-.34, -.22, .5], [.36, -.2, .5], [-.7, -.18, .32], [.72, -.16, .32], [0, -.5, .42], [-.28, -.58, .3], [.3, -.56, .3]];
-        bl.forEach(([ox, oy, r], q) => { const jx = (rn(q) - .5) * .12, jy = (rn(q + 9) - .5) * .12, x = ccx + (ox + jx) * sx, y = ccy + (oy + jy) * sy * 1.35, rr2 = r * sx * (.9 + rn(q + 3) * .2); cx.fillStyle = oy > .02 ? colL : (ox > 0 ? colR : mixCss(colL, colR, .5)); cx.beginPath(); cx.ellipse(x, y, rr2, rr2 * .82, 0, 0, 6.283); cx.fill(); });
-        cx.fillStyle = 'rgba(255,255,255,.1)'; bl.forEach(([ox, oy, r], q) => { if (oy < -.1 && ox > -.35) { const x = ccx + ox * sx + sx * .08, y = ccy + oy * sy * 1.35 - r * sx * .25; cx.beginPath(); cx.ellipse(x, y, r * sx * .55, r * sx * .32, -.4, 0, 6.283); cx.fill(); } });
+        const small = hh < 9, mid = small ? colR : mixCss(colL, colR, .5);
+        for (let g = 0; g < 3; g++) { cx.fillStyle = g === 0 ? colL : g === 1 ? mid : colR; cx.beginPath(); let any = false; bl.forEach(([ox, oy, r], q) => { if (small && q > 4) return; const grp = oy > .02 ? 0 : (ox > 0 ? 2 : 1); if (grp !== g) return; const jx = (rn(q) - .5) * .12, jy = (rn(q + 9) - .5) * .12, x = ccx + (ox + jx) * sx, y = ccy + (oy + jy) * sy * 1.35, rr2 = r * sx * (.9 + rn(q + 3) * .2) * (small ? 1.25 : 1); cx.moveTo(x + rr2, y); cx.ellipse(x, y, rr2, rr2 * .82, 0, 0, 6.283); any = true; }); if (any) cx.fill(); }
+        if (!small) { cx.fillStyle = 'rgba(255,255,255,.1)'; cx.beginPath(); bl.forEach(([ox, oy, r]) => { if (oy < -.1 && ox > -.35) { const x = ccx + ox * sx + sx * .08, y = ccy + oy * sy * 1.35 - r * sx * .25; cx.moveTo(x + r * sx * .55, y); cx.ellipse(x, y, r * sx * .55, r * sx * .32, -.4, 0, 6.283); } }); cx.fill(); }
         cx.fillStyle = 'rgba(0,0,0,.16)'; cx.beginPath(); cx.ellipse(ccx, ccy + sy * .42, sx * .8, sy * .22, 0, 0, 6.283); cx.fill();
-        if (hh > 14) { cx.fillStyle = 'rgba(255,255,255,.14)'; for (let q = 0; q < 5; q++) cx.fillRect(ccx + (rn(q + 20) - .5) * sx * 1.5, ccy + (rn(q + 30) - .7) * sy * 1.3, 1.4, 1.4); }
+        if (hh > 16) { cx.fillStyle = 'rgba(255,255,255,.14)'; for (let q = 0; q < 5; q++) cx.fillRect(ccx + (rn(q + 20) - .5) * sx * 1.5, ccy + (rn(q + 30) - .7) * sy * 1.3, 1.4, 1.4); }
         if (state === 0 && t.bloom && bo > .05 && hh > 9) { cx.fillStyle = `rgba(204,121,167,${.75 * bo})`; for (let q = 0; q < 6; q++) cx.fillRect(ccx + (rn(q + 40) - .5) * sx * 1.5, ccy + (rn(q + 50) - .6) * sy * 1.2, 2, 2); }
         cx.globalAlpha = 1;
       }
     } else {
       /* conifer: drooping tiers, serrated skirts, a shaded side and a lit side */
-      const T5 = [[.98, .74, .32], [.82, .6, .5], [.66, .45, .68], [.5, .3, .84], [.34, .14, 1]];
+      const T5 = [[.98, .74, .32], [.82, .6, .5], [.66, .45, .68], [.5, .3, .84], [.34, .14, 1]], small = hh < 9;
       for (let side = 0; side < 2; side++) {
         const sg = side ? 1 : -1; cx.fillStyle = side ? colR : colL;
-        for (let q = 4; q >= 0; q--) { const [a1, b1, kk] = T5[q], ax = bx + sway * a1 * .9, ay = by - hh * a1, yb = by - hh * b1, hw = w * kk * sg, hwI = hw * (.9 + rn(q + 60 + side) * .1);
-          cx.beginPath(); cx.moveTo(ax, ay); cx.quadraticCurveTo(bx + hw * .42 + sway * .4, ay + (yb - ay) * .55, bx + hw, yb + hh * .015);
+        cx.beginPath();
+        for (let q = 4; q >= 0; q--) { if (small && q % 2) continue; const [a1, b1, kk] = T5[q], ax = bx + sway * a1 * .9, ay = by - hh * a1, yb = by - hh * b1, hw = w * kk * sg;
+          cx.moveTo(ax, ay); cx.quadraticCurveTo(bx + hw * .42 + sway * .4, ay + (yb - ay) * .55, bx + hw, yb + hh * .015);
           const tn = 3; for (let z = 1; z <= tn; z++) { const zx = bx + hw * (1 - z / (tn + .6)), zy = yb + (z % 2 ? -hh * .028 : hh * .014); cx.lineTo(zx, zy); }
-          cx.lineTo(bx, yb - hh * .005); cx.closePath(); cx.fill(); }
+          cx.lineTo(bx, yb - hh * .005); cx.closePath(); }
+        cx.fill();
       }
-      cx.fillStyle = 'rgba(0,0,0,.17)'; for (let q = 0; q < 5; q++) { const yb = by - hh * T5[q][1], hw = w * T5[q][2]; cx.beginPath(); cx.moveTo(bx - hw, yb + hh * .012); cx.lineTo(bx + hw, yb + hh * .012); cx.lineTo(bx + hw * .6, yb + hh * .045); cx.lineTo(bx - hw * .6, yb + hh * .045); cx.closePath(); cx.fill(); }
-      cx.fillStyle = 'rgba(255,255,255,.08)'; cx.beginPath(); cx.moveTo(bx + sway * .9, by - hh); cx.lineTo(bx + w * .3, by - hh * .72); cx.lineTo(bx + w * .08, by - hh * .72); cx.closePath(); cx.fill();
+      if (!small) { cx.fillStyle = 'rgba(0,0,0,.17)'; cx.beginPath(); for (let q = 0; q < 5; q++) { const yb = by - hh * T5[q][1], hw = w * T5[q][2]; cx.moveTo(bx - hw, yb + hh * .012); cx.lineTo(bx + hw, yb + hh * .012); cx.lineTo(bx + hw * .6, yb + hh * .045); cx.lineTo(bx - hw * .6, yb + hh * .045); cx.closePath(); } cx.fill(); }
+      if (!small) { cx.fillStyle = 'rgba(255,255,255,.08)'; cx.beginPath(); cx.moveTo(bx + sway * .9, by - hh); cx.lineTo(bx + w * .3, by - hh * .72); cx.lineTo(bx + w * .08, by - hh * .72); cx.closePath(); cx.fill(); }
       if (ty === 2 && state === 0 && bo > .05) { cx.fillStyle = `rgba(204,121,167,${.9 * bo})`; for (let q = 0; q < 5; q++) cx.fillRect(bx + (rn(q + 70) - .5) * w * 1.3, by - hh * (.3 + rn(q + 80) * .5), 2, 2); }
     }
     const fy = ty === 1 ? .64 : .55;
     if (state === 2) { const fl = .78 + .22 * Math.sin(time * 9 + t.ph) + .12 * Math.sin(time * 17 + t.ph * 2), up = sstep(0, 1.5, u) * (1 - sstep(6, 9, u)); drawFlame(bx, by - hh * .1, hh * (.7 + .8 * up) * fl, w * 1.1, Math.sin(time * 3 + t.ph) * w * .6 + sway + ln * hh * .15, .95 * up); }
     else if ((state === 1 || state === 3) && st[k] === 1 && u > -1 && u < FL[k]) { const up = sstep(-1, 1.5, u) * (1 - sstep(FL[k] - 3, FL[k], u)), fl = .75 + .25 * Math.sin(time * 10 + t.ph); drawFlame(bx, by, hh * (.15 + .34 * inten[k]) * fl * up + 1, w * .55, sway * .3 + ln * hh * .06, up); }
+  }
+  /* tree layers are repainted into a back buffer a few hundred trees per frame, then swapped, so a repaint never stalls a frame */
+  let LB = [null, null];
+  function startBuild(L, nn, time) {
+    const tw = Math.ceil(W * dpr), th = Math.ceil(H * dpr);
+    if (!LY[L][2] || LY[L][2].width !== tw || LY[L][2].height !== th) { const c = document.createElement('canvas'); c.width = tw; c.height = th; LY[L][2] = c; LY[L][3] = c.getContext('2d'); }
+    const g = LY[L][3]; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    LB[L] = { i: 0, g, P: palette(nn), ln: lean(), bo: sstep(62, 76, doy) * (1 - sstep(108, 122, doy)), nn, time, gr: S.green, d: doy, decor: L === 1 };
+  }
+  function stepBuild(L, ms) {
+    const b = LB[L], sv = cx, t0 = performance.now(); cx = b.g;
+    if (b.decor) { drawDecor(b.nn); b.decor = false; }
+    while (b.i < trees.length) { const t = trees[b.i++]; if (t.st && (t.ty === 1) === (L === 1)) paintTree(t, b.nn, b.time, b.P, b.ln, b.bo, true); if ((b.i & 31) === 0 && performance.now() - t0 > ms) break; }
+    cx = sv;
+    if (b.i >= trees.length) { const y = LY[L]; [y[0], y[2]] = [y[2], y[0]]; [y[1], y[3]] = [y[3], y[1]]; fLast[L] = { nn: b.nn, gr: b.gr, d: b.d, t: b.time }; LB[L] = null; }
   }
   function rebuildLayer(L, nn, time) {
     const g = LY[L][1], sv = cx; cx = g; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
@@ -487,9 +506,9 @@ function run(hero, cv, opts) {
   }
   function drawTrees(nn, time) {
     LEAF = leafNow(doy, nn); classify();
-    for (let L = 0; L < 2; L++) { const f = fLast[L]; if (!fDirty[L] && (Math.abs(nn - f.nn) > .012 || Math.abs(S.green - f.gr) > .03 || (L === 1 && Math.abs(doy - f.d) > 3))) fDirty[L] = true; if (fDirty[L] && time - f.t > .3) rebuildLayer(L, nn, time); }
+    for (let L = 0; L < 2; L++) { const f = fLast[L]; if (!fDirty[L] && (Math.abs(nn - f.nn) > .012 || Math.abs(S.green - f.gr) > .05 || (L === 1 && Math.abs(doy - f.d) > 7))) fDirty[L] = true; if (fDirty[L] && !LB[L] && time - f.t > .3) { if (f.t < -1) rebuildLayer(L, nn, time); else { fDirty[L] = false; startBuild(L, nn, time); } } if (LB[L]) stepBuild(L, 2.5); }
     const bands = 8, bh = (H - SK) / bands;
-    for (let L = 0; L < 2; L++) { const c = LY[L][0]; for (let b = 0; b < bands; b++) { const y0 = SK + b * bh, off = Math.sin(time * .8 + b * .7 + L * 1.3) * (.35 + 1.3 * S.wind); cx.drawImage(c, 0, y0 * dpr, c.width, bh * dpr + 1, off, y0, W, bh + .5); } }
+    for (let L = 0; L < 2; L++) { const c = LY[L][0], kd = c.width / W; for (let b = 0; b < bands; b++) { const y0 = SK + b * bh, off = Math.sin(time * .8 + b * .7 + L * 1.3) * (.35 + 1.3 * S.wind); cx.drawImage(c, 0, y0 * kd, c.width, bh * kd + 1, off, y0, W, bh + .5); } }
     const P = palette(nn), ln = lean(), bo = sstep(62, 76, doy) * (1 - sstep(108, 122, doy));
     for (let i = 0; i < trees.length; i++) { const t = trees[i]; if (t.st || t.s === 5) continue; paintTree(t, nn, time, P, ln, bo, false); }
   }
@@ -1170,10 +1189,16 @@ function run(hero, cv, opts) {
   let avgL = .8;
 
   /* ================= frame ================= */
+  function calcDpr() { return Math.max(.8, Math.min(DPRMAX, window.devicePixelRatio || 1, Math.sqrt((W < 760 ? Math.min(PXB, 1.1e6) : PXB) / Math.max(1, W * H)))); }
+  /* resolution change only: keeps the world, the terrain and the forest, so it costs no visible pause */
+  function rescale() {
+    const nd = calcDpr(); if (Math.abs(nd - dpr) < .02) return; dpr = nd;
+    cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); baseKey = ''; sLayer = mkLayer(); sLast = { w: -9, nn: -9 }; LB = [null, null]; fDirty = [true, true];
+  }
   function resize() {
-    dpr = Math.min(DPRMAX, window.devicePixelRatio || 1); W = hero.clientWidth; H = hero.clientHeight; SK = Math.round(H * .36);
+    W = hero.clientWidth; H = hero.clientHeight; SK = Math.round(H * .36); dpr = calcDpr();
     cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); seed = 11; G = W < 700 ? 6 : 5;
-    buildFire(); buildTerrain(); buildMilkyWay(); planCamps(); spawnAnimals(); buildDecor(); LY = [mkLayer(), mkLayer()]; fDirty = [true, true]; Object.keys(YP).forEach(k => delete YP[k]); line = null; scarC.width = glowC.width = GW; scarC.height = glowC.height = GH; parts.length = 0; spots.length = 0; crews.length = 0; heli = null; resc = null; eng = null; inc = null;
+    buildFire(); buildTerrain(); buildMilkyWay(); planCamps(); spawnAnimals(); buildDecor(); LY = [mkLayer(), mkLayer()]; fDirty = [true, true]; fLast = [{ nn: -9, gr: -9, d: -9, t: -9 }, { nn: -9, gr: -9, d: -9, t: -9 }]; LB = [null, null]; baseKey = ''; Object.keys(YP).forEach(k => delete YP[k]); line = null; scarC.width = glowC.width = GW; scarC.height = glowC.height = GH; parts.length = 0; spots.length = 0; crews.length = 0; heli = null; resc = null; eng = null; inc = null;
     rain.length = 0; for (let i = 0; i < (W < 700 ? 140 : 260); i++) rain.push({ x: Math.random() * W * 1.2, y: Math.random() * H, v: 460 + Math.random() * 220 });
     sLayer = mkLayer(); sLast = { w: -9, nn: -9 };
     A.litter = [W * .62, SK + (H - SK) * .52]; flags.x = 0;
@@ -1315,6 +1340,32 @@ function run(hero, cv, opts) {
       const one = (x, y, sc, ph) => { if (e.view === 'side') { cx.save(); cx.globalAlpha = e.al; drawElephant(x, y, sc, e.d, ph, nn, dr, mv); cx.restore(); } else drawEleFB(x, y, sc, e.view === 'front', ph, nn, false, mv, e.al); };
       if (e.view === 'back') { one(e.x, e.y, s, e.ph); one(e.cx, e.cy, cs, e.ph + 1.3); } else { one(e.cx, e.cy, cs, e.ph + 1.3); one(e.x, e.y, s, e.ph); } });
   }
+  /* ---- static base: terrain, seasonal tint and snow are composed once and reused until they change ---- */
+  let baseC = null, baseG = null, baseKey = '', baseT = -9, baseN = -9;
+  function drawBase(nn, time) {
+    if (!baseC || baseC.width !== cv.width || baseC.height !== cv.height) { baseC = document.createElement('canvas'); baseC.width = cv.width; baseC.height = cv.height; baseG = baseC.getContext('2d'); baseKey = ''; }
+    const dryQ = clamp(dryD * .8 * (1 - S.green), 0, 1), greenQ = clamp(S.green - .4, 0, 1), wetQ = clamp(S.rain, 0, 1), svQ = clamp(S.snow, 0, 1);
+    const key = [Math.round(nn * 200), Math.round(dryQ * 20), Math.round(greenQ * 20), Math.round(wetQ * 25), Math.round(svQ * 40), topY | 0].join();
+    const moving = Math.abs(nn - baseN) > .003;
+    if (key !== baseKey && (!baseKey || moving || time - baseT > 1.2)) {
+      baseKey = key; baseT = time; baseN = nn; const sv0 = cx; cx = baseG; cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
+    cx.imageSmoothingEnabled = true; cx.imageSmoothingQuality = 'high';
+      cx.globalAlpha = 1; cx.drawImage(terr[0], 0, topY, W, terr[0].height * 2);
+      if (nn > .005) { cx.globalAlpha = nn; cx.drawImage(terr[1], 0, topY, W, terr[1].height * 2); cx.globalAlpha = 1; }
+      /* seasonal tint on the terrain, wet darkening after rain */
+      const tg = tint.getContext('2d'); tg.globalCompositeOperation = 'copy'; tg.drawImage(terr[0], 0, 0); tg.globalCompositeOperation = 'source-in';
+      const dryT = clamp(dryD * .8 * (1 - S.green), 0, 1), greenT = clamp(S.green - .4, 0, 1), wetT = clamp(S.rain, 0, 1);
+      tg.fillStyle = css(mixc(mixc(mixc(hex('#7a8a52'), hex('#b08a3c'), dryT), hex('#3f9a52'), greenT), hex('#2a4a62'), wetT * .6), (.10 + .14 * dryT + .12 * greenT + .2 * wetT) * (1 - nn * .5)); tg.fillRect(0, 0, tint.width, tint.height); tg.globalCompositeOperation = 'source-over';
+      cx.drawImage(tint, 0, topY, W, tint.height * 2);
+      /* snow cover by season */
+      const sv = clamp(S.snow, 0, 1), s0 = sv > .66 ? 0 : sv > .33 ? 1 : 2; const a0 = sv >= .85 ? 1 : 0;
+      const lv = sv * 2.99; const lo = Math.floor(clamp(2.99 - lv, 0, 2)), fr = clamp(2.99 - lv, 0, 2) - lo; // snowC index 0 thick .. 2 thin
+      cx.globalAlpha = (1 - fr) * (sv > .02 ? 1 : 0) * (1 - nn * .25); cx.drawImage(snowC[lo], 0, topY, W, snowC[lo].height * 2);
+      if (lo < 2) { cx.globalAlpha = fr * (1 - nn * .25); cx.drawImage(snowC[lo + 1], 0, topY, W, snowC[lo + 1].height * 2); } cx.globalAlpha = 1;
+      cx.globalAlpha = 1; cx = sv0;
+    }
+    cx.drawImage(baseC, 0, 0, W, H);
+  }
   function frameInner(now) {
     const dtR = Math.min(.05, (now - last) / 1000); last = now; const dt = dtR * speed;
     if (mode === 'auto') nTarget = siteDark() ? 1 : 0;
@@ -1323,19 +1374,7 @@ function run(hero, cv, opts) {
     fade = Math.min(1, fade + dtR * .6);
 
     drawSky(nn, time); drawAir(nn, time);
-    cx.imageSmoothingEnabled = true; cx.imageSmoothingQuality = 'high';
-    cx.globalAlpha = 1; cx.drawImage(terr[0], 0, topY, W, terr[0].height * 2);
-    if (nn > .005) { cx.globalAlpha = nn; cx.drawImage(terr[1], 0, topY, W, terr[1].height * 2); cx.globalAlpha = 1; }
-    /* seasonal tint on the terrain, wet darkening after rain */
-    const tg = tint.getContext('2d'); tg.globalCompositeOperation = 'copy'; tg.drawImage(terr[0], 0, 0); tg.globalCompositeOperation = 'source-in';
-    const dryT = clamp(dryD * .8 * (1 - S.green), 0, 1), greenT = clamp(S.green - .4, 0, 1), wetT = clamp(S.rain, 0, 1);
-    tg.fillStyle = css(mixc(mixc(mixc(hex('#7a8a52'), hex('#b08a3c'), dryT), hex('#3f9a52'), greenT), hex('#2a4a62'), wetT * .6), (.10 + .14 * dryT + .12 * greenT + .2 * wetT) * (1 - nn * .5)); tg.fillRect(0, 0, tint.width, tint.height); tg.globalCompositeOperation = 'source-over';
-    cx.drawImage(tint, 0, topY, W, tint.height * 2);
-    /* snow cover by season */
-    const sv = clamp(S.snow, 0, 1), s0 = sv > .66 ? 0 : sv > .33 ? 1 : 2; const a0 = sv >= .85 ? 1 : 0;
-    const lv = sv * 2.99; const lo = Math.floor(clamp(2.99 - lv, 0, 2)), fr = clamp(2.99 - lv, 0, 2) - lo; // snowC index 0 thick .. 2 thin
-    cx.globalAlpha = (1 - fr) * (sv > .02 ? 1 : 0) * (1 - nn * .25); cx.drawImage(snowC[lo], 0, topY, W, snowC[lo].height * 2);
-    if (lo < 2) { cx.globalAlpha = fr * (1 - nn * .25); cx.drawImage(snowC[lo + 1], 0, topY, W, snowC[lo + 1].height * 2); } cx.globalAlpha = 1;
+    drawBase(nn, time);
     drawStream(nn, time); drawLake(nn, time);
     updateFire(nn, time, dt);
     cx.drawImage(scarC, 0, SK, GW * G, GH * G);
@@ -1357,14 +1396,14 @@ function run(hero, cv, opts) {
 
   /* ---- run loop: paused when off screen or hidden, throttled for reduced motion, resolution steps down if frames are slow ---- */
   let vis = true, prevT = 0, ema = 16.7, slow = 0, slow2 = 0, lite = false, half = false, skip = false, lastRm = 0, lastW = W, lastH = H;
-  new IntersectionObserver(([e]) => { vis = e.isIntersecting; }, { threshold: 0 }).observe(hero);
+  const R = document.documentElement; new IntersectionObserver(([e]) => { vis = e.isIntersecting; R.classList.toggle('fs-live', vis); }, { threshold: 0 }).observe(hero);
   new ResizeObserver(() => { const w = hero.clientWidth, h = hero.clientHeight; if (Math.abs(w - lastW) > 2 || Math.abs(h - lastH) > 90) { lastW = w; lastH = h; const d = absDay; resize(); absDay = d; } }).observe(hero);
   function loop(now) {
-    if (!hero.isConnected) return; requestAnimationFrame(loop);
+    if (!hero.isConnected) { R.classList.remove('fs-live'); return; } requestAnimationFrame(loop);
     if (!vis || document.hidden) { last = now; prevT = 0; return; }
     if (rm && now - lastRm < 500) { last = now; return; } lastRm = now;
-    if (prevT) { const dtm = now - prevT; ema += (Math.min(dtm, 100) - ema) * .05; if (ema > 26) { if (++slow > 150 && DPRMAX > 1) { DPRMAX = 1; slow = 0; const d = absDay; resize(); absDay = d; } } else slow = Math.max(0, slow - 2);
-      if (ema > 34 && DPRMAX <= 1) { if (++slow2 > 200) { if (!lite) lite = true; else half = true; slow2 = 0; } } else slow2 = Math.max(0, slow2 - 3); }
+    if (prevT) { const dtm = now - prevT; ema += (Math.min(dtm, 100) - ema) * .05; if (ema > 26) { if (++slow > 120 && PXB > 5.5e5) { PXB *= .72; DPRMAX = Math.min(DPRMAX, 1.25); slow = 0; rescale(); } } else slow = Math.max(0, slow - 2);
+      if (ema > 34 && PXB <= 5.5e5) { if (++slow2 > 200) { if (!lite) lite = true; else half = true; slow2 = 0; } } else slow2 = Math.max(0, slow2 - 3); }
     prevT = now;
     if (half && (skip = !skip)) return;
     try { frameInner(now); } catch (e) { if (!loop.err) { loop.err = 1; console.warn('fire-story frame error', e); } }
