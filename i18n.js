@@ -532,7 +532,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET), ജിയോളജി, 2022 ജനുവരി",
 "BS-MS in Geological Sciences, IISER Kolkata": "ജിയോളജിക്കൽ സയൻസസിൽ BS-MS, IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "CoEDMM, IIT Roorkee-ൽ ആനന്ദു പ്രഭാകരൻ തന്റെ ഗവേഷണം അവതരിപ്പിക്കുന്നു",
-"CoEDMM review, IIT Roorkee": "CoEDMM റിവ്യൂ, IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "CoEDMM വാർഷിക അവലോകന യോഗം, IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "ഇന്ത്യൻ ഹിമാലയൻ മേഖലയിലെ കാട്ടുതീ സംഭവങ്ങളെക്കുറിച്ചുള്ള ഗവേഷണം IMD ഡയറക്ടർ ജനറൽ ഡോ. മൃത്യുഞ്ജയ് മൊഹപാത്രയ്ക്ക് വിശദീകരിക്കുന്നു",
 "03-07 February 2025": "2025 ഫെബ്രുവരി 3-7",
 "28-31 October 2026": "2026 ഒക്ടോബർ 28-31",
@@ -606,7 +606,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee-ലെ Fit India Half Marathon 2024 (Sangram 2024), 21 കിലോമീറ്റർ; പൂർത്തീകരണ മെഡലും വഴിയിൽ നിന്നുള്ള ചില പ്രകൃതി ചിത്രങ്ങളും.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "ഫ്രാൻസിലെ സ്ട്രാസ്ബർഗ്: റെയിൽവേ സ്റ്റേഷൻ, കത്തീഡ്രൽ, മേൽക്കൂരകൾ, സായാഹ്ന-അസ്തമയ ആകാശങ്ങൾ.",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "ഉത്തരാഖണ്ഡിലെ ഹർസിൽ, ഗംഗോത്രി എന്നിവിടങ്ങളിലേക്കുള്ള യാത്ര (2024 മാർച്ച് 1, 2), സഹപ്രവർത്തകരായ Shiwam Singh, Anamika Sekar, Shivani Joshi, Saurabh Singh എന്നിവർക്കൊപ്പം.",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "ഈ വെബ്സൈറ്റ് സന്ദർശനങ്ങൾ രാജ്യവും പേജും അടിസ്ഥാനമാക്കി മാത്രം എണ്ണുന്നു. IP വിലാസമോ വ്യക്തിഗത വിവരങ്ങളോ സൂക്ഷിക്കുന്നില്ല."
+"This website counts visits by country and page only. No IP address or personal data is stored.": "ഈ വെബ്സൈറ്റ് സന്ദർശനങ്ങൾ രാജ്യവും പേജും അടിസ്ഥാനമാക്കി മാത്രം എണ്ണുന്നു. IP വിലാസമോ വ്യക്തിഗത വിവരങ്ങളോ സൂക്ഷിക്കുന്നില്ല.",
+"Expert Lecture | 13 November 2026": "വിദഗ്ധ പ്രഭാഷണം | 2026 നവംബർ 13",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "മുംബൈയിലെ Indian Institute of Geomagnetism ഡയറക്ടറും JNU സ്കൂൾ ഓഫ് എൻവയോൺമെന്റൽ സയൻസസ് പ്രൊഫസറുമായ പ്രൊഫ. എ. പി. ദിമ്രി നടത്തിയ വിദഗ്ധ പ്രഭാഷണം: \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "ഹിമാലയത്തിലെ ഉയരത്തിനനുസരിച്ചുള്ള താപനവർധന, പർവത ഉഷ്ണതരംഗങ്ങൾ, മേഘവിസ്ഫോടനങ്ങൾ എന്നിവ പ്രഭാഷണത്തിൽ വിഷയമായി.",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "പ്രൊഫ. എ. പി. ദിമ്രി CoEDMM-ലെ മാസ്റ്റേഴ്സ്, PhD വിദ്യാർഥികൾക്കും അധ്യാപകർക്കുമൊപ്പം."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -1140,7 +1144,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET), भूविज्ञान, जनवरी 2022",
 "BS-MS in Geological Sciences, IISER Kolkata": "भूवैज्ञानिक विज्ञान में BS-MS, IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "CoEDMM, IIT Roorkee में अपना शोध प्रस्तुत करते हुए आनंदु प्रभाकरन",
-"CoEDMM review, IIT Roorkee": "CoEDMM समीक्षा, IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "CoEDMM वार्षिक समीक्षा बैठक, IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "भारतीय हिमालयी क्षेत्र में दावानल की घटनाओं पर अपना शोध IMD के महानिदेशक डॉ. मृत्युंजय महापात्र को समझाते हुए",
 "03-07 February 2025": "3-7 फ़रवरी 2025",
 "28-31 October 2026": "28-31 अक्टूबर 2026",
@@ -1214,7 +1218,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee में Fit India Half Marathon 2024 (Sangram 2024), 21 किमी; मेरा पूर्णता पदक और मार्ग की कुछ प्रकृति तस्वीरें।",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "स्ट्रासबर्ग, फ़्रांस: रेलवे स्टेशन, कैथेड्रल, छतें और शाम तथा सूर्यास्त का आकाश।",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "उत्तराखंड के हर्षिल और गंगोत्री की यात्रा (1 और 2 मार्च 2024), सहकर्मियों Shiwam Singh, Anamika Sekar, Shivani Joshi और Saurabh Singh के साथ।",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "यह वेबसाइट केवल देश और पृष्ठ के आधार पर विज़िट गिनती है। कोई IP पता या व्यक्तिगत डेटा संग्रहीत नहीं किया जाता।"
+"This website counts visits by country and page only. No IP address or personal data is stored.": "यह वेबसाइट केवल देश और पृष्ठ के आधार पर विज़िट गिनती है। कोई IP पता या व्यक्तिगत डेटा संग्रहीत नहीं किया जाता।",
+"Expert Lecture | 13 November 2026": "विशेषज्ञ व्याख्यान | 13 नवंबर 2026",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "मुंबई के Indian Institute of Geomagnetism के निदेशक और JNU के स्कूल ऑफ एनवायरनमेंटल साइंसेज़ के प्रोफ़ेसर प्रो. ए. पी. दिमरी का विशेषज्ञ व्याख्यान: \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee।",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "व्याख्यान में हिमालय में ऊँचाई पर निर्भर तापन, पर्वतीय ग्रीष्म लहरों और बादल फटने की घटनाओं पर चर्चा की गई।",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "प्रो. ए. पी. दिमरी CoEDMM के मास्टर्स और PhD विद्यार्थियों तथा संकाय सदस्यों के साथ।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1748,7 +1756,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET), géologie, janvier 2022",
 "BS-MS in Geological Sciences, IISER Kolkata": "BS-MS en sciences géologiques, IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "Anandu Prabhakaran présentant ses recherches au CoEDMM, IIT Roorkee",
-"CoEDMM review, IIT Roorkee": "Revue du CoEDMM, IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "Réunion annuelle d'évaluation du CoEDMM, IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "Présentation de mes recherches sur les feux de forêt dans la région himalayenne indienne au Dr Mrutyunjay Mohapatra, directeur général de l'IMD",
 "03-07 February 2025": "3-7 février 2025",
 "28-31 October 2026": "28-31 octobre 2026",
@@ -1822,7 +1830,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) à l'IIT Roorkee, 21 km, avec ma médaille de finisher et quelques photos de nature prises sur le parcours.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Strasbourg, en France : la gare, la cathédrale, les toits, et le ciel du soir et du coucher de soleil.",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Excursion à Harsil et à Gangotri, dans l'Uttarakhand (1 et 2 mars 2024), avec mes collègues Shiwam Singh, Anamika Sekar, Shivani Joshi et Saurabh Singh.",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "Ce site ne compte les visites que par pays et par page. Aucune adresse IP ni donnée personnelle n'est conservée."
+"This website counts visits by country and page only. No IP address or personal data is stored.": "Ce site ne compte les visites que par pays et par page. Aucune adresse IP ni donnée personnelle n'est conservée.",
+"Expert Lecture | 13 November 2026": "Conférence d'expert | 13 novembre 2026",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Conférence d'expert du Pr A. P. Dimri, directeur de l'Indian Institute of Geomagnetism (Mumbai) et professeur à la School of Environmental Sciences de la JNU, sur « Elevation Dependent Warming and Climate Extremes over the Indian Himalayas », CoEDMM, IIT Roorkee.",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "La conférence a porté sur le réchauffement dépendant de l'altitude, les vagues de chaleur en montagne et les orages cataclysmiques dans l'Himalaya.",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Le Pr A. P. Dimri avec les étudiants de master et de PhD et les membres du corps enseignant du CoEDMM."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -2356,7 +2368,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET), Geologie, Januar 2022",
 "BS-MS in Geological Sciences, IISER Kolkata": "BS-MS in Geowissenschaften, IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "Anandu Prabhakaran stellt seine Forschung am CoEDMM, IIT Roorkee vor",
-"CoEDMM review, IIT Roorkee": "CoEDMM-Review, IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "Jährliche Überprüfungssitzung des CoEDMM, IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "Erläuterung meiner Forschung zu Waldbränden in der indischen Himalaya-Region gegenüber Dr. Mrutyunjay Mohapatra, Generaldirektor des IMD",
 "03-07 February 2025": "3.-7. Februar 2025",
 "28-31 October 2026": "28.-31. Oktober 2026",
@@ -2430,7 +2442,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) am IIT Roorkee, 21 km, mit meiner Finisher-Medaille und einigen Naturfotos von der Strecke.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Straßburg, Frankreich: der Bahnhof, das Münster, die Dächer sowie der Abend- und Sonnenunterganghimmel.",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Ausflug nach Harsil und Gangotri in Uttarakhand (1. und 2. März 2024) mit meinen Kollegen Shiwam Singh, Anamika Sekar, Shivani Joshi und Saurabh Singh.",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "Diese Website zählt Besuche ausschließlich nach Land und Seite. Es werden keine IP-Adressen oder personenbezogenen Daten gespeichert."
+"This website counts visits by country and page only. No IP address or personal data is stored.": "Diese Website zählt Besuche ausschließlich nach Land und Seite. Es werden keine IP-Adressen oder personenbezogenen Daten gespeichert.",
+"Expert Lecture | 13 November 2026": "Fachvortrag | 13. November 2026",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Fachvortrag von Prof. A. P. Dimri, Direktor des Indian Institute of Geomagnetism (Mumbai) und Professor an der School of Environmental Sciences der JNU, zum Thema \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "Der Vortrag behandelte die höhenabhängige Erwärmung, Hitzewellen im Gebirge und Wolkenbrüche im Himalaya.",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Prof. A. P. Dimri mit den Master- und PhD-Studierenden sowie den Lehrenden des CoEDMM."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -2964,7 +2980,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET)، الجيولوجيا، يناير 2022",
 "BS-MS in Geological Sciences, IISER Kolkata": "BS-MS في العلوم الجيولوجية، IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "أنندو برابهاكاران يعرض بحثه في CoEDMM، IIT Roorkee",
-"CoEDMM review, IIT Roorkee": "مراجعة CoEDMM، IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "الاجتماع السنوي لمراجعة CoEDMM، IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "أشرح البحث المتعلق بحرائق الغابات في منطقة الهيمالايا الهندية للدكتور مريتيونجاي موهاباترا، المدير العام لـ IMD",
 "03-07 February 2025": "3-7 فبراير 2025",
 "28-31 October 2026": "28-31 أكتوبر 2026",
@@ -3038,7 +3054,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) في IIT Roorkee، 21 كم، مع ميدالية إتمام السباق وبعض صور الطبيعة من المسار.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "ستراسبورغ بفرنسا: محطة القطار والكاتدرائية والأسطح وسماء المساء والغروب.",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "رحلة إلى هارسيل وغانغوتري في أوتاراخاند (1 و2 مارس 2024) مع زملائي Shiwam Singh وAnamika Sekar وShivani Joshi وSaurabh Singh.",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "يحصي هذا الموقع الزيارات حسب البلد والصفحة فقط. ولا تُخزَّن أي عناوين IP أو بيانات شخصية."
+"This website counts visits by country and page only. No IP address or personal data is stored.": "يحصي هذا الموقع الزيارات حسب البلد والصفحة فقط. ولا تُخزَّن أي عناوين IP أو بيانات شخصية.",
+"Expert Lecture | 13 November 2026": "محاضرة متخصصة | 13 نوفمبر 2026",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "محاضرة متخصصة للأستاذ أ. ب. ديمري، مدير Indian Institute of Geomagnetism في مومباي وأستاذ في School of Environmental Sciences بجامعة JNU، بعنوان \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\"، CoEDMM، IIT Roorkee.",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "تناولت المحاضرة الاحترار المرتبط بالارتفاع، وموجات الحر الجبلية، والانفجارات السحابية في الهيمالايا.",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "الأستاذ أ. ب. ديمري مع طلبة الماجستير والدكتوراه وأعضاء هيئة التدريس في CoEDMM."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -3449,7 +3469,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET), Geología, enero de 2022",
 "BS-MS in Geological Sciences, IISER Kolkata": "BS-MS en Ciencias Geológicas, IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "Anandu Prabhakaran presentando su investigación en el CoEDMM, IIT Roorkee",
-"CoEDMM review, IIT Roorkee": "Revisión del CoEDMM, IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "Reunión anual de revisión del CoEDMM, IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "Explicación de mi investigación sobre incendios forestales en la región del Himalaya indio al Dr. Mrutyunjay Mohapatra, director general del IMD",
 "03-07 February 2025": "3-7 de febrero de 2025",
 "28-31 October 2026": "28-31 de octubre de 2026",
@@ -3523,7 +3543,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) en el IIT Roorkee, 21 km, con mi medalla de finalista y algunas fotos de naturaleza del recorrido.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Estrasburgo, Francia: la estación de tren, la catedral, los tejados y los cielos del atardecer.",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Viaje a Harsil y Gangotri, en Uttarakhand (1 y 2 de marzo de 2024), con mis colegas Shiwam Singh, Anamika Sekar, Shivani Joshi y Saurabh Singh.",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "Este sitio web solo cuenta las visitas por país y por página. No se almacena ninguna dirección IP ni dato personal."
+"This website counts visits by country and page only. No IP address or personal data is stored.": "Este sitio web solo cuenta las visitas por país y por página. No se almacena ninguna dirección IP ni dato personal.",
+"Expert Lecture | 13 November 2026": "Conferencia de un experto | 13 de noviembre de 2026",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Conferencia de un experto a cargo del Prof. A. P. Dimri, director del Indian Institute of Geomagnetism (Bombay) y profesor de la School of Environmental Sciences de la JNU, sobre \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "La conferencia abordó el calentamiento dependiente de la elevación, las olas de calor de montaña y los aguaceros torrenciales en el Himalaya.",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "El Prof. A. P. Dimri con los estudiantes de máster y de PhD y los miembros del profesorado del CoEDMM."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -3934,7 +3958,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test（KSET），地质学，2022 年 1 月",
 "BS-MS in Geological Sciences, IISER Kolkata": "地质科学 BS-MS，IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "Anandu Prabhakaran 在 CoEDMM, IIT Roorkee 介绍自己的研究",
-"CoEDMM review, IIT Roorkee": "CoEDMM 评审，IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "CoEDMM 年度评审会议，IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "向 IMD 总干事 Mrutyunjay Mohapatra 博士介绍印度喜马拉雅地区野火事件的研究",
 "03-07 February 2025": "2025年2月3-7日",
 "28-31 October 2026": "2026年10月28-31日",
@@ -4008,7 +4032,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee 的 Fit India Half Marathon 2024（Sangram 2024），21 公里，附我的完赛奖牌和沿途的几张自然风光照片。",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "法国斯特拉斯堡：火车站、大教堂、屋顶，以及傍晚和日落时分的天空。",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "北阿坎德邦哈西尔和根戈特里之行（2024年3月1日和2日），同行的有同事 Shiwam Singh、Anamika Sekar、Shivani Joshi 和 Saurabh Singh。",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "本网站仅按国家和页面统计访问次数，不存储 IP 地址或任何个人数据。"
+"This website counts visits by country and page only. No IP address or personal data is stored.": "本网站仅按国家和页面统计访问次数，不存储 IP 地址或任何个人数据。",
+"Expert Lecture | 13 November 2026": "专家讲座 | 2026年11月13日",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Indian Institute of Geomagnetism（孟买）所长、JNU 环境科学学院教授 A. P. Dimri 教授作专家讲座，题为“Elevation Dependent Warming and Climate Extremes over the Indian Himalayas”，CoEDMM, IIT Roorkee。",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "讲座内容涵盖喜马拉雅地区的海拔依赖性增暖、山地热浪和云爆。",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "A. P. Dimri 教授与 CoEDMM 的硕士生、PhD 学生及教师合影。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -4419,7 +4447,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test（KSET）、地質学、2022年1月",
 "BS-MS in Geological Sciences, IISER Kolkata": "地質科学の BS-MS、IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "CoEDMM, IIT Roorkee で研究を発表する Anandu Prabhakaran",
-"CoEDMM review, IIT Roorkee": "CoEDMM レビュー、IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "CoEDMM 年次レビュー会議、IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "IMD 長官の Mrutyunjay Mohapatra 博士に、インド・ヒマラヤ地域の野火に関する研究を説明している様子",
 "03-07 February 2025": "2025年2月3-7日",
 "28-31 October 2026": "2026年10月28-31日",
@@ -4493,7 +4521,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee での Fit India Half Marathon 2024（Sangram 2024）、21 km。完走メダルと、コース沿いの自然の写真をいくつか。",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "フランス・ストラスブール：駅、大聖堂、屋根、そして夕暮れと日没の空。",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "ウッタラーカンド州のハルシルとガンゴートリーへの旅（2024年3月1日と2日）。同僚の Shiwam Singh、Anamika Sekar、Shivani Joshi、Saurabh Singh と一緒でした。",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "このウェブサイトは訪問数を国別とページ別にのみ集計しており、IP アドレスや個人データは保存しません。"
+"This website counts visits by country and page only. No IP address or personal data is stored.": "このウェブサイトは訪問数を国別とページ別にのみ集計しており、IP アドレスや個人データは保存しません。",
+"Expert Lecture | 13 November 2026": "専門家講演 | 2026年11月13日",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Indian Institute of Geomagnetism（ムンバイ）所長で JNU 環境科学研究科教授の A. P. Dimri 教授による専門家講演「Elevation Dependent Warming and Climate Extremes over the Indian Himalayas」、CoEDMM, IIT Roorkee。",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "講演では、ヒマラヤにおける標高依存性の温暖化、山岳地域の熱波、雲霧豪雨（クラウドバースト）が扱われました。",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "A. P. Dimri 教授と CoEDMM の修士課程・PhD の学生および教員。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -4904,7 +4936,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET), Geologia, janeiro de 2022",
 "BS-MS in Geological Sciences, IISER Kolkata": "BS-MS em Ciências Geológicas, IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "Anandu Prabhakaran apresentando sua pesquisa no CoEDMM, IIT Roorkee",
-"CoEDMM review, IIT Roorkee": "Revisão do CoEDMM, IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "Reunião anual de revisão do CoEDMM, IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "Explicando a pesquisa sobre incêndios florestais na região do Himalaia indiano ao Dr. Mrutyunjay Mohapatra, diretor-geral do IMD",
 "03-07 February 2025": "3-7 de fevereiro de 2025",
 "28-31 October 2026": "28-31 de outubro de 2026",
@@ -4978,7 +5010,11 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) no IIT Roorkee, 21 km, com minha medalha de conclusão e algumas fotos da natureza ao longo do percurso.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Estrasburgo, na França: a estação de trem, a catedral, os telhados e os céus do entardecer e do pôr do sol.",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Viagem a Harsil e Gangotri, em Uttarakhand (1 e 2 de março de 2024), com meus colegas Shiwam Singh, Anamika Sekar, Shivani Joshi e Saurabh Singh.",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "Este site conta as visitas apenas por país e por página. Nenhum endereço IP ou dado pessoal é armazenado."
+"This website counts visits by country and page only. No IP address or personal data is stored.": "Este site conta as visitas apenas por país e por página. Nenhum endereço IP ou dado pessoal é armazenado.",
+"Expert Lecture | 13 November 2026": "Palestra de especialista | 13 de novembro de 2026",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Palestra de especialista do Prof. A. P. Dimri, diretor do Indian Institute of Geomagnetism (Mumbai) e professor da School of Environmental Sciences da JNU, sobre \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "A palestra abordou o aquecimento dependente da elevação, as ondas de calor em áreas montanhosas e os temporais súbitos (cloudbursts) no Himalaia.",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "O Prof. A. P. Dimri com os estudantes de mestrado e de PhD e os docentes do CoEDMM."
 },
 "sv": {
 "Skip to content": "Hoppa till innehållet",
@@ -5512,7 +5548,7 @@ window.I18N = {
 "Kerala State Eligibility Test (KSET), Geology, January 2022": "Kerala State Eligibility Test (KSET), geologi, januari 2022",
 "BS-MS in Geological Sciences, IISER Kolkata": "BS-MS i geovetenskap, IISER Kolkata",
 "Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee": "Anandu Prabhakaran presenterar sin forskning vid CoEDMM, IIT Roorkee",
-"CoEDMM review, IIT Roorkee": "Granskning av CoEDMM, IIT Roorkee",
+"CoEDMM Annual Review Meeting, IIT Roorkee": "CoEDMM:s årliga granskningsmöte, IIT Roorkee",
 "Explaining research on wildfire events over the Indian Himalayan Region to Dr. Mrutyunjay Mohapatra, Director General, IMD": "Jag förklarar min forskning om skogsbränder i den indiska Himalayaregionen för dr Mrutyunjay Mohapatra, generaldirektör för IMD",
 "03-07 February 2025": "3-7 februari 2025",
 "28-31 October 2026": "28-31 oktober 2026",
@@ -5586,6 +5622,10 @@ window.I18N = {
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "Fit India Half Marathon 2024 (Sangram 2024) vid IIT Roorkee, 21 km, med min målgångsmedalj och några naturbilder från banan.",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "Strasbourg i Frankrike: järnvägsstationen, katedralen, hustaken samt kvälls- och solnedgångshimlen.",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "Resa till Harsil och Gangotri i Uttarakhand (1 och 2 mars 2024) med mina kollegor Shiwam Singh, Anamika Sekar, Shivani Joshi och Saurabh Singh.",
-"This website counts visits by country and page only. No IP address or personal data is stored.": "Den här webbplatsen räknar bara besök per land och sida. Inga IP-adresser eller personuppgifter sparas."
+"This website counts visits by country and page only. No IP address or personal data is stored.": "Den här webbplatsen räknar bara besök per land och sida. Inga IP-adresser eller personuppgifter sparas.",
+"Expert Lecture | 13 November 2026": "Expertföreläsning | 13 november 2026",
+"Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Expertföreläsning av prof. A. P. Dimri, föreståndare för Indian Institute of Geomagnetism (Mumbai) och professor vid School of Environmental Sciences, JNU, om \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
+"The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "Föreläsningen behandlade höjdberoende uppvärmning, värmeböljor i bergsområden och skyfall i Himalaya.",
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Prof. A. P. Dimri med masterstudenter, PhD-studenter och lärare vid CoEDMM."
 }
 };
