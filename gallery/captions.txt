@@ -18,6 +18,11 @@
 # A photo is shown only if its ID is listed here. A line with no caption is fine:  PhD_002 |
 # Lines below are the captions from the earlier website. They stay hidden until a file with that name is added.
 
+# ---- 13 November 2026: Expert lecture by Prof. A. P. Dimri at CoEDMM, IIT Roorkee ----
+Conf_008 | [2026-11-13] Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on "Elevation Dependent Warming and Climate Extremes over the Indian Himalayas", CoEDMM, IIT Roorkee, 13 November 2026.
+Conf_008_01 | Prof. A. P. Dimri delivering the lecture to the students and faculty members of CoEDMM.
+Conf_008_02 | The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.
+Conf_008_03 | Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.
 # ---- 22 October 2026: CoEDMM review at IIT Roorkee (newest first) ----
 Meet_075 | [2026-10-22] CoEDMM review, IIT Roorkee
 Meet_075_01 | At the WCRG Lab, CoEDMM, IIT Roorkee. From left: Sachin, Shiwam Singh, Arun Dev Singh, Saurabh Singh, Anandu Prabhakaran, Prof. Dhiman, Dr. Mrutyunjay Mohapatra (Director General, IMD), Dr. Arti Bhatt (Scientist-G, Associate Director, CFEES, DRDO), Viswanandan Kumar Singh and Ayush K. Bondwal. MausamDrishti forecast of WCRG in the background.

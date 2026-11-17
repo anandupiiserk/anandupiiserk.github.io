@@ -1151,3 +1151,14 @@ a.inst:hover, a.inst:focus-visible { color: var(--a); background-size: 100% 2px;
 .btn.admlnk { padding: 9px 18px; font-size: .8rem; gap: 8px; min-height: 40px; }
 .btn.admlnk svg { width: 15px; height: 15px; transform: none !important; }
 @media (max-width: 620px) { .copy .socwrap { margin: 0; align-items: center; } }
+
+/* Phone: the language control moves from the header into the menu panel, beside A- and A+ */
+@media (max-width: 700px) { .tools .lang-wrap { display: none; } }
+html.nc .mtools .ml { display: inline-flex; align-items: center; gap: 8px; }
+html.nc .mtools .ml svg { width: 18px; height: 18px; }
+html.nc .mtools .ml .mlc { font-size: .8rem; letter-spacing: .06em; color: var(--muted); }
+html.nc .mtools .mlist { flex: 1 1 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+html.nc .mtools .mlist[hidden] { display: none; }
+html.nc .mtools .mlist button { min-height: 44px; padding: 0 14px; font-weight: 500; }
+html.nc .mtools .mlist button[aria-checked="true"] { background: var(--a-soft); border-color: var(--a); font-weight: 700; }
+html.nc .mtools .mlist .mvc { grid-column: 1 / -1; }
