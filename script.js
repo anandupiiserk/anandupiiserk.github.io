@@ -737,6 +737,12 @@ $$('canvas.contours').forEach(cv => {
     host.addEventListener('mouseleave', () => { e.mouse.on = false; });
   }
 });
+/* Home hero: forest fire story animation, loaded only on the home page (fire-story.js). */
+(function () {
+  const hero = $('.hero[data-fs]'); if (!hero) return;
+  const go = () => { if (window.FireStory) window.FireStory.mount(hero, { tr }); };
+  if (window.FireStory) go(); else if (!window.__fsLoading) { window.__fsLoading = true; const sc = document.createElement('script'); sc.src = (window.__srcUrl || 'script.js').replace(/script\.js/, 'fire-story.js'); sc.onload = go; document.head.appendChild(sc); } else addEventListener('fsready', go, { once: true });
+})();
 addEventListener('themechange', () => engines.forEach(e => { e.colors(); if (reduce) e.frame(0); }));
 let rzT; addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => engines.forEach(e => { e.resize(); if (reduce) e.frame(0); }), 150); });
 if (reduce) engines.forEach(e => e.frame(0));
