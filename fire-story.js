@@ -166,6 +166,7 @@ function run(hero, cv, opts) {
   /* ================= callouts (pointers) ================= */
   const calls = [], flags = {};
   const A = { fire: [0, 0], crew: null, heli: null, light: null, sock: [0, 0], lake: [0, 0], fog: [0, 0], litter: [0, 0], tree: [0, 0] };
+  const sayA = () => {};
   const say = (key, text, anchor, dur = 7, off = [48, -54]) => { if (flags[key] && T - flags[key] < 30) return; flags[key] = T; if (calls.length > 2) calls.shift(); calls.push({ text, anchor, t0: T, dur, off }); };
 
   /* ================= fire core ================= */
@@ -210,7 +211,7 @@ function run(hero, cv, opts) {
   }
 
   /* ================= crews, fire line, helicopter ================= */
-  const crews = []; let heli = null, line = null;
+  const crews = []; let heli = null, line = null, resc = null;
   const fireCentre = () => A.fire;
   const nearestBurning = (x, y, maxd = 1e9) => { let best = -1, bd2 = maxd * maxd; const m = Math.min(burning.length, 220); for (let s = 0; s < m; s++) { const k = burning[(Math.random() * burning.length) | 0], [cx2, cy2] = cellXY(k), d2 = (cx2 - x) ** 2 + (cy2 - y) ** 2; if (d2 < bd2) { bd2 = d2; best = k; } } return best; };
   function sendCrew(count) { for (let c = 0; c < count; c++) crews.push({ x: W * (.06 + .04 * c), y: H + 12, tx: 0, ty: 0, mode: 'walk', tool: c % 2, ph: Math.random() * 6, k: -1, role: null, slot: c }); }
@@ -239,9 +240,9 @@ function run(hero, cv, opts) {
         if (!A.crew) A.crew = [c.x, c.y - 16]; return;
       }
       if (c.mode === 'idle' && !inc) c.mode = 'done';
-      if (c.mode !== 'done' && (c.k < 0 || st[c.k] !== 1)) { c.k = nearestBurning(c.x, c.y - 10, c.mode === 'work' ? 160 : 1e9); if (c.k >= 0) { const [x, y] = cellXY(c.k); c.tx = x - 14 + (c.tool ? 26 : 0); c.ty = y + 18; c.mode = 'walk'; } else if (c.mode === 'work') c.mode = 'done'; }
+      if (c.mode !== 'done' && (c.k < 0 || st[c.k] !== 1)) { c.k = nearestBurning(c.x, c.y - 10, c.mode === 'work' ? 160 : 1e9); if (c.k >= 0) { const [x, y] = cellXY(c.k); const vx = c.x - x, vy = c.y - y, vd = Math.hypot(vx, vy) || 1, so = 58; c.fx = x; c.fy = y; c.tx = clamp(x + vx / vd * so + (c.tool ? 14 : -14), 10, W - 10); c.ty = clamp(y + vy / vd * so, SK + 16, H - 14); c.mode = 'walk'; } else if (c.mode === 'work') c.mode = 'done'; }
       if (c.mode === 'walk' && c.k >= 0) { const dx = c.tx - c.x, dy = c.ty - c.y, d = Math.hypot(dx, dy); if (d < 4) c.mode = 'work'; else { c.x += dx / d * 16 * dt; c.y += dy / d * 16 * dt; } }
-      if (c.mode === 'work' && c.k >= 0) { extinguishAt(c.x, c.y - 18, 30, 1.1 * dt, .9); if (Math.random() < dt * 10 && parts.length < 1300) parts.push({ k: 3, x: c.x + 6, y: c.y - 16, vx: (c.tool ? -1 : 1) * (14 + Math.random() * 14), vy: -6 + Math.random() * 6, r: 1.3, age: 0, max: .6 + Math.random() * .3, w: 0 }); }
+      if (c.mode === 'work' && c.k >= 0) { const fdx = c.fx - c.x, fdy = c.fy - (c.y - 16), fd = Math.hypot(fdx, fdy) || 1; if (fd < 38) { c.x -= fdx / fd * 22 * dt; c.y = clamp(c.y - fdy / fd * 22 * dt, SK + 16, H - 14); } if (fd < 80) { extinguishAt(c.fx, c.fy, 30, 1.1 * dt, .9); if (Math.random() < dt * 14 && parts.length < 1300) { const T2 = .65; parts.push({ k: 3, x: c.x + 5 * Math.sign(fdx || 1), y: c.y - 15, vx: fdx / T2 + (Math.random() - .5) * 8, vy: (fdy - 19) / T2 + (Math.random() - .5) * 8, r: 1.3, age: 0, max: T2 * (.9 + Math.random() * .2), w: 0 }); } } }
       if (!A.crew) A.crew = [c.x, c.y - 16];
     });
     for (let c = crews.length - 1; c >= 0; c--) if (crews[c].mode === 'done') { crews[c].x += 14 * dt; if (crews[c].x > W + 20) crews.splice(c, 1); }
@@ -679,11 +680,29 @@ function run(hero, cv, opts) {
       if (!c.ignoring) { if (night && !c.ban && !c.lit && Math.random() < dt * .5) { c.lit = true; } if ((!night || c.ban) && c.lit) { c.lit = false; c.out = 1; for (let s = 0; s < 6; s++) steamAt(c.x, c.y); if (!c.told && !inc) { c.told = true; say('cm', night ? 'Campfire banned: the campers put it out with water' : 'Campers put the fire out with water before leaving', () => [c.x, c.y - 16], 8, [-60, -60]); } } }
       if (c.ban && !c.bs) { c.bs = true; if (!inc) say('cb', 'Fire danger high: campfires are banned at the trekking camps', () => [c.x, c.y - 26], 8, [-80, -70]); } if (!c.ban) c.bs = false;
       c.out = Math.max(0, c.out - dt);
-      const flee = c.ignoring && inc && inc.ignited;
+      c.fdT = (c.fdT || 0) - dt;
+      if (c.fdT <= 0) { c.fdT = .45; let best = 1e9, bx = c.x, by = c.y; const qs = [0, 0, 0, 0], stp = Math.max(1, (burning.length / 700) | 0); for (let s = 0; s < burning.length; s += stp) { const [fx, fy] = cellXY(burning[s]), dx = fx - c.x, dy = fy - c.y, d = Math.hypot(dx, dy); if (d < best) { best = d; bx = fx; by = fy; } if (d < 150) qs[(dx > 0 ? 1 : 0) + (dy > 0 ? 2 : 0)] = 1; } c.fd = best; c.fx = bx; c.fy = by; c.cut = qs[0] + qs[1] + qs[2] + qs[3]; }
+      if (c.away && !inc && burning.length < 6) { c.away = false; c.rescued = false; c.people.forEach(p => { p.hidden = false; p.x = p.hx; p.y = p.hy; }); }
+      const flee = (c.ignoring && inc && inc.ignited) || (c.fd || 1e9) < 170;
       if (c.scare > 0) c.scare -= dt;
-      const sc2 = .75 + .7 * clamp((c.y - SK) / (H - SK), 0, 1); if (!c.hide) { c.people.forEach(p => { p.hidden = false; p.up = false; }); }
-      c.people.forEach((p, i) => { if (c.hide) { const tx = i < 2 ? c.x - 36 * sc2 + i * 3 : c.x + 40 * sc2, ty = i < 2 ? c.y + 5 * sc2 : c.y + 4 * sc2, dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy); if (d < 3) { if (i < 2) p.hidden = true; else p.up = true; p.mv = false; } else { p.x += dx / d * 24 * dt; p.y += dy / d * 24 * dt; p.mv = true; } } else if (c.scare > 0 && !flee) { const dx = p.x - c.scareFrom[0], dy = p.y - c.scareFrom[1], d = Math.hypot(dx, dy) || 1; if (d < 70) { p.x += dx / d * 16 * dt; p.y += (dy / d * 5 + 4) * dt; p.mv = true; } else p.mv = false; } else if (flee) { const dx = p.x - c.x, dy = p.y - c.y; const d = Math.hypot(dx, dy) || 1; if (d < 110) { p.x += dx / d * 15 * dt; p.y += (dy / d * 5 + 6) * dt; p.mv = true; } else p.mv = false; } else { p.x += (p.hx - p.x) * Math.min(1, dt * .5); p.y += (p.hy - p.y) * Math.min(1, dt * .5); p.mv = false; } });
+      const sc2 = .75 + .7 * clamp((c.y - SK) / (H - SK), 0, 1); if (!c.hide && !c.away) { c.people.forEach(p => { p.hidden = false; p.up = false; }); }
+      c.people.forEach((p, i) => { if (c.away || c.boarding) return; if (c.hide) { const tx = i < 2 ? c.x - 36 * sc2 + i * 3 : c.x + 40 * sc2, ty = i < 2 ? c.y + 5 * sc2 : c.y + 4 * sc2, dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy); if (d < 3) { if (i < 2) p.hidden = true; else p.up = true; p.mv = false; } else { p.x += dx / d * 24 * dt; p.y += dy / d * 24 * dt; p.mv = true; } } else if (c.scare > 0 && !flee) { const dx = p.x - c.scareFrom[0], dy = p.y - c.scareFrom[1], d = Math.hypot(dx, dy) || 1; if (d < 70) { p.x += dx / d * 16 * dt; p.y += (dy / d * 5 + 4) * dt; p.mv = true; } else p.mv = false; } else if (flee) { const nf = (c.fd || 1e9) < 170, sx = nf ? c.fx : c.x, sy = nf ? c.fy : c.y, dx = p.x - sx, dy = p.y - sy, d = Math.hypot(dx, dy) || 1; if (d < (nf ? 230 : 110)) { p.x = clamp(p.x + dx / d * 24 * dt, 8, W - 8); p.y = clamp(p.y + (dy / d * 10 + 3) * dt, SK + 12, H - 10); p.mv = true; } else p.mv = false; } else { p.x += (p.hx - p.x) * Math.min(1, dt * .5); p.y += (p.hy - p.y) * Math.min(1, dt * .5); p.mv = false; } });
     });
+  }
+
+  function updateRescue(dt) {
+    if (!resc) {
+      if (burning.length < 160) return; const c = camps.find(c => !c.rescued && !c.away && (c.fd || 1e9) < 75 && (c.cut || 0) >= 3);
+      if (c) { c.rescued = true; c.boarding = true; resc = { x: -90, y: SK * .5, vx: 60, vy: 0, ph: 'in', t: 0, face: 1, bx: 0, by: 0, load: 0, pitch: 0, rot: 0, camp: c, nobucket: true }; say('rs', 'Cut off by fire on every side: a rescue helicopter lifts the campers out', () => [c.x, c.y - 30], 11, [-130, -70]); }
+      return;
+    }
+    const h = resc, c = h.camp;
+    const steer = (x, y, vmax) => { const dx = x - h.x, dy = y - h.y, d = Math.hypot(dx, dy), want = Math.min(vmax, d * 1.5), k = Math.min(1, dt * 1.7); h.vx += (dx / (d || 1) * want - h.vx) * k; h.vy += (dy / (d || 1) * want - h.vy) * k; h.x += h.vx * dt; h.y += h.vy * dt; return d < 7; };
+    if (h.ph === 'in') { if (steer(c.x, c.y - 82, 160)) { h.ph = 'land'; h.t = 0; } }
+    else if (h.ph === 'land') { steer(c.x, c.y - 44, 40); h.t += dt; let all = true; c.people.forEach(p => { const dx = c.x + (c.people.indexOf(p) - 1) * 5 - p.x, dy = c.y + 6 - p.y, d = Math.hypot(dx, dy); if (d > 4) { p.x += dx / d * 26 * dt; p.y += dy / d * 26 * dt; p.mv = true; all = false; } else { p.mv = false; if (h.t > 2.5) p.hidden = true; } }); if (all && h.t > 4) { h.ph = 'out'; c.away = true; c.boarding = false; c.people.forEach(p => { p.hidden = true; }); } }
+    else { h.vx += (130 - h.vx) * Math.min(1, dt * 1.2); h.vy += (-34 - h.vy) * Math.min(1, dt * 1.2); h.x += h.vx * dt; h.y += h.vy * dt; if (h.x > W + 120) { resc = null; return; } }
+    const tf = Math.abs(h.vx) > 10 ? Math.sign(h.vx) : h.face; h.face += (tf - h.face) * Math.min(1, dt * 3.2); h.pitch += (clamp(h.vx * .0016, -.2, .2) * (h.face < 0 ? -1 : 1) - h.pitch) * Math.min(1, dt * 3); h.rot += dt * 55; h.bx = h.x; h.by = h.y + 20;
+    if (h.ph === 'land' || h.ph === 'in') for (let i = 0; i < 2; i++) if (Math.random() < dt * 8 && parts.length < 1400 && h.y > SK) steamAt(h.x + (Math.random() - .5) * 40, c.y + 6);
   }
   function steamAt(x, y) { if (parts.length < 1400) parts.push({ k: 4, x: x + (Math.random() - .5) * 8, y: y - 2, vx: 2 + Math.random() * 3, vy: -(10 + Math.random() * 10), r: 4 + Math.random() * 4, age: 0, max: 2.4 + Math.random() * 1.6, w: Math.random() }); }
   function drawCamps(nn, time) {
@@ -736,6 +755,58 @@ function run(hero, cv, opts) {
     animals.length = 0; const mk = (kind, n, vmin, vmax) => { for (let i = 0; i < n; i++) { const [x, y] = randCell(vmin, vmax); animals.push({ kind, x, y, hx: x, hy: y, s: 'graze', t: rr(1, 8), dir: Math.random() < .5 ? -1 : 1, ph: Math.random() * 6, tx: x, ty: y, hd: 1, big: Math.random() < .5, drinkT: 0, told: false }); } };
     mk('deer', 5, .32, .72); mk('goral', 3, .6, .82); mk('langur', 3, .3, .55);
   }
+
+  /* ---- animals keep out of the water: the pond is a boundary, streams are jumped over ---- */
+  function lakeFix(o) { if (inLake(o.x, o.y, 5)) { const ex = (o.x - LAKE.x) / (LAKE.rx + 5), ey = (o.y - LAKE.y) / (LAKE.ry + 2.5), l = Math.hypot(ex, ey) || 1; o.x = LAKE.x + ex / l * 1.03 * (LAKE.rx + 5); o.y = LAKE.y + ey / l * 1.03 * (LAKE.ry + 2.5); } }
+  const sk = { t: -1, k: 1, wt: 1 };
+  function strmIn(x, y) {
+    if (sk.t !== T) { sk.t = T; const ws = streamScale(); sk.k = ws; sk.wt = clamp((ws - .5) / .35, 0, 1); }
+    for (let i = 0; i < NET.length; i++) { const n = NET[i], k = n.order === 2 ? sk.k : sk.k * sk.wt; if (k < .25) continue; const P = n.pts; for (let j = 0; j < P.length; j += 1) { const p = P[j], dx = p.x - x, dy = p.y - y, r = p.w * k * .5 + 3; if (dx * dx + dy * dy < r * r) return true; } }
+    return false;
+  }
+  function drawQuadFB(a, col, dk, nn, moving, gal) {
+    const fr = a.view === 'front', g = a.kind === 'goral', k = g ? .85 : 1, hd = a.hd, ph = a.ph * gal; cx.lineCap = 'round';
+    cx.strokeStyle = dk; cx.lineWidth = 1.5 * k; cx.beginPath();
+    for (let i = 0; i < 4; i++) { const x = [-3.4, -1.3, 1.3, 3.4][i] * k, lift = moving ? Math.max(0, Math.sin(ph + (i % 2 ? 0 : Math.PI))) * 3.2 : 0; cx.moveTo(x, -5 * k); cx.lineTo(x, 1 - lift); } cx.stroke();
+    cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, -7.5 * k, 4.8 * k, 5.2 * k, 0, 0, 6.283); cx.fill();
+    const antl = a.kind === 'deer' && a.big, ac = nn > .5 ? 'rgba(200,205,215,.85)' : '#e6dcc6';
+    if (fr) {
+      cx.fillStyle = 'rgba(255,255,255,.3)'; cx.beginPath(); cx.ellipse(0, -5.2 * k, 2.6 * k, 2.6 * k, 0, 0, 6.283); cx.fill();
+      const hy = -14.5 * k + hd * 6.5 * k; cx.strokeStyle = col; cx.lineWidth = 3.6 * k; cx.beginPath(); cx.moveTo(0, -9 * k); cx.lineTo(0, hy + 1); cx.stroke();
+      if (antl) { cx.strokeStyle = ac; cx.lineWidth = .9; cx.beginPath(); for (const s of [-1, 1]) { cx.moveTo(s * 1.4, hy - 2.4); cx.lineTo(s * 3.6, hy - 8); cx.lineTo(s * 2.6, hy - 11.5); cx.moveTo(s * 3, hy - 6); cx.lineTo(s * 5.6, hy - 8); } cx.stroke(); }
+      if (g) { cx.strokeStyle = dk; cx.lineWidth = 1.1; cx.beginPath(); for (const s of [-1, 1]) { cx.moveTo(s * 1.4, hy - 2.4); cx.quadraticCurveTo(s * 2.8, hy - 6, s * 1.6, hy - 7.4); } cx.stroke(); }
+      cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, hy, 2.5 * k, 3 * k, 0, 0, 6.283); cx.fill();
+      for (const s of [-1, 1]) { cx.save(); cx.translate(s * 3.2 * k, hy - 2 * k); cx.rotate(s * .55); cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, 0, 1.7 * k, .85 * k, 0, 0, 6.283); cx.fill(); cx.restore(); }
+      cx.fillStyle = 'rgba(255,255,255,.55)'; cx.beginPath(); cx.ellipse(0, hy + 2.2 * k, 1.5 * k, 1.1 * k, 0, 0, 6.283); cx.fill();
+      cx.fillStyle = '#151515'; cx.beginPath(); cx.arc(-1.4 * k, hy - .4 * k, .5, 0, 6.283); cx.arc(1.4 * k, hy - .4 * k, .5, 0, 6.283); cx.arc(0, hy + 2.8 * k, .6, 0, 6.283); cx.fill();
+    } else {
+      const hy = -13.6 * k + hd * 3 * k;
+      cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, hy, 2.3 * k, 2.2 * k, 0, 0, 6.283); cx.fill();
+      for (const s of [-1, 1]) { cx.save(); cx.translate(s * 2.8 * k, hy - 1 * k); cx.rotate(s * .6); cx.beginPath(); cx.ellipse(0, 0, 1.6 * k, .8 * k, 0, 0, 6.283); cx.fill(); cx.restore(); }
+      if (antl) { cx.strokeStyle = ac; cx.lineWidth = .9; cx.beginPath(); for (const s of [-1, 1]) { cx.moveTo(s * 1.3, hy - 1.6); cx.lineTo(s * 3.4, hy - 7); cx.lineTo(s * 2.4, hy - 10); cx.moveTo(s * 3, hy - 5); cx.lineTo(s * 5.4, hy - 7); } cx.stroke(); }
+      cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, -7.5 * k, 4.8 * k, 5.2 * k, 0, 0, 6.283); cx.fill();
+      cx.fillStyle = 'rgba(255,255,255,.8)'; cx.beginPath(); cx.ellipse(0, -5.4 * k, 2.3 * k, 2.7 * k, 0, 0, 6.283); cx.fill(); cx.fillStyle = dk; cx.beginPath(); cx.ellipse(0, -7.4 * k, .9 * k, 1.3 * k, 0, 0, 6.283); cx.fill();
+    }
+  }
+  function drawEleFB(x, y, s, front, ph, nn, drink, moving, al) {
+    const col = css(mixc([120, 122, 128], [14, 16, 30], nn * .72)), dk = css(mixc([84, 86, 92], [6, 8, 18], nn * .72)), lt = css(mixc([160, 150, 150], [22, 22, 38], nn * .72));
+    cx.save(); cx.globalAlpha = al; cx.translate(x, y); cx.scale(s, s); cx.lineCap = 'round';
+    cx.strokeStyle = dk; cx.lineWidth = 6.4; cx.beginPath(); for (let i = 0; i < 4; i++) { const lx = [-11, -5, 5, 11][i], lift = moving ? Math.max(0, Math.sin(ph + (i % 2 ? 0 : Math.PI))) * 3.4 : 0; cx.moveTo(lx, -6); cx.lineTo(lx, 12 - lift); } cx.stroke();
+    cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, -15, 16, 16, 0, 0, 6.283); cx.fill();
+    if (front) {
+      for (const sg of [-1, 1]) { cx.fillStyle = dk; cx.beginPath(); cx.ellipse(sg * 13, -22, 7.5, 11, sg * -.12, 0, 6.283); cx.fill(); cx.fillStyle = lt; cx.beginPath(); cx.ellipse(sg * 13, -22, 4.4, 7.4, sg * -.12, 0, 6.283); cx.fill(); }
+      cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, -22, 8.6, 10, 0, 0, 6.283); cx.fill();
+      cx.strokeStyle = nn > .5 ? '#cfd3da' : '#f4efe0'; cx.lineWidth = 2; cx.beginPath(); for (const sg of [-1, 1]) { cx.moveTo(sg * 4.4, -15); cx.quadraticCurveTo(sg * 8, -10, sg * 6.4, -5); } cx.stroke();
+      cx.strokeStyle = col; cx.lineWidth = 5.2; cx.beginPath(); cx.moveTo(0, -17); cx.quadraticCurveTo(Math.sin(ph * .6) * 3, -8, drink ? 0 : Math.sin(ph * .6) * 3.4, drink ? 9 : 3); cx.stroke();
+      cx.fillStyle = '#111'; cx.beginPath(); cx.arc(-4, -24, 1, 0, 6.283); cx.arc(4, -24, 1, 0, 6.283); cx.fill();
+    } else {
+      for (const sg of [-1, 1]) { cx.fillStyle = dk; cx.beginPath(); cx.ellipse(sg * 15, -20, 6, 10, sg * .15, 0, 6.283); cx.fill(); }
+      cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, -27, 7, 6.4, 0, 0, 6.283); cx.fill(); cx.beginPath(); cx.ellipse(0, -14, 15, 15, 0, 0, 6.283); cx.fill();
+      cx.fillStyle = lt; cx.globalAlpha = al * .35; cx.beginPath(); cx.ellipse(0, -9, 8, 8, 0, 0, 6.283); cx.fill(); cx.globalAlpha = al;
+      cx.strokeStyle = dk; cx.lineWidth = 1.6; cx.beginPath(); cx.moveTo(0, -10); cx.quadraticCurveTo(Math.sin(ph * .8) * 2, -3, Math.sin(ph * .8) * 3, 3); cx.stroke(); cx.fillStyle = dk; cx.beginPath(); cx.arc(Math.sin(ph * .8) * 3, 3.6, 1.6, 0, 6.283); cx.fill();
+    }
+    cx.restore();
+  }
   let drinkTimer = 6, flockT = 14, campT = 30;
   function updateAnimals(dt) {
     const F = burning.length > 20 ? A.fire : null, R = 60 + Math.sqrt(burning.length) * 3.4;
@@ -747,15 +818,20 @@ function run(hero, cv, opts) {
       if (a.gone) { a.goneT -= dt; if (a.goneT <= 0) { a.gone = false; a.x = a.hx; a.y = a.hy; a.s = 'graze'; a.t = rr(2, 6); } return; }
       if (a.s === 'run') return;
       const sc = .55 + .75 * clamp((a.y - SK) / (H - SK), 0, 1), base = a.kind === 'goral' ? 15 : a.kind === 'langur' ? 13 : 20;
-      if (F && a.s !== 'flee' && Math.hypot(a.x - F[0], a.y - F[1]) < R + 90) { a.s = 'flee'; if (!a.told && !flags.fl) { a.told = true; say('fl', 'Wildlife moves away from the fire and smoke', () => [a.x, a.y - 12], 8, [60, -50]); } }
+      if (F && a.s !== 'flee' && Math.hypot(a.x - F[0], a.y - F[1]) < R + 90) { a.s = 'flee'; if (!a.told && !flags.fl) { a.told = true; sayA('fl', 'Wildlife moves away from the fire and smoke', () => [a.x, a.y - 12], 8, [60, -50]); } }
       let mvx = 0, mvy = 0, spd = 0, hdT = 0;
       if (a.s === 'flee') { if (!F || Math.hypot(a.x - F[0], a.y - F[1]) > R + 190) { a.s = 'graze'; a.hx = a.x; a.hy = a.y; a.t = rr(3, 8); } else { const dx = a.x - F[0], dy = a.y - F[1], d = Math.hypot(dx, dy) || 1; mvx = dx / d; mvy = dy / d * .6; spd = base * 3.3 * sc; a.dir = Math.sign(mvx) || a.dir; } }
-      else if (a.s === 'graze') { hdT = a.kind === 'langur' ? 0 : 1; a.t -= dt; if (a.t <= 0) { a.s = 'walk'; a.tx = clamp(a.hx + rr(-70, 70), 10, W - 10); a.ty = clamp(a.hy + rr(-30, 30), SK + 20, H - 40); if (inLake(a.tx, a.ty, 18)) { a.tx = a.hx; a.ty = a.hy; } } }
-      else if (a.s === 'walk' || a.s === 'toPond') { const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy); if (d < 4) { if (a.s === 'toPond') { a.s = 'drink'; a.drinkT = rr(5, 8); a.dir = -a.side; if (!a.told && !flags.dr) { a.told = true; say('dr', 'Animals come to the pond to drink', () => [a.x, a.y - 10], 8, [-90, -64]); } } else { a.s = 'graze'; a.t = rr(3, 9); } } else { mvx = dx / d; mvy = dy / d; spd = base * sc; a.dir = Math.sign(mvx) || a.dir; } }
-      else if (a.s === 'toCamp') { const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy); if (d < 5) { a.s = 'campSniff'; a.t = 5.5; a.dir = Math.sign(a.cx - a.x) || a.dir; const c = a.camp; if (c) { c.scare = 7; c.scareFrom = [a.x, a.y]; if (!flags.dc) say('dc', 'A deer wanders into the camp and the campers step back', () => [a.x, a.y - 12], 9, [-90, -64]); } } else { mvx = dx / d; mvy = dy / d; spd = base * .8 * sc; a.dir = Math.sign(mvx) || a.dir; } }
+      else if (a.s === 'graze') { hdT = a.kind === 'langur' ? 0 : 1; a.t -= dt; if (a.t <= 0) { a.s = 'walk'; if (Math.random() < .5) { a.tx = clamp(a.x + rr(-18, 18), 10, W - 10); a.ty = clamp(a.y + (Math.random() < .5 ? -1 : 1) * rr(45, 110), SK + 30, H - 40); } else { a.tx = clamp(a.hx + rr(-90, 90), 10, W - 10); a.ty = clamp(a.hy + rr(-70, 70), SK + 30, H - 40); } if (inLake(a.tx, a.ty, 18)) { a.tx = a.hx; a.ty = a.hy; } } }
+      else if (a.s === 'walk' || a.s === 'toPond') { const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy); if (d < 4) { if (a.s === 'toPond') { a.s = 'drink'; a.drinkT = rr(5, 8); a.dir = -a.side; if (!a.told && !flags.dr) { a.told = true; sayA('dr', 'Animals come to the pond to drink', () => [a.x, a.y - 10], 8, [-90, -64]); } } else { a.s = 'graze'; a.t = rr(3, 9); } } else { mvx = dx / d; mvy = dy / d; spd = base * sc; a.dir = Math.sign(mvx) || a.dir; } }
+      else if (a.s === 'toCamp') { const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy); if (d < 5) { a.s = 'campSniff'; a.t = 5.5; a.dir = Math.sign(a.cx - a.x) || a.dir; const c = a.camp; if (c) { c.scare = 7; c.scareFrom = [a.x, a.y]; if (!flags.dc) sayA('dc', 'A deer wanders into the camp and the campers step back', () => [a.x, a.y - 12], 9, [-90, -64]); } } else { mvx = dx / d; mvy = dy / d; spd = base * .8 * sc; a.dir = Math.sign(mvx) || a.dir; } }
       else if (a.s === 'campSniff') { hdT = 1; a.t -= dt; if (a.t <= 0) { a.s = 'walk'; a.tx = a.hx; a.ty = a.hy; } }
       else if (a.s === 'drink') { hdT = 1; a.drinkT -= dt; if (Math.random() < dt * 1.1) ripples.push({ x: a.x + a.dir * 9, y: LAKE.y + (a.y - LAKE.y) * .3 + 3, t0: T }); if (a.drinkT <= 0) { a.s = 'walk'; a.tx = a.hx; a.ty = a.hy; } }
-      a.x += mvx * spd * dt; a.y += mvy * spd * dt; a.ph += spd * dt * .35; a.hd += (hdT - a.hd) * Math.min(1, dt * 3); a.sp = spd;
+      if (a.jt === undefined) a.jt = -1;
+      if (a.jt >= 0) { a.jt += dt; const u = a.jt / a.jd; if (u >= 1) { a.jt = -1; a.jz = 0; } else a.jz = Math.sin(Math.PI * u) * a.jh; spd *= 1.5; }
+      else { a.jz = 0; if (spd > 0 && a.kind !== 'langur') { if (strmIn(a.x + mvx * 8, a.y + mvy * 8) || strmIn(a.x, a.y)) { a.jt = 0; a.jd = .8; a.jh = 11; } else if (Math.random() < dt * (a.s === 'flee' ? 1.3 : .06)) { a.jt = 0; a.jd = .55; a.jh = a.s === 'flee' ? 9 : 5; } } }
+      if (spd > 1) { const ax = Math.abs(mvx), ay = Math.abs(mvy); if (!a.view || a.view === 'side') { if (ay > ax * 1.25) a.view = mvy > 0 ? 'front' : 'back'; } else if (ax > ay * 1.4) a.view = 'side'; else a.view = mvy > 0 ? 'front' : 'back'; }
+      if (a.s === 'drink' || a.s === 'campSniff' || a.s === 'run') a.view = 'side';
+      a.x += mvx * spd * dt; a.y += mvy * spd * dt; lakeFix(a); a.ph += spd * dt * .35; a.hd += (hdT - a.hd) * Math.min(1, dt * 3); a.sp = spd;
     });
     flockT -= dt; if (flockT <= 0 && flocks.length < 2) { flockT = rr(28, 50); flocks.push({ x: -50, y: rr(.12, .55) * SK, vx: rr(26, 40), vy: rr(-2, 2), n: 5 + (Math.random() * 5 | 0), ph: Math.random() * 6, sc: false }); }
     for (let i = flocks.length - 1; i >= 0; i--) { const f = flocks[i]; f.x += f.vx * dt; f.y += (f.vy + Math.sin(f.ph + f.x * .02) * 4) * dt; if (f.x > W + 80 || f.x < -120 || f.y < -40) flocks.splice(i, 1); }
@@ -766,8 +842,8 @@ function run(hero, cv, opts) {
   function updatePreds(dt, nn) {
     const F = burning.length > 20 ? A.fire : null; chaseT -= dt; bearT -= dt; foxT -= dt;
     if (!F) {
-      if (chaseT <= 0 && !preds.some(p => p.kind === 'tiger')) { chaseT = rr(45, 80); const pr = animals.filter(a => (a.kind === 'deer' || a.kind === 'goral') && !a.gone && (a.s === 'graze' || a.s === 'walk') && a.x < W * .6 && a.x > 60); if (pr.length) { const a = pr[(Math.random() * pr.length) | 0]; a.s = 'graze'; a.t = 99; preds.push({ kind: 'tiger', x: a.x - 150, y: a.y + 5, st: 'stalk', t: 4, dir: 1, ph: 0, hd: 1, prey: a }); say('tg', 'A tiger stalks a deer. The deer runs and the tiger follows it out of sight', () => [a.x, a.y - 14], 10, [-80, -70]); } }
-      if (bearT <= 0 && !preds.some(p => p.kind === 'bear')) { bearT = rr(70, 120); const L = Math.random() < .5, cp = camps.filter(c => !c.ignoring), visit = Math.random() < .5 && cp.length ? cp[(Math.random() * cp.length) | 0] : null; preds.push({ kind: 'bear', x: L ? -40 : W + 40, y: visit ? visit.y + 6 : SK + (H - SK) * rr(.3, .62), tx: L ? W + 60 : -60, dir: L ? 1 : -1, ph: 0, hd: 0, st: visit ? 'toCamp' : 'walk', t: rr(4, 7), scared: false, camp: visit }); if (visit) say('bc', 'A bear enters the camp. The campers shelter in the wooden hut and up a tree until it leaves', () => [visit.x, visit.y - 24], 11, [-120, -76]); }
+      if (chaseT <= 0 && !preds.some(p => p.kind === 'tiger')) { chaseT = rr(45, 80); const pr = animals.filter(a => (a.kind === 'deer' || a.kind === 'goral') && !a.gone && (a.s === 'graze' || a.s === 'walk') && a.x < W * .6 && a.x > 60); if (pr.length) { const a = pr[(Math.random() * pr.length) | 0]; a.s = 'graze'; a.t = 99; preds.push({ kind: 'tiger', x: a.x - 150, y: a.y + 5, st: 'stalk', t: 4, dir: 1, ph: 0, hd: 1, prey: a }); sayA('tg', 'A tiger stalks a deer. The deer runs and the tiger follows it out of sight', () => [a.x, a.y - 14], 10, [-80, -70]); } }
+      if (bearT <= 0 && !preds.some(p => p.kind === 'bear')) { bearT = rr(70, 120); const L = Math.random() < .5, cp = camps.filter(c => !c.ignoring), visit = Math.random() < .5 && cp.length ? cp[(Math.random() * cp.length) | 0] : null; preds.push({ kind: 'bear', x: L ? -40 : W + 40, y: visit ? visit.y + 6 : SK + (H - SK) * rr(.3, .62), tx: L ? W + 60 : -60, dir: L ? 1 : -1, ph: 0, hd: 0, st: visit ? 'toCamp' : 'walk', t: rr(4, 7), scared: false, camp: visit }); if (visit) sayA('bc', 'A bear enters the camp. The campers shelter in the wooden hut and up a tree until it leaves', () => [visit.x, visit.y - 24], 11, [-120, -76]); }
       if (nn > .55 && foxT <= 0 && !preds.some(p => p.kind === 'fox')) { foxT = rr(22, 45); const L = Math.random() < .5; preds.push({ kind: 'fox', x: L ? -30 : W + 30, y: SK + (H - SK) * rr(.45, .75), tx: L ? W + 50 : -50, dir: L ? 1 : -1, ph: 0, hd: 0, st: 'walk', t: rr(3, 6) }); }
     }
     for (let i = preds.length - 1; i >= 0; i--) {
@@ -783,7 +859,7 @@ function run(hero, cv, opts) {
       if (p.kind === 'bear' && !p.scared) { animals.forEach(a => { if (a.kind === 'langur' && !a.gone && Math.hypot(a.x - p.x, a.y - p.y) < 110) { a.s = 'walk'; a.tx = clamp(a.x + (a.x < p.x ? -90 : 90), 10, W - 10); a.ty = a.y; } }); }
       if (p.st === 'sniff') { p.t -= dt; p.hd += (1 - p.hd) * Math.min(1, dt * 3); if (p.t <= 0) { p.st = 'walk'; p.t = rr(5, 9); } }
       else { const spd = (p.kind === 'bear' ? 15 : p.st === 'leave' ? 70 : 30) * sc; p.hd += (0 - p.hd) * Math.min(1, dt * 3); p.x += p.dir * spd * dt; p.ph += spd * dt * .3; p.t -= dt; if (p.st === 'walk' && p.t <= 0) { p.st = 'sniff'; p.t = rr(2, 4); } }
-      if ((p.dir > 0 && p.x > W + 70) || (p.dir < 0 && p.x < -70)) { if (p.camp) p.camp.hide = false; preds.splice(i, 1); }
+      if ((p.dir > 0 && p.x > W + 70) || (p.dir < 0 && p.x < -70)) { if (p.camp) p.camp.hide = false; preds.splice(i, 1); } else lakeFix(p);
     }
   }
   function drawPreds(nn, time) {
@@ -818,8 +894,10 @@ function run(hero, cv, opts) {
   function drawAnimals(nn, time) {
     animals.forEach(a => {
       if (a.gone) return; const sc = (.55 + .75 * clamp((a.y - SK) / (H - SK), 0, 1)) * (a.kind === 'goral' ? .8 : 1), d = a.dir, moving = a.s === 'walk' || a.s === 'toPond' || a.s === 'flee' || a.s === 'run', gal = (a.s === 'flee' || a.s === 'run') ? 1.8 : 1;
-      cx.save(); cx.translate(a.x, a.y); cx.scale(d * sc, sc);
+      if (a.jz > .5) { cx.fillStyle = 'rgba(0,0,0,.16)'; cx.beginPath(); cx.ellipse(a.x, a.y + 1, 8 * sc, 2.2 * sc, 0, 0, 6.283); cx.fill(); }
+      cx.save(); cx.translate(a.x, a.y - (a.jz || 0) * sc); cx.scale(d * sc, sc);
       const base = a.kind === 'deer' ? [138, 90, 50] : a.kind === 'goral' ? [125, 116, 102] : [150, 156, 162], col = css(mixc(base, [8, 10, 22], nn * .72)), dark = css(mixc(base, [0, 0, 0], .45 + nn * .3)), hd = a.hd;
+      if (a.kind !== 'langur' && (a.view === 'front' || a.view === 'back')) { drawQuadFB(a, col, dark, nn, moving, gal); cx.restore(); return; }
       if (a.kind === 'langur') {
         cx.fillStyle = col; cx.beginPath(); cx.ellipse(0, -5, 3.6, 5.4, 0, 0, 6.283); cx.fill(); cx.strokeStyle = col; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(-3, -2); cx.quadraticCurveTo(-12, 0, -9, -12); cx.stroke();
         cx.fillStyle = '#222'; cx.beginPath(); cx.arc(1.6 + hd * 3, -10.6 + hd * 3, 2.5, 0, 6.283); cx.fill(); cx.fillStyle = col; cx.beginPath(); cx.arc(.6 + hd * 3, -11.2 + hd * 3, 1.6, 0, 6.283); cx.fill();
@@ -871,15 +949,16 @@ function run(hero, cv, opts) {
       cx.fillStyle = '#ffffff'; cx.beginPath(); cx.arc(x, y - 17 * s, 3 * s, 0, 6.283); cx.fill(); cx.strokeStyle = '#1b1b1b'; cx.lineWidth = .8; cx.stroke();
     });
   }
-  function drawHeli(nn, time) {
-    if (!heli) return; const h = heli, sc = clamp(W / 1280, .8, 1.15) * 1.15, face = h.face;
+  function drawHeli(nn, time, hh = heli) {
+    if (!hh) return; const h = hh, sc = clamp(W / 1280, .8, 1.15) * 1.15, face = h.face;
     /* ground shadow */
     if (nn < .6) { const gy = clamp(h.y + 120 + (h.y > SK ? 0 : 0), SK + 20, H - 14); cx.fillStyle = `rgba(10,20,10,${.16 * (1 - nn)})`; cx.beginPath(); cx.ellipse(h.x, gy, 26 * sc, 5 * sc, 0, 0, 6.283); cx.fill(); }
     /* rope and bucket (collapsible bucket, swings behind the movement) */
-    const bx = h.bx, by = h.by, ry = h.y + 8 * sc;
+    cx.globalAlpha = h.nobucket ? 0 : 1; const bx = h.bx, by = h.by, ry = h.y + 8 * sc;
     cx.strokeStyle = nn > .5 ? 'rgba(220,225,240,.7)' : 'rgba(30,30,30,.8)'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(h.x, ry); cx.lineTo(bx, by - 8 * sc); cx.stroke();
     cx.fillStyle = '#D55E00'; cx.beginPath(); cx.moveTo(bx - 7 * sc, by - 8 * sc); cx.lineTo(bx + 7 * sc, by - 8 * sc); cx.lineTo(bx + 5 * sc, by + 5 * sc); cx.lineTo(bx - 5 * sc, by + 5 * sc); cx.closePath(); cx.fill(); cx.strokeStyle = '#222'; cx.lineWidth = .8; cx.stroke();
     if (h.load > .02) { cx.fillStyle = 'rgba(86,180,233,.95)'; cx.fillRect(bx - 5.5 * sc, by + 5 * sc - 11 * sc * h.load, 11 * sc, 11 * sc * h.load - .5); }
+    cx.globalAlpha = 1;
     /* body */
     cx.save(); cx.translate(h.x, h.y); cx.scale(sc * (Math.abs(face) < .15 ? .15 * Math.sign(face || 1) : face), sc); cx.rotate(h.pitch);
     const lite = nn > .5 ? .55 : 1, body = c => { const m = mixc(c, [12, 16, 30], (1 - lite) * 1.1); return css(m); };
@@ -985,7 +1064,7 @@ function run(hero, cv, opts) {
   function resize() {
     dpr = Math.min(DPRMAX, window.devicePixelRatio || 1); W = hero.clientWidth; H = hero.clientHeight; SK = Math.round(H * .36);
     cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); seed = 11; G = W < 700 ? 6 : 5;
-    buildFire(); buildTerrain(); buildMilkyWay(); planCamps(); spawnAnimals(); buildDecor(); LY = [mkLayer(), mkLayer()]; fDirty = [true, true]; Object.keys(YP).forEach(k => delete YP[k]); line = null; scarC.width = glowC.width = GW; scarC.height = glowC.height = GH; parts.length = 0; spots.length = 0; crews.length = 0; heli = null; inc = null;
+    buildFire(); buildTerrain(); buildMilkyWay(); planCamps(); spawnAnimals(); buildDecor(); LY = [mkLayer(), mkLayer()]; fDirty = [true, true]; Object.keys(YP).forEach(k => delete YP[k]); line = null; scarC.width = glowC.width = GW; scarC.height = glowC.height = GH; parts.length = 0; spots.length = 0; crews.length = 0; heli = null; resc = null; inc = null;
     rain.length = 0; for (let i = 0; i < (W < 700 ? 140 : 260); i++) rain.push({ x: Math.random() * W * 1.2, y: Math.random() * H, v: 460 + Math.random() * 220 });
     sLayer = mkLayer(); sLast = { w: -9, nn: -9 };
     A.litter = [W * .62, SK + (H - SK) * .52]; flags.x = 0;
@@ -1057,16 +1136,57 @@ function run(hero, cv, opts) {
     for (let i = air.length - 1; i >= 0; i--) { const a = air[i]; a.x += a.d * a.v * dt; a.y -= dt * .35; if (a.x < -120 || a.x > W + 120) air.splice(i, 1); }
     if (hawkT <= 0 && hawks.length < 2 && nn < .6) { hawkT = rr(35, 70); hawks.push({ cx: rr(.15, .85) * W, cy: rr(.2, .6) * SK, r: rr(26, 44), a: Math.random() * 6.28, w: rr(.18, .3) * (Math.random() < .5 ? 1 : -1), life: rr(40, 70), drift: rr(-6, 6) }); }
     for (let i = hawks.length - 1; i >= 0; i--) { const h = hawks[i]; h.a += h.w * dt; h.cx += h.drift * dt; h.life -= dt; if (h.life < 0 || nn > .85) hawks.splice(i, 1); }
-    if (partyT <= 0 && !parties.length && nn < .55 && !F) { partyT = rr(110, 190); const d = Math.random() < .5 ? 1 : -1, y = SK + (H - SK) * rr(.5, .68); parties.push({ x: d > 0 ? -90 : W + 90, y, d, ph: 0, said: 0 }); }
-    for (let i = parties.length - 1; i >= 0; i--) { const p = parties[i], s = scAt(p.y); p.x += p.d * (F ? 44 : 19) * s * dt; p.ph += (F ? 44 : 19) * s * dt * .32; if (!p.said && p.x > W * .2 && p.x < W * .8) { p.said = 1; say('hr', 'Riders and a pack horse cross the valley on a trekking route', () => [p.x, p.y - 34], 9, [-30, -58]); } if (p.x < -140 || p.x > W + 140) parties.splice(i, 1); }
-    if (eleT <= 0 && !eles.length && !F) { eleT = rr(150, 240); const y = LAKE.y + LAKE.ry * .9; eles.push({ x: -80, y, ph: 0, st: 'in', t: 0, said: 0, d: 1 }); }
-    for (let i = eles.length - 1; i >= 0; i--) { const e = eles[i], s = scAt(e.y) * 1.05, tx = LAKE.x - LAKE.rx - 20 * s;
-      if (F && e.st !== 'out') { e.st = 'out'; e.d = -1; }
-      if (e.st === 'in') { e.x += 17 * s * dt; e.ph += 17 * s * dt * .22; e.d = 1; if (!e.said && e.x > W * .45) { e.said = 1; say('el', 'Elephants walk to the pond to drink', () => [e.x, e.y - 40], 9, [-110, -58]); } if (e.x >= tx) { e.st = 'drink'; e.t = rr(10, 14); } }
-      else if (e.st === 'drink') { e.t -= dt; if (Math.random() < dt * 1.4) ripples.push({ x: e.x + 33 * s, y: LAKE.y + 2, t0: T }); if (e.t <= 0) { e.st = 'out'; e.d = -1; } }
-      else { e.x -= 17 * s * dt; e.ph += 17 * s * dt * .22; if (e.x < -120) eles.splice(i, 1); } }
+    if (partyT <= 0 && !parties.length && nn < .55 && !F) { partyT = rr(110, 190); const d = Math.random() < .5 ? 1 : -1, y = SK + (H - SK) * rr(.44, .54); parties.push({ x: d > 0 ? -90 : W + 90, y, d, ph: 0, said: 0 }); }
+    for (let i = parties.length - 1; i >= 0; i--) { const p = parties[i], s = scAt(p.y); p.x += p.d * (F ? 44 : 19) * s * dt; p.ph += (F ? 44 : 19) * s * dt * .32; if (!p.said && p.x > W * .2 && p.x < W * .8) { p.said = 1; sayA('hr', 'Riders and a pack horse cross the valley on a trekking route', () => [p.x, p.y - 34], 9, [-30, -58]); } if (p.x < -140 || p.x > W + 140) parties.splice(i, 1); }
+    if (eleT <= 0 && !eles.length && !F) { eleT = rr(150, 240); const sx = LAKE.x - LAKE.rx - rr(120, 220), sy = SK + (H - SK) * .27; eles.push({ x: sx, y: sy, sx, sy, ph: 0, st: 'in', t: 0, al: 0, view: 'front', d: 1, cx: sx - 26, cy: sy - 12 }); }
+    for (let i = eles.length - 1; i >= 0; i--) { const e = eles[i], s = scAt(e.y) * 1.05, tx = LAKE.x - LAKE.rx - 24 * s, ty = LAKE.y + LAKE.ry * .55;
+      if (F && e.st !== 'out') e.st = 'out';
+      let gx = e.x, gy = e.y, sp = 0;
+      if (e.st === 'in') { gx = tx; gy = ty; sp = 16 * s; } else if (e.st === 'out') { gx = e.sx - 40; gy = e.sy - 30; sp = (F ? 34 : 16) * s; }
+      if (e.st === 'drink') { e.view = 'side'; e.d = 1; e.t -= dt; if (Math.random() < dt * 1.4) ripples.push({ x: e.x + 33 * s, y: LAKE.y + 2, t0: T }); if (e.t <= 0) e.st = 'out'; }
+      else { const dx = gx - e.x, dy = gy - e.y, d = Math.hypot(dx, dy) || 1; if (e.st === 'in' && d < 5) { e.st = 'drink'; e.t = rr(10, 14); } else if (e.st === 'out' && d < 6) { eles.splice(i, 1); continue; } else { e.x += dx / d * sp * dt; e.y += dy / d * sp * dt; e.ph += sp * dt * .22; const ax = Math.abs(dx), ay = Math.abs(dy); if (ay > ax * 1.2) e.view = dy > 0 ? 'front' : 'back'; else { e.view = 'side'; e.d = Math.sign(dx) || 1; } } }
+      lakeFix(e); e.al = e.st === 'out' ? clamp((e.y - e.sy) / 50, 0, 1) : Math.min(1, e.al + dt * .5);
+      const k = Math.min(1, dt * 1.6), bx = e.view === 'side' ? e.x - 30 * s * e.d : e.x - 24 * s, by = e.view === 'side' ? e.y + 2 : e.y - (e.view === 'front' ? 14 : -10) * s; e.cx += (bx - e.cx) * k; e.cy += (by - e.cy) * k; }
+  }
+  /* ---- satellites: MODIS (Terra, Aqua) and VIIRS (Suomi NPP) see the hotspot and relay it to the space agency ---- */
+  const sats = [], satPk = []; let satNext = 0, satFlag = 0, satN = 0;
+  const SATK = ['MODIS | Terra', 'MODIS | Aqua', 'VIIRS | Suomi NPP'], stn = () => ({ x: W * .93, y: SK + (H - SK) * .08 });
+  function stepSat(time) {
+    if (!satNext) satNext = time + 40; const fire = burning.length > 25 ? A.fire : null;
+    if (fire && !satFlag) { satFlag = 1; satNext = Math.min(satNext, time + 6); } if (!fire) satFlag = 0;
+    if (time >= satNext && !sats.length) { satNext = time + (fire ? rr(40, 60) : rr(90, 140)); const d = Math.random() < .5 ? 1 : -1; sats.push({ x0: d > 0 ? -50 : W + 50, d, y: rr(108, 130), t0: time, kind: SATK[satN++ % 3], v: rr(50, 62), done: false, st: 0, ts: 0, fx: 0, fy: 0, x: 0 }); }
+    for (let i = sats.length - 1; i >= 0; i--) { const s = sats[i]; s.x = s.x0 + s.d * s.v * (time - s.t0);
+      if (fire && !s.done && Math.abs(s.x - fire[0]) < 70) { if (!s.st) { s.st = 1; s.ts = time; s.fx = fire[0]; s.fy = fire[1]; { const ax = Math.min(W - 40, Math.max(40, s.x)), ay = s.y + 10; say('sat', 'Satellites (MODIS and VIIRS) detect the hotspot from space and send it to the space agency', () => [ax, ay], 11, [-120, 46]); } } if (time - s.ts > 1.8) { s.done = true; s.st = 2; satPk.push({ t0: time, stage: 1, s, sx: s.x, sy: s.y }); } }
+      if (!fire && s.st === 1) s.st = 2; if (s.x < -70 || s.x > W + 70) sats.splice(i, 1); }
+  }
+  function drawSatBody(nn, time) {
+    stepSat(time);
+    sats.forEach(s => { cx.save(); cx.translate(s.x, s.y); const ink = nn > .5 ? '#c9d3ea' : '#2e3744', pan = nn > .5 ? '#5a74b8' : '#26508f';
+      cx.fillStyle = pan; cx.fillRect(-15, -1.8, 10, 3.6); cx.fillRect(5, -1.8, 10, 3.6); cx.strokeStyle = nn > .5 ? 'rgba(220,230,255,.6)' : 'rgba(255,255,255,.6)'; cx.lineWidth = .5; cx.beginPath(); for (let q = 1; q < 4; q++) { cx.moveTo(-15 + q * 2.5, -1.8); cx.lineTo(-15 + q * 2.5, 1.8); cx.moveTo(5 + q * 2.5, -1.8); cx.lineTo(5 + q * 2.5, 1.8); } cx.stroke();
+      cx.fillStyle = nn > .5 ? '#e4e9f5' : '#d9a441'; cx.fillRect(-4.5, -3.6, 9, 7.2); cx.fillStyle = ink; cx.fillRect(-1.6, 3.6, 3.2, 2.2); cx.beginPath(); cx.arc(0, -5.4, 1.8, Math.PI, 0); cx.stroke(); cx.fillStyle = (Math.sin(time * 4 + s.x) > .5) ? '#ff4d4d' : 'rgba(120,30,30,.7)'; cx.beginPath(); cx.arc(3, -3.6, .9, 0, 6.283); cx.fill(); cx.restore();
+      cx.font = '700 9px ' + FONT; cx.textAlign = 'center'; cx.fillStyle = nn > .5 ? 'rgba(220,232,255,.85)' : 'rgba(16,40,70,.85)'; cx.fillText(s.kind, s.x, s.y + 17); cx.textAlign = 'start'; });
+  }
+  function drawSatFx(nn, time) {
+    const st = stn(), ink = nn > .5 ? '#c4cde0' : '#3b424d', col = nn > .5 ? '#9ad1ff' : '#0072B2';
+    /* space agency ground station */
+    cx.fillStyle = nn > .5 ? '#2a3350' : '#e9edf3'; cx.fillRect(st.x - 11, st.y - 8, 22, 10); cx.strokeStyle = nn > .5 ? '#7d8bb0' : '#4b5563'; cx.lineWidth = 1; cx.strokeRect(st.x - 11, st.y - 8, 22, 10);
+    cx.strokeStyle = ink; cx.lineWidth = 1.4; cx.beginPath(); cx.moveTo(st.x - 2, st.y - 8); cx.lineTo(st.x - 2, st.y - 16); cx.stroke(); cx.save(); cx.translate(st.x - 2, st.y - 17); cx.rotate(-.9); cx.fillStyle = nn > .5 ? '#dfe5f3' : '#f6f8fb'; cx.beginPath(); cx.ellipse(0, 0, 7, 3.4, 0, 0, 6.283); cx.fill(); cx.stroke(); cx.restore();
+    cx.font = '700 9px ' + FONT; cx.textAlign = 'center'; cx.fillStyle = nn > .5 ? 'rgba(220,232,255,.85)' : 'rgba(16,40,70,.85)'; cx.fillText('SPACE AGENCY', st.x, st.y + 12);
+    sats.forEach(s => { if (s.st !== 1) return; const u = clamp((time - s.ts) / 1.8, 0, 1), top = s.y + 6, gr = cx.createLinearGradient(0, top, 0, s.fy); gr.addColorStop(0, 'rgba(150,210,255,0)'); gr.addColorStop(1, nn > .5 ? 'rgba(150,210,255,.26)' : 'rgba(40,130,210,.2)');
+      cx.fillStyle = gr; cx.beginPath(); cx.moveTo(s.x - 1, top); cx.lineTo(s.fx - 36, s.fy); cx.lineTo(s.fx + 36, s.fy); cx.lineTo(s.x + 1, top); cx.closePath(); cx.fill();
+      cx.strokeStyle = nn > .5 ? 'rgba(200,230,255,.7)' : 'rgba(255,255,255,.8)'; cx.lineWidth = 1; cx.setLineDash([4, 4]); cx.beginPath(); cx.ellipse(s.fx, s.fy, 36, 9, 0, 0, 6.283); cx.stroke(); cx.setLineDash([]);
+      const ly = s.fy + (u * 2 - 1) * 8; cx.strokeStyle = nn > .5 ? 'rgba(160,220,255,.9)' : 'rgba(0,114,178,.85)'; cx.lineWidth = 1.4; cx.beginPath(); cx.moveTo(s.fx - 33, ly); cx.lineTo(s.fx + 33, ly); cx.stroke();
+      if (u > .7 && Math.sin(time * 14) > -.2) { cx.fillStyle = '#D55E00'; cx.fillRect(s.fx - 3, s.fy - 3, 6, 6); cx.strokeStyle = '#fff'; cx.lineWidth = 1; cx.strokeRect(s.fx - 3, s.fy - 3, 6, 6); }
+      cx.font = '700 9px ' + FONT; cx.textAlign = 'center'; cx.fillStyle = nn > .5 ? 'rgba(255,225,200,.95)' : 'rgba(120,40,0,.95)'; cx.fillText('FIRE PIXEL', s.fx, s.fy + 22); cx.textAlign = 'start'; });
+    for (let i = satPk.length - 1; i >= 0; i--) { const p = satPk[i], dur = p.stage === 1 ? 2 : 2.6, u = (time - p.t0) / dur;
+      if (u > 1) { if (p.stage === 1) { satPk.push({ t0: time, stage: 2 }); } else EC.pulse = time; satPk.splice(i, 1); continue; }
+      const x0 = p.stage === 1 ? p.sx + p.s.d * p.s.v * (time - p.t0) : st.x + 8, y0 = p.stage === 1 ? p.sy + 4 : st.y - 10, x1 = p.stage === 1 ? st.x - 2 : EC.x, y1 = p.stage === 1 ? st.y - 20 : EC.y - 34, mx = (x0 + x1) / 2, my = Math.min(y0, y1) - (p.stage === 1 ? 24 : 50);
+      cx.strokeStyle = nn > .5 ? 'rgba(160,210,255,.28)' : 'rgba(0,114,178,.26)'; cx.lineWidth = 1; cx.setLineDash([3, 5]); cx.beginPath(); cx.moveTo(x0, y0); cx.quadraticCurveTo(mx, my, x1, y1); cx.stroke(); cx.setLineDash([]);
+      const px = (1 - u) * (1 - u) * x0 + 2 * u * (1 - u) * mx + u * u * x1, py = (1 - u) * (1 - u) * y0 + 2 * u * (1 - u) * my + u * u * y1; cx.fillStyle = col; cx.fillRect(px - 2.4, py - 2.4, 4.8, 4.8); cx.strokeStyle = nn > .5 ? '#0a1020' : '#fff'; cx.lineWidth = .8; cx.strokeRect(px - 2.4, py - 2.4, 4.8, 4.8); }
+    cx.textAlign = 'start';
   }
   function drawAir(nn, time) {
+    drawSatBody(nn, time);
     air.forEach(a => {
       const L = 150 * (1 - nn * .35); if (nn < .85) { const g = cx.createLinearGradient(a.x - a.d * L, 0, a.x, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, `rgba(255,255,255,${.5 * (1 - nn)})`); cx.strokeStyle = g; cx.lineWidth = 1.6; cx.beginPath(); cx.moveTo(a.x - a.d * L, a.y + L * .004); cx.lineTo(a.x, a.y); cx.stroke(); }
       cx.save(); cx.translate(a.x, a.y); cx.scale(a.d, 1); cx.fillStyle = nn > .5 ? '#2b3350' : '#e8edf4'; cx.beginPath(); cx.ellipse(0, 0, 6, 1.1, 0, 0, 6.283); cx.fill(); cx.beginPath(); cx.moveTo(-1, 0); cx.lineTo(-3.4, 2.8); cx.lineTo(-.4, .1); cx.fill(); cx.beginPath(); cx.moveTo(-5, 0); cx.lineTo(-6.4, -2); cx.lineTo(-4, -.2); cx.fill();
@@ -1082,14 +1202,15 @@ function run(hero, cv, opts) {
       drawHorse(p.x + hx[0], p.y, s, d, step, brown[0], nn, false, true); person(p.x + hx[0] + 1 * d * s, p.y - 11 * s, s, d, '#D55E00', step, true, true);
       drawHorse(p.x + hx[1], p.y + 1, s, d, step + 1, brown[1], nn, true, true);
       person(p.x + hx[2], p.y + 2, s * .95, d, '#0072B2', step * 1.2, true, false); });
-    eles.forEach(e => { const s = scAt(e.y) * 1.05, dr = e.st === 'drink', mv = e.st !== 'drink';
-      drawElephant(e.x, e.y, s, e.d, e.ph, nn, dr, mv); drawElephant(e.x - 34 * s * e.d, e.y + 3, s * .55, e.d, e.ph + 1.3, nn, dr, mv); });
+    eles.forEach(e => { const s = scAt(e.y) * 1.05, dr = e.st === 'drink', mv = e.st !== 'drink', cs = scAt(e.cy) * .58;
+      const one = (x, y, sc, ph) => { if (e.view === 'side') { cx.save(); cx.globalAlpha = e.al; drawElephant(x, y, sc, e.d, ph, nn, dr, mv); cx.restore(); } else drawEleFB(x, y, sc, e.view === 'front', ph, nn, false, mv, e.al); };
+      if (e.view === 'back') { one(e.x, e.y, s, e.ph); one(e.cx, e.cy, cs, e.ph + 1.3); } else { one(e.cx, e.cy, cs, e.ph + 1.3); one(e.x, e.y, s, e.ph); } });
   }
   function frameInner(now) {
     const dtR = Math.min(.05, (now - last) / 1000); last = now; const dt = dtR * speed;
     if (mode === 'auto') nTarget = siteDark() ? 1 : 0;
     n += (nTarget - n) * Math.min(1, dtR * 1.5); const nn = Math.round(n * 1000) / 1000, time = now / 1000;
-    if (!rm) { T += dt; updateWorld(dt, nn); updateIncident(dt); stepFire(dt, nn); updateCrews(dt); updateLine(dt); updateHeli(dt); updateCamps(dt, nn); updateAnimals(dt); updatePreds(dt, nn); updateEco(dt, nn); }
+    if (!rm) { T += dt; updateWorld(dt, nn); updateIncident(dt); stepFire(dt, nn); updateCrews(dt); updateLine(dt); updateHeli(dt); updateCamps(dt, nn); updateRescue(dt); updateAnimals(dt); updatePreds(dt, nn); updateEco(dt, nn); }
     fade = Math.min(1, fade + dtR * .6);
 
     drawSky(nn, time); drawAir(nn, time);
@@ -1110,9 +1231,9 @@ function run(hero, cv, opts) {
     updateFire(nn, time, dt);
     cx.drawImage(scarC, 0, SK, GW * G, GH * G);
     cx.globalCompositeOperation = 'lighter'; cx.globalAlpha = .4 + .4 * nn; cx.drawImage(glowC, 0, SK, GW * G, GH * G); cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over';
-    drawGround(nn, time); drawTrees(nn, time); drawCamps(nn, time); drawEW(nn, time); drawAnimals(nn, time); drawEco(nn, time); drawPreds(nn, time); drawCrews(nn, time); bloom(nn);
+    drawGround(nn, time); drawTrees(nn, time); drawCamps(nn, time); drawEW(nn, time); drawSatFx(nn, time); drawAnimals(nn, time); drawEco(nn, time); drawPreds(nn, time); drawCrews(nn, time); bloom(nn);
     haze(nn, time); drawFog(nn, time); drawSock(nn, time);
-    spawnSmoke(dt); drawParts(dt, nn, time); drawFlow(dt, nn, time); drawHeli(nn, time);
+    spawnSmoke(dt); drawParts(dt, nn, time); drawFlow(dt, nn, time); drawHeli(nn, time); drawHeli(nn, time, resc);
     drawRain(dt, nn, time); drawLightning(dt);
     if (S.rain > .05) { cx.fillStyle = `rgba(20,36,56,${.16 * S.rain})`; cx.fillRect(0, 0, W, H); }
     narrate(); drawCallouts(nn); hud(dtR); chapter(dtR);
@@ -1120,7 +1241,7 @@ function run(hero, cv, opts) {
 
   const siteDark = () => document.documentElement.dataset.theme === 'dark';
   function setMode(m) { mode = m; }
-  function jump(d) { resetLine(); burning.length = 0; st.fill(0); parts.length = 0; spots.length = 0; crews.length = 0; heli = null; inc = null; wet.fill(0); absDay = yearIdx * YEAR + d; doy = d; planYear(yearIdx); S.wind = kf(KF.wind, d); S.rain = 0; }
+  function jump(d) { resetLine(); burning.length = 0; st.fill(0); parts.length = 0; spots.length = 0; crews.length = 0; heli = null; resc = null; inc = null; wet.fill(0); absDay = yearIdx * YEAR + d; doy = d; planYear(yearIdx); S.wind = kf(KF.wind, d); S.rain = 0; }
   resize(); n = siteDark() ? 1 : 0; nTarget = n; planYear(0);
   if (rm) { absDay = 130; doy = 130; }
   setInterval(() => { let g = 0, gn = 0; for (let i = 0; i < trees.length; i += 3) { const t = trees[i]; g += t.s === 4 ? 0 : (t.gw || 1); gn++; } vegAvg = gn ? g / gn : 1; let s = 0; for (let k = 0; k < N; k += 7) if (fuel0[k] > 0) s += Lf[k]; avgL = s / (N / 7); }, 1500);
@@ -1159,8 +1280,8 @@ window.FireStory = {
     if (!hero || hero._fs) return; hero._fs = 1; o = o || {}; const tr = o.tr || (s => s);
     const cv = document.createElement('canvas'); cv.className = 'fs-canvas'; cv.setAttribute('aria-hidden', 'true'); hero.insertBefore(cv, hero.firstChild);
     hero.insertAdjacentHTML('beforeend', HUD);
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost fs-toggle'; b.innerHTML = EYE; hero.appendChild(b);
-    const lab = () => { const t = tr(hero.classList.contains('fs-clean') ? 'Show text' : 'Hide text'); b.setAttribute('aria-label', t); b.dataset.tip = t; b.setAttribute('aria-pressed', hero.classList.contains('fs-clean') ? 'true' : 'false'); };
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost fs-toggle'; b.innerHTML = EYE + '<span class="lbl"></span>'; hero.appendChild(b);
+    const lab = () => { const t = tr(hero.classList.contains('fs-clean') ? 'Show text' : 'Hide overlaying texts'); b.setAttribute('aria-label', t); b.querySelector('.lbl').textContent = t; b.setAttribute('aria-pressed', hero.classList.contains('fs-clean') ? 'true' : 'false'); };
     if (window.__fsClean) hero.classList.add('fs-clean');
     b.addEventListener('click', () => { hero.classList.toggle('fs-clean'); window.__fsClean = hero.classList.contains('fs-clean'); lab(); });
     const dis = hero.querySelector('#fs-disc'), dl = () => { dis.textContent = tr('This animation is entirely hypothetical and should not be equated with any place, location or region.'); };

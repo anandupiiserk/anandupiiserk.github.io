@@ -1173,7 +1173,7 @@ html.nc .mtools .mlist .mvc { grid-column: 1 / -1; }
 .hero.fs-on .hero-inner { transition: opacity .7s, transform .7s var(--ease), visibility .7s; }
 .hero.fs-clean .hero-inner { opacity: 0 !important; visibility: hidden; pointer-events: none; transform: translateY(10px) !important; }
 .hero.fs-clean .fs-scrim { opacity: 0; }
-.fs-hud { position: absolute; z-index: 3; left: clamp(14px, 3vw, 40px); right: 84px; bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; pointer-events: none; font-family: var(--sans); }
+.fs-hud { position: absolute; z-index: 3; left: clamp(14px, 3vw, 40px); right: 250px; bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; pointer-events: none; font-family: var(--sans); }
 .fs-card { background: color-mix(in srgb, var(--bg) 84%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: .74rem; color: var(--muted); line-height: 1.35; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .fs-cap { flex: 1 1 250px; max-width: 440px; }
 .fs-cap .t { color: var(--text); font-weight: 700; font-size: .78rem; margin-bottom: 2px; }
@@ -1192,24 +1192,25 @@ html.nc .mtools .mlist .mvc { grid-column: 1 / -1; }
 .hero.fs-clean .fs-chap { display: block; } .hero.fs-clean .fs-chap.show { opacity: 1; transform: none; }
 .fs-chap .k { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; color: var(--a); }
 .fs-chap .h { font-size: clamp(1.15rem, 2.4vw, 1.7rem); color: var(--text); margin-top: 3px; text-shadow: 0 1px 14px var(--bg); }
-.fs-toggle { position: absolute !important; z-index: 4; right: clamp(14px, 3vw, 40px); bottom: 18px; width: 46px; height: 46px; padding: 0 !important; justify-content: center; border-radius: 50%; background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.fs-toggle { position: absolute !important; z-index: 4; right: clamp(14px, 3vw, 40px); bottom: 18px; height: 44px; padding: 0 18px 0 14px !important; gap: 9px; justify-content: center; border-radius: 999px; font-weight: 700; font-size: .86rem; letter-spacing: .01em; white-space: nowrap; color: #fff !important; background: #0b5fa5 !important; border: 1.5px solid #0b5fa5 !important; box-shadow: 0 6px 18px rgba(11,95,165,.38); backdrop-filter: none; transition: transform .2s, box-shadow .2s, background .2s; }
+html[data-theme="dark"] .fs-toggle { color: #1a1500 !important; background: #F0E442 !important; border-color: #F0E442 !important; box-shadow: 0 6px 20px rgba(240,228,66,.30); }
+.fs-toggle:hover { transform: translateY(-2px); background: #0a4f8a !important; }
+html[data-theme="dark"] .fs-toggle:hover { background: #ffee55 !important; }
+.fs-toggle .lbl { line-height: 1; }
 .fs-toggle svg { width: 20px; height: 20px; } .fs-toggle:hover svg { transform: none; }
 .fs-toggle .eyeoff { display: none; } .hero.fs-clean .fs-toggle .eyeoff { display: block; } .hero.fs-clean .fs-toggle .eye { display: none; }
-.fs-toggle::after { content: attr(data-tip); position: absolute; right: 0; bottom: calc(100% + 10px); white-space: nowrap; padding: 7px 12px; border-radius: 8px; background: var(--surface); color: var(--text); border: 1px solid var(--line2); font-size: .8rem; font-weight: 600; box-shadow: var(--shadow); opacity: 0; transform: translateY(4px); pointer-events: none; transition: opacity .25s, transform .25s; }
-@media (hover: hover) { .fs-toggle:hover::after { opacity: 1; transform: none; } }
-.fs-toggle:focus-visible::after { opacity: 1; transform: none; }
 @media (max-width: 900px) { .fs-cap { display: none; } }
 @media (max-width: 760px) {
   .hero.fs-on { padding-bottom: 214px; }
   .fs-scrim { background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 90%, transparent) 0%, color-mix(in srgb, var(--bg) 72%, transparent) 46%, transparent 78%); }
-  .fs-hud { right: 70px; left: 12px; bottom: 12px; } .fs-gs { gap: 8px 10px; padding: 7px 9px; } .fs-gs .g { min-width: 58px; }
-  .fs-chap { bottom: 130px; } .fs-toggle { bottom: 14px; width: 44px; height: 44px; }
+  .fs-hud { right: 12px; left: 12px; bottom: 64px; } .fs-gs { gap: 8px 10px; padding: 7px 9px; } .fs-gs .g { min-width: 58px; }
+  .fs-chap { bottom: 190px; } .fs-toggle { bottom: 12px; right: 12px; height: 42px; font-size: .82rem; }
 }
 @media (prefers-reduced-motion: reduce) { .fs-canvas { animation: none; } }
 html[dir="rtl"] :is(.fs-hud, .fs-toggle, .fs-chap) { direction: ltr; }
 .fs-disc { position: absolute; z-index: 3; left: clamp(14px, 3vw, 40px); right: 84px; bottom: 5px; font-size: .64rem; line-height: 1.25; color: var(--muted); pointer-events: none; }
 .fs-hud { bottom: 30px; }
-@media (max-width: 760px) { .fs-hud { bottom: 40px; } .fs-disc { bottom: 4px; right: 66px; font-size: .6rem; } .hero.fs-on { padding-bottom: 232px; } .fs-chap { bottom: 150px; } }
+@media (max-width: 760px) { .fs-hud { bottom: 64px; right: 12px; left: 12px; } .fs-disc { bottom: 4px; right: 12px; font-size: .6rem; } .hero.fs-on { padding-bottom: 300px; } .fs-chap { bottom: 190px; } }
 .hero.fs-on { padding-bottom: 190px; }
 .hero.fs-on { padding-top: 104px; padding-bottom: 150px; }
-@media (max-width: 760px) { .hero.fs-on { padding-top: 100px; padding-bottom: 236px; } }
+@media (max-width: 760px) { .hero.fs-on { padding-top: 100px; padding-bottom: 300px; } }
