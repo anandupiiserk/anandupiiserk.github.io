@@ -3,7 +3,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) CanvasRenderingContext2D.prot
 function run(hero, cv, opts) {
   "use strict";
   const FONT = opts.font;
-  let DPRMAX = 2;
+  let DPRMAX = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 2 ? 1.25 : 2;
   const stage = hero; let cx = cv.getContext('2d');
   const $ = id => hero.querySelector('#fs-' + id);
   const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1356,15 +1356,19 @@ function run(hero, cv, opts) {
   setInterval(() => { let g = 0, gn = 0; for (let i = 0; i < trees.length; i += 3) { const t = trees[i]; g += t.s === 4 ? 0 : (t.gw || 1); gn++; } vegAvg = gn ? g / gn : 1; let s = 0; for (let k = 0; k < N; k += 7) if (fuel0[k] > 0) s += Lf[k]; avgL = s / (N / 7); }, 1500);
 
   /* ---- run loop: paused when off screen or hidden, throttled for reduced motion, resolution steps down if frames are slow ---- */
-  let vis = true, prevT = 0, ema = 16.7, slow = 0, lastRm = 0, lastW = W, lastH = H;
+  let vis = true, prevT = 0, ema = 16.7, slow = 0, slow2 = 0, lite = false, half = false, skip = false, lastRm = 0, lastW = W, lastH = H;
   new IntersectionObserver(([e]) => { vis = e.isIntersecting; }, { threshold: 0 }).observe(hero);
   new ResizeObserver(() => { const w = hero.clientWidth, h = hero.clientHeight; if (Math.abs(w - lastW) > 2 || Math.abs(h - lastH) > 90) { lastW = w; lastH = h; const d = absDay; resize(); absDay = d; } }).observe(hero);
   function loop(now) {
     if (!hero.isConnected) return; requestAnimationFrame(loop);
     if (!vis || document.hidden) { last = now; prevT = 0; return; }
     if (rm && now - lastRm < 500) { last = now; return; } lastRm = now;
-    if (prevT) { const dtm = now - prevT; ema += (Math.min(dtm, 100) - ema) * .05; if (ema > 26) { if (++slow > 150 && DPRMAX > 1) { DPRMAX = 1; slow = 0; const d = absDay; resize(); absDay = d; } } else slow = Math.max(0, slow - 2); } prevT = now;
-    frameInner(now);
+    if (prevT) { const dtm = now - prevT; ema += (Math.min(dtm, 100) - ema) * .05; if (ema > 26) { if (++slow > 150 && DPRMAX > 1) { DPRMAX = 1; slow = 0; const d = absDay; resize(); absDay = d; } } else slow = Math.max(0, slow - 2);
+      if (ema > 34 && DPRMAX <= 1) { if (++slow2 > 200) { if (!lite) lite = true; else half = true; slow2 = 0; } } else slow2 = Math.max(0, slow2 - 3); }
+    prevT = now;
+    if (half && (skip = !skip)) return;
+    try { frameInner(now); } catch (e) { if (!loop.err) { loop.err = 1; console.warn('fire-story frame error', e); } }
+    if (lite && parts.length > 420) parts.splice(0, parts.length - 420);
   }
   requestAnimationFrame(loop);
 }
