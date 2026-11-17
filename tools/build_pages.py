@@ -92,6 +92,14 @@ def inst_links(html):
     return ''.join(out)
 
 
+SEO = ('<meta name="keywords" content="Anandu P, Anandu Prabhakaran, Anandu Prabhakaran IIT Roorkee, PMRF, PMRF fellow, forest fire, wildfire, forest fire early warning system, Indian Himalayan Region, WRF-SFIRE, fire weather index, CMIP6, CoEDMM, IIT Roorkee">\n'
+       '<meta name="author" content="Anandu Prabhakaran">\n'
+       '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "Person", "name": "Anandu Prabhakaran", "alternateName": ["Anandu P", "Anandu P."],
+        "url": "https://anandupiiserk.github.io/", "jobTitle": "PhD scholar",
+        "affiliation": {"@type": "CollegeOrUniversity", "name": "Indian Institute of Technology Roorkee", "alternateName": "IIT Roorkee"},
+        "knowsAbout": ["Forest fire early warning", "Wildfire", "Fire weather index", "WRF-SFIRE", "CMIP6 climate projections", "Indian Himalayan Region"],
+        "award": "Prime Minister's Research Fellowship (PMRF)"}, ensure_ascii=False) + '</script>')
+
 def page(file, pid, title, desc, body, html_class=''):
     if LITE and file not in LIVE_PAGES:
         stub = ('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -113,19 +121,20 @@ def page(file, pid, title, desc, body, html_class=''):
 <meta name="theme-color" content="#0c0a09">
 <title>{title}</title>
 <meta name="description" content="{desc}">
+{SEO if pid == 'home' else ''}
 <meta name="last-updated" content="@@UPD@@">
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261117a">
+<link rel="stylesheet" href="style.css?v=20261117c">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261117a"></script>
-<script src="script.js?v=20261117a"></script>
+<script src="i18n.js?v=20261117c"></script>
+<script src="script.js?v=20261117c"></script>
 </body>
 </html>
 '''
@@ -225,7 +234,7 @@ home = f'''{LOADER}
 
 {sec(shead('03', 'Pages', 'Explore the site', 'Each section is its own page, with a short transition between them.') + '<div data-rows></div>')}
 '''
-page('index.html', 'home', 'Anandu Prabhakaran | Forest fire early warning', 'Portfolio of research on forest fire early warning in the Indian Himalayan Region.', home, '' if LITE else 'locked')
+page('index.html', 'home', 'Anandu P | IIT Roorkee | PMRF | Forest fire', 'Portfolio of research on forest fire early warning in the Indian Himalayan Region.', home, '' if LITE else 'locked')
 
 # ---------------------------------------------------------------- ABOUT
 dl_about = f'''<dl class="dl">
