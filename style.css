@@ -1229,3 +1229,4 @@ div.portrait-m.pswap img { display: block; width: 100%; height: 100%; object-fit
 .wk > * { min-width: 0; }
 .wk-pics { grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
 @media (max-width: 760px) { .wk { grid-template-columns: minmax(0, 1fr); } .wk h3, .wk p { overflow-wrap: anywhere; } }
+.dl .medal { font-size: 1.15em; line-height: 1; margin-right: 2px; vertical-align: -1px; }
