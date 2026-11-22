@@ -614,7 +614,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "വിദഗ്ധ പ്രഭാഷണം | 2026 നവംബർ 13",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "മുംബൈയിലെ Indian Institute of Geomagnetism ഡയറക്ടറും JNU സ്കൂൾ ഓഫ് എൻവയോൺമെന്റൽ സയൻസസ് പ്രൊഫസറുമായ പ്രൊഫ. എ. പി. ദിമ്രി നടത്തിയ വിദഗ്ധ പ്രഭാഷണം: \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "ഹിമാലയത്തിലെ ഉയരത്തിനനുസരിച്ചുള്ള താപനവർധന, പർവത ഉഷ്ണതരംഗങ്ങൾ, മേഘവിസ്ഫോടനങ്ങൾ എന്നിവ പ്രഭാഷണത്തിൽ വിഷയമായി.",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "പ്രൊഫ. എ. പി. ദിമ്രി CoEDMM-ലെ മാസ്റ്റേഴ്സ്, PhD വിദ്യാർഥികൾക്കും അധ്യാപകർക്കുമൊപ്പം."
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "പ്രൊഫ. എ. പി. ദിമ്രി CoEDMM-ലെ മാസ്റ്റേഴ്സ്, PhD വിദ്യാർഥികൾക്കും അധ്യാപകർക്കുമൊപ്പം.",
+"Best Poster Award (First Prize), TROPMET-2026": "മികച്ച പോസ്റ്ററിനുള്ള പുരസ്കാരം (ഒന്നാം സമ്മാനം), TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "\"Weather and Climate Extremes, Applications and Services\" എന്ന വിഷയത്തിൽ അവതരിപ്പിച്ച \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\" എന്ന പോസ്റ്ററിന്. Indian Meteorological Society സംഘടിപ്പിച്ച്, NCMRWF (MoES), IMS Noida Chapter എന്നിവർ സംയുക്തമായി ആതിഥേയത്വം വഹിച്ച TROPMET-2026 ദേശീയ സിമ്പോസിയം, 2026 നവംബർ 19 മുതൽ 21 വരെ.",
+"Fellowships, scholarships and awards.": "ലഭിച്ച ഫെലോഷിപ്പുകൾ, സ്കോളർഷിപ്പുകൾ, പുരസ്കാരങ്ങൾ."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -1230,7 +1233,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "विशेषज्ञ व्याख्यान | 13 नवंबर 2026",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "मुंबई के Indian Institute of Geomagnetism के निदेशक और JNU के स्कूल ऑफ एनवायरनमेंटल साइंसेज़ के प्रोफ़ेसर प्रो. ए. पी. दिमरी का विशेषज्ञ व्याख्यान: \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee।",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "व्याख्यान में हिमालय में ऊँचाई पर निर्भर तापन, पर्वतीय ग्रीष्म लहरों और बादल फटने की घटनाओं पर चर्चा की गई।",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "प्रो. ए. पी. दिमरी CoEDMM के मास्टर्स और PhD विद्यार्थियों तथा संकाय सदस्यों के साथ।"
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "प्रो. ए. पी. दिमरी CoEDMM के मास्टर्स और PhD विद्यार्थियों तथा संकाय सदस्यों के साथ।",
+"Best Poster Award (First Prize), TROPMET-2026": "सर्वश्रेष्ठ पोस्टर पुरस्कार (प्रथम पुरस्कार), TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "\"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\" पोस्टर के लिए, विषय \"Weather and Climate Extremes, Applications and Services\"। TROPMET-2026 राष्ट्रीय संगोष्ठी, Indian Meteorological Society द्वारा आयोजित और NCMRWF (MoES) तथा IMS Noida Chapter की संयुक्त मेज़बानी में, 19 से 21 नवंबर 2026।",
+"Fellowships, scholarships and awards.": "प्राप्त फ़ेलोशिप, छात्रवृत्तियाँ और पुरस्कार।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1846,7 +1852,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "Conférence d'expert | 13 novembre 2026",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Conférence d'expert du Pr A. P. Dimri, directeur de l'Indian Institute of Geomagnetism (Mumbai) et professeur à la School of Environmental Sciences de la JNU, sur « Elevation Dependent Warming and Climate Extremes over the Indian Himalayas », CoEDMM, IIT Roorkee.",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "La conférence a porté sur le réchauffement dépendant de l'altitude, les vagues de chaleur en montagne et les orages cataclysmiques dans l'Himalaya.",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Le Pr A. P. Dimri avec les étudiants de master et de PhD et les membres du corps enseignant du CoEDMM."
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Le Pr A. P. Dimri avec les étudiants de master et de PhD et les membres du corps enseignant du CoEDMM.",
+"Best Poster Award (First Prize), TROPMET-2026": "Prix du meilleur poster (premier prix), TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Pour le poster « Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE », thème « Weather and Climate Extremes, Applications and Services ». Symposium national TROPMET-2026, organisé par l'Indian Meteorological Society et accueilli conjointement par le NCMRWF (MoES) et l'IMS Noida Chapter, du 19 au 21 novembre 2026.",
+"Fellowships, scholarships and awards.": "Bourses de recherche, bourses d'études et prix."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -2462,7 +2471,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "Fachvortrag | 13. November 2026",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Fachvortrag von Prof. A. P. Dimri, Direktor des Indian Institute of Geomagnetism (Mumbai) und Professor an der School of Environmental Sciences der JNU, zum Thema \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "Der Vortrag behandelte die höhenabhängige Erwärmung, Hitzewellen im Gebirge und Wolkenbrüche im Himalaya.",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Prof. A. P. Dimri mit den Master- und PhD-Studierenden sowie den Lehrenden des CoEDMM."
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Prof. A. P. Dimri mit den Master- und PhD-Studierenden sowie den Lehrenden des CoEDMM.",
+"Best Poster Award (First Prize), TROPMET-2026": "Preis für das beste Poster (erster Preis), TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Für das Poster „Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE“, Thema „Weather and Climate Extremes, Applications and Services“. Nationales Symposium TROPMET-2026, veranstaltet von der Indian Meteorological Society und gemeinsam ausgerichtet vom NCMRWF (MoES) und dem IMS Noida Chapter, 19. bis 21. November 2026.",
+"Fellowships, scholarships and awards.": "Fellowships, Stipendien und Auszeichnungen."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -3078,7 +3090,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "محاضرة متخصصة | 13 نوفمبر 2026",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "محاضرة متخصصة للأستاذ أ. ب. ديمري، مدير Indian Institute of Geomagnetism في مومباي وأستاذ في School of Environmental Sciences بجامعة JNU، بعنوان \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\"، CoEDMM، IIT Roorkee.",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "تناولت المحاضرة الاحترار المرتبط بالارتفاع، وموجات الحر الجبلية، والانفجارات السحابية في الهيمالايا.",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "الأستاذ أ. ب. ديمري مع طلبة الماجستير والدكتوراه وأعضاء هيئة التدريس في CoEDMM."
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "الأستاذ أ. ب. ديمري مع طلبة الماجستير والدكتوراه وأعضاء هيئة التدريس في CoEDMM.",
+"Best Poster Award (First Prize), TROPMET-2026": "جائزة أفضل ملصق علمي (الجائزة الأولى)، TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "عن الملصق العلمي «Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE»، ضمن محور «Weather and Climate Extremes, Applications and Services». الندوة الوطنية TROPMET-2026، التي نظمتها Indian Meteorological Society واستضافها بشكل مشترك NCMRWF (MoES) وIMS Noida Chapter، من 19 إلى 21 نوفمبر 2026.",
+"Fellowships, scholarships and awards.": "الزمالات والمنح الدراسية والجوائز."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -3571,7 +3586,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "Conferencia de un experto | 13 de noviembre de 2026",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Conferencia de un experto a cargo del Prof. A. P. Dimri, director del Indian Institute of Geomagnetism (Bombay) y profesor de la School of Environmental Sciences de la JNU, sobre \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "La conferencia abordó el calentamiento dependiente de la elevación, las olas de calor de montaña y los aguaceros torrenciales en el Himalaya.",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "El Prof. A. P. Dimri con los estudiantes de máster y de PhD y los miembros del profesorado del CoEDMM."
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "El Prof. A. P. Dimri con los estudiantes de máster y de PhD y los miembros del profesorado del CoEDMM.",
+"Best Poster Award (First Prize), TROPMET-2026": "Premio al mejor póster (primer premio), TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Por el póster «Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE», eje temático «Weather and Climate Extremes, Applications and Services». Simposio nacional TROPMET-2026, organizado por la Indian Meteorological Society y acogido conjuntamente por el NCMRWF (MoES) y el IMS Noida Chapter, del 19 al 21 de noviembre de 2026.",
+"Fellowships, scholarships and awards.": "Becas de investigación, becas de estudio y premios."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -4064,7 +4082,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "专家讲座 | 2026年11月13日",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Indian Institute of Geomagnetism（孟买）所长、JNU 环境科学学院教授 A. P. Dimri 教授作专家讲座，题为“Elevation Dependent Warming and Climate Extremes over the Indian Himalayas”，CoEDMM, IIT Roorkee。",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "讲座内容涵盖喜马拉雅地区的海拔依赖性增暖、山地热浪和云爆。",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "A. P. Dimri 教授与 CoEDMM 的硕士生、PhD 学生及教师合影。"
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "A. P. Dimri 教授与 CoEDMM 的硕士生、PhD 学生及教师合影。",
+"Best Poster Award (First Prize), TROPMET-2026": "最佳海报奖（一等奖），TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "获奖海报：“Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE”，主题：“Weather and Climate Extremes, Applications and Services”。TROPMET-2026 全国研讨会，由 Indian Meteorological Society 主办，NCMRWF (MoES) 与 IMS Noida Chapter 联合承办，2026年11月19日至21日。",
+"Fellowships, scholarships and awards.": "研究奖学金、奖学金与奖项。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -4557,7 +4578,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "専門家講演 | 2026年11月13日",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Indian Institute of Geomagnetism（ムンバイ）所長で JNU 環境科学研究科教授の A. P. Dimri 教授による専門家講演「Elevation Dependent Warming and Climate Extremes over the Indian Himalayas」、CoEDMM, IIT Roorkee。",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "講演では、ヒマラヤにおける標高依存性の温暖化、山岳地域の熱波、雲霧豪雨（クラウドバースト）が扱われました。",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "A. P. Dimri 教授と CoEDMM の修士課程・PhD の学生および教員。"
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "A. P. Dimri 教授と CoEDMM の修士課程・PhD の学生および教員。",
+"Best Poster Award (First Prize), TROPMET-2026": "最優秀ポスター賞（第1位）、TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "ポスター「Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE」に対して。テーマ「Weather and Climate Extremes, Applications and Services」。TROPMET-2026 全国シンポジウム（主催：Indian Meteorological Society、共同ホスト：NCMRWF (MoES) および IMS Noida Chapter、2026年11月19日から21日）。",
+"Fellowships, scholarships and awards.": "フェローシップ、奨学金、受賞。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -5050,7 +5074,10 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "Palestra de especialista | 13 de novembro de 2026",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Palestra de especialista do Prof. A. P. Dimri, diretor do Indian Institute of Geomagnetism (Mumbai) e professor da School of Environmental Sciences da JNU, sobre \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "A palestra abordou o aquecimento dependente da elevação, as ondas de calor em áreas montanhosas e os temporais súbitos (cloudbursts) no Himalaia.",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "O Prof. A. P. Dimri com os estudantes de mestrado e de PhD e os docentes do CoEDMM."
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "O Prof. A. P. Dimri com os estudantes de mestrado e de PhD e os docentes do CoEDMM.",
+"Best Poster Award (First Prize), TROPMET-2026": "Prêmio de melhor pôster (primeiro lugar), TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Pelo pôster “Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE”, tema “Weather and Climate Extremes, Applications and Services”. Simpósio nacional TROPMET-2026, organizado pela Indian Meteorological Society e sediado conjuntamente pelo NCMRWF (MoES) e pelo IMS Noida Chapter, de 19 a 21 de novembro de 2026.",
+"Fellowships, scholarships and awards.": "Bolsas de pesquisa, bolsas de estudo e prêmios."
 },
 "sv": {
 "Skip to content": "Hoppa till innehållet",
@@ -5666,6 +5693,9 @@ window.I18N = {
 "Expert Lecture | 13 November 2026": "Expertföreläsning | 13 november 2026",
 "Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.": "Expertföreläsning av prof. A. P. Dimri, föreståndare för Indian Institute of Geomagnetism (Mumbai) och professor vid School of Environmental Sciences, JNU, om \"Elevation Dependent Warming and Climate Extremes over the Indian Himalayas\", CoEDMM, IIT Roorkee.",
 "The lecture covered elevation dependent warming, mountain heatwaves and cloudbursts in the Himalaya.": "Föreläsningen behandlade höjdberoende uppvärmning, värmeböljor i bergsområden och skyfall i Himalaya.",
-"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Prof. A. P. Dimri med masterstudenter, PhD-studenter och lärare vid CoEDMM."
+"Prof. A. P. Dimri with the Master's and PhD students and the faculty members of CoEDMM.": "Prof. A. P. Dimri med masterstudenter, PhD-studenter och lärare vid CoEDMM.",
+"Best Poster Award (First Prize), TROPMET-2026": "Pris för bästa poster (första pris), TROPMET-2026",
+"For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "För postern ”Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE”, tema ”Weather and Climate Extremes, Applications and Services”. Nationellt symposium TROPMET-2026, arrangerat av Indian Meteorological Society med NCMRWF (MoES) och IMS Noida Chapter som gemensamma värdar, 19 till 21 november 2026.",
+"Fellowships, scholarships and awards.": "Forskningsstipendier, stipendier och utmärkelser."
 }
 };
