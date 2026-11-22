@@ -1225,3 +1225,7 @@ html.fs-live .nav { background: color-mix(in srgb, var(--bg) 93%, transparent) !
 div.portrait-m.pswap { position: relative; overflow: hidden; }
 div.portrait-m.pswap img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
 @keyframes pswap { 0%, 44% { opacity: 0; } 50%, 94% { opacity: 1; } 100% { opacity: 0; } }
+/* workshop cards: never let the photo row widen the card past the screen */
+.wk > * { min-width: 0; }
+.wk-pics { grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
+@media (max-width: 760px) { .wk { grid-template-columns: minmax(0, 1fr); } .wk h3, .wk p { overflow-wrap: anywhere; } }
