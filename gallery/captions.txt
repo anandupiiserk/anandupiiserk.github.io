@@ -24,6 +24,7 @@ Conf_008_01 | The Weather and Climate Research Group (WCRG), IIT Roorkee, at TRO
 Conf_008_02 | With Dr. Ashis Mitra, former Head of NCMRWF, at TROPMET-2026, NCMRWF, Noida, 21 November 2026. From left: Shiwam Singh, Dr. Ashis Mitra and Anandu Prabhakaran.
 Conf_008_03 | Catching up with an old friend, Dr. Gaurav (centre), who did his PhD at IISER Bhopal, at TROPMET-2026. We met again after roughly ten years.
 Conf_008_04 | Presenting my two-minute lightning talk on my poster, "Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE", at TROPMET-2026, NCMRWF, Noida, 21 November 2026.
+Conf_008_05 | At the TROPMET-2026 venue entrance, NCMRWF, Noida. From left: Arun Dev Singh, Shiwam Singh, Anandu Prabhakaran, Saurabh Singh and Balu Shaharica.
 # ---- 13 November 2026: Expert lecture at CoEDMM, IIT Roorkee ----
 Meet_076 | [2026-11-13] Expert Lecture | 13 November 2026
 Meet_076_01 | Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on "Elevation Dependent Warming and Climate Extremes over the Indian Himalayas", CoEDMM, IIT Roorkee.
