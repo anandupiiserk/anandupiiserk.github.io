@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261122j">
+<link rel="stylesheet" href="style.css?v=20261122k">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261122j"></script>
-<script src="script.js?v=20261122j"></script>
+<script src="i18n.js?v=20261122k"></script>
+<script src="script.js?v=20261122k"></script>
 </body>
 </html>
 '''
@@ -282,11 +282,11 @@ achv = rows([
 work = rows([
     ('2020 - 2022', '~Chegg Q&amp;A expert in Earth Sciences', 'Part-time. Answered Earth science questions from students.', None),
     ('2020 - 2022', '~Course Hero tutor in Earth Sciences', 'Part-time. Tutored students in Earth science courses.', None)])
-about = phero('01 / About me', 'About me', 'PhD researcher working on forest fire early warning and numerical weather prediction.', 'PROFILE').replace('</header>', '''<figure class="portrait pswap" aria-label="Portrait"><img src="img/anandu-prabhakaran.jpg" width="1122" height="1292" alt="Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee" decoding="async" fetchpriority="high"><img class="alt" src="img/anandu-prabhakaran-ncmrwf.jpg" width="1122" height="1292" alt="" decoding="async"></figure></header>''', 1) + sec(f'''
+about = phero('01 / About me', 'About me', 'PhD researcher working on forest fire early warning and numerical weather prediction.', 'PROFILE').replace('</header>', '''<figure class="portrait pswap" aria-label="Portrait"><img src="img/anandu-prabhakaran.jpg" width="1122" height="1292" alt="Anandu Prabhakaran presenting his research at CoEDMM, IIT Roorkee" decoding="async" fetchpriority="high"><img class="alt" src="img/anandu-prabhakaran-ncmrwf-2.jpg" width="1122" height="1292" alt="" decoding="async"></figure></header>''', 1) + sec(f'''
 <div class="two">
   <div class="bio">
     <div class="eyebrow reveal"><span class="n">01</span> Bio</div>
-    <div class="portrait-m pswap"><img src="img/anandu-prabhakaran.jpg" width="1122" height="1292" alt="" loading="lazy" decoding="async"><img class="alt" src="img/anandu-prabhakaran-ncmrwf.jpg" width="1122" height="1292" alt="" loading="lazy" decoding="async"></div>
+    <div class="portrait-m pswap"><img src="img/anandu-prabhakaran.jpg" width="1122" height="1292" alt="" loading="lazy" decoding="async"><img class="alt" src="img/anandu-prabhakaran-ncmrwf-2.jpg" width="1122" height="1292" alt="" loading="lazy" decoding="async"></div>
     <h2 data-split>Research in a few lines</h2>
     <p class="reveal">I am a PhD researcher at the Centre of Excellence in Disaster Mitigation and Management (CoEDMM), Indian Institute of Technology Roorkee. My PhD thesis is titled <span translate="no">&ldquo;Modelling and Analysis of Atmospheric Conditions Conducive to the Spread of Wildfires over Mountainous Region in India&rdquo;</span>.</p>
     <p class="reveal">The work combines numerical weather prediction models with observational and reanalysis datasets. I also work on tropical cyclones and on disasters induced by climate change.</p>
