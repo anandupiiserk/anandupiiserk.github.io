@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261123f">
+<link rel="stylesheet" href="style.css?v=20261123g">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261123f"></script>
-<script src="script.js?v=20261123f"></script>
+<script src="i18n.js?v=20261123g"></script>
+<script src="script.js?v=20261123g"></script>
 </body>
 </html>
 '''
@@ -273,7 +273,7 @@ rexp = rows([
     ('Summer 2017', 'CGMLI, IISER Bhopal', 'Impact of heatwaves in Indian metropolitan cities, under Dr. Pankaj Kumar.', None),
     ('Summer 2016', 'ACARR, CUSAT', 'Planetary boundary layer over the Gateway of the Indian Monsoon in Cochin, under Prof. K. Mohankumar and Dr. M. G. Manoj.', None)])
 honours = rows([
-    ('2026', '🥇 Best Poster Award (First Prize), TROPMET-2026', 'For the poster "Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE", theme "Weather and Climate Extremes, Applications and Services". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.', None),
+    ('2026', '🥇 Best Poster Award (First Prize), TROPMET-2026', 'For the poster "Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE", theme "Weather and Climate Extremes, Applications and Services". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.', 'https://tropmet26.ncmrwf.gov.in/#/'),
     ('2025', 'Raman-Charpak Fellowship', 'Fellowship for India-France research collaboration, July to December 2025.', 'https://www.inde.campusfrance.org/raman-charpak-fellowship'),
     ('2022', "Prime Minister's Research Fellowship (PMRF)", 'Cycle 10, December 2022, lateral entry.', 'https://www.pmrf.in/'),
     ('2022', 'MoE JRF', 'Junior research fellowship for doctoral research, July to December 2022.', None),
