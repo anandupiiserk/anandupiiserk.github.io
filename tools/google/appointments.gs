@@ -27,7 +27,7 @@ var HOLIDAY_CAL = 'en.indian#holiday@group.v.calendar.google.com';
 var MSG_ARCHIVE_DAYS = 60, MSG_KEEP_DAYS = 365;   /* messages older than 60 days move to the Archive, and are removed after a year unless you delete them sooner */
 var MSG_SENDER = 'No-Reply-Website-Admin-Anandu';
 var OWNER_NAME = 'Anandu Prabhakaran';
-var SITE_URL = 'https://anandupiiserk.github.io/contact';
+var SITE_URL = 'https://anandu-prabhakaran.pages.dev/contact';
 
 function ymd_(d) { return Utilities.formatDate(d, TZ, 'yyyy-MM-dd'); }
 function esc_(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
