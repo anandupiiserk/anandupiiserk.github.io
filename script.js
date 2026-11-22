@@ -142,7 +142,7 @@ function buildChrome() {
   const header = document.createElement('header');
   header.className = 'nav'; header.id = 'nav';
   header.innerHTML = `
-    <div class="idw"><a class="avatar" href="https://anandu-prabhakaran.pages.dev/about" aria-label="About ${SITE.name}"><img src="img/avatar.jpg" width="40" height="40" alt="" decoding="async"></a>
+    <div class="idw"><a class="avatar" href="https://anandu-prabhakaran.pages.dev/about" aria-label="About ${SITE.name}"><img src="${['about', 'publications', 'gallery'].includes(page) ? 'img/avatar-ncmrwf.jpg' : 'img/avatar.jpg'}" width="40" height="40" alt="" decoding="async"></a>
     <a class="brand" href="home.html" aria-label="${SITE.name}, home"><span class="prompt" aria-hidden="true"><i>$</i><span class="slot"><span class="tx"></span><b class="caret"></b></span></span></a></div>
     <nav class="menu" id="menu" aria-label="Main">${SITE.nav.map((n, i) => `<a href="${n.href}" style="--i:${i}" ${n.id === page ? 'aria-current="page"' : ''}><span class="t"><span>${n.label}</span><span aria-hidden="true">${n.label}</span></span></a>`).join('')}</nav>
     <div class="tools">
