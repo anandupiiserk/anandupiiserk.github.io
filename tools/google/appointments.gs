@@ -1767,6 +1767,14 @@ function cvWrite_(tex) {
 function cvSave(sig, tex) { cvOk_(sig); var f = cvWrite_(String(tex || '')); return cvInfo_(f); }
 function cvFromGit(sig) { cvOk_(sig); var tex = cvGit_(), f = cvWrite_(tex); var r = cvInfo_(f); r.text = tex; return r; }
 function cvLatest(sig) { cvOk_(sig); var f = cvFolder_(), p = cvFile_(f, CV_NAME_ + '.pdf'); return p ? Utilities.base64Encode(p.getBlob().getBytes()) : ''; }
+/* both files in one zip: the LaTeX source to edit and the last built PDF */
+function cvZip(sig) {
+  cvOk_(sig); var f = cvFolder_(), t = cvTex_(f), p = cvFile_(f, CV_NAME_ + '.pdf'), bl = [t.getBlob().setName(CV_NAME_ + '.tex')];
+  if (p) bl.push(p.getBlob().setName(CV_NAME_ + '.pdf'));
+  return Utilities.base64Encode(Utilities.zip(bl, CV_NAME_ + '.zip').getBytes());
+}
+/* run once from the editor (select authorizeCv, press Run) to grant Drive access; it also creates the Website CV folder */
+function authorizeCv() { var f = cvFolder_(); cvTex_(f); Logger.log('CV folder ready: ' + f.getUrl()); }
 function cvIsPdf_(b) { return b && b.length > 4 && b[0] === 37 && b[1] === 80 && b[2] === 68 && b[3] === 70; }
 function cvTexlive_(tex) {
   var bd = '----cvform' + Date.now(), nl = '\r\n';
@@ -1805,11 +1813,12 @@ function cvPage_(p) {
     + '.cvi{font-size:14px;color:var(--muted);margin:0 0 12px;line-height:1.7}.cvi a{color:var(--a)}'
     + '#tx{width:100%;min-height:62vh;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);tab-size:2;resize:vertical;box-sizing:border-box}'
     + '#ms{min-height:22px;margin:10px 0;font-size:15px}#ms.bad{color:var(--red)}#lg{display:none;white-space:pre-wrap;max-height:320px;overflow:auto;font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}'
+    + '.dd{position:relative;display:inline-block}.dm{position:absolute;z-index:5;top:calc(100% + 6px);left:0;min-width:250px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 34px rgba(0,0,0,.18);padding:6px;display:flex;flex-direction:column}.dm[hidden]{display:none}.dm button{background:none;border:0;text-align:left;padding:10px 12px;border-radius:8px;color:var(--text);cursor:pointer;font:inherit}.dm button:hover,.dm button:focus{background:var(--line)}'
     + '#pv{display:none;width:100%;height:80vh;border:1px solid var(--line);border-radius:12px;margin-top:12px;background:#fff}</style>';
   var inner = css
     + '<p class="cvi" id="inf"></p>'
     + '<div class="cvb"><button class="b blue" id="bs" type="button">Save to Drive</button><button class="b" id="bc" type="button">Compile PDF</button>'
-    + '<button class="b gh" id="bt" type="button">Download .tex</button><button class="b gh" id="bp" type="button">Download PDF</button><button class="b gh" id="bv" type="button">Preview PDF</button>'
+    + '<span class="dd"><button class="b gh" id="bd" type="button" aria-haspopup="true" aria-expanded="false">Download &#9662;</button><span class="dm" id="dm" hidden><button type="button" id="bt">LaTeX source (.tex), to edit</button><button type="button" id="bp">PDF</button><button type="button" id="bz">Both together (.zip)</button></span></span><button class="b gh" id="bv" type="button">Preview PDF</button>'
     + '<button class="b gh" id="bg" type="button">Reload from GitHub</button></div>'
     + '<textarea id="tx" spellcheck="false" aria-label="CV LaTeX source"></textarea><div id="ms" role="status"></div><pre id="lg"></pre><iframe id="pv" title="CV preview"></iframe>'
     + '<script>(function(){var SIG=' + J(p.sig) + ',I=' + J(info) + ',tx=document.getElementById("tx"),ms=document.getElementById("ms"),lg=document.getElementById("lg"),pv=document.getElementById("pv"),pdf=null,saved;'
@@ -1820,7 +1829,7 @@ function cvPage_(p) {
     + 'function dirty(){return tx.value!==saved}window.addEventListener("beforeunload",function(e){if(dirty()){e.preventDefault();e.returnValue=""}});'
     + 'tx.addEventListener("input",function(){if(dirty())say("Unsaved changes.")});'
     + 'tx.addEventListener("keydown",function(e){if(e.key==="Tab"){e.preventDefault();var s=tx.selectionStart;tx.setRangeText("  ",s,tx.selectionEnd,"end")}if((e.ctrlKey||e.metaKey)&&e.key==="s"){e.preventDefault();save()}});'
-    + 'var bs=document.querySelectorAll(".cvb .b");function busy(on,b,t){for(var i=0;i<bs.length;i++)bs[i].disabled=on;if(b){if(on){b.dataset.t=b.textContent;b.textContent=t}else b.textContent=b.dataset.t}}'
+    + 'var bs=document.querySelectorAll(".cvb .b,.dm button");function busy(on,b,t){for(var i=0;i<bs.length;i++)bs[i].disabled=on;if(b){if(on){b.dataset.t=b.textContent;b.textContent=t}else b.textContent=b.dataset.t}}'
     + 'function fail(b){return function(e){busy(false,b);say((e&&e.message)||"Something went wrong.",true)}}'
     + 'function b2u(b64){var s=atob(b64),u=new Uint8Array(s.length);for(var i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return URL.createObjectURL(new Blob([u],{type:"application/pdf"}))}'
     + 'function dl(url,name){var l=document.createElement("a");l.href=url;l.download=name;document.body.appendChild(l);l.click();l.remove()}'
@@ -1831,7 +1840,9 @@ function cvPage_(p) {
     + 'I=r;inf();if(pdf)URL.revokeObjectURL(pdf);pdf=b2u(r.b64);pv.src=pdf;pv.style.display="block";say("PDF built ("+r.via+") and saved to Drive.")}).withFailureHandler(fail(b)).cvCompile(SIG,v)};'
     + '$("bt").onclick=function(){dl(URL.createObjectURL(new Blob([tx.value],{type:"application/x-tex"})),"' + CV_NAME_ + '.tex")};'
     + 'function withPdf(fn,b){if(pdf)return fn();busy(true,b,"Loading...");google.script.run.withSuccessHandler(function(x){busy(false,b);if(!x){say("No PDF yet. Press Compile PDF first.",true);return}pdf=b2u(x);fn()}).withFailureHandler(fail(b)).cvLatest(SIG)}'
-    + '$("bp").onclick=function(){withPdf(function(){dl(pdf,"' + CV_NAME_ + '.pdf")},$("bp"))};'
+    + 'var dm=$("dm"),bd=$("bd");function shut(){dm.hidden=true;bd.setAttribute("aria-expanded","false")}bd.onclick=function(e){e.stopPropagation();dm.hidden=!dm.hidden;bd.setAttribute("aria-expanded",String(!dm.hidden))};document.addEventListener("click",shut);document.addEventListener("keydown",function(e){if(e.key==="Escape")shut()});'
+    + '$("bz").onclick=function(){var b=$("bd");busy(true,b,"Zipping...");google.script.run.withSuccessHandler(function(x){busy(false,b);var s=atob(x),u=new Uint8Array(s.length);for(var i=0;i<s.length;i++)u[i]=s.charCodeAt(i);dl(URL.createObjectURL(new Blob([u],{type:"application/zip"})),"' + CV_NAME_ + '.zip");say(dirty()?"Downloaded the last saved version. Save first to include your newest edits.":"Downloaded.")}).withFailureHandler(fail(b)).cvZip(SIG)};'
+    + '$("bp").onclick=function(){withPdf(function(){dl(pdf,"' + CV_NAME_ + '.pdf")},$("bd"))};'
     + '$("bv").onclick=function(){withPdf(function(){pv.src=pdf;pv.style.display="block";pv.scrollIntoView({behavior:"smooth"})},$("bv"))};'
     + '$("bg").onclick=function(){var b=$("bg");if(!b.armed){b.armed=true;b.textContent="Click again: replace with the GitHub copy";setTimeout(function(){b.armed=false;b.textContent="Reload from GitHub"},5000);return}b.armed=false;'
     + 'busy(true,b,"Fetching...");google.script.run.withSuccessHandler(function(r){I=r;tx.value=r.text;saved=r.text;inf();busy(false,b);b.textContent="Reload from GitHub";say("Loaded the copy from GitHub. The previous version is in Drive, Website CV/history.")}).withFailureHandler(fail(b)).cvFromGit(SIG)};'
