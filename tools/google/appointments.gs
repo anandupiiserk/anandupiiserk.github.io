@@ -765,7 +765,7 @@ function adminPage_(p) {
     var st = r.s === 'pending' ? '<a href="' + link_('acc_ok', r.id) + '" target="_top" style="color:var(--green);font-weight:bold;text-decoration:none">Approve</a> &nbsp; <a href="' + link_('acc_no', r.id) + '" target="_top" style="color:var(--red);font-weight:bold;text-decoration:none">Decline</a>' : (r.s === 'approved' ? '<span style="color:var(--green);font-weight:bold">Approved, no OTP needed</span> &nbsp; <a href="' + link_('acc_rv', r.id) + '" target="_top" style="color:var(--red);font-weight:bold;text-decoration:none">Remove</a>' : '<span style="color:var(--muted2)">' + esc_(r.s) + '</span>');
     return '<tr><td style="' + td + '">' + esc_(r.n) + '</td><td style="' + td + '">' + esc_(r.e) + '</td><td style="' + td + '">' + esc_(r.p) + '</td><td style="' + td + ';white-space:nowrap">' + fmt(r.t) + '</td><td style="' + td + '">' + st + '</td></tr>';
   }).join('');
-  var data = JSON.stringify(all.filter(function (r) { return r.s !== 'pending'; }).map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), { active: 'Subscribed', watch: 'Yellow list', ban: 'Banned', unsub: 'Unsubscribed' }[r.s] || r.s]; })).replace(/</g, '\\u003c');
+  var data = JSON.stringify(all.filter(function (r) { return r.s !== 'pending'; }).map(function (r) { return [r.n || '', r.e, fmt(r.t0 || r.t), { active: 'Subscribed', watch: 'Yellow list', ban: 'Banned', unsub: 'Unsubscribed' }[r.s] || r.s]; })).replace(/</g, '\\x3c');
   var h2 = function (t, d) { return '<h2 style="font-size:17px;margin:30px 0 8px">' + t + '</h2>' + (d ? '<p class="sub" style="margin:0 0 10px">' + d + '</p>' : ''); };
   var pendN = reqs.filter(function (r) { return r.s === 'pending'; }).length;
   var inner = '<div class="chips"><span class="chip"><b>' + subs.length + '</b> subscriber' + (subs.length === 1 ? '' : 's') + '</span><span class="chip"><b>' + watch.length + '</b> yellow-listed</span><span class="chip"><b>' + bans.length + '</b> banned</span><span class="chip"><b>' + unsubs.length + '</b> unsubscribed</span><span class="chip"><b>' + pends.length + '</b> pending OTP</span><span class="chip"><b>' + pendN + '</b> pending request' + (pendN === 1 ? '' : 's') + '</span></div>'
@@ -1800,7 +1800,7 @@ function cvPage_(p) {
   var f, t, tex, info, err = '';
   try { f = cvFolder_(); t = cvTex_(f); tex = t.getBlob().getDataAsString('UTF-8'); info = cvInfo_(f); }
   catch (e) { return page_('CV not available', esc_(e.message), 'bad'); }
-  var J = function (o) { return JSON.stringify(o).replace(/</g, '\\u003c'); };
+  var J = function (o) { return JSON.stringify(o).replace(/</g, '\\x3c'); };
   var css = '<style>.pw{max-width:1180px}.cvb{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.cvb .b{width:auto;padding:11px 18px}.cvb .b.gh{background:var(--surface);color:var(--text);border:1px solid var(--line)}'
     + '.cvi{font-size:14px;color:var(--muted);margin:0 0 12px;line-height:1.7}.cvi a{color:var(--a)}'
     + '#tx{width:100%;min-height:62vh;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);tab-size:2;resize:vertical;box-sizing:border-box}'
