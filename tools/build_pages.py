@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261123j">
+<link rel="stylesheet" href="style.css?v=20261123l">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261123j"></script>
-<script src="script.js?v=20261123j"></script>
+<script src="i18n.js?v=20261123l"></script>
+<script src="script.js?v=20261123l"></script>
 </body>
 </html>
 '''
@@ -267,11 +267,11 @@ edu = rows([
     ('Class 10', '~Secondary Education', '<span translate="no">Saint Jude Central School, Mukhathala, Kollam, Kerala</span>. Central Board of Secondary Education (CBSE).', None)])
 rexp = rows([
     ('2022 - present', 'Weather and Climate Research Group, IIT Roorkee', 'Modelling and Analysis of Atmospheric Conditions Conducive to the Spread of Wildfires over Mountainous Region in India.', None),
-    ('2025', 'CEFE-CNRS, Montpellier', 'Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.', None),
+    ('2025', 'CEFE-CNRS, Montpellier', 'Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.', 'https://www.cefe.cnrs.fr/en/research-dpt/functional-ecology/forecast-en'),
     ('2024', 'Workshop on Data Assimilation in Weather and Climate models', 'Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.', 'https://www.icts.res.in/program/da_workshop'),
-    ('Final year', 'ACARR, CUSAT', 'Final year project on the increasing frequency of cyclonic storms over the Arabian Sea.', None),
-    ('Summer 2017', 'CGMLI, IISER Bhopal', 'Impact of heatwaves in Indian metropolitan cities, under Dr. Pankaj Kumar.', None),
-    ('Summer 2016', 'ACARR, CUSAT', 'Planetary boundary layer over the Gateway of the Indian Monsoon in Cochin, under Prof. K. Mohankumar and Dr. M. G. Manoj.', None)])
+    ('Final year', 'ACARR, CUSAT', 'Final year project on the increasing frequency of cyclonic storms over the Arabian Sea.', 'https://acarr.cusat.ac.in/'),
+    ('Summer 2017', 'CGMLI, IISER Bhopal', 'Impact of heatwaves in Indian metropolitan cities, under Dr. Pankaj Kumar.', 'https://home.iiserb.ac.in/~kumarp/'),
+    ('Summer 2016', 'ACARR, CUSAT', 'Planetary boundary layer over the Gateway of the Indian Monsoon in Cochin, under Prof. K. Mohankumar and Dr. M. G. Manoj.', 'https://acarr.cusat.ac.in/')])
 honours = rows([
     ('2026', '🥇 Best Poster Award (First Prize), TROPMET-2026', 'For the poster "Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE", theme "Weather and Climate Extremes, Applications and Services". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.', 'https://tropmet26.ncmrwf.gov.in/#/'),
     ('2025', 'Raman-Charpak Fellowship', 'Fellowship for India-France research collaboration, July to December 2025.', 'https://www.inde.campusfrance.org/raman-charpak-fellowship'),
@@ -324,7 +324,7 @@ research = phero('02 / Research', 'Research', 'PhD thesis, M.Sc. thesis and summ
 <div class="rgrid"><article class="rcard big reveal"><span class="badge alt"><i class="d"></i>M.Sc. thesis</span>
   <h3 translate="no">Investigation on the increased frequency of cyclonic storms over Arabian Sea (1982-2019)</h3>
   <h4>Objectives</h4>{ol(['Vorticity and divergence analysis during cyclonic days.', 'Study of sea surface temperature, wind shear and accumulated cyclone energy.', 'Synoptic analysis of the genesis potential parameter along the cyclone track.', 'Future projection of cyclonic storms over the Arabian Sea and prediction of their severity.', 'Analysis of path speed, CI number and central pressure of cyclones, with their future projection.'])}
-  <p class="who" translate="no"><b>Dr. M.G. Manoj</b>, Scientist-D, ACARR, CUSAT, Kalamassery, Cochin, Kerala, India<br><b>Dr. Sayantan Sarkar</b>, Associate Professor, School of Civil and Environmental Engineering, IIT Mandi (at IISER Kolkata during the thesis)</p></article></div>''', 'sec alt') + sec(shead('03', 'Summer internships', 'Two internships', 'Short research projects during the M.Sc. programme.') + f'''
+  <p class="who" translate="no"><b>Dr. M.G. Manoj</b>, Scientist-D, <a href="https://acarr.cusat.ac.in/" target="_blank" rel="noopener noreferrer">ACARR, CUSAT</a>, Kalamassery, Cochin, Kerala, India<br><b>Dr. Sayantan Sarkar</b>, Associate Professor, School of Civil and Environmental Engineering, IIT Mandi (at IISER Kolkata during the thesis)</p></article></div>''', 'sec alt') + sec(shead('03', 'Summer internships', 'Two internships', 'Short research projects during the M.Sc. programme.') + f'''
 <div class="rgrid">
 <article class="rcard reveal"><span class="badge"><i class="c"></i>Internship</span>
   <h3 translate="no">Heat wave analysis over different parts of India and its effect on human mortality</h3>
@@ -333,7 +333,7 @@ research = phero('02 / Research', 'Research', 'PhD thesis, M.Sc. thesis and summ
 <article class="rcard reveal"><span class="badge"><i class="c"></i>Internship</span>
   <h3 translate="no">Black body radiation and determination of Planetary Boundary Layer over the gateway of Indian Monsoon</h3>
   <h4>Objectives</h4>{ol(['Black-body radiation studies to determine the temperature rise associated with the monsoon.', 'PBL determination over the Cochin region to reduce health risk and pollution.'])}
-  <p class="who" translate="no">Dr. M.G. Manoj, Scientist-D, ACARR, CUSAT, Kalamassery, Cochin, Kerala, India</p></article>
+  <p class="who" translate="no">Dr. M.G. Manoj, Scientist-D, <a href="https://acarr.cusat.ac.in/" target="_blank" rel="noopener noreferrer">ACARR, CUSAT</a>, Kalamassery, Cochin, Kerala, India</p></article>
 </div>''')
 page('research.html', 'research', f'Research | Anandu Prabhakaran', 'Research: PhD thesis, M.Sc. thesis and summer internships.', research)
 

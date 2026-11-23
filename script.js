@@ -1003,6 +1003,9 @@ else (function loop() {
   })();
 
   /* Lightbox: every photo of the visible items, event photos in order */
+  /* place names in captions become links to their institutes */
+  const CAPL = [['CEFE-CNRS', 'https://www.cefe.cnrs.fr/en/research-dpt/functional-ecology/forecast-en'], ['ACARR, CUSAT', 'https://acarr.cusat.ac.in/'], ['CGMLI', 'https://home.iiserb.ac.in/~kumarp/'], ['TROPMET-2026', 'https://tropmet26.ncmrwf.gov.in/#/']];
+  const capLinks = (el, text) => { const re = new RegExp(CAPL.map(x => x[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g'); let last = 0, m; while ((m = re.exec(text))) { if (m.index > last) el.append(document.createTextNode(text.slice(last, m.index))); const a = document.createElement('a'); a.href = CAPL.find(x => x[0] === m[0])[1]; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = m[0]; a.addEventListener('click', ev => ev.stopPropagation()); el.append(a); last = m.index + m[0].length; } if (last < text.length) el.append(document.createTextNode(text.slice(last))); };
   const lb = $('#lb'), img = $('#lb-img'), cap = $('#lb-cap'), count = $('#lb-count'); let slides = [], cur = 0; const warm = new Set();
   function slidesNow() { slides = []; items.forEach(it => { if (!it.ok || it.el.hidden) return; it.list.forEach((p, k) => slides.push({ base: it.e.base, src: p.src, th: p.th, cap: p.cap || it.e.cap, cat: catLabel(it.e), k, n: it.list.length })); }); }
   function show(i) {
@@ -1010,7 +1013,7 @@ else (function loop() {
     if (s.th && !warm.has(s.src)) { img.src = s.th; const fl = new Image(); fl.src = s.src; fl.decode().then(() => { warm.add(s.src); if (slides[cur] === s) img.src = s.src; }).catch(() => {}); } else img.src = s.src;
     img.alt = s.cap || '';
     [1, 2].forEach(d => { const nb = slides[(cur + d) % slides.length]; if (nb && !warm.has(nb.src)) { const x = new Image(); x.src = nb.src; x.decode().then(() => warm.add(nb.src)).catch(() => {}); } }); const lkb = $('#lb-like'); if (lkb) { lkb.dataset.id = s.base; paintLikes(); }
-    cap.innerHTML = ''; const b = document.createElement('b'); b.textContent = tr(s.cat); cap.append(b, document.createTextNode(s.cap ? tr(s.cap) : ''));
+    cap.innerHTML = ''; const b = document.createElement('b'); b.textContent = tr(s.cat); cap.append(b); if (s.cap) capLinks(cap, tr(s.cap));
     count.textContent = pad(cur + 1, 2) + ' / ' + pad(slides.length, 2) + (s.n > 1 ? '  ·  ' + (s.k + 1) + '/' + s.n : '');
   }
   /* Lightbox autoplay: every 6 s the next photo slides in. Any manual action restarts the timer. Off for reduced motion until Play is pressed. */
