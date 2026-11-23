@@ -53,11 +53,7 @@ function gate_(p) {
   if (!base || !OWNER_ACTIONS_[p.action]) return null;
   var who = ''; try { who = String(Session.getActiveUser().getEmail() || '').toLowerCase(); } catch (x) { }
   if (who === OWNER_EMAIL) return null;
-  if (!who) {
-    var qs = Object.keys(p).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]); }).join('&');
-    return page_('Sign in to continue', 'The admin pages open only after you sign in with <b>' + OWNER_EMAIL + '</b>.<p style="margin:16px 0 0"><a href="' + base + '?' + qs + '" target="_top" style="display:inline-block;background:var(--a);color:var(--on);text-decoration:none;font-weight:bold;border-radius:8px;padding:12px 22px">Continue with Google</a></p>', 'info');
-  }
-  return page_('Access restricted', 'This page is private. Sign in with <b>' + OWNER_EMAIL + '</b> to open it.', 'bad');
+  return trapPage_(p);
 }
 function link_(action, id) { return portalBase_() + '?action=' + action + '&id=' + encodeURIComponent(id) + '&sig=' + sign_(action, id); }
 function calLink_(ev) {
@@ -1849,4 +1845,45 @@ function cvPage_(p) {
     + 'busy(true,b,"Fetching...");google.script.run.withSuccessHandler(function(r){I=r;tx.value=r.text;saved=r.text;inf();busy(false,b);b.textContent="Reload from GitHub";say("Loaded the copy from GitHub. The previous version is in Drive, Website CV/history.")}).withFailureHandler(fail(b)).cvFromGit(SIG)};'
     + '})()<\/script>';
   return out_(shell_('CV', 'Edit the LaTeX source of your CV, save it to Google Drive, and build the PDF. Every save keeps the previous version in Website CV/history.', inner, true, 'cv'), 'CV');
+}
+
+/* Shown to anyone who is not the owner: a harmless gag login. Nothing typed is read, stored or sent. */
+function trapPage_(p) {
+  var css = '*{box-sizing:border-box}html,body{margin:0;height:100%}'
+    + 'body{font-family:Calibri,Carlito,"Segoe UI",system-ui,Arial,sans-serif;background:#0f1722;color:#0f1722}'
+    + '.scr{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}'
+    + '.scr.on{display:flex}'
+    + '#scr1{background:linear-gradient(160deg,#102033,#0a1420)}'
+    + '.card{background:#fff;width:100%;max-width:360px;border-radius:18px;padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.45)}'
+    + '.card h1{margin:0 0 4px;font-size:22px}.card .s{margin:0 0 18px;color:#5b6675;font-size:14px}'
+    + 'label{display:block;font-size:13px;color:#5b6675;margin:12px 0 5px}'
+    + 'input{width:100%;padding:12px 14px;border:1px solid #d0d7e2;border-radius:10px;font-size:16px;color:#0f1722}'
+    + '.btn{margin-top:20px;width:100%;padding:13px;border:0;border-radius:999px;background:#0072B2;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}'
+    + '.btn:hover{filter:brightness(1.07)}'
+    + '#scr2{background:radial-gradient(circle at 28% 18%,#ff9d2f,#e0266b 52%,#6a1b9a);overflow:hidden}'
+    + '.bg{position:absolute;inset:0;overflow:hidden;z-index:0}'
+    + '.bg span{position:absolute;font-weight:900;font-size:13vw;line-height:.9;color:rgba(255,255,255,.13);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}'
+    + '#scr2 .card{position:relative;z-index:1}'
+    + '#scr3{background:radial-gradient(circle at 70% 30%,#1b2a4a,#0a1420)}'
+    + '.msg{text-align:center;color:#fff;max-width:440px}'
+    + '.msg .e{font-size:68px;line-height:1}.msg h2{font-size:30px;margin:14px 0 8px;font-weight:800}'
+    + '.msg p{font-size:16px;color:#c6d0dc;margin:0}';
+  var card = function (btnId, formId, hint) {
+    return '<form id="' + formId + '" class="card" autocomplete="off" novalidate>'
+      + '<h1>Website Admin</h1><p class="s">' + hint + '</p>'
+      + '<label for="' + formId + 'e">Email</label><input id="' + formId + 'e" type="email" placeholder="you@example.com" required>'
+      + '<label for="' + formId + 'p">Password</label><input id="' + formId + 'p" type="password" placeholder="Password" required>'
+      + '<button class="btn" type="submit" id="' + btnId + '">Sign in</button></form>';
+  };
+  var bg = '<div class="bg">'
+    + '<span style="top:2%;left:-4%">GOTCHA</span><span style="top:26%;left:30%">GOTCHA</span><span style="top:50%;left:-8%">GOTCHA</span>'
+    + '<span style="top:70%;left:34%">GOTCHA</span><span style="top:14%;left:62%">GOTCHA</span><span style="top:86%;left:-2%">GOTCHA</span></div>';
+  var html = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><base target="_top"><style>' + css + '</style></head><body>'
+    + '<div class="scr on" id="scr1">' + card('b1', 'f1', 'Sign in to open the admin pages.') + '</div>'
+    + '<div class="scr" id="scr2">' + bg + card('b2', 'f2', 'Almost there. One more time.') + '</div>'
+    + '<div class="scr" id="scr3"><div class="msg"><div class="e">&#127907;</div><h2>Hey, it was a trap again.</h2><p>These pages are private. Nothing you typed was saved or sent anywhere.</p></div></div>'
+    + '<script>(function(){function g(i){return document.getElementById(i)}function go(a,b){return function(e){e.preventDefault();g(a).classList.remove("on");g(b).classList.add("on")}}'
+    + 'g("f1").addEventListener("submit",go("scr1","scr2"));g("f2").addEventListener("submit",go("scr2","scr3"))})();<\/script>'
+    + '</body></html>';
+  return out_(html, 'Website admin');
 }
