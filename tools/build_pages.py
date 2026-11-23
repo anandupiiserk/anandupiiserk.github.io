@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261123u">
+<link rel="stylesheet" href="style.css?v=20261123v">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261123u"></script>
-<script src="script.js?v=20261123u"></script>
+<script src="i18n.js?v=20261123v"></script>
+<script src="script.js?v=20261123v"></script>
 </body>
 </html>
 '''
@@ -281,7 +281,7 @@ honours = rows([
 achv = rows([
     ('2024', 'UGC-NET in Disaster Mitigation and Management', None, 'https://ugcnet.nta.nic.in/about-ugc-net/'),
     ('2022', 'Graduate Aptitude Test in Engineering (GATE), Geology', None, 'https://en.wikipedia.org/wiki/Graduate_Aptitude_Test_in_Engineering'),
-    ('2022', 'Kerala State Eligibility Test (KSET), Geology, January 2022', None, 'https://lbscentre.kerala.gov.in/')])
+    ('2022', 'Kerala State Eligibility Test (KSET), Geology, January 2022', None, 'https://www.onmanorama.com/career-and-campus/top-news/2025/05/03/kerala-set-2025-registration.html')])
 work = rows([
     ('2020 - 2022', '~Chegg Q&amp;A expert in Earth Sciences', 'Part-time. Answered Earth science questions from students.', None),
     ('2020 - 2022', '~Course Hero tutor in Earth Sciences', 'Part-time. Tutored students in Earth science courses.', None)])
