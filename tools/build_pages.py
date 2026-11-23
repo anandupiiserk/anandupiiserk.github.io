@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261123l">
+<link rel="stylesheet" href="style.css?v=20261123m">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261123l"></script>
-<script src="script.js?v=20261123l"></script>
+<script src="i18n.js?v=20261123m"></script>
+<script src="script.js?v=20261123m"></script>
 </body>
 </html>
 '''
@@ -266,7 +266,7 @@ edu = rows([
     ('2013 - 2015', '~Higher Secondary Education', '<span translate="no">Sivaram NSS HSS, Karicode, Kollam, Kerala</span>', None),
     ('Class 10', '~Secondary Education', '<span translate="no">Saint Jude Central School, Mukhathala, Kollam, Kerala</span>. Central Board of Secondary Education (CBSE).', None)])
 rexp = rows([
-    ('2022 - present', 'Weather and Climate Research Group, IIT Roorkee', 'Modelling and Analysis of Atmospheric Conditions Conducive to the Spread of Wildfires over Mountainous Region in India.', None),
+    ('2022 - present', 'Weather and Climate Research Group, IIT Roorkee', 'Modelling and Analysis of Meteorological Conditions Conducive to the Spread of Wildfires over Mountainous Region in India.', None),
     ('2025', 'CEFE-CNRS, Montpellier', 'Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.', 'https://www.cefe.cnrs.fr/en/research-dpt/functional-ecology/forecast-en'),
     ('2024', 'Workshop on Data Assimilation in Weather and Climate models', 'Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.', 'https://www.icts.res.in/program/da_workshop'),
     ('Final year', 'ACARR, CUSAT', 'Final year project on the increasing frequency of cyclonic storms over the Arabian Sea.', 'https://acarr.cusat.ac.in/'),
@@ -291,7 +291,7 @@ about = phero('01 / About me', 'About me', 'PhD researcher working on forest fir
     <div class="eyebrow reveal"><span class="n">01</span> Bio</div>
     <div class="portrait-m pswap"><img src="img/anandu-prabhakaran.jpg" width="1122" height="1292" alt="" loading="lazy" decoding="async"><img class="alt" src="img/anandu-prabhakaran-ncmrwf-2.jpg" width="1122" height="1292" alt="" loading="lazy" decoding="async"></div>
     <h2 data-split>Research in a few lines</h2>
-    <p class="reveal">I am a PhD researcher at the Centre of Excellence in Disaster Mitigation and Management (CoEDMM), Indian Institute of Technology Roorkee. My PhD thesis is titled <span translate="no">&ldquo;Modelling and Analysis of Atmospheric Conditions Conducive to the Spread of Wildfires over Mountainous Region in India&rdquo;</span>.</p>
+    <p class="reveal">I am a PhD researcher at the Centre of Excellence in Disaster Mitigation and Management (CoEDMM), Indian Institute of Technology Roorkee. My PhD thesis is titled <span translate="no">&ldquo;Modelling and Analysis of Meteorological Conditions Conducive to the Spread of Wildfires over Mountainous Region in India&rdquo;</span>.</p>
     <p class="reveal">The work combines numerical weather prediction models with observational and reanalysis datasets. I also work on tropical cyclones and on disasters induced by climate change.</p>
     <p class="reveal">I was born and raised in Kollam district, Kerala.</p>
     <p class="reveal">As part of my PMRF deliverables and science communication, I conduct and organise workshops, science communication lectures and other lectures at universities and colleges across India. The topics include the application of numerical weather prediction models, including the WRF model, followed by programming and data analysis with Python, R and Origin Pro, disaster mitigation and management, climate change, and wildfire spread and analysis using geospatial and other computational tools.</p>
@@ -317,7 +317,7 @@ page('about.html', 'about', f'About me | Anandu Prabhakaran', 'About the researc
 def ol(items): return '<ol class="ol">' + ''.join(f'<li>{i}</li>' for i in items) + '</ol>'
 research = phero('02 / Research', 'Research', 'PhD thesis, M.Sc. thesis and summer internships, with objectives and supervisors.', 'THESES AND INTERNSHIPS') + sec(shead('01', 'PhD thesis', 'Wildfire spread over mountainous India', 'Ongoing at CoEDMM, IIT Roorkee.') + f'''
 <div class="rgrid"><article class="rcard big reveal"><span class="badge nocaps"><i></i>PhD thesis</span>
-  <h3 translate="no">Modelling and Analysis of Atmospheric Conditions Conducive to the Spread of Wildfires over Mountainous Region in India</h3>
+  <h3 translate="no">Modelling and Analysis of Meteorological Conditions Conducive to the Spread of Wildfires over Mountainous Region in India</h3>
   <p>The thesis combines numerical weather prediction models with observational and reanalysis datasets.</p>
   <p class="who"><a href="https://www.weatherxplorers.com/piyush-srivastava" target="_blank" rel="noopener noreferrer" translate="no">Prof. Piyush Srivastava</a><span translate="no">, Assistant Professor, Centre of Excellence in Disaster Mitigation &amp; Management, Indian Institute of Technology Roorkee</span></p></article></div>
 <h3 class="sub-h reveal">Current focus</h3><div class="focus-grid">{fc}</div>''') + sec(shead('02', 'M.Sc. thesis', 'Cyclonic storms over the Arabian Sea', 'Master thesis at IISER Kolkata.') + f'''
