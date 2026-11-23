@@ -831,7 +831,9 @@ else (function loop() {
   ];
   /* Photo labels: workshop photos read 'Workshop Handled' (taught or conducted) or 'Workshop Attended'. Add an ID here for workshops attended. */
   const ATTENDED = new Set(['WORK_012']);
-  const catLabel = e => e.cat.id === 'work' ? (ATTENDED.has(e.base) ? 'Workshop Attended' : 'Workshop Handled') : e.cat.label;
+  /* Photo labels that differ from their category name, by event ID */
+  const LABELS = { Meet_077: 'PhD Research' };
+  const catLabel = e => LABELS[e.base] || (e.cat.id === 'work' ? (ATTENDED.has(e.base) ? 'Workshop Attended' : 'Workshop Handled') : e.cat.label);
   const DIR = 'gallery/', EXTS = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG', 'WEBP'], MAXG = 40;
   const segs = $$('.seg'), btns = segs.flatMap(sg => $$('button', sg)), empty = $('#gal-empty');
   segs.forEach(sg => { const i = document.createElement('i'); i.className = 'seg-ind'; sg.prepend(i); });
