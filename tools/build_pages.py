@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261123m">
+<link rel="stylesheet" href="style.css?v=20261123o">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261123m"></script>
-<script src="script.js?v=20261123m"></script>
+<script src="i18n.js?v=20261123o"></script>
+<script src="script.js?v=20261123o"></script>
 </body>
 </html>
 '''
@@ -196,7 +196,7 @@ cartouche = '''<div class="cartouche" aria-hidden="true">
   <text x="1" y="28" font-size="9" fill="currentColor" font-family="monospace">0</text><text x="65" y="28" font-size="9" fill="currentColor" font-family="monospace" text-anchor="middle">50</text><text x="129" y="28" font-size="9" fill="currentColor" font-family="monospace" text-anchor="end">100 km</text></svg>
 </div>'''
 
-mets = ''.join(f'<div class="metric reveal"><b data-count="{v}">0</b><span>{l}</span></div>' for v, l in [(11, 'Workshops and lectures'), (5, 'Conference presentations'), (2, 'Journal articles published'), (2023, 'PMRF fellow since')])
+mets = ''.join(f'<div class="metric reveal"><b data-count="{v}">0</b><span>{l}</span></div>' for v, l in [(11, 'Workshops and lectures'), (10, 'Conference presentations'), (2, 'Journal articles published'), (2023, 'PMRF fellow since')])
 
 LOADER = '''<div id="loader" aria-hidden="true">
   <div class="panel top"></div><div class="panel bottom"></div>
@@ -350,6 +350,11 @@ journal = ''.join([
   pub('2026', 'Under review', 'A Numerical Weather Prediction Model-Based Approach to Assess Fire Weather Conditions over the Northwest Himalayan Forests.', f'{ME} &amp; Srivastava, P.', 'EGUsphere [preprint], egusphere-2026-2474. Received 29 April 2026; discussion started 6 July 2026. Not yet peer reviewed or published.', 'https://doi.org/10.5194/egusphere-2026-2474'),
   pub('2024', '', 'Analysis of prevailing atmospheric conditions during wildfire events in the Indian Himalayan region.', f'{ME} &amp; Srivastava, P.', 'Quarterly Journal of the Royal Meteorological Society, pp. 1-15.', 'https://doi.org/10.1002/qj.4918')])
 conf = ''.join([
+  pub('2026', 'Poster', 'Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE.', f'{ME} &amp; Srivastava, P.', 'TROPMET-2026 National Symposium (PRAGaTI), NCMRWF, MoES, Noida, 19-21 November 2026. Poster and lightning talk. Best Poster Award (First Prize).'),
+  pub('2025', '', 'The Climate-Fire Nexus: Investigating the Role of Climate Variability and Climatological Variables in Forest Fire Burned Areas (2000-2020) across the Indian Mainland.', f'{ME} &amp; Srivastava, P.', 'AOGS 2025, 22nd Annual Meeting of the Asia Oceania Geosciences Society, Singapore, 27 July - 1 August 2025. Presented by P. Srivastava.'),
+  pub('2025', '', 'Himalayan Infernos: Linking Climate Variability and Climatological Variables to the Spread of Wildfires across the Indian Himalayan Region.', f'{ME} &amp; Srivastava, P.', 'JpGU Meeting 2025, Chiba, Japan (virtual), 25-30 May 2025.'),
+  pub('2024', '', 'Trend in Burned Areas Due to Wildfire and Associated Climatic Conditions in India.', f'{ME} &amp; Srivastava, P.', 'American Geophysical Union Fall Meeting 2024, Washington, DC, USA (virtual), 9-13 December 2024.'),
+  pub('2024', '', 'Winter Wildfires in the Lesser Himalayas: Are These Becoming a New Normal under Changing Climate?', f'{ME} &amp; Srivastava, P.', 'GEWEX Open Science Conference 2024, Sapporo, Japan, 7-12 July 2024.'),
   pub('2023', '', 'Analysis of Weather Patterns over the North Eastern Region of India During the Propagation of Cyclone Mocha.', f'{ME}, Srivastava, P. &amp; Sen, S.', 'American Geophysical Union Fall Meeting 2023, San Francisco, CA.'),
   pub('2023', '', 'General Overview of Global Forest Fires, Possible Causes, Outcome, and Existing Warning and Mitigation Methods in India.', f'{ME} &amp; Srivastava, P.', '13th International Conference of the International Society for the Integrated Disaster Risk Management, 28-30 September 2023, CoEDMM, IIT Roorkee.'),
   pub('2023', '', 'Atmospheric Conditions Conducive to Forest Fire Events in the Greater Himalayan Region.', f'{ME}, Srivastava, P. &amp; Pai, A.', 'EGU General Assembly 2023, Vienna, Austria, 24-28 April 2023, EGU23-1004.', 'https://doi.org/10.5194/egusphere-egu23-1004'),
