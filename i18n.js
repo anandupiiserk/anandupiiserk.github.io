@@ -619,7 +619,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "\"Weather and Climate Extremes, Applications and Services\" എന്ന വിഷയത്തിൽ അവതരിപ്പിച്ച \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\" എന്ന പോസ്റ്ററിന്. Indian Meteorological Society സംഘടിപ്പിച്ച്, NCMRWF (MoES), IMS Noida Chapter എന്നിവർ സംയുക്തമായി ആതിഥേയത്വം വഹിച്ച TROPMET-2026 ദേശീയ സിമ്പോസിയം, 2026 നവംബർ 19 മുതൽ 21 വരെ.",
 "Fellowships, scholarships and awards.": "ലഭിച്ച ഫെലോഷിപ്പുകൾ, സ്കോളർഷിപ്പുകൾ, പുരസ്കാരങ്ങൾ.",
 "Poster": "പോസ്റ്റർ",
-"PhD Research": "പിഎച്ച്ഡി ഗവേഷണം"
+"PhD Research": "പിഎച്ച്ഡി ഗവേഷണം",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "അറബിക്കടലിൽ ചുഴലിക്കാറ്റുകളുടെ ആവൃത്തി വർധിക്കുന്നതിനെക്കുറിച്ചുള്ള എംഎസ് പ്രബന്ധം."
 },
 "hi": {
 "Skip to content": "मुख्य सामग्री पर जाएँ",
@@ -1240,7 +1241,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "\"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\" पोस्टर के लिए, विषय \"Weather and Climate Extremes, Applications and Services\"। TROPMET-2026 राष्ट्रीय संगोष्ठी, Indian Meteorological Society द्वारा आयोजित और NCMRWF (MoES) तथा IMS Noida Chapter की संयुक्त मेज़बानी में, 19 से 21 नवंबर 2026।",
 "Fellowships, scholarships and awards.": "प्राप्त फ़ेलोशिप, छात्रवृत्तियाँ और पुरस्कार।",
 "Poster": "पोस्टर",
-"PhD Research": "पीएचडी शोध"
+"PhD Research": "पीएचडी शोध",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "अरब सागर में चक्रवाती तूफ़ानों की बढ़ती आवृत्ति पर एमएस शोध प्रबंध।"
 },
 "fr": {
 "Skip to content": "Aller au contenu",
@@ -1861,7 +1863,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Pour le poster « Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE », thème « Weather and Climate Extremes, Applications and Services ». Symposium national TROPMET-2026, organisé par l'Indian Meteorological Society et accueilli conjointement par le NCMRWF (MoES) et l'IMS Noida Chapter, du 19 au 21 novembre 2026.",
 "Fellowships, scholarships and awards.": "Bourses de recherche, bourses d'études et prix.",
 "Poster": "Poster",
-"PhD Research": "Recherche doctorale"
+"PhD Research": "Recherche doctorale",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "Mémoire de MS sur la fréquence croissante des tempêtes cycloniques en mer d'Arabie."
 },
 "de": {
 "Skip to content": "Zum Inhalt springen",
@@ -2482,7 +2485,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Für das Poster „Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE“, Thema „Weather and Climate Extremes, Applications and Services“. Nationales Symposium TROPMET-2026, veranstaltet von der Indian Meteorological Society und gemeinsam ausgerichtet vom NCMRWF (MoES) und dem IMS Noida Chapter, 19. bis 21. November 2026.",
 "Fellowships, scholarships and awards.": "Fellowships, Stipendien und Auszeichnungen.",
 "Poster": "Poster",
-"PhD Research": "Promotionsforschung"
+"PhD Research": "Promotionsforschung",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "MS-Abschlussarbeit über die zunehmende Häufigkeit von Zyklonstürmen über dem Arabischen Meer."
 },
 "ar": {
 "Skip to content": "انتقل إلى المحتوى",
@@ -3103,7 +3107,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "عن الملصق العلمي «Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE»، ضمن محور «Weather and Climate Extremes, Applications and Services». الندوة الوطنية TROPMET-2026، التي نظمتها Indian Meteorological Society واستضافها بشكل مشترك NCMRWF (MoES) وIMS Noida Chapter، من 19 إلى 21 نوفمبر 2026.",
 "Fellowships, scholarships and awards.": "الزمالات والمنح الدراسية والجوائز.",
 "Poster": "ملصق علمي",
-"PhD Research": "بحث الدكتوراه"
+"PhD Research": "بحث الدكتوراه",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "أطروحة ماجستير عن تزايد تواتر العواصف الإعصارية فوق بحر العرب."
 },
 "es": {
 "Skip to content": "Saltar al contenido",
@@ -3601,7 +3606,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Por el póster «Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE», eje temático «Weather and Climate Extremes, Applications and Services». Simposio nacional TROPMET-2026, organizado por la Indian Meteorological Society y acogido conjuntamente por el NCMRWF (MoES) y el IMS Noida Chapter, del 19 al 21 de noviembre de 2026.",
 "Fellowships, scholarships and awards.": "Becas de investigación, becas de estudio y premios.",
 "Poster": "Póster",
-"PhD Research": "Investigación doctoral"
+"PhD Research": "Investigación doctoral",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "Tesis de MS sobre la creciente frecuencia de tormentas ciclónicas en el mar Arábigo."
 },
 "zh": {
 "Skip to content": "跳到正文",
@@ -4099,7 +4105,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "获奖海报：“Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE”，主题：“Weather and Climate Extremes, Applications and Services”。TROPMET-2026 全国研讨会，由 Indian Meteorological Society 主办，NCMRWF (MoES) 与 IMS Noida Chapter 联合承办，2026年11月19日至21日。",
 "Fellowships, scholarships and awards.": "研究奖学金、奖学金与奖项。",
 "Poster": "海报",
-"PhD Research": "博士研究"
+"PhD Research": "博士研究",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "硕士学位论文：阿拉伯海气旋风暴频率增加的研究。"
 },
 "ja": {
 "Skip to content": "本文へスキップ",
@@ -4597,7 +4604,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "ポスター「Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE」に対して。テーマ「Weather and Climate Extremes, Applications and Services」。TROPMET-2026 全国シンポジウム（主催：Indian Meteorological Society、共同ホスト：NCMRWF (MoES) および IMS Noida Chapter、2026年11月19日から21日）。",
 "Fellowships, scholarships and awards.": "フェローシップ、奨学金、受賞。",
 "Poster": "ポスター",
-"PhD Research": "博士研究"
+"PhD Research": "博士研究",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "アラビア海におけるサイクロン性暴風の発生頻度増加に関する修士論文。"
 },
 "pt": {
 "Skip to content": "Ir para o conteúdo",
@@ -5095,7 +5103,8 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "Pelo pôster “Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE”, tema “Weather and Climate Extremes, Applications and Services”. Simpósio nacional TROPMET-2026, organizado pela Indian Meteorological Society e sediado conjuntamente pelo NCMRWF (MoES) e pelo IMS Noida Chapter, de 19 a 21 de novembro de 2026.",
 "Fellowships, scholarships and awards.": "Bolsas de pesquisa, bolsas de estudo e prêmios.",
 "Poster": "Pôster",
-"PhD Research": "Pesquisa de doutorado"
+"PhD Research": "Pesquisa de doutorado",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "Dissertação de MS sobre o aumento da frequência de tempestades ciclônicas no mar da Arábia."
 },
 "sv": {
 "Skip to content": "Hoppa till innehållet",
@@ -5716,6 +5725,7 @@ window.I18N = {
 "For the poster \"Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE\", theme \"Weather and Climate Extremes, Applications and Services\". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.": "För postern ”Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE”, tema ”Weather and Climate Extremes, Applications and Services”. Nationellt symposium TROPMET-2026, arrangerat av Indian Meteorological Society med NCMRWF (MoES) och IMS Noida Chapter som gemensamma värdar, 19 till 21 november 2026.",
 "Fellowships, scholarships and awards.": "Forskningsstipendier, stipendier och utmärkelser.",
 "Poster": "Poster",
-"PhD Research": "Doktorandforskning"
+"PhD Research": "Doktorandforskning",
+"MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.": "MS-avhandling om den ökande frekvensen av cykloniska stormar över Arabiska havet."
 }
 };

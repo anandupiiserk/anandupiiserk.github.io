@@ -126,15 +126,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261123q">
+<link rel="stylesheet" href="style.css?v=20261123t">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261123q"></script>
-<script src="script.js?v=20261123q"></script>
+<script src="i18n.js?v=20261123t"></script>
+<script src="script.js?v=20261123t"></script>
 </body>
 </html>
 '''
@@ -242,7 +242,7 @@ dl_about = f'''<dl class="dl">
   <div class="dl-row reveal"><dt>Fellowship</dt><dd>Prime Minister's Research Fellowship (PMRF) since January 2023. MoE JRF fellow from July to December 2022. Raman-Charpak fellow from July to December 2025.</dd></div>
   <div class="dl-row reveal"><dt>Scholarship</dt><dd>INSPIRE-SHE Scholarship, Department of Science and Technology, 2015 to 2020.</dd></div>
   <div class="dl-row reveal"><dt>Education</dt><dd><span translate="no">BS-MS in Geological Sciences, IISER Kolkata</span></dd></div>
-  <div class="dl-row reveal"><dt>Supervisor</dt><dd><a href="https://www.weatherxplorers.com/piyush-srivastava" target="_blank" rel="noopener noreferrer" translate="no">Prof. Piyush Srivastava</a><span translate="no">, Assistant Professor, Centre of Excellence in Disaster Mitigation &amp; Management, Indian Institute of Technology Roorkee</span></dd></div>
+  <div class="dl-row reveal"><dt>Supervisor</dt><dd><a href="https://www.weatherxplorers.com/piyush-srivastava" target="_blank" rel="noopener noreferrer" translate="no">Prof. Piyush Srivastava</a><span translate="no">, Assistant Professor, <a href="https://iitr.ac.in/Centres/Centre%20of%20Excellence%20in%20Disaster%20Mitigation%20and%20Management/Home.html" target="_blank" rel="noopener noreferrer">Centre of Excellence in Disaster Mitigation &amp; Management</a>, <a href="https://iitr.ac.in/" target="_blank" rel="noopener noreferrer">Indian Institute of Technology Roorkee</a></span></dd></div>
   <div class="dl-row reveal"><dt>Email</dt><dd><a href="mailto:anandu_p@dm.iitr.ac.in" translate="no">anandu_p@dm.iitr.ac.in</a><button class="cpy" type="button" data-copy="anandu_p@dm.iitr.ac.in" data-msg="Email address copied"></button></dd></div>
 </dl>'''
 tl_items = ''.join(f'<div class="t-item"><div class="yr">{y}</div><div><h3>{t}</h3><p>{d}</p></div></div>' for y, t, d in [
@@ -261,17 +261,17 @@ def rows(items):
         out.append(f'<div class="dl-row reveal"><dt>{dt}</dt><dd><b>{medal}{t}</b>{d}</dd></div>')
     return '<dl class="dl">' + ''.join(out) + '</dl>'
 edu = rows([
-    ('2022 - present', '~PhD in Disaster Mitigation and Management', '<span translate="no">Centre of Excellence in Disaster Mitigation and Management, Indian Institute of Technology Roorkee</span>', None),
+    ('2022 - present', '~PhD in Disaster Mitigation and Management', '<span translate="no"><a href="https://iitr.ac.in/Centres/Centre%20of%20Excellence%20in%20Disaster%20Mitigation%20and%20Management/Home.html" target="_blank" rel="noopener noreferrer">Centre of Excellence in Disaster Mitigation and Management</a>, <a href="https://iitr.ac.in/" target="_blank" rel="noopener noreferrer">Indian Institute of Technology Roorkee</a></span>', None),
     ('2015 - 2020', '~BS-MS Dual Degree in Geological Sciences', '<span translate="no">Indian Institute of Science Education and Research Kolkata</span>', None),
     ('2013 - 2015', '~Higher Secondary Education', '<span translate="no">Sivaram NSS HSS, Karicode, Kollam, Kerala</span>', None),
     ('Class 10', '~Secondary Education', '<span translate="no">Saint Jude Central School, Mukhathala, Kollam, Kerala</span>. Central Board of Secondary Education (CBSE).', None)])
 rexp = rows([
-    ('2022 - present', 'Weather and Climate Research Group, IIT Roorkee', 'Modelling and Analysis of Meteorological Conditions Conducive to the Spread of Wildfires over Mountainous Region in India.', None),
-    ('2025', 'CEFE-CNRS, Montpellier', 'Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.', 'https://www.cefe.cnrs.fr/en/research-dpt/functional-ecology/forecast-en'),
+    ('2022 - present', '<a href="https://www.weatherxplorers.com/" target="_blank" rel="noopener noreferrer">Weather and Climate Research Group</a>, <a href="https://iitr.ac.in/Centres/Centre%20of%20Excellence%20in%20Disaster%20Mitigation%20and%20Management/Home.html" target="_blank" rel="noopener noreferrer">CoEDMM</a>, <a href="https://iitr.ac.in/" target="_blank" rel="noopener noreferrer">IIT Roorkee</a>, Uttarakhand, India', 'Modelling and Analysis of Meteorological Conditions Conducive to the Spread of Wildfires over Mountainous Region in India.', None),
+    ('2025', '<a href="https://www.cefe.cnrs.fr/en/research-dpt/functional-ecology/forecast-en" target="_blank" rel="noopener noreferrer">CEFE-CNRS</a>, Montpellier, France', 'Fire weather indices over the Mediterranean and the Indian Himalayas, July to December 2025.', None),
     ('2024', 'Workshop on Data Assimilation in Weather and Climate models', 'Two-week training workshop attended, 6 to 17 May 2024, ICTS Bengaluru.', 'https://www.icts.res.in/program/da_workshop'),
-    ('Final year', 'ACARR, CUSAT', 'Final year project on the increasing frequency of cyclonic storms over the Arabian Sea.', 'https://acarr.cusat.ac.in/'),
-    ('Summer 2017', 'CGMLI, IISER Bhopal', 'Impact of heatwaves in Indian metropolitan cities, under Dr. Pankaj Kumar.', 'https://home.iiserb.ac.in/~kumarp/'),
-    ('Summer 2016', 'ACARR, CUSAT', 'Planetary boundary layer over the Gateway of the Indian Monsoon in Cochin, under Prof. K. Mohankumar and Dr. M. G. Manoj.', 'https://acarr.cusat.ac.in/')])
+    ('2019 - 2020', '<a href="https://acarr.cusat.ac.in/" target="_blank" rel="noopener noreferrer">ACARR, CUSAT</a>, Cochin, Kerala, India', 'MS dissertation on the increasing frequency of cyclonic storms over the Arabian Sea.<br><span translate="no">Thesis work carried out at ACARR, CUSAT; affiliated with the <a href="https://earth.iiserkol.ac.in/" target="_blank" rel="noopener noreferrer">Department of Earth Sciences, IISER Kolkata</a>.</span>', None),
+    ('Summer 2017', '<a href="https://home.iiserb.ac.in/~kumarp/" target="_blank" rel="noopener noreferrer">CGMLI, IISER Bhopal</a>, Madhya Pradesh, India', 'Impact of heatwaves in Indian metropolitan cities, under Dr. Pankaj Kumar.', None),
+    ('Summer 2016', '<a href="https://acarr.cusat.ac.in/" target="_blank" rel="noopener noreferrer">ACARR, CUSAT</a>, Cochin, Kerala, India', 'Planetary boundary layer over the Gateway of the Indian Monsoon in Cochin, under Prof. K. Mohankumar and Dr. M. G. Manoj.', None)])
 honours = rows([
     ('2026', '🥇 Best Poster Award (First Prize), TROPMET-2026', 'For the poster "Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE", theme "Weather and Climate Extremes, Applications and Services". TROPMET-2026 National Symposium, organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, 19 to 21 November 2026.', 'https://tropmet26.ncmrwf.gov.in/#/'),
     ('2025', 'Raman-Charpak Fellowship', 'Fellowship for India-France research collaboration, July to December 2025.', 'https://www.inde.campusfrance.org/raman-charpak-fellowship'),
@@ -319,7 +319,7 @@ research = phero('02 / Research', 'Research', 'PhD thesis, M.Sc. thesis and summ
 <div class="rgrid"><article class="rcard big reveal"><span class="badge nocaps"><i></i>PhD thesis</span>
   <h3 translate="no">Modelling and Analysis of Meteorological Conditions Conducive to the Spread of Wildfires over Mountainous Region in India</h3>
   <p>The thesis combines numerical weather prediction models with observational and reanalysis datasets.</p>
-  <p class="who"><a href="https://www.weatherxplorers.com/piyush-srivastava" target="_blank" rel="noopener noreferrer" translate="no">Prof. Piyush Srivastava</a><span translate="no">, Assistant Professor, Centre of Excellence in Disaster Mitigation &amp; Management, Indian Institute of Technology Roorkee</span></p></article></div>
+  <p class="who"><a href="https://www.weatherxplorers.com/piyush-srivastava" target="_blank" rel="noopener noreferrer" translate="no">Prof. Piyush Srivastava</a><span translate="no">, Assistant Professor, <a href="https://iitr.ac.in/Centres/Centre%20of%20Excellence%20in%20Disaster%20Mitigation%20and%20Management/Home.html" target="_blank" rel="noopener noreferrer">Centre of Excellence in Disaster Mitigation &amp; Management</a>, <a href="https://iitr.ac.in/" target="_blank" rel="noopener noreferrer">Indian Institute of Technology Roorkee</a></span></p></article></div>
 <h3 class="sub-h reveal">Current focus</h3><div class="focus-grid">{fc}</div>''') + sec(shead('02', 'M.Sc. thesis', 'Cyclonic storms over the Arabian Sea', 'Master thesis at IISER Kolkata.') + f'''
 <div class="rgrid"><article class="rcard big reveal"><span class="badge alt"><i class="d"></i>M.Sc. thesis</span>
   <h3 translate="no">Investigation on the increased frequency of cyclonic storms over Arabian Sea (1982-2019)</h3>
