@@ -1847,43 +1847,44 @@ function cvPage_(p) {
   return out_(shell_('CV', 'Edit the LaTeX source of your CV, save it to Google Drive, and build the PDF. Every save keeps the previous version in Website CV/history.', inner, true, 'cv'), 'CV');
 }
 
-/* Shown to anyone who is not the owner: a harmless gag login. Nothing typed is read, stored or sent. */
+/* Shown to anyone who is not the owner: a harmless gag login. The password is never read, stored or sent.
+   Typing the owner address leads to the real Google sign-in (account chooser) and back to the page that was asked for. */
+var TRAP_IMG_ = 'https://anandu-prabhakaran.pages.dev/img/admin-trap.jpg';
 function trapPage_(p) {
+  var base = portalBase_(), qs = Object.keys(p).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]); }).join('&');
+  var real = 'https://accounts.google.com/AccountChooser?Email=' + encodeURIComponent(OWNER_EMAIL) + '&continue=' + encodeURIComponent(base + '?' + qs);
   var css = '*{box-sizing:border-box}html,body{margin:0;height:100%}'
     + 'body{font-family:Calibri,Carlito,"Segoe UI",system-ui,Arial,sans-serif;background:#0f1722;color:#0f1722}'
-    + '.scr{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}'
-    + '.scr.on{display:flex}'
+    + '.scr{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}.scr.on{display:flex}'
     + '#scr1{background:linear-gradient(160deg,#102033,#0a1420)}'
-    + '.card{background:#fff;width:100%;max-width:360px;border-radius:18px;padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.45)}'
+    + '.card{position:relative;z-index:1;background:#fff;width:100%;max-width:360px;border-radius:18px;padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.55)}'
     + '.card h1{margin:0 0 4px;font-size:22px}.card .s{margin:0 0 18px;color:#5b6675;font-size:14px}'
     + 'label{display:block;font-size:13px;color:#5b6675;margin:12px 0 5px}'
-    + 'input{width:100%;padding:12px 14px;border:1px solid #d0d7e2;border-radius:10px;font-size:16px;color:#0f1722}'
-    + '.btn{margin-top:20px;width:100%;padding:13px;border:0;border-radius:999px;background:#0072B2;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}'
-    + '.btn:hover{filter:brightness(1.07)}'
-    + '#scr2{background:radial-gradient(circle at 28% 18%,#ff9d2f,#e0266b 52%,#6a1b9a);overflow:hidden}'
-    + '.bg{position:absolute;inset:0;overflow:hidden;z-index:0}'
-    + '.bg span{position:absolute;font-weight:900;font-size:13vw;line-height:.9;color:rgba(255,255,255,.13);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}'
-    + '#scr2 .card{position:relative;z-index:1}'
+    + 'input{width:100%;padding:12px 14px;border:1px solid #d0d7e2;border-radius:10px;font-size:16px;color:#0f1722;background:#fff}'
+    + 'input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}.er{min-height:18px;margin:6px 0 0;font-size:13px;color:#b94700}'
+    + '.btn{margin-top:14px;width:100%;padding:13px;border:0;border-radius:999px;background:#0072B2;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}.btn:hover{filter:brightness(1.07)}'
+    + '#scr2{background:#000 url("' + TRAP_IMG_ + '") center/contain no-repeat}'
+    + '#scr2:before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.25)}'
     + '#scr3{background:radial-gradient(circle at 70% 30%,#1b2a4a,#0a1420)}'
-    + '.msg{text-align:center;color:#fff;max-width:440px}'
-    + '.msg .e{font-size:68px;line-height:1}.msg h2{font-size:30px;margin:14px 0 8px;font-weight:800}'
-    + '.msg p{font-size:16px;color:#c6d0dc;margin:0}';
-  var card = function (btnId, formId, hint) {
-    return '<form id="' + formId + '" class="card" autocomplete="off" novalidate>'
+    + '.msg{text-align:center;color:#fff;max-width:440px}.msg .e{font-size:68px;line-height:1}.msg h2{font-size:30px;margin:14px 0 8px;font-weight:800}.msg p{font-size:16px;color:#c6d0dc;margin:0}';
+  var card = function (f, hint) {
+    return '<form id="' + f + '" class="card" autocomplete="off" novalidate>'
       + '<h1>Website Admin</h1><p class="s">' + hint + '</p>'
-      + '<label for="' + formId + 'e">Email</label><input id="' + formId + 'e" type="email" placeholder="you@example.com" required>'
-      + '<label for="' + formId + 'p">Password</label><input id="' + formId + 'p" type="password" placeholder="Password" required>'
-      + '<button class="btn" type="submit" id="' + btnId + '">Sign in</button></form>';
+      + '<label for="' + f + 'e">Email</label><input id="' + f + 'e" type="email" inputmode="email" autocomplete="off" placeholder="you@example.com">'
+      + '<label for="' + f + 'p">Password</label><input id="' + f + 'p" type="password" autocomplete="new-password" placeholder="Password">'
+      + '<p class="er" id="' + f + 'r" role="alert"></p><button class="btn" type="submit">Sign in</button></form>';
   };
-  var bg = '<div class="bg">'
-    + '<span style="top:2%;left:-4%">GOTCHA</span><span style="top:26%;left:30%">GOTCHA</span><span style="top:50%;left:-8%">GOTCHA</span>'
-    + '<span style="top:70%;left:34%">GOTCHA</span><span style="top:14%;left:62%">GOTCHA</span><span style="top:86%;left:-2%">GOTCHA</span></div>';
   var html = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><base target="_top"><style>' + css + '</style></head><body>'
-    + '<div class="scr on" id="scr1">' + card('b1', 'f1', 'Sign in to open the admin pages.') + '</div>'
-    + '<div class="scr" id="scr2">' + bg + card('b2', 'f2', 'Almost there. One more time.') + '</div>'
-    + '<div class="scr" id="scr3"><div class="msg"><div class="e">&#127907;</div><h2>Hey, it was a trap again.</h2><p>These pages are private. Nothing you typed was saved or sent anywhere.</p></div></div>'
-    + '<script>(function(){function g(i){return document.getElementById(i)}function go(a,b){return function(e){e.preventDefault();g(a).classList.remove("on");g(b).classList.add("on")}}'
-    + 'g("f1").addEventListener("submit",go("scr1","scr2"));g("f2").addEventListener("submit",go("scr2","scr3"))})();<\/script>'
+    + '<div class="scr on" id="scr1">' + card('f1', 'Sign in to open the admin pages.') + '</div>'
+    + '<div class="scr" id="scr2" role="img" aria-label="Clickbait, clickbait everywhere">' + card('f2', 'Session expired. Please sign in again.') + '</div>'
+    + '<div class="scr" id="scr3"><div class="msg"><div class="e">&#127907;</div><h2>Hey, it was again a trap</h2><p>These pages are private. Nothing you typed was saved or sent anywhere.</p></div></div>'
+    + '<script>(function(){var OWN=' + JSON.stringify(OWNER_EMAIL) + ',REAL=' + JSON.stringify(real) + ',RE=/^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$/i;function g(i){return document.getElementById(i)}'
+    + 'function step(f,from,to){g(f).addEventListener("submit",function(e){e.preventDefault();var em=g(f+"e"),pw=g(f+"p"),r=g(f+"r"),v=em.value.trim();em.classList.remove("bad");pw.classList.remove("bad");r.textContent="";'
+    + 'if(!RE.test(v)){em.classList.add("bad");r.textContent="Enter a valid email address.";em.focus();return}'
+    + 'if(!pw.value){pw.classList.add("bad");r.textContent="Enter your password.";pw.focus();return}'
+    + 'pw.value="";if(v.toLowerCase()===OWN){window.top.location.href=REAL;return}'
+    + 'g(from).classList.remove("on");g(to).classList.add("on");var n=g(to).querySelector("input");if(n)n.focus()})}'
+    + 'step("f1","scr1","scr2");step("f2","scr2","scr3")})();<\/script>'
     + '</body></html>';
   return out_(html, 'Website admin');
 }
