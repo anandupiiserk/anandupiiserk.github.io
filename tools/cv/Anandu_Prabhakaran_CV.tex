@@ -1,0 +1,330 @@
+%-------------------------
+% CV in LaTeX
+% Adapted to Prof. Piyush Srivastava's template style
+% Owner: Anandu Prabhakaran
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage[table]{xcolor}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{multicol}
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generated pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {\justifying #1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textbf{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{1.001\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & \textbf{\small #2}\\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+\pagenumbering{arabic}
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    {\Large \scshape Anandu Prabhakaran} \\ \vspace{2pt}
+    DM-12, Weather and Climate Research Group, CoEDMM \\ \vspace{1pt}
+    IIT Roorkee, Roorkee, Uttarakhand, INDIA - 247667 \\ \vspace{2pt}
+    \small
+    Phone: +91-9496845728 ~ $|$ ~
+    \href{mailto:anandu_p@dm.iitr.ac.in}{\underline{anandu\_p@dm.iitr.ac.in}} ~ $|$ ~
+    \href{https://anandu-prabhakaran.pages.dev/}{\underline{anandu-prabhakaran.pages.dev}}
+    \vspace{-8pt}
+\end{center}
+
+%-----------RESEARCH INTERESTS-----------
+\section{Research Interests}
+      \resumeItemListStart
+        \resumeItem{Fire weather indices, forest fire early warning and wildfire air quality in the Himalaya.}
+        \resumeItem{Coupled fire-atmosphere modelling of wildfire spread using numerical models.}
+        \resumeItem{Tropical cyclones, heatwaves and droughts under climate change and their future evolution.}
+        \resumeItem{Numerical weather and climate modelling of extreme events.}
+      \resumeItemListEnd
+\vspace{-0.15cm}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Ph.D. Disaster Mitigation and Management (PMRF)}{2022 -- present}
+      {Centre of Excellence in Disaster Mitigation and Management, IIT Roorkee}{Roorkee, India}
+      \resumeItemListStart
+        \resumeItem{\textbf{CGPA}: 9.538/10}
+        \resumeItem{\textbf{Dissertation}: Modelling, Analysis and Simulation of Forest Fire Events in the Indian Himalayan Region}
+        \resumeItem{\textbf{Supervisor}: Prof. Piyush Srivastava, Assistant Professor, CoEDMM, IIT Roorkee}
+        \resumeItem{\textbf{Pre-PhD submission seminar}: 14 October 2026}
+        \resumeItem{\textbf{Expected graduation}: April--May 2027}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {BS-MS Dual Degree (Geological Sciences)}{2015 -- 2020}
+      {Indian Institute of Science Education and Research Kolkata}{Kolkata, India}
+      \resumeItemListStart
+        \resumeItem{CGPA: 7.56/10 (absolute grading); MS: 8.46/10, BS: 6.99/10; ECTS credits: 300}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Higher Secondary Education (+2)}{2013 -- 2015}
+      {Sivaram NSS HSS Karicode, KBHSE Board}{Kollam, India}
+      \resumeItemListStart
+        \resumeItem{Marks: 96.2\%}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Secondary Education (10\textsuperscript{th})}{2013}
+      {St Jude Central School, CBSE Board}{Mukhathala, Kollam, India}
+      \resumeItemListStart
+        \resumeItem{CGPA: 10/10}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+\vspace{-0.15cm}
+
+%-----------AWARDS-----------
+\section{Awards and Honours}
+\begin{justify}
+      \begin{itemize}[leftmargin=*,itemsep=1pt,parsep=0pt,topsep=2pt]
+        \item \small \textbf{Best Poster Award (First Prize)}, \href{https://tropmet26.ncmrwf.gov.in/}{TROPMET-2026} National Symposium, theme ``Weather and Climate Extremes, Applications and Services'', for the poster ``Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE'' (Prabhakaran, A., \& Srivastava, P.). Organised by the Indian Meteorological Society and jointly hosted by NCMRWF (MoES) and the IMS Noida Chapter, Noida, India, November 2026.
+        \item \small Selected as \textbf{Prime Minister's Research Fellow (PMRF)}, Cycle 10, Department of Higher Education, Ministry of Education, Government of India.
+        \item \small Selected for the \textbf{\href{https://www.inde.campusfrance.org/raman-charpak-fellowship}{Raman-Charpak Fellowship}} (2024 cycle), jointly funded by the Department of Science and Technology (DST), Government of India and the French Institute in India (French Embassy), implemented by CEFIPRA; carried out at \href{https://www.cefe.cnrs.fr/en/research-dpt/functional-ecology/forecast-en}{CEFE-CNRS}, Montpellier, France, July--December 2025.
+        \item \small Qualified \textbf{UGC-NET} in Disaster Mitigation and Management, 2024, University Grants Commission, Government of India.
+        \item \small Qualified \textbf{Graduate Aptitude Test in Engineering (GATE)}, 2022.
+        \item \small Qualified \textbf{Kerala State Eligibility Test (K-SET)} in Geology, 2022, conducted by the LBS Centre, Govt. of Kerala.
+        \item \small \textbf{DST-INSPIRE-SHE Fellow} (2015--2020), Department of Science and Technology, Government of India.
+        \item \small Belongs to top 1\% in Higher Secondary Examination, Board of Higher Secondary Examinations, Kerala, 2015.
+      \end{itemize}
+\end{justify}
+\vspace{-0.15cm}
+
+%-----------RESEARCH EXPERIENCE-----------
+\section{Research Experience}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {\href{https://www.inde.campusfrance.org/raman-charpak-fellowship}{Raman-Charpak Fellowship} (2024 cycle)}{Jul -- Dec 2025}
+      {\href{https://www.cefe.cnrs.fr/en/research-dpt/functional-ecology/forecast-en}{CEFE-CNRS}, Montpellier}{France}
+      \resumeItemListStart
+        \resumeItem{Wind downscaling using CHELSA-inspired terrain adjustment (GMTED2010 DEM and ERA5).}
+        \resumeItem{Priestley--Taylor PET-based modified Drought Code for France and India.}
+        \resumeItem{Slope-aspect fire behaviour analysis across Mediterranean and Himalayan regions.}
+        \resumeItem{Collaboration with Florent (IRD scientist, CEFE) on FWI modification using PET.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {MS Thesis}{2019 -- 2020}
+      {\href{https://acarr.cusat.ac.in/}{Advanced Centre for Atmospheric Radar Research (ACARR), CUSAT}}{Cochin, India}
+      \resumeItemListStart
+        \resumeItem{Investigation on the increased frequency of cyclonic storms over the Arabian Sea (1982--2019).}
+        \resumeItem{Supervisor: Dr. M.G. Manoj, Scientist-D, \href{https://acarr.cusat.ac.in/}{ACARR, CUSAT}.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Summer Research Internship}{2017}
+      {\href{https://home.iiserb.ac.in/~kumarp/}{CGMLI, Indian Institute of Science Education and Research Bhopal}}{Bhopal, India}
+      \resumeItemListStart
+        \resumeItem{Heat wave analysis over Indian cities and its effect on human mortality.}
+        \resumeItem{Supervisor: Dr. Pankaj Kumar, Assistant Professor, \href{https://home.iiserb.ac.in/~kumarp/}{CGMLI, IISER Bhopal}.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Summer Research Internship}{2016}
+      {\href{https://acarr.cusat.ac.in/}{Advanced Centre for Atmospheric Radar Research (ACARR), CUSAT}}{Cochin, India}
+      \resumeItemListStart
+        \resumeItem{Black-body radiation and determination of Planetary Boundary Layer over the Cochin region.}
+        \resumeItem{Supervisor: Dr. M.G. Manoj, Scientist-D, \href{https://acarr.cusat.ac.in/}{ACARR, CUSAT}.}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+\vspace{-0.15cm}
+
+%-----------WORKSHOPS-----------
+\section{Workshops Organised \& Handled}
+\begin{justify}
+      \begin{itemize}[leftmargin=*,itemsep=2pt,parsep=0pt,topsep=2pt]
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2026_02}{\textbf{Climate Change Science and Weather Extremes}}: How Numerical Models Predict What Comes Next?, School of Earth and Environmental Sciences (SEES), Babasaheb Bhimrao Ambedkar University, Lucknow, Uttar Pradesh, November 2026.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2026_01}{\textbf{WRF Model}}: Session with live WRF demonstration and hands-on analysis of model output at the workshop on Numerical Weather Prediction Models in the Changing Climate: Applications, Simulation and Case Study, School of Environment and Natural Resources, Doon University, Kedarpur, Dehradun, 28--31 October 2026.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2025_02}{\textbf{WRF as a tool for Extreme Event Analysis}} [PMRF TAship]: Introduction to Numerical Weather Prediction Models and WRF, College of Climate Change and Environmental Studies, Kerala Agricultural University, Vellanikkara, Thrissur (online), 10--16 October 2025.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2025_01}{\textbf{Disaster Mitigation \& California Wildfire Analysis}} [PMRF TAship]: Introduction to Disaster Mitigation \& Management, Climate Change and California Wildfire Analysis, Department of Environmental Studies, Kannur University, Mangattuparamba Campus, Kannur, 03--07 February 2025.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2024_05}{\textbf{Python}} [PMRF TAship]: Department of Environmental Sciences, Sharda University, Greater Noida, 21--25 October 2024.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2024_04}{\textbf{WRF Model}} [SURE-ALERT]: Day-02 hands-on session on the WRF Model, Department of Earth and Environmental Sciences, IISER Mohali, 14--20 October 2024.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2024_03}{\textbf{Python}} [PMRF TAship]: School of Environmental Studies, CUSAT, Cochin, 24--25 September 2024.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2024_01}{\textbf{Origin Pro \& R}} [PMRF TAship]: School of Environmental Studies, CUSAT, Cochin, 31 January -- 08 February 2024.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2023_03}{\textbf{WRF Model}}: Five-hour lecture with hands-on session at the Hands-on Workshop on Weather Prediction and Climate Model, Department of Architecture and Planning, IIT Roorkee, 16--20 October 2023.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2023_02}{\textbf{Origin Pro}}: One-day lecture with hands-on session for B.Tech. Civil Engineering students, College of Engineering Roorkee, 16 October 2023.
+        \item \small \href{https://anandu-prabhakaran.pages.dev/workshops#W_2023_01}{\textbf{FORESEED}}: Organiser, FOREcaSting and Early-Warning of Extreme Events and Disasters (FORESEED) KARYASHALA Workshop on WRF, CoEDMM, IIT Roorkee, 02--08 January 2023.
+      \end{itemize}
+\end{justify}
+\vspace{-0.15cm}
+
+%-----------COMPUTING SKILLS-----------
+\section{Computing Skills}
+      \resumeItemListStart
+        \resumeItem{\textbf{Programming Languages}: Python, MATLAB and R.}
+        \resumeItem{\textbf{Numerical Modelling}: WRF-Fire, WRF-ARW, \href{https://www.ready.noaa.gov/HYSPLIT.php}{HYSPLIT}.}
+        \resumeItem{\textbf{High-Performance Computing}: \href{https://nsmindia.in/infrastructure/nsm-systems/param-ganga/}{PARAM Ganga}, IIT Roorkee; SLURM, Linux/Ubuntu workflows.}
+        \resumeItem{\textbf{Software}: ArcGIS, ERDAS Imagine, Stereonet.}
+        \resumeItem{\textbf{Graphing}: Ncview, Origin, Gnuplot, GrADS, Grace.}
+        \resumeItem{\textbf{Markup}: \LaTeX.}
+      \resumeItemListEnd
+\vspace{-0.15cm}
+
+%-----------OUTREACH-----------
+\section{Science Communication \& Outreach}
+      \resumeItemListStart
+        \resumeItem{Conducted science outreach workshops across schools and colleges in India.}
+        \resumeItem{Scientific advisor, \textbf{Mission 100Kft}, which set a world record for the highest-altitude balloon flight (55 km) carrying a weather instrument, part of Dhishna, CUSAT, March 2020.}
+        \resumeItem{Ex-Convener, Nature Club, IISER Kolkata.}
+        \resumeItem{Ex-Volunteer and course designer, Ek-pehal, a non-profit providing free education to village students near IISER Kolkata.}
+      \resumeItemListEnd
+\vspace{-0.15cm}
+
+%-----------FIELD WORK-----------
+\section{Field Work \& Training}
+      \resumeItemListStart
+        \resumeItem{\textbf{IMD-Ranichauri}: Setting up Sonic Anemometer, Radiometer and HygroVue at the IMD supersite, Ranichauri, Uttarakhand, 10--13 October 2023.}
+        \resumeItem{\textbf{IDDRR-DMAF}: Workshop on Disaster Risk Reduction, CoEDMM, IIT Roorkee, 10--13 October 2022.}
+        \resumeItem{\textbf{Sedimentology 2018}: Ten-day fieldwork studying sedimentological features along the Balasore coastline, Odisha.}
+        \resumeItem{\textbf{Structural Geology 2017}: Ten-day fieldwork on rock deformation around Galudih and Ghatshila, Jharkhand.}
+      \resumeItemListEnd
+\vspace{-0.15cm}
+
+%-----------PUBLICATIONS-----------
+\section{Peer Reviewed Journal Publications}
+\vspace{-5pt}
+\begin{justify}
+\begin{enumerate}[leftmargin=*]
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2026). Impact of El Ni\~no Southern Oscillation and Indian Ocean Dipole on wildfire across the Indian forests. \textbf{\textit{Natural Hazards}}, 122, 146 (2026). \textcolor{blue}{https://doi.org/10.1007/s11069-025-07937-2}
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2024). Analysis of prevailing atmospheric conditions during wildfire events in the Indian Himalayan region. \textbf{\textit{Quarterly Journal of the Royal Meteorological Society}}, 1--15. \textcolor{blue}{https://doi.org/10.1002/qj.4918}
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2026). A Numerical Weather Prediction Model-Based Approach to Assess Fire Weather Conditions over the Northwest Himalayan Forests. \textbf{\textit{EGUsphere}} \textbf{[preprint]}. \textcolor{blue}{https://doi.org/10.5194/egusphere-2026-2474}
+    \vspace{0.12cm}
+
+\end{enumerate}
+\end{justify}
+\vspace{-0.15cm}
+
+%-----------CONFERENCE PRESENTATIONS-----------
+\section{Conference Presentations}
+\vspace{-5pt}
+\begin{justify}
+\begin{enumerate}[leftmargin=*]
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2026). Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE. \textit{TROPMET-2026 National Symposium (PRAGaTI)}, NCMRWF, MoES, Noida, India, 19--21 Nov 2026. Poster and lightning talk (Abstract ID TMT26-D31A68). \textbf{[Best Poster Award, First Prize]}
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2025). The Climate-Fire Nexus: Investigating the Role of Climate Variability and Climatological Variables in Forest Fire Burned Areas (2000--2020) across the Indian Mainland. \textit{AOGS 2025 -- 22nd Annual Meeting}, Singapore, 27 Jul -- 01 Aug 2025. \textbf{[Presented by P. Srivastava]}
+    \vspace{0.15cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2025). Himalayan Infernos: Linking Climate Variability and Climatological Variables to the Spread of Wildfires across the Indian Himalayan Region. \textit{JpGU Meeting 2025}, Chiba, Japan (Virtual), 25--30 May 2025.
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2024). Trend in Burned Areas Due to Wildfire and Associated Climatic Conditions in India. \textit{AGU Fall Meeting 2024}, Washington DC, USA (Virtual), 9--13 Dec 2024.
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2024). Winter Wildfires in the Lesser Himalayas: Are These Becoming a New Normal under Changing Climate? \textit{GEWEX Open Science Conference 2024}, Sapporo, Japan, 07--12 Jul 2024.
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Prabhakaran, A.}}, Srivastava, P., \& Sen, S. (2023). Analysis of Weather Patterns over the North Eastern Region of India During the Propagation of Cyclone Mocha. \textit{AGU Fall Meeting 2023}, San Francisco, USA (Virtual), 11--15 Dec 2023.
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2023). General Overview of Global Forest Fires: Causes, Outcomes and Existing Warning and Mitigation Methods in India. \textit{IDRiM 2023 Conference}, CoEDMM, IIT Roorkee, India, 28--30 Sep 2023.
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Prabhakaran, A.}}, Srivastava, P., \& Pai, A. (2023). Atmospheric Conditions Conducive to Forest Fire Events in the Greater Himalayan Region. \textit{EGU General Assembly 2023}, Vienna, Austria, 24--28 Apr 2023, EGU23-1004. \textcolor{blue}{https://doi.org/10.5194/egusphere-egu23-1004}
+    \vspace{0.12cm}
+
+    \item \underline{\textbf{Anandu Prabhakaran}}, \& Srivastava, P. (2023). Atmospheric Conditions Conducive to Forest Fire Events in Uttarakhand. \textit{National Conference on Land-Atmosphere Interactions Controlling Weather \& Climate}, NIT Rourkela, India, 09--12 Jan 2023.
+    \vspace{0.12cm}
+
+    \item Pai, A., Srivastava, P., \& \underline{\textbf{Prabhakaran, A.}} (2023). A Meteorological Perspective of the 6th August 2020 Kerala and the 7th February 2021 Uttarakhand Disasters. \textit{EGU General Assembly 2023}, Vienna, Austria, 24--28 Apr 2023, EGU23-642. \textcolor{blue}{https://doi.org/10.5194/egusphere-egu23-642}
+    \vspace{0.12cm}
+
+\end{enumerate}
+\end{justify}
+\vspace{-0.15cm}
+
+%-----------WEBPAGE LINKS-----------
+\section{Webpage Links}
+\begin{enumerate}[leftmargin=*]
+    \item Personal Website: \href{https://anandu-prabhakaran.pages.dev/}{\textcolor{blue}{\textbf{anandu-prabhakaran.pages.dev}}}
+    \item LinkedIn: \href{https://www.linkedin.com/in/anandu-iitr}{\textcolor{blue}{\textbf{linkedin.com/in/anandu-iitr}}}
+    \item Research Group: \href{https://www.weatherxplorers.com}{\textcolor{blue}{\textbf{www.weatherxplorers.com}}}
+\end{enumerate}
+
+\begin{center}
+    ***************************
+\end{center}
+
+\end{document}
