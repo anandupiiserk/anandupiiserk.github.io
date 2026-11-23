@@ -46,7 +46,7 @@ function sign_(action, id) {
 /* The portal pages (Subscribers, Visitors, Messages, Appointments, compose, reply, approve and decline) are served by a second deployment of this script
    that runs as the signed-in visitor and is open only to OWNER_EMAIL. Its address is kept in the script property PORTAL_URL. The public site keeps using the first deployment. */
 var OWNER_EMAIL = 'anandupiiserk@gmail.com';
-var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1, msgarc: 1, mail: 1, draft: 1 };
+var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1, msgarc: 1, mail: 1, draft: 1, cv: 1 };
 function portalBase_() { return PropertiesService.getScriptProperties().getProperty('PORTAL_URL') || ScriptApp.getService().getUrl(); }
 function gate_(p) {
   var base = PropertiesService.getScriptProperties().getProperty('PORTAL_URL');
@@ -132,7 +132,7 @@ var PHOTO_URL_ = 'https://anandu-prabhakaran.pages.dev/home';
 var NAV_JS_ = "(function(){var n=document.querySelector('.nv');if(!n)return;var ind=n.querySelector('.ind'),cur=n.querySelector('a.cur');function mv(a,show){if(!a||!ind)return;ind.style.width=a.offsetWidth+'px';ind.style.transform='translateX('+a.offsetLeft+'px)';ind.style.opacity=show?'1':'0'}function rest(){mv(cur,!!cur)}[].forEach.call(n.querySelectorAll('a'),function(a){a.addEventListener('mouseenter',function(){mv(a,true)});a.addEventListener('focus',function(){mv(a,true)})});n.addEventListener('mouseleave',rest);n.addEventListener('mousemove',function(e){var r=n.getBoundingClientRect();n.style.setProperty('--mx',(e.clientX-r.left+n.scrollLeft)+'px')});window.addEventListener('resize',rest);if(cur){try{var l=cur.offsetLeft-(n.clientWidth-cur.offsetWidth)/2;n.scrollLeft=Math.max(0,l)}catch(e){}}rest();setTimeout(rest,250);})();";
 function navBar_(cur) {
   var a = function (k, t, u, x) { return '<a href="' + u + '" target="_top"' + (k === cur ? ' class="cur" aria-current="page"' : '') + (x || '') + '><span class="t"><span>' + t + '</span><span>' + t + '</span></span></a>'; };
-  return '<nav class="nv" aria-label="Admin menu"><span class="ind"></span>' + a('site', 'Go to website', SITE_URL_, ' rel="noopener"') + a('home', 'Home', portalBase_() + '?action=go') + a('admin', 'Subscribers', adminUrl_()) + a('compose', 'Email', mailUrl_()) + a('messages', 'Messages', msgUrl_()) + a('appts', 'Appointments', apptUrl_()) + a('visitors', 'Visitors', visUrl_()) + '</nav>';
+  return '<nav class="nv" aria-label="Admin menu"><span class="ind"></span>' + a('site', 'Go to website', SITE_URL_, ' rel="noopener"') + a('home', 'Home', portalBase_() + '?action=go') + a('admin', 'Subscribers', adminUrl_()) + a('compose', 'Email', mailUrl_()) + a('messages', 'Messages', msgUrl_()) + a('appts', 'Appointments', apptUrl_()) + a('visitors', 'Visitors', visUrl_()) + a('cv', 'CV', cvUrl_()) + '</nav>';
 }
 function topbar_(nav, cur) {
   return '<header class="pt"><div class="in"><a class="lgl" href="' + PHOTO_URL_ + '" target="_top" title="Go to the website" aria-label="Go to the website"><div class="lg"><img src="data:image/jpeg;base64,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" alt="Anandu Prabhakaran" width="38" height="38"></div></a><div><div class="t1">Website admin</div><div class="t2">Anandu Prabhakaran</div></div><span class="sp"></span>' + (nav ? navBar_(cur) : '') + THEME_TOGGLE_ + '</div></header>' + (nav ? '<script>' + NAV_JS_ + FX_JS_ + '<\/script>' : '');
@@ -184,6 +184,7 @@ function act_(p) {
   if (action === 'go') return homePage_(); /* owner-only: gate_ has already checked the signed-in account */
   if (action === 'admin') return adminPage_(p);
   if (action === 'visitors') return visitorsPage_(p);
+  if (action === 'cv') return cvPage_(p);
   if (action === 'messages') return messagesPage_(p);
   if (action === 'appts') return appointmentsPage_(p);
   if (action === 'apedit') return apptEditPage_(p);
@@ -1049,6 +1050,7 @@ function homePage_() {
     + tile(msgUrl_(), 'var(--amber)', ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'), msgs, 'Messages', 'From the contact form, archived after 60 days', 'Read messages')
     + tile(apptUrl_(), 'var(--violet)', ic('<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/>'), null, 'Appointments', 'Requests and the booking calendar', 'Open appointments')
     + tile(mailUrl_(), 'var(--sky)', ic('<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14 7l3 3"/>'), null, 'Email', 'Sent, drafts and scheduled emails, and a new email', 'Open Email')
+    + tile(cvUrl_(), 'var(--teal)', ic('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>'), null, 'CV', 'Edit the LaTeX, build and download the PDF', 'Open CV')
     + tile(SITE_URL_, 'var(--brick)', ic('<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'), null, 'Your website', 'Open the live site', 'Go to website')
     + '</div>';
   var inner = '<div class="hero"><div class="hi">' + Utilities.formatDate(new Date(), TZ, 'EEEE, d MMMM yyyy') + '</div><h1>' + hi + ', Anandu</h1><p>Everything for your website in one place. Pick a tile to open it.</p></div>' + tiles;
@@ -1723,3 +1725,116 @@ function doPost(e) {
 }
 
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+
+/* ---- CV: the LaTeX source lives in the Drive folder "Website CV"; the portal edits it, compiles it to PDF and downloads both ---- */
+var CV_NAME_ = 'Anandu_Prabhakaran_CV';
+var CV_GIT_ = 'https://raw.githubusercontent.com/anandupiiserk/anandupiiserk.github.io/main/tools/cv/Anandu_Prabhakaran_CV.tex';
+function cvUrl_() { return portalBase_() + '?action=cv&sig=' + sign_('admin', 'cv'); }
+function cvOk_(sig) { if (sign_('admin', 'cv') !== sig) throw new Error('This link is not valid. Open CV again from the portal.'); }
+function cvFolder_() {
+  var pr = PropertiesService.getScriptProperties(), id = pr.getProperty('CV_FOLDER'), f = null;
+  if (id) { try { f = DriveApp.getFolderById(id); if (f.isTrashed()) f = null; } catch (e) { f = null; } }
+  if (!f) { var it = DriveApp.getFoldersByName('Website CV'); f = it.hasNext() ? it.next() : DriveApp.createFolder('Website CV'); pr.setProperty('CV_FOLDER', f.getId()); }
+  return f;
+}
+function cvSub_(f, name) { var it = f.getFoldersByName(name); return it.hasNext() ? it.next() : f.createFolder(name); }
+function cvFile_(f, name) { var it = f.getFilesByName(name); while (it.hasNext()) { var x = it.next(); if (!x.isTrashed()) return x; } return null; }
+function cvGit_() {
+  var r = UrlFetchApp.fetch(CV_GIT_ + '?t=' + Date.now(), { muteHttpExceptions: true });
+  if (r.getResponseCode() !== 200) throw new Error('Could not fetch the CV from GitHub (HTTP ' + r.getResponseCode() + ').');
+  return r.getContentText('UTF-8');
+}
+function cvTex_(f) { var t = cvFile_(f, CV_NAME_ + '.tex'); if (!t) t = f.createFile(CV_NAME_ + '.tex', cvGit_(), 'text/plain'); return t; }
+function cvWhen_(d) { return Utilities.formatDate(d, TZ, 'd MMM yyyy, h:mm a'); }
+function cvInfo_(f) {
+  var t = cvFile_(f, CV_NAME_ + '.tex'), p = cvFile_(f, CV_NAME_ + '.pdf');
+  return { folder: f.getUrl(), tex: t ? t.getUrl() : '', texWhen: t ? cvWhen_(t.getLastUpdated()) : '', texDl: t ? 'https://drive.google.com/uc?export=download&id=' + t.getId() : '',
+    pdf: p ? p.getUrl() : '', pdfWhen: p ? cvWhen_(p.getLastUpdated()) : '', pdfDl: p ? 'https://drive.google.com/uc?export=download&id=' + p.getId() : '' };
+}
+/* saves the source; the version it replaces goes to "Website CV/history" (the newest 30 are kept) */
+function cvWrite_(tex) {
+  var f = cvFolder_(), t = cvTex_(f), old = t.getBlob().getDataAsString('UTF-8');
+  if (old !== tex) {
+    var h = cvSub_(f, 'history');
+    h.createFile(CV_NAME_ + ' ' + Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd HHmmss') + '.tex', old, 'text/plain');
+    var all = [], it = h.getFiles(); while (it.hasNext()) all.push(it.next());
+    all.sort(function (a, b) { return b.getDateCreated() - a.getDateCreated(); });
+    all.slice(30).forEach(function (x) { x.setTrashed(true); });
+    t.setContent(tex);
+  }
+  return f;
+}
+function cvSave(sig, tex) { cvOk_(sig); var f = cvWrite_(String(tex || '')); return cvInfo_(f); }
+function cvFromGit(sig) { cvOk_(sig); var tex = cvGit_(), f = cvWrite_(tex); var r = cvInfo_(f); r.text = tex; return r; }
+function cvLatest(sig) { cvOk_(sig); var f = cvFolder_(), p = cvFile_(f, CV_NAME_ + '.pdf'); return p ? Utilities.base64Encode(p.getBlob().getBytes()) : ''; }
+function cvIsPdf_(b) { return b && b.length > 4 && b[0] === 37 && b[1] === 80 && b[2] === 68 && b[3] === 70; }
+function cvTexlive_(tex) {
+  var bd = '----cvform' + Date.now(), nl = '\r\n';
+  var part = function (k, v) { return '--' + bd + nl + 'Content-Disposition: form-data; name="' + k + '"' + nl + nl + v + nl; };
+  var body = part('filename[]', 'document.tex') + part('filecontents[]', tex) + part('engine', 'pdflatex') + part('return', 'pdf') + '--' + bd + '--' + nl;
+  var r = UrlFetchApp.fetch('https://texlive.net/cgi-bin/latexcgi', { method: 'post', contentType: 'multipart/form-data; boundary=' + bd, payload: Utilities.newBlob(body).getBytes(), muteHttpExceptions: true, followRedirects: true });
+  var b = r.getBlob().getBytes();
+  return cvIsPdf_(b) ? { pdf: b } : { log: 'texlive.net (HTTP ' + r.getResponseCode() + '):\n' + r.getContentText() };
+}
+function cvYtotech_(tex) {
+  var r = UrlFetchApp.fetch('https://latex.ytotech.com/builds/sync', { method: 'post', contentType: 'application/json', payload: JSON.stringify({ compiler: 'pdflatex', resources: [{ main: true, content: tex }] }), muteHttpExceptions: true });
+  var b = r.getBlob().getBytes();
+  return cvIsPdf_(b) ? { pdf: b } : { log: 'latex.ytotech.com (HTTP ' + r.getResponseCode() + '):\n' + r.getContentText() };
+}
+/* saves, compiles with pdflatex on texlive.net (latex.ytotech.com if that fails), stores the PDF in Drive and returns it */
+function cvCompile(sig, tex) {
+  cvOk_(sig); tex = String(tex || '');
+  var f = cvWrite_(tex), res = null, logs = [], via = '';
+  [['texlive.net', cvTexlive_], ['latex.ytotech.com', cvYtotech_]].some(function (c) {
+    try { res = c[1](tex); } catch (e) { res = { log: c[0] + ': ' + e.message }; }
+    if (res.pdf) { via = c[0]; return true; }
+    logs.push(res.log); return false;
+  });
+  if (!res || !res.pdf) { var lg = logs.join('\n\n'); return { ok: false, log: lg.length > 12000 ? '...\n' + lg.slice(-12000) : lg }; }
+  var old = cvFile_(f, CV_NAME_ + '.pdf'); if (old) old.setTrashed(true);
+  f.createFile(Utilities.newBlob(res.pdf, 'application/pdf', CV_NAME_ + '.pdf'));
+  var r = cvInfo_(f); r.ok = true; r.via = via; r.b64 = Utilities.base64Encode(res.pdf); return r;
+}
+function cvPage_(p) {
+  if (sign_('admin', 'cv') !== p.sig) return page_('Link not valid', 'This link is not valid.', 'bad');
+  var f, t, tex, info, err = '';
+  try { f = cvFolder_(); t = cvTex_(f); tex = t.getBlob().getDataAsString('UTF-8'); info = cvInfo_(f); }
+  catch (e) { return page_('CV not available', esc_(e.message), 'bad'); }
+  var J = function (o) { return JSON.stringify(o).replace(/</g, '\\u003c'); };
+  var css = '<style>.pw{max-width:1180px}.cvb{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.cvb .b{width:auto;padding:11px 18px}.cvb .b.gh{background:var(--surface);color:var(--text);border:1px solid var(--line)}'
+    + '.cvi{font-size:14px;color:var(--muted);margin:0 0 12px;line-height:1.7}.cvi a{color:var(--a)}'
+    + '#tx{width:100%;min-height:62vh;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);tab-size:2;resize:vertical;box-sizing:border-box}'
+    + '#ms{min-height:22px;margin:10px 0;font-size:15px}#ms.bad{color:var(--red)}#lg{display:none;white-space:pre-wrap;max-height:320px;overflow:auto;font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}'
+    + '#pv{display:none;width:100%;height:80vh;border:1px solid var(--line);border-radius:12px;margin-top:12px;background:#fff}</style>';
+  var inner = css
+    + '<p class="cvi" id="inf"></p>'
+    + '<div class="cvb"><button class="b blue" id="bs" type="button">Save to Drive</button><button class="b" id="bc" type="button">Compile PDF</button>'
+    + '<button class="b gh" id="bt" type="button">Download .tex</button><button class="b gh" id="bp" type="button">Download PDF</button><button class="b gh" id="bv" type="button">Preview PDF</button>'
+    + '<button class="b gh" id="bg" type="button">Reload from GitHub</button></div>'
+    + '<textarea id="tx" spellcheck="false" aria-label="CV LaTeX source"></textarea><div id="ms" role="status"></div><pre id="lg"></pre><iframe id="pv" title="CV preview"></iframe>'
+    + '<script>(function(){var SIG=' + J(p.sig) + ',I=' + J(info) + ',tx=document.getElementById("tx"),ms=document.getElementById("ms"),lg=document.getElementById("lg"),pv=document.getElementById("pv"),pdf=null,saved;'
+    + 'tx.value=' + J(tex) + ';saved=tx.value;'
+    + 'function $(i){return document.getElementById(i)}function say(t,bad){ms.textContent=t;ms.className=bad?"bad":""}'
+    + 'function a(u,t){return u?"<a href=\\""+u+"\\" target=\\"_blank\\" rel=\\"noopener\\">"+t+"</a>":""}'
+    + 'function inf(){$("inf").innerHTML="Kept in your Google Drive, folder "+a(I.folder,"Website CV")+". Source: "+a(I.tex,"open")+" &middot; "+a(I.texDl,"download")+" (saved "+I.texWhen+")"+(I.pdf?". PDF: "+a(I.pdf,"open")+" &middot; "+a(I.pdfDl,"download")+" (built "+I.pdfWhen+")":". No PDF yet: press Compile PDF.")}inf();'
+    + 'function dirty(){return tx.value!==saved}window.addEventListener("beforeunload",function(e){if(dirty()){e.preventDefault();e.returnValue=""}});'
+    + 'tx.addEventListener("input",function(){if(dirty())say("Unsaved changes.")});'
+    + 'tx.addEventListener("keydown",function(e){if(e.key==="Tab"){e.preventDefault();var s=tx.selectionStart;tx.setRangeText("  ",s,tx.selectionEnd,"end")}if((e.ctrlKey||e.metaKey)&&e.key==="s"){e.preventDefault();save()}});'
+    + 'var bs=document.querySelectorAll(".cvb .b");function busy(on,b,t){for(var i=0;i<bs.length;i++)bs[i].disabled=on;if(b){if(on){b.dataset.t=b.textContent;b.textContent=t}else b.textContent=b.dataset.t}}'
+    + 'function fail(b){return function(e){busy(false,b);say((e&&e.message)||"Something went wrong.",true)}}'
+    + 'function b2u(b64){var s=atob(b64),u=new Uint8Array(s.length);for(var i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return URL.createObjectURL(new Blob([u],{type:"application/pdf"}))}'
+    + 'function dl(url,name){var l=document.createElement("a");l.href=url;l.download=name;document.body.appendChild(l);l.click();l.remove()}'
+    + 'function save(){var b=$("bs"),v=tx.value;busy(true,b,"Saving...");say("");google.script.run.withSuccessHandler(function(r){I=r;saved=v;inf();busy(false,b);say("Saved to Drive.")}).withFailureHandler(fail(b)).cvSave(SIG,v)}'
+    + '$("bs").onclick=save;'
+    + '$("bc").onclick=function(){var b=$("bc"),v=tx.value;busy(true,b,"Compiling...");say("Compiling with pdflatex. This takes 10 to 30 seconds.");lg.style.display="none";'
+    + 'google.script.run.withSuccessHandler(function(r){busy(false,b);saved=v;if(!r.ok){lg.textContent=r.log;lg.style.display="block";say("LaTeX could not build the PDF. The log is below; the source was still saved.",true);return}'
+    + 'I=r;inf();if(pdf)URL.revokeObjectURL(pdf);pdf=b2u(r.b64);pv.src=pdf;pv.style.display="block";say("PDF built ("+r.via+") and saved to Drive.")}).withFailureHandler(fail(b)).cvCompile(SIG,v)};'
+    + '$("bt").onclick=function(){dl(URL.createObjectURL(new Blob([tx.value],{type:"application/x-tex"})),"' + CV_NAME_ + '.tex")};'
+    + 'function withPdf(fn,b){if(pdf)return fn();busy(true,b,"Loading...");google.script.run.withSuccessHandler(function(x){busy(false,b);if(!x){say("No PDF yet. Press Compile PDF first.",true);return}pdf=b2u(x);fn()}).withFailureHandler(fail(b)).cvLatest(SIG)}'
+    + '$("bp").onclick=function(){withPdf(function(){dl(pdf,"' + CV_NAME_ + '.pdf")},$("bp"))};'
+    + '$("bv").onclick=function(){withPdf(function(){pv.src=pdf;pv.style.display="block";pv.scrollIntoView({behavior:"smooth"})},$("bv"))};'
+    + '$("bg").onclick=function(){var b=$("bg");if(!b.armed){b.armed=true;b.textContent="Click again: replace with the GitHub copy";setTimeout(function(){b.armed=false;b.textContent="Reload from GitHub"},5000);return}b.armed=false;'
+    + 'busy(true,b,"Fetching...");google.script.run.withSuccessHandler(function(r){I=r;tx.value=r.text;saved=r.text;inf();busy(false,b);b.textContent="Reload from GitHub";say("Loaded the copy from GitHub. The previous version is in Drive, Website CV/history.")}).withFailureHandler(fail(b)).cvFromGit(SIG)};'
+    + '})()<\/script>';
+  return out_(shell_('CV', 'Edit the LaTeX source of your CV, save it to Google Drive, and build the PDF. Every save keeps the previous version in Website CV/history.', inner, true, 'cv'), 'CV');
+}
