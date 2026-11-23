@@ -14,17 +14,19 @@
 # Event photos:   files Conf_004_01.jpg, Conf_004_02.jpg, ... (up to 20)   line  Conf_004 | Caption for the event
 #                 Optional caption for one photo of the event:  Conf_004_02 | Caption for this photo
 # File types: jpg, jpeg, png, webp. Put the image files in this same folder (gallery/).
-# Dates: put [YYYY-MM-DD] (or [YYYY-MM]) first in an event's caption line, e.g.  Event_002 | [2026-11-02] Caption. The gallery shows newest first, left to right. Undated events come last.
+# Dates: put [YYYY-MM-DD] (or [YYYY-MM]) first in an event's caption line, e.g.  Event_002 | [2026-11-02] Caption. For several days use [YYYY-MM-DD/DD], e.g. [2026-11-19/21]. The gallery shows newest first, left to right. Undated events come last.
 # A photo is shown only if its ID is listed here. A line with no caption is fine:  PhD_002 |
 # Lines below are the captions from the earlier website. They stay hidden until a file with that name is added.
 
 # ---- 19 to 21 November 2026: TROPMET-2026 at NCMRWF, Noida ----
-Conf_008 | [2026-11-19] TROPMET-2026, National Conference on Physics-driven and AI-enabled Research for Advanced Guidance and Tropical Intelligence (PRAGaTI), NCMRWF, Noida, 19 to 21 November 2026
+Conf_008 | [2026-11-19/21] TROPMET-2026, National Conference on Physics-driven and AI-enabled Research for Advanced Guidance and Tropical Intelligence (PRAGaTI), NCMRWF, Noida, 19 to 21 November 2026
 Conf_008_01 | The Weather and Climate Research Group (WCRG), IIT Roorkee, at TROPMET-2026, NCMRWF, Noida, 20 November 2026. From left: Balu Shaharica, Saurabh Singh, Arun Dev Singh, Shiwam Singh, Anandu Prabhakaran and Ashish Kumar Dubey. The conference was organised by the Indian Meteorological Society and jointly hosted by the National Centre for Medium Range Weather Forecasting (NCMRWF), Ministry of Earth Sciences, and the IMS Noida Chapter.
 Conf_008_02 | With Dr. Ashis Mitra, former Head of NCMRWF, at TROPMET-2026, NCMRWF, Noida, 21 November 2026. From left: Shiwam Singh, Dr. Ashis Mitra and Anandu Prabhakaran.
 Conf_008_03 | Catching up with an old friend, Dr. Gaurav (centre), who did his PhD at CGMLI, IISER Bhopal, at TROPMET-2026. We met again after roughly ten years.
 Conf_008_04 | Presenting my two-minute lightning talk on my poster, "Coupled Fire-Atmosphere Simulation of Fire Weather Characteristics and Wildfire Spread across Contrasting Indian Fire Regimes using WRF-FIRE", at TROPMET-2026, NCMRWF, Noida, 21 November 2026.
 Conf_008_05 | At the TROPMET-2026 venue entrance, NCMRWF, Noida (conference held 19 to 21 November 2026). From left: Arun Dev Singh, Shiwam Singh, Anandu Prabhakaran, Saurabh Singh and Balu Shaharica.
+Conf_008_06 | Certificate of Excellence for the Best Poster Award (First Prize) at the TROPMET-2026 National Symposium, under the theme "Weather and Climate Extremes, Applications and Services". Organised by the Indian Meteorological Society (IMS) and jointly hosted by NCMRWF, MoES, and the IMS Noida Chapter, 19 to 21 November 2026.
+Conf_008_07 | The TROPMET-2026 (PRAGaTI) memento, jointly organised by the National Centre for Medium Range Weather Forecasting (NCMRWF), MoES, Noida, and the Indian Meteorological Society Noida Chapter.
 # ---- 13 November 2026: Expert lecture at CoEDMM, IIT Roorkee ----
 Meet_076 | [2026-11-13] Expert Lecture | 13 November 2026
 Meet_076_01 | Expert lecture by Prof. A. P. Dimri, Director, Indian Institute of Geomagnetism, Mumbai, and Professor, School of Environmental Sciences, JNU, on "Elevation Dependent Warming and Climate Extremes over the Indian Himalayas", CoEDMM, IIT Roorkee.

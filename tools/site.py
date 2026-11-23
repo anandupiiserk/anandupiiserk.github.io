@@ -165,7 +165,7 @@ def cmd_check(_a=None):
             if not l.strip() or l.lstrip().startswith('#') or '|' not in l: continue
             k, v = l.split('|', 1); k, v = k.strip(), v.strip(); lines[k] = v
             if v.startswith('['):
-                if not re.match(r'^\[\d{4}-\d{2}(-\d{2})?\]', v): errs.append('captions.txt line %d: bad date, use [YYYY-MM] or [YYYY-MM-DD]' % n)
+                if not re.match(r'^\[\d{4}-\d{2}(-\d{2}(/\d{2})?)?\]', v): errs.append('captions.txt line %d: bad date, use [YYYY-MM] or [YYYY-MM-DD]' % n)
     photos = {}
     for f in glob.glob(os.path.join(GAL, '*')):
         if not f.lower().endswith(IMG_EXT): continue
