@@ -178,6 +178,7 @@ function act_(p) {
   if (action === 'draft') return draftPage_(p);
   if (action === 'unsub') return nlUnsubPage_(p);
   if (action === 'login') return loginPage_();
+  if (action === 'whoami') return whoamiPage_();
   if (action === 'go') return homePage_(); /* owner-only: gate_ has already checked the signed-in account */
   if (action === 'admin') return adminPage_(p);
   if (action === 'visitors') return visitorsPage_(p);
@@ -1859,6 +1860,13 @@ function loginPage_() {
   return out_('<!doctype html><html><head><meta charset="utf-8"><base target="_top"><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f1722;font-family:Calibri,Carlito,"Segoe UI",system-ui,Arial,sans-serif}'
     + '.c{background:#fff;border-radius:18px;padding:30px 28px;text-align:center;max-width:360px}h1{margin:0 0 6px;font-size:22px;color:#0f1722}p{margin:0 0 18px;color:#5b6675}a{display:inline-block;background:#0072B2;color:#fff;text-decoration:none;font-weight:bold;border-radius:999px;padding:13px 26px}</style></head><body>'
     + '<div class="c"><h1>Welcome back, Anandu</h1><p>Signed in as ' + OWNER_EMAIL + '.</p><a href="' + go + '" target="_top">Open the admin portal</a></div></body></html>', 'Website admin');
+}
+/* loaded invisibly by the website's /admin page: tells that page only whether the visitor is signed in to Google as the owner (true or false, nothing else) */
+function whoamiPage_() {
+  var who = ''; try { who = String(Session.getActiveUser().getEmail() || '').toLowerCase(); } catch (x) { }
+  var msg = JSON.stringify({ t: 'whoami', owner: who === OWNER_EMAIL });
+  var js = '<script>(function(){var m=' + msg + ';["https://anandu-prabhakaran.pages.dev","https://anandupiiserk.github.io"].forEach(function(o){try{window.top.postMessage(m,o)}catch(e){}})})();<\/script>';
+  return HtmlService.createHtmlOutput(js).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 var TRAP_IMG_ = 'https://anandu-prabhakaran.pages.dev/img/admin-trap.jpg';
 function trapPage_(p) {

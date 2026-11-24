@@ -33,6 +33,9 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
 #scr2.late #f2{opacity:1;transform:none;visibility:visible;transition:opacity .5s,transform .5s}
 #scr3{background:radial-gradient(circle at 70% 30%,#1b2a4a,#0a1420)}
 .msg{text-align:center;color:#fff;max-width:440px}
+.sp{width:42px;height:42px;margin:0 auto 14px;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#scr0{background:#0a1420}
 .msg .e{font-size:68px;line-height:1}
 .msg h2{font-size:30px;margin:14px 0 8px;font-weight:800}
 .msg p{font-size:16px;color:#c6d0dc;margin:0}
@@ -40,7 +43,8 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
 </style>
 </head>
 <body>
-<div class="scr on" id="scr1">
+<div class="scr on" id="scr0"><div class="msg"><div class="sp"></div><p>Checking your sign-in...</p></div></div>
+<div class="scr" id="scr1">
  <iframe id="site" src="home" title="" aria-hidden="true" tabindex="-1"></iframe>
  <form id="f1" class="card" autocomplete="off" novalidate>
   <h1>Website Admin</h1><p class="s">Sign in to open the admin pages.</p>
@@ -78,6 +82,18 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
       else { var n = g(to).querySelector('input'); if (n) n.focus(); }
     });
   }
+  /* ask the site's Apps Script, in a hidden frame, whether Google knows this visitor as the owner; if so go straight in, otherwise show the sign-in */
+  var WHO = 'https://script.google.com/macros/s/AKfycbx4ftUvQ0G2ctvXvvkhwiodbX87pfrSjky8RF_oZxzTygKLmODBvLh-PF8OyzW5EcTk/exec?action=whoami';
+  var decided = false;
+  function show() { if (decided) return; decided = true; g('scr0').classList.remove('on'); g('scr1').classList.add('on'); g('f1e').focus(); }
+  window.addEventListener('message', function (e) {
+    if (decided || e.origin.indexOf('googleusercontent.com') < 0 || !e.data || e.data.t !== 'whoami') return;
+    if (e.data.owner === true) { decided = true; location.replace(PORTAL); } else show();
+  });
+  var fr = document.createElement('iframe'); fr.src = WHO; fr.title = ''; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
+  fr.style.cssText = 'position:absolute;width:1px;height:1px;border:0;opacity:0;pointer-events:none';
+  document.body.appendChild(fr);
+  setTimeout(show, 4000);
   step('f1', 'scr1', 'scr2');
   step('f2', 'scr2', 'scr3');
 })();
