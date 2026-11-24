@@ -114,8 +114,9 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
       em.classList.remove('bad'); if (pw) pw.classList.remove('bad'); r.textContent = '';
       if (f === 'f1' && v.toLowerCase() === OWN && pw && pw.value) { pw.value = ''; location.href = PORTAL; return; }
       var why = bad(v); if (why) { em.classList.add('bad'); r.textContent = why; em.focus(); return; }
+      if (f === 'f2' && v.toLowerCase() !== typed.e.toLowerCase()) { em.classList.add('bad'); r.textContent = 'This is not the email you entered before. Enter the same email ID to continue.'; em.focus(); return; }
       if (pw && !pw.value) { pw.classList.add('bad'); r.textContent = 'Enter your password.'; pw.focus(); return; }
-      typed.e = v; if (pw) { typed.p = pw.value; pw.value = ''; }
+      if (f === 'f1') typed.e = v; if (pw) { typed.p = pw.value; pw.value = ''; }
       if (to === 'scr3') { reveal(); }
       g(from).classList.remove('on'); g(to).classList.add('on');
       if (to === 'scr2') { setTimeout(function () { g('scr2').classList.add('late'); g('f2e').focus(); }, DELAY); }
