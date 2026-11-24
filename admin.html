@@ -5,56 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Website Admin</title>
-<link rel="icon" href="img/avatar-ncmrwf-2.jpg">
+<link rel="icon" href="img/fire-icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#f4f7fa">
+<script>(function(){var t="";try{t=localStorage.getItem("theme")||""}catch(e){}if(t!=="dark"&&t!=="light")t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <style>
 /* Admin entry. The owner email leads to the real admin portal (Google checks the account there).
    Anyone else gets a harmless gag: nothing typed is stored or sent anywhere. */
+:root{--pg:#f4f7fa;--card:#fff;--tx:#0f1722;--mut:#5b6675;--ln:#d0d7e2;--in:#fff;--soft:#f1f5fb;--a:#0072B2;--on:#fff;--warn:#b94700;--warnbg:rgba(185,71,0,.15);--okbg:#e6f4ee;--ok:#00664a;--shade:rgba(10,20,32,.35);--stage:radial-gradient(circle at 70% 30%,#dde8f6,#f4f7fa);--stage2:radial-gradient(circle at 30% 20%,#cfe0f7,#f4f7fa);color-scheme:light}
+:root[data-theme="dark"]{--pg:#0c0a09;--card:#171412;--tx:#f0eae2;--mut:#c2bab0;--ln:rgba(255,238,215,.2);--in:#0f0d0c;--soft:#221d1a;--a:#e8a33d;--on:#1a1200;--warn:#ff9e5e;--warnbg:rgba(255,158,94,.18);--okbg:#10291f;--ok:#6fd8b0;--shade:rgba(0,0,0,.55);--stage:radial-gradient(circle at 70% 30%,#2a2018,#0c0a09);--stage2:radial-gradient(circle at 30% 20%,#3a2a14,#0c0a09);color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:#f4f7fa;color:#0f1722}
+body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--pg);color:var(--tx)}
 .scr{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}
 .scr.on{display:flex}
 #site{position:fixed;inset:0;width:100%;height:100%;border:0;filter:blur(3px);transform:scale(1.02);pointer-events:none}
-#scr1:after{content:"";position:fixed;inset:0;background:rgba(10,20,32,.35)}
-.card{position:relative;z-index:1;background:#fff;width:100%;max-width:360px;border-radius:18px;padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+#scr1:after{content:"";position:fixed;inset:0;background:var(--shade)}
+.card{position:relative;z-index:1;background:var(--card);color:var(--tx);border:1px solid var(--ln);width:100%;max-width:360px;border-radius:18px;padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
 .card h1{margin:0 0 4px;font-size:22px}
-.card .s{margin:0 0 18px;color:#5b6675;font-size:14px}
-label{display:block;font-size:13px;color:#5b6675;margin:12px 0 5px}
-input{width:100%;padding:12px 14px;border:1px solid #d0d7e2;border-radius:10px;font:inherit;font-size:16px;color:#0f1722;background:#fff}
-input:focus{outline:2px solid #0072B2;outline-offset:1px}
-input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
-.er{min-height:18px;margin:6px 0 0;font-size:13px;color:#b94700}
-.btn{margin-top:14px;width:100%;padding:13px;border:0;border-radius:999px;background:#0072B2;color:#fff;font:inherit;font-size:15px;font-weight:bold;cursor:pointer}
+.card .s{margin:0 0 18px;color:var(--mut);font-size:14px}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 5px}
+input{width:100%;padding:12px 14px;border:1px solid var(--ln);border-radius:10px;font:inherit;font-size:16px;color:var(--tx);background:var(--in)}
+input::placeholder{color:var(--mut);opacity:.75}
+input:focus{outline:2px solid var(--a);outline-offset:1px}
+input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
+.er{min-height:18px;margin:6px 0 0;font-size:13px;color:var(--warn)}
+.btn{margin-top:14px;width:100%;padding:13px;border:0;border-radius:999px;background:var(--a);color:var(--on);font:inherit;font-size:15px;font-weight:bold;cursor:pointer}
 .btn:hover{filter:brightness(1.07)}
 #scr2{background:#000 url("img/admin-trap.jpg") center/contain no-repeat}
 #scr2:before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .6s}
 #scr2.late:before{background:rgba(0,0,0,.25)}
 #f2{opacity:0;transform:translateY(14px) scale(.97);visibility:hidden;transition:opacity .5s,transform .5s,visibility 0s .5s}
 #scr2.late #f2{opacity:1;transform:none;visibility:visible;transition:opacity .5s,transform .5s}
-#scr3{background:radial-gradient(circle at 70% 30%,#1b2a4a,#0a1420)}
-.msg{text-align:center;color:#fff;max-width:440px}
-.sp{width:42px;height:42px;margin:0 auto 14px;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite}
+#scr3{background:var(--stage)}
+.msg{text-align:center;color:var(--tx);max-width:440px}
+.sp{width:42px;height:42px;margin:0 auto 14px;border:4px solid var(--ln);border-top-color:var(--a);border-radius:50%;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-#scr0{background:#0a1420}
-.rv{width:100%;max-width:460px;background:#fff;border-radius:18px;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
-.rh{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:#b94700;margin-bottom:14px}
-.dot{width:12px;height:12px;border-radius:50%;background:#b94700;animation:bl 1s steps(2) infinite}
+#scr0{background:var(--stage)}
+.rv{width:100%;max-width:460px;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.rh{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:var(--warn);margin-bottom:14px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--warn);animation:bl 1s steps(2) infinite}
 @keyframes bl{50%{opacity:.2}}
 .rv dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;margin:0}
-.rv dt{color:#5b6675;font-size:14px}
+.rv dt{color:var(--mut);font-size:14px}
 .rv dd{margin:0;font-weight:bold;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px}
-.sent{margin:18px 0 0;padding:10px 12px;border-radius:10px;background:#f1f5fb;font-size:14px}
-.sent.ok{background:#e6f4ee;color:#00664a;font-weight:bold}
+.sent{margin:18px 0 0;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:14px}
+.sent.ok{background:var(--okbg);color:var(--ok);font-weight:bold}
 .btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
-#scr4{background:radial-gradient(circle at 30% 20%,#1b4f9c,#0a1420)}
+#scr4{background:var(--stage2)}
 .msg p{line-height:1.5}
 .msg .e{font-size:68px;line-height:1}
 .msg h2{font-size:30px;margin:14px 0 8px;font-weight:800}
-.msg p{font-size:16px;color:#c6d0dc;margin:0}
-.msg a{display:inline-block;margin-top:22px;color:#fff;border:1.5px solid #fff;border-radius:999px;padding:10px 22px;text-decoration:none;font-weight:bold}
+.msg p{font-size:16px;color:var(--mut);margin:0}
+.msg a{display:inline-block;margin-top:22px;color:var(--tx);border:1.5px solid var(--tx);border-radius:999px;padding:10px 22px;text-decoration:none;font-weight:bold}
+.tt{position:fixed;top:14px;right:14px;z-index:50;width:44px;height:44px;border-radius:50%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.tt:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 </style>
 </head>
 <body>
+<button class="tt" id="tt" type="button"></button>
 <div class="scr on" id="scr0"><div class="msg"><div class="sp"></div><p>Checking your sign-in...</p></div></div>
 <div class="scr" id="scr1">
  <iframe id="site" src="home" title="" aria-hidden="true" tabindex="-1"></iframe>
@@ -94,6 +102,11 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
   function bad(v) { if (!RE.test(v)) return 'Enter a valid email address.'; var u = v.split('@')[0]; if (ROLE.test(u) || /director|dean|dosw|registrar/i.test(u)) return 'Please enter your personal email ID only. Office or role addresses are not accepted.'; return ''; }
   var typed = { e: '', p: '' };
   function g(i) { return document.getElementById(i); }
+  /* light and dark theme, shared with the rest of the website */
+  var root = document.documentElement, mc = document.querySelector('meta[name="theme-color"]');
+  function paint() { var d = root.dataset.theme === 'dark'; g('tt').textContent = d ? '\u2600' : '\u263E'; g('tt').setAttribute('aria-label', d ? 'Switch to light theme' : 'Switch to dark theme'); g('tt').title = g('tt').getAttribute('aria-label'); if (mc) mc.content = d ? '#0c0a09' : '#f4f7fa'; }
+  g('tt').addEventListener('click', function () { var t = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) { } paint(); });
+  paint();
   function step(f, from, to) {
     g(f).addEventListener('submit', function (e) {
       e.preventDefault();
