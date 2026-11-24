@@ -46,7 +46,7 @@ function sign_(action, id) {
 /* The portal pages (Subscribers, Visitors, Messages, Appointments, compose, reply, approve and decline) are served by a second deployment of this script
    that runs as the signed-in visitor and is open only to OWNER_EMAIL. Its address is kept in the script property PORTAL_URL. The public site keeps using the first deployment. */
 var OWNER_EMAIL = 'anandupiiserk@gmail.com';
-var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1, msgarc: 1, mail: 1, draft: 1, cv: 1 };
+var OWNER_ACTIONS_ = { reply: 1, compose: 1, admin: 1, visitors: 1, go: 1, messages: 1, appts: 1, acc_ok: 1, acc_no: 1, acc_rv: 1, approve: 1, decline: 1, apedit: 1, apdel: 1, arch: 1, unarch: 1, apthist: 1, msgarc: 1, mail: 1, draft: 1, cv: 1, open: 1 };
 function portalBase_() { return PropertiesService.getScriptProperties().getProperty('PORTAL_URL') || ScriptApp.getService().getUrl(); }
 function gate_(p) {
   var base = PropertiesService.getScriptProperties().getProperty('PORTAL_URL');
@@ -185,7 +185,8 @@ function act_(p) {
   if (action === 'unsub') return nlUnsubPage_(p);
   if (action === 'login') return loginPage_();
   if (action === 'whoami') return whoamiPage_();
-  if (action === 'go') return homePage_(); /* owner-only: gate_ has already checked the signed-in account */
+  if (action === 'go') return homePage_();
+  if (action === 'open') return openPage_(p); /* owner-only: gate_ has already checked the signed-in account */
   if (action === 'admin') return adminPage_(p);
   if (action === 'visitors') return visitorsPage_(p);
   if (action === 'cv') return cvPage_(p);
@@ -1733,6 +1734,15 @@ function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).se
 /* ---- CV: the LaTeX source lives in the Drive folder "Website CV"; the portal edits it, compiles it to PDF and downloads both ---- */
 var CV_NAME_ = 'Anandu_Prabhakaran_CV';
 var CV_GIT_ = 'https://raw.githubusercontent.com/anandupiiserk/anandupiiserk.github.io/main/tools/cv/Anandu_Prabhakaran_CV.tex';
+/* short website addresses (anandu-prabhakaran.pages.dev/visitors and so on) arrive here as ?action=open&to=...
+   gate_ has already confirmed the owner, so the signed link is made here on the server and never appears on the website */
+var OPEN_ = { home: function () { return portalBase_() + '?action=go'; }, visitors: function () { return visUrl_(); }, messages: function () { return msgUrl_(); }, appointments: function () { return apptUrl_(); },
+  subscribers: function () { return adminUrl_(); }, email: function () { return mailUrl_(); }, cv: function () { return cvUrl_(); } };
+function openPage_(p) {
+  var f = OPEN_[String(p.to || 'home')] || OPEN_.home, u = f(), q = {};
+  u.split('?')[1].split('&').forEach(function (kv) { var i = kv.indexOf('='); q[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1)); });
+  return act_(q);
+}
 function cvUrl_() { return portalBase_() + '?action=cv&sig=' + sign_('admin', 'cv'); }
 function cvOk_(sig) { if (sign_('admin', 'cv') !== sig) throw new Error('This link is not valid. Open CV again from the portal.'); }
 function cvFolder_() {

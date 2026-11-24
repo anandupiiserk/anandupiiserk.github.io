@@ -1,0 +1,8 @@
+# Short addresses for the admin portal (Cloudflare Pages). Google sign-in and the owner check still apply; no signed links live here.
+/portal https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=open&to=home 302
+/visitors https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=open&to=visitors 302
+/messages https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=open&to=messages 302
+/appointments https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=open&to=appointments 302
+/subscribers https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=open&to=subscribers 302
+/email https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=open&to=email 302
+/cv https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=open&to=cv 302
