@@ -67,6 +67,8 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
 .msg a.fill{position:relative;overflow:hidden;isolation:isolate;border-color:var(--a);padding:12px 26px}
 .msg a.fill .fl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--a);color:var(--on);clip-path:inset(0 100% 0 0)}
 .msg a.fill.go .fl{clip-path:inset(0 0 0 0);transition:clip-path 10s linear}
+@media (max-width:700px),(orientation:portrait) and (max-width:1100px){#scr2{background-position:center 14%;background-size:min(100%,760px) auto;align-items:flex-end;padding-bottom:max(24px,env(safe-area-inset-bottom))}}
+@media (max-height:520px){.scr{align-items:flex-start;overflow-y:auto}.card,.rv,.msg.box{margin:8px auto}}
 .tt{position:fixed;top:14px;right:14px;z-index:50;width:44px;height:44px;border-radius:50%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .tt:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 </style>
