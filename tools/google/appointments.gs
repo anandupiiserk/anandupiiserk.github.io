@@ -177,6 +177,7 @@ function act_(p) {
   if (action === 'mail') return mailHubPage_(p);
   if (action === 'draft') return draftPage_(p);
   if (action === 'unsub') return nlUnsubPage_(p);
+  if (action === 'login') return loginPage_();
   if (action === 'go') return homePage_(); /* owner-only: gate_ has already checked the signed-in account */
   if (action === 'admin') return adminPage_(p);
   if (action === 'visitors') return visitorsPage_(p);
@@ -1849,6 +1850,16 @@ function cvPage_(p) {
 
 /* Shown to anyone who is not the owner: a harmless gag login. The password is never read, stored or sent.
    Typing the owner address leads to the real Google sign-in (account chooser) and back to the page that was asked for. */
+/* public entry for the footer "Admin login" link (served by the public deployment, no Google sign-in wall):
+   the owner, when Google already knows it is him, gets a button straight into the portal; everyone else gets the custom sign-in */
+function loginPage_() {
+  var who = ''; try { who = String(Session.getActiveUser().getEmail() || '').toLowerCase(); } catch (x) { }
+  if (who !== OWNER_EMAIL) return trapPage_({ action: 'go' });
+  var go = portalBase_() + '?action=go';
+  return out_('<!doctype html><html><head><meta charset="utf-8"><base target="_top"><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f1722;font-family:Calibri,Carlito,"Segoe UI",system-ui,Arial,sans-serif}'
+    + '.c{background:#fff;border-radius:18px;padding:30px 28px;text-align:center;max-width:360px}h1{margin:0 0 6px;font-size:22px;color:#0f1722}p{margin:0 0 18px;color:#5b6675}a{display:inline-block;background:#0072B2;color:#fff;text-decoration:none;font-weight:bold;border-radius:999px;padding:13px 26px}</style></head><body>'
+    + '<div class="c"><h1>Welcome back, Anandu</h1><p>Signed in as ' + OWNER_EMAIL + '.</p><a href="' + go + '" target="_top">Open the admin portal</a></div></body></html>', 'Website admin');
+}
 var TRAP_IMG_ = 'https://anandu-prabhakaran.pages.dev/img/admin-trap.jpg';
 function trapPage_(p) {
   var base = portalBase_(), qs = Object.keys(p).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]); }).join('&');
