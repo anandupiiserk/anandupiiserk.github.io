@@ -15,7 +15,7 @@
 :root[data-theme="dark"]{--pg:#0c0a09;--card:#171412;--tx:#f0eae2;--mut:#c2bab0;--ln:rgba(255,238,215,.2);--in:#0f0d0c;--soft:#221d1a;--a:#e8a33d;--on:#1a1200;--warn:#ff9e5e;--warnbg:rgba(255,158,94,.18);--okbg:#10291f;--ok:#6fd8b0;--shade:rgba(0,0,0,.55);--stage:radial-gradient(circle at 70% 30%,#2a2018,#0c0a09);--stage2:radial-gradient(circle at 30% 20%,#3a2a14,#0c0a09);color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--pg);color:var(--tx)}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--pg);color:var(--tx)}
 .scr{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}
 .scr.on{display:flex}
 #site{position:fixed;inset:0;width:100%;height:100%;border:0;filter:blur(3px);transform:scale(1.02);pointer-events:none}
@@ -24,7 +24,7 @@ body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial
 .card h1{margin:0 0 4px;font-size:22px}
 .card .s{margin:0 0 18px;color:var(--mut);font-size:14px}
 label{display:block;font-size:13px;color:var(--mut);margin:12px 0 5px}
-input{width:100%;padding:12px 14px;border:1px solid var(--ln);border-radius:10px;font:inherit;font-size:16px;color:var(--tx);background:var(--in)}
+input{-webkit-user-select:text;user-select:text;width:100%;padding:12px 14px;border:1px solid var(--ln);border-radius:10px;font:inherit;font-size:16px;color:var(--tx);background:var(--in)}
 input::placeholder{color:var(--mut);opacity:.75}
 input:focus{outline:2px solid var(--a);outline-offset:1px}
 input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
@@ -102,6 +102,13 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
   function bad(v) { if (!RE.test(v)) return 'Enter a valid email address.'; var u = v.split('@')[0]; if (ROLE.test(u) || /director|dean|dosw|registrar/i.test(u)) return 'Please enter your personal email ID only. Office or role addresses are not accepted.'; return ''; }
   var typed = { e: '', p: '' };
   function g(i) { return document.getElementById(i); }
+  /* no right click, dragging or the usual inspect / view source / save shortcuts on this page (the admin portal itself is unaffected) */
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  document.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  document.addEventListener('keydown', function (e) {
+    var k = (e.key || '').toLowerCase(), c = e.ctrlKey || e.metaKey;
+    if (k === 'f12' || (c && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) || (c && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || (c && (k === 'u' || k === 's' || k === 'p'))) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
   /* light and dark theme, shared with the rest of the website */
   var root = document.documentElement, mc = document.querySelector('meta[name="theme-color"]');
   function paint() { var d = root.dataset.theme === 'dark'; g('tt').textContent = d ? '\u2600' : '\u263E'; g('tt').setAttribute('aria-label', d ? 'Switch to light theme' : 'Switch to dark theme'); g('tt').title = g('tt').getAttribute('aria-label'); if (mc) mc.content = d ? '#0c0a09' : '#f4f7fa'; }
