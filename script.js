@@ -126,6 +126,8 @@ function applyTheme(t, persist) {
   const b = $('#theme'); if (b) { const l = tr(t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'); b.setAttribute('aria-label', l); b.title = l; }
   dispatchEvent(new Event('themechange'));
 }
+/* keep every open tab (and the blurred page behind /admin) on the same theme */
+addEventListener('storage', e => { if (e.key === 'theme' && (e.newValue === 'dark' || e.newValue === 'light') && e.newValue !== root.dataset.theme) applyTheme(e.newValue, false); });
 
 /* ---------- Toast ---------- */
 let toastEl, toastTimer;

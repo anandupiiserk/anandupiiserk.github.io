@@ -115,7 +115,9 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
   /* light and dark theme, shared with the rest of the website */
   var root = document.documentElement, mc = document.querySelector('meta[name="theme-color"]');
   function paint() { var d = root.dataset.theme === 'dark'; g('tt').textContent = d ? '\u2600' : '\u263E'; g('tt').setAttribute('aria-label', d ? 'Switch to light theme' : 'Switch to dark theme'); g('tt').title = g('tt').getAttribute('aria-label'); if (mc) mc.content = d ? '#0c0a09' : '#f4f7fa'; }
-  g('tt').addEventListener('click', function () { var t = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) { } paint(); });
+  function bg(t) { try { var w = g('site').contentWindow; if (w && w.applyTheme) w.applyTheme(t, false); else if (w) w.document.documentElement.dataset.theme = t; } catch (e) { } }
+  g('tt').addEventListener('click', function () { var t = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) { } paint(); bg(t); });
+  window.addEventListener('storage', function (e) { if (e.key === 'theme' && (e.newValue === 'dark' || e.newValue === 'light')) { root.dataset.theme = e.newValue; paint(); bg(e.newValue); } });
   paint();
   /* the close button on the sign-in box goes back to the website */
   [].forEach.call(document.querySelectorAll('.x'), function (b) { b.addEventListener('click', function () {
