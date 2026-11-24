@@ -27,7 +27,10 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
 .btn{margin-top:14px;width:100%;padding:13px;border:0;border-radius:999px;background:#0072B2;color:#fff;font:inherit;font-size:15px;font-weight:bold;cursor:pointer}
 .btn:hover{filter:brightness(1.07)}
 #scr2{background:#000 url("img/admin-trap.jpg") center/contain no-repeat}
-#scr2:before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.25)}
+#scr2:before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .6s}
+#scr2.late:before{background:rgba(0,0,0,.25)}
+#f2{opacity:0;transform:translateY(14px) scale(.97);visibility:hidden;transition:opacity .5s,transform .5s,visibility 0s .5s}
+#scr2.late #f2{opacity:1;transform:none;visibility:visible;transition:opacity .5s,transform .5s}
 #scr3{background:radial-gradient(circle at 70% 30%,#1b2a4a,#0a1420)}
 .msg{text-align:center;color:#fff;max-width:440px}
 .msg .e{font-size:68px;line-height:1}
@@ -53,11 +56,12 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
   <p class="er" id="f2r" role="alert"></p><button class="btn" type="submit">Continue</button>
  </form>
 </div>
-<div class="scr" id="scr3"><div class="msg"><div class="e">&#129318;</div><h2>Why do you wanna get floored?</h2><p>These pages are private. Nothing you typed was saved or sent anywhere.</p><a href="home">Back to the website</a></div></div>
+<div class="scr" id="scr3"><div class="msg"><div class="e">&#129318;</div><h2>Why do you wanna get fooled?</h2><p>These pages are private. Nothing you typed was saved or sent anywhere.</p><a href="home">Back to the website</a></div></div>
 <script>
 (function () {
   var OWN = 'anandupiiserk@gmail.com';
   var PORTAL = 'https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=go';
+  var DELAY = 5000; /* how long the meme shows alone before the second login appears */
   var RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
   function g(i) { return document.getElementById(i); }
   function step(f, from, to) {
@@ -70,7 +74,8 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
       if (pw) pw.value = '';
       if (f === 'f1' && v.toLowerCase() === OWN) { location.href = PORTAL; return; }
       g(from).classList.remove('on'); g(to).classList.add('on');
-      var n = g(to).querySelector('input'); if (n) n.focus();
+      if (to === 'scr2') { setTimeout(function () { g('scr2').classList.add('late'); g('f2e').focus(); }, DELAY); }
+      else { var n = g(to).querySelector('input'); if (n) n.focus(); }
     });
   }
   step('f1', 'scr1', 'scr2');
