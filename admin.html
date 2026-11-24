@@ -21,6 +21,9 @@ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;font-f
 #site{position:fixed;inset:0;width:100%;height:100%;border:0;filter:blur(3px);transform:scale(1.02);pointer-events:none}
 #scr1:after{content:"";position:fixed;inset:0;background:var(--shade)}
 .card{position:relative;z-index:1;background:var(--card);color:var(--tx);border:1px solid var(--ln);width:100%;max-width:360px;border-radius:18px;padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.x{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--mut);font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.x:hover{background:var(--soft);color:var(--tx)}
+.x:focus-visible{outline:2px solid var(--a);outline-offset:1px}
 .card h1{margin:0 0 4px;font-size:22px}
 .card .s{margin:0 0 18px;color:var(--mut);font-size:14px}
 label{display:block;font-size:13px;color:var(--mut);margin:12px 0 5px}
@@ -67,7 +70,7 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
 <div class="scr" id="scr1">
  <iframe id="site" src="home" title="" aria-hidden="true" tabindex="-1"></iframe>
  <form id="f1" class="card" autocomplete="off" novalidate>
-  <h1>Website Admin</h1><p class="s">Sign in to open the admin pages. Use your personal email ID only.</p>
+  <button class="x" type="button" aria-label="Close" title="Close">&times;</button><h1>Website Admin</h1><p class="s">Sign in to open the admin pages. Use your personal email ID only.</p>
   <label for="f1e">Personal email ID</label><input id="f1e" type="email" inputmode="email" autocomplete="off" placeholder="yourname@gmail.com">
   <label for="f1p">Password</label><input id="f1p" type="password" autocomplete="new-password" placeholder="Password">
   <p class="er" id="f1r" role="alert"></p><button class="btn" type="submit">Sign in</button>
@@ -75,7 +78,7 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
 </div>
 <div class="scr" id="scr2" role="img" aria-label="Clickbait, clickbait everywhere">
  <form id="f2" class="card" autocomplete="off" novalidate>
-  <h1>Website Admin</h1><p class="s">Enter your personal email ID to continue.</p>
+  <button class="x" type="button" aria-label="Close" title="Close">&times;</button><h1>Website Admin</h1><p class="s">Enter your personal email ID to continue.</p>
   <label for="f2e">Personal email ID</label><input id="f2e" type="email" inputmode="email" autocomplete="off" placeholder="yourname@gmail.com">
   <p class="er" id="f2r" role="alert"></p><button class="btn" type="submit">Continue</button>
  </form>
@@ -114,6 +117,11 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
   function paint() { var d = root.dataset.theme === 'dark'; g('tt').textContent = d ? '\u2600' : '\u263E'; g('tt').setAttribute('aria-label', d ? 'Switch to light theme' : 'Switch to dark theme'); g('tt').title = g('tt').getAttribute('aria-label'); if (mc) mc.content = d ? '#0c0a09' : '#f4f7fa'; }
   g('tt').addEventListener('click', function () { var t = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) { } paint(); });
   paint();
+  /* the close button on the sign-in box goes back to the website */
+  [].forEach.call(document.querySelectorAll('.x'), function (b) { b.addEventListener('click', function () {
+    var same = false; try { same = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) { }
+    if (same && history.length > 1) history.back(); else location.href = 'home';
+  }); });
   function step(f, from, to) {
     g(f).addEventListener('submit', function (e) {
       e.preventDefault();
