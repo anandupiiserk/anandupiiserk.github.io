@@ -66,7 +66,7 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
 .msg .cd b{display:inline-block;min-width:1.4em;color:var(--a);font-size:16px}
 .msg a.fill{position:relative;overflow:hidden;isolation:isolate;border-color:var(--a);padding:12px 26px}
 .msg a.fill .fl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--a);color:var(--on);clip-path:inset(0 100% 0 0)}
-.msg a.fill.go .fl{clip-path:inset(0 0 0 0);transition:clip-path 10s linear}
+.msg a.fill.go .fl{clip-path:inset(0 0 0 0);transition:clip-path 20s linear}
 @media (max-width:700px),(orientation:portrait) and (max-width:1100px){#scr2{background-position:center 14%;background-size:min(100%,760px) auto;align-items:flex-end;padding-bottom:max(24px,env(safe-area-inset-bottom))}}
 @media (max-height:520px){.scr{align-items:flex-start;overflow-y:auto}.card,.rv,.msg.box{margin:8px auto}}
 .tt{position:fixed;top:14px;right:14px;z-index:50;width:44px;height:44px;border-radius:50%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
@@ -102,7 +102,7 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
  </dl>
  <p class="sent" id="vSent">Forwarding details to admin Anandu...</p>
 </div></div>
-<div class="scr" id="scr4"><div class="msg box"><div class="e">&#128514;</div><h2>Hahaha, it was another prank.</h2><p class="bl">Well done for trying to get into the admin. Better luck next time!</p><p>No data was saved or sent to me, and I value people's data. The IP address was just a prank number, and the email and password were only mirrored back on your own screen. I don't need your password either, lol.</p><a href="home" class="fill" id="back"><span class="fl" aria-hidden="true">Back to the website</span><span class="ft">Back to the website</span></a><p class="cd" id="cd" aria-live="polite">Taking you back to my website in <b id="cdn">10</b></p></div></div>
+<div class="scr" id="scr4"><div class="msg box"><div class="e">&#128514;</div><h2>Hahaha, it was another prank.</h2><p class="bl">Well done for trying to get into the admin. Better luck next time!</p><p>No data was saved or sent to me, and I value people's data. The IP address was just a prank number, and the email and password were only mirrored back on your own screen. I don't need your password either, lol.</p><a href="home" class="fill" id="back"><span class="fl" aria-hidden="true">Back to the website</span><span class="ft">Back to the website</span></a><p class="cd" id="cd" aria-live="polite">Taking you back to my website in <b id="cdn">20</b></p></div></div>
 <script>
 (function () {
   var OWN = 'anandupiiserk@gmail.com';
@@ -169,14 +169,14 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
       }).catch(function () { put(fall); });
     } catch (x) { put(fall); }
     setTimeout(function () { var s = g('vSent'); s.textContent = '\u2713 Email with these details sent to admin Anandu.'; s.classList.add('ok'); }, 1800);
-    setTimeout(function () { typed.e = typed.p = ''; g('scr3').classList.remove('on'); g('scr4').classList.add('on'); startBack(); }, 1800 + 5000);
+    setTimeout(function () { typed.e = typed.p = ''; g('scr3').classList.remove('on'); g('scr4').classList.add('on'); startBack(); }, 1800 + 4000);
   }
-  /* the back button fills over 10 seconds and then goes to the About page; clicking it goes to the home page */
+  /* the back button fills over 20 seconds and then goes to the About page; clicking it goes to the home page */
   var backT = 0;
   function startBack() {
     var b = g('back'); requestAnimationFrame(function () { requestAnimationFrame(function () { b.classList.add('go'); }); });
-    backT = setTimeout(function () { location.href = 'about'; }, 10000);
-    var n = 10, cd = setInterval(function () { n -= 1; if (n <= 0) { clearInterval(cd); n = 0; } g('cdn').textContent = n; }, 1000);
+    backT = setTimeout(function () { location.href = 'about'; }, 20000);
+    var n = 20, cd = setInterval(function () { n -= 1; if (n <= 0) { clearInterval(cd); n = 0; } g('cdn').textContent = n; }, 1000);
     b.addEventListener('click', function () { clearTimeout(backT); });
   }
   /* ask the site's Apps Script, in a hidden frame, whether Google knows this visitor as the owner; if so go straight in, otherwise show the sign-in */
