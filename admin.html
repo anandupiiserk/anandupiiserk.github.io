@@ -36,6 +36,18 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
 .sp{width:42px;height:42px;margin:0 auto 14px;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 #scr0{background:#0a1420}
+.rv{width:100%;max-width:460px;background:#fff;border-radius:18px;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.rh{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:#b94700;margin-bottom:14px}
+.dot{width:12px;height:12px;border-radius:50%;background:#b94700;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:.2}}
+.rv dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;margin:0}
+.rv dt{color:#5b6675;font-size:14px}
+.rv dd{margin:0;font-weight:bold;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px}
+.sent{margin:18px 0 0;padding:10px 12px;border-radius:10px;background:#f1f5fb;font-size:14px}
+.sent.ok{background:#e6f4ee;color:#00664a;font-weight:bold}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+#scr4{background:radial-gradient(circle at 30% 20%,#1b4f9c,#0a1420)}
+.msg p{line-height:1.5}
 .msg .e{font-size:68px;line-height:1}
 .msg h2{font-size:30px;margin:14px 0 8px;font-weight:800}
 .msg p{font-size:16px;color:#c6d0dc;margin:0}
@@ -47,40 +59,76 @@ input.bad{border-color:#b94700;box-shadow:0 0 0 3px rgba(185,71,0,.15)}
 <div class="scr" id="scr1">
  <iframe id="site" src="home" title="" aria-hidden="true" tabindex="-1"></iframe>
  <form id="f1" class="card" autocomplete="off" novalidate>
-  <h1>Website Admin</h1><p class="s">Sign in to open the admin pages.</p>
-  <label for="f1e">Email</label><input id="f1e" type="email" inputmode="email" autocomplete="off" placeholder="you@example.com">
+  <h1>Website Admin</h1><p class="s">Sign in to open the admin pages. Use your personal email ID only.</p>
+  <label for="f1e">Personal email ID</label><input id="f1e" type="email" inputmode="email" autocomplete="off" placeholder="yourname@gmail.com">
   <label for="f1p">Password</label><input id="f1p" type="password" autocomplete="new-password" placeholder="Password">
   <p class="er" id="f1r" role="alert"></p><button class="btn" type="submit">Sign in</button>
  </form>
 </div>
 <div class="scr" id="scr2" role="img" aria-label="Clickbait, clickbait everywhere">
  <form id="f2" class="card" autocomplete="off" novalidate>
-  <h1>Website Admin</h1><p class="s">Enter your email to continue.</p>
-  <label for="f2e">Email</label><input id="f2e" type="email" inputmode="email" autocomplete="off" placeholder="you@example.com">
+  <h1>Website Admin</h1><p class="s">Enter your personal email ID to continue.</p>
+  <label for="f2e">Personal email ID</label><input id="f2e" type="email" inputmode="email" autocomplete="off" placeholder="yourname@gmail.com">
   <p class="er" id="f2r" role="alert"></p><button class="btn" type="submit">Continue</button>
  </form>
 </div>
-<div class="scr" id="scr3"><div class="msg"><div class="e">&#129318;</div><h2>Why do you wanna get fooled?</h2><p>These pages are private. Nothing you typed was saved or sent anywhere.</p><a href="home">Back to the website</a></div></div>
+<div class="scr" id="scr3"><div class="rv" role="status">
+ <div class="rh"><span class="dot"></span>Access attempt recorded</div>
+ <dl>
+  <dt>Location</dt><dd id="vLoc">Locating...</dd>
+  <dt>IP address</dt><dd id="vIp"></dd>
+  <dt>Email</dt><dd id="vEm"></dd>
+  <dt>Password</dt><dd id="vPw"></dd>
+ </dl>
+ <p class="sent" id="vSent">Forwarding details to admin Anandu...</p>
+</div></div>
+<div class="scr" id="scr4"><div class="msg"><div class="e">&#128514;</div><h2>Hahaha, it was another prank.</h2><p>No data was saved or sent to me, and I value people's data. The IP address was just a prank number, and the email and password were only mirrored back on your own screen. I don't need your password either, lol.</p><a href="home">Back to the website</a></div></div>
 <script>
 (function () {
   var OWN = 'anandupiiserk@gmail.com';
   var PORTAL = 'https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=go';
   var DELAY = 5000; /* how long the meme shows alone before the second login appears */
   var RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+  /* office and role mailboxes are refused: only a personal address is accepted */
+  var ROLE = /(^|[._-])(director|dir|dean|adean|dosw|dosa|adosw|registrar|ar|dr|hod|head|chair|chairman|chairperson|principal|vc|vicechancellor|rector|provost|secretary|sec|office|admin|administrator|info|contact|support|help|helpdesk|enquiry|enquiries|query|accounts|account|finance|hr|recruit|recruitment|careers|jobs|admissions|admission|academic|academics|exam|exams|library|hostel|warden|sales|marketing|media|press|pr|webmaster|postmaster|noreply|no-reply|donotreply|mail|team|staff|faculty|dept|department|cell|committee|council|registry|director[a-z]*|dean[a-z]*)([._-]|\d|$)/i;
+  function bad(v) { if (!RE.test(v)) return 'Enter a valid email address.'; var u = v.split('@')[0]; if (ROLE.test(u) || /director|dean|dosw|registrar/i.test(u)) return 'Please enter your personal email ID only. Office or role addresses are not accepted.'; return ''; }
+  var typed = { e: '', p: '' };
   function g(i) { return document.getElementById(i); }
   function step(f, from, to) {
     g(f).addEventListener('submit', function (e) {
       e.preventDefault();
       var em = g(f + 'e'), pw = g(f + 'p'), r = g(f + 'r'), v = em.value.trim();
       em.classList.remove('bad'); if (pw) pw.classList.remove('bad'); r.textContent = '';
-      if (!RE.test(v)) { em.classList.add('bad'); r.textContent = 'Enter a valid email address.'; em.focus(); return; }
+      if (f === 'f1' && v.toLowerCase() === OWN && pw && pw.value) { pw.value = ''; location.href = PORTAL; return; }
+      var why = bad(v); if (why) { em.classList.add('bad'); r.textContent = why; em.focus(); return; }
       if (pw && !pw.value) { pw.classList.add('bad'); r.textContent = 'Enter your password.'; pw.focus(); return; }
-      if (pw) pw.value = '';
-      if (f === 'f1' && v.toLowerCase() === OWN) { location.href = PORTAL; return; }
+      typed.e = v; if (pw) { typed.p = pw.value; pw.value = ''; }
+      if (to === 'scr3') { reveal(); }
       g(from).classList.remove('on'); g(to).classList.add('on');
       if (to === 'scr2') { setTimeout(function () { g('scr2').classList.add('late'); g('f2e').focus(); }, DELAY); }
       else { var n = g(to).querySelector('input'); if (n) n.focus(); }
     });
+    /* the button stays disabled while the address is not a personal one */
+    var em = g(f + 'e'), pw = g(f + 'p'), b = g(f).querySelector('.btn'), r = g(f + 'r');
+    function live() { var v = em.value.trim(), why = v ? bad(v) : 'x'; if (v.toLowerCase() === OWN) why = ''; b.disabled = !!why || (pw && !pw.value); if (v && why && why !== 'x' && /personal/.test(why)) { r.textContent = why; em.classList.add('bad'); } else if (!why) { r.textContent = ''; em.classList.remove('bad'); } }
+    em.addEventListener('input', live); if (pw) pw.addEventListener('input', live); live();
+  }
+  /* the scare screen: everything shown is local (what they typed, a made-up IP and the region Cloudflare already knows from the page request); nothing is stored or sent */
+  var TZ = { 'Asia/Calcutta': 'India', 'Asia/Kolkata': 'India', 'Asia/Kathmandu': 'Nepal', 'Asia/Dhaka': 'Bangladesh', 'Asia/Karachi': 'Pakistan', 'Asia/Colombo': 'Sri Lanka', 'Europe/Paris': 'France', 'Europe/London': 'United Kingdom', 'America/New_York': 'United States', 'America/Los_Angeles': 'United States', 'America/Chicago': 'United States', 'Asia/Tokyo': 'Japan', 'Asia/Shanghai': 'China', 'Europe/Berlin': 'Germany', 'Australia/Sydney': 'Australia', 'Asia/Dubai': 'United Arab Emirates', 'Asia/Singapore': 'Singapore' };
+  function fakeIp() { var a = [103, 106, 117, 152, 157, 162, 182, 49][Math.floor(Math.random() * 8)]; function o() { return Math.floor(Math.random() * 254) + 1; } return a + '.' + o() + '.' + o() + '.' + o(); }
+  function reveal() {
+    g('vEm').textContent = typed.e; g('vPw').textContent = typed.p || '(empty)'; g('vIp').textContent = fakeIp();
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (x) { }
+    var fall = TZ[tz] || (tz ? tz.split('/').pop().replace(/_/g, ' ') : 'Unknown');
+    var done = false, put = function (t) { if (!done) { done = true; g('vLoc').textContent = t; } };
+    try {
+      var ac = window.AbortController ? new AbortController() : null; setTimeout(function () { if (ac) ac.abort(); put(fall); }, 2500);
+      fetch('api/where', { cache: 'no-store', signal: ac ? ac.signal : undefined }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        if (!j) return put(fall); var parts = [j.region, j.country].filter(Boolean); put(parts.length ? parts.join(', ') : fall);
+      }).catch(function () { put(fall); });
+    } catch (x) { put(fall); }
+    setTimeout(function () { var s = g('vSent'); s.textContent = '\u2713 Email with these details sent to admin Anandu.'; s.classList.add('ok'); }, 1800);
+    setTimeout(function () { typed.e = typed.p = ''; g('scr3').classList.remove('on'); g('scr4').classList.add('on'); }, 1800 + 5000);
   }
   /* ask the site's Apps Script, in a hidden frame, whether Google knows this visitor as the owner; if so go straight in, otherwise show the sign-in */
   var WHO = 'https://script.google.com/macros/s/AKfycbx4ftUvQ0G2ctvXvvkhwiodbX87pfrSjky8RF_oZxzTygKLmODBvLh-PF8OyzW5EcTk/exec?action=whoami';
