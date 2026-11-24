@@ -7,7 +7,7 @@
 <title>Website Admin</title>
 <link rel="icon" href="img/fire-icon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#f4f7fa">
-<script>(function(){var t="";try{t=localStorage.getItem("theme")||""}catch(e){}if(t!=="dark"&&t!=="light")t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";document.documentElement.dataset.theme=t})();</script>
+<script>(function(){var t="",q=(location.search.match(/[?&]theme=(dark|light)/)||[])[1];if(q){try{localStorage.setItem("theme",q)}catch(e){}t=q}else{try{t=localStorage.getItem("theme")||""}catch(e){}}if(t!=="dark"&&t!=="light")t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <style>
 /* Admin entry. The owner email leads to the real admin portal (Google checks the account there).
    Anyone else gets a harmless gag: nothing typed is stored or sent anywhere. */
@@ -105,6 +105,7 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
   function bad(v) { if (!RE.test(v)) return 'Enter a valid email address.'; var u = v.split('@')[0]; if (ROLE.test(u) || /director|dean|dosw|registrar/i.test(u)) return 'Please enter your personal email ID only. Office or role addresses are not accepted.'; return ''; }
   var typed = { e: '', p: '' };
   function g(i) { return document.getElementById(i); }
+  function portal() { return PORTAL + '&theme=' + (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'); }
   /* no right click, dragging or the usual inspect / view source / save shortcuts on this page (the admin portal itself is unaffected) */
   document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
   document.addEventListener('dragstart', function (e) { e.preventDefault(); });
@@ -129,7 +130,7 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
       e.preventDefault();
       var em = g(f + 'e'), pw = g(f + 'p'), r = g(f + 'r'), v = em.value.trim();
       em.classList.remove('bad'); if (pw) pw.classList.remove('bad'); r.textContent = '';
-      if (f === 'f1' && v.toLowerCase() === OWN && pw && pw.value) { pw.value = ''; location.href = PORTAL; return; }
+      if (f === 'f1' && v.toLowerCase() === OWN && pw && pw.value) { pw.value = ''; location.href = portal(); return; }
       var why = bad(v); if (why) { em.classList.add('bad'); r.textContent = why; em.focus(); return; }
       if (f === 'f2' && v.toLowerCase() !== typed.e.toLowerCase()) { em.classList.add('bad'); r.textContent = 'This is not the email you entered before. Enter the same email ID to continue.'; em.focus(); return; }
       if (pw && !pw.value) { pw.classList.add('bad'); r.textContent = 'Enter your password.'; pw.focus(); return; }
@@ -167,7 +168,7 @@ input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
   function show() { if (decided) return; decided = true; g('scr0').classList.remove('on'); g('scr1').classList.add('on'); g('f1e').focus(); }
   window.addEventListener('message', function (e) {
     if (decided || e.origin.indexOf('googleusercontent.com') < 0 || !e.data || e.data.t !== 'whoami') return;
-    if (e.data.owner === true) { decided = true; location.replace(PORTAL); } else show();
+    if (e.data.owner === true) { decided = true; location.replace(portal()); } else show();
   });
   var fr = document.createElement('iframe'); fr.src = WHO; fr.title = ''; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
   fr.style.cssText = 'position:absolute;width:1px;height:1px;border:0;opacity:0;pointer-events:none';

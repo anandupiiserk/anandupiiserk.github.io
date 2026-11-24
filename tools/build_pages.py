@@ -123,18 +123,18 @@ def page(file, pid, title, desc, body, html_class=''):
 <meta name="description" content="{desc}">
 {SEO if pid == 'home' else ''}
 <meta name="last-updated" content="@@UPD@@">
-<script>try{{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
+<script>try{{var q=(location.search.match(/[?&]theme=(dark|light)/)||[])[1];if(q){{try{{localStorage.setItem('theme',q)}}catch(e){{}}history.replaceState(null,'',location.pathname+location.search.replace(/([?&])theme=(dark|light)&?/,'$1').replace(/[?&]$/,'')+location.hash)}}var t=q||localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261124c">
+<link rel="stylesheet" href="style.css?v=20261124d">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261124c"></script>
-<script src="script.js?v=20261124c"></script>
+<script src="i18n.js?v=20261124d"></script>
+<script src="script.js?v=20261124d"></script>
 </body>
 </html>
 '''
