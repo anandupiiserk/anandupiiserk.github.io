@@ -1191,11 +1191,11 @@ else (function loop() {
     if (!form || !emailEl || !nameEl) return;
     const VL = opts && opts.sub ? 'Verify and subscribe' : 'Verify';
     const box = document.createElement('div'); box.className = 'otp';
-    box.innerHTML = '<div class="otp-line"><button type="button" class="btn ghost otp-send" disabled></button><button type="button" class="btn ghost otp-req" hidden></button><small class="otp-note" aria-live="polite"></small></div>'
+    box.innerHTML = '<div class="otp-line"><button type="button" class="btn ghost otp-send" disabled></button><button type="button" class="btn ghost otp-req" hidden></button><button type="button" class="btn ghost otp-edit" hidden></button><small class="otp-note" aria-live="polite"></small></div>'
       + '<div class="otp-ver" hidden><input class="otp-in" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="OTP"><button type="button" class="btn otp-ok"></button><button type="button" class="btn ghost otp-re" disabled></button></div>';
     emailEl.closest('.frow').after(box);
-    const sendB = $('.otp-send', box), reqB = $('.otp-req', box), note = $('.otp-note', box), ver = $('.otp-ver', box), inp = $('.otp-in', box), okB = $('.otp-ok', box), reB = $('.otp-re', box);
-    sendB.textContent = tr('Send OTP'); reqB.textContent = tr('Request approval');
+    const sendB = $('.otp-send', box), reqB = $('.otp-req', box), note = $('.otp-note', box), ver = $('.otp-ver', box), inp = $('.otp-in', box), okB = $('.otp-ok', box), reB = $('.otp-re', box), edB = $('.otp-edit', box);
+    sendB.textContent = tr('Send OTP'); reqB.textContent = tr('Request approval'); edB.textContent = tr('Edit');
     const PURPOSE = NLK(key) ? 'Newsletter' : key === 'ap' ? 'Appointment' : 'Message', APPR = 'This email address needs my approval first. Press Request approval; the request reaches me by email. Once I approve it, press Send OTP and you can continue without a code.';
     const showReq = on => { reqB.hidden = !on; }; okB.textContent = tr(VL); reB.textContent = tr('Resend');
     let tok = '', exp = 0, vEmail = '', vName = '', timer = 0, cool = 0, needSub = false;
@@ -1214,12 +1214,12 @@ else (function loop() {
     function unfreeze() { needSub = false; inp.hidden = false; reB.hidden = false; clearInterval(cool); clear(okB, tr(VL)); clear(reB, tr('Resend')); inp.disabled = false; inp.placeholder = '000000'; inp.value = ''; okB.disabled = false; okB.classList.remove('frozen'); reB.classList.remove('frozen'); }
     function freeze() { clearInterval(cool); ver.hidden = false; sendB.hidden = true; inp.value = ''; inp.placeholder = '------'; inp.disabled = true; tick(okB, 'Verified'); okB.disabled = true; okB.classList.add('frozen'); clear(reB, tr('Resend')); reB.disabled = true; reB.classList.add('frozen'); }
     function idle(msg, cls, fromPeer) {
-      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; inp.value = ''; sendB.hidden = false; showReq(false); lock(true); form.classList.remove('otp-ok-on'); say(msg || MAND(key), msg ? cls : 'warn'); sendB.disabled = !valid(emailNow());
+      clearTimeout(timer); const was = live(); tok = ''; vEmail = ''; unfreeze(); ver.hidden = true; edB.hidden = true; inp.value = ''; sendB.hidden = false; showReq(false); lock(true); form.classList.remove('otp-ok-on'); say(msg || MAND(key), msg ? cls : 'warn'); sendB.disabled = !valid(emailNow());
       if (!fromPeer && was) Object.keys(peers).forEach(k => { if (k !== key) peers[k].drop(msg, cls); });
     }
     function accept(t, x, name, email, fromPeer, subscribed) {
       tok = t; exp = x; vEmail = email.toLowerCase(); vName = name; nameEl.value = name; emailEl.value = email;
-      freeze(); lock(false);
+      freeze(); lock(false); edB.hidden = false;
       say(NLK(key) ? '✓ Email verified and subscribed. Thank you!' : '✓ Name and email are now verified. You can book the appointment, send messages or subscribe for the next 20 minutes.', 'ok'); form.classList.add('otp-ok-on');
       if (opts && opts.sub && fromPeer && !subscribed) { needSub = true; ver.hidden = false; inp.hidden = true; reB.hidden = true; okB.classList.remove('frozen'); okB.disabled = false; clear(okB, tr('Subscribe')); say('✓ Email already verified. Press Subscribe to finish.', 'ok'); }
       clearTimeout(timer); timer = setTimeout(() => idle('Verification expired. Send a new OTP.', 'bad'), Math.min(2147483647, Math.max(0, exp - Date.now())));
@@ -1274,6 +1274,11 @@ else (function loop() {
       else say(r.error === 'wrong' ? tr('Wrong OTP. {n} tries left.').replace('{n}', r.left) : r.error === 'locked' ? 'Too many wrong tries. Send a new OTP.' : r.error === 'expired' ? 'OTP expired. Send a new one.' : 'Enter the 6-digit OTP.', 'bad');
     }
     form.addEventListener('click', e => { const sb = e.target.closest && e.target.closest('button[type="submit"]'); if (sb && form.contains(sb) && !live()) { e.preventDefault(); e.stopImmediatePropagation(); toast(NLK(key) ? 'Verify email to proceed with Subscription - Anandu' : key === 'ap' ? 'Verify email to proceed with Appointment - Anandu' : 'Verify email to proceed with Message - Anandu', 4200); } }, true);
+    edB.addEventListener('click', () => {
+      if (!live()) return; emailEl.readOnly = nameEl.readOnly = false; emailEl.classList.remove('otp-fixed'); nameEl.classList.remove('otp-fixed');
+      edB.hidden = true; say('You can edit your name. Changing the email needs a new OTP.', 'ok'); nameEl.focus();
+    });
+    nameEl.addEventListener('input', () => { if (live()) vName = nameEl.value; });
     okB.addEventListener('click', verify); inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
     inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
     emailEl.addEventListener('input', () => {
