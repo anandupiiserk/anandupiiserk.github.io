@@ -4127,7 +4127,7 @@ window.I18N = {
 "Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees from July to December 2025.": "在蒙彼利埃 CNRS 校区餐厅用午餐，2025 年 7 月至 12 月向 CNRS 员工开放。",
 "Group photo of the IDRiM 2023 participants, CoEDMM, IIT Roorkee, September 2023.": "IDRiM 2023 参会者合影，CoEDMM，印度理工学院鲁尔基分校，2023 年 9 月。",
 "The IDRiM 2023 technical team at Fuji Hall, IIT Roorkee. Front row: Anagha and Mahima. Back row: Anamika and Anandu.": "IDRiM 2023 技术团队在印度理工学院鲁尔基分校 Fuji Hall。前排：Anagha 和 Mahima。后排：Anamika 和 Anandu。",
-"At the IDRiM 2023 gala dinner.": "在 IDRiM 2023 欢迎晚宴上。",
+"At the IDRiM 2023 gala dinner.": "在 IDRiM 2023 晚宴上。",
 "Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.": "IIT Roorkee 的 Fit India Half Marathon 2024（Sangram 2024），21 公里，附我的完赛奖牌和沿途的几张自然风光照片。",
 "Strasbourg, France: the railway station, the cathedral, the rooftops, and the evening and sunset skies.": "法国斯特拉斯堡：火车站、大教堂、屋顶，以及傍晚和日落时分的天空。",
 "Trip to Harsil and Gangotri, Uttarakhand, on 1 and 2 March 2024, with my colleagues Shiwam Singh, Anamika Sekar, Shivani Joshi and Saurabh Singh.": "北阿坎德邦哈西尔和根戈特里之行（2024年3月1日和2日），同行的有同事 Shiwam Singh、Anamika Sekar、Shivani Joshi 和 Saurabh Singh。",

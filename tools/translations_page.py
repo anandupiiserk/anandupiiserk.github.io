@@ -469,7 +469,7 @@ cap("At the IDRiM 2023 gala dinner.",
     "Beim Galadinner von IDRiM 2023.",
     "في عشاء الحفل الرسمي لمؤتمر IDRiM 2023.",
     "En la cena de gala de IDRiM 2023.",
-    "在 IDRiM 2023 欢迎晚宴上。",
+    "在 IDRiM 2023 晚宴上。",
     "IDRiM 2023 のガラディナーにて。",
     "No jantar de gala do IDRiM 2023.",
     "Vid galamiddagen under IDRiM 2023.")
