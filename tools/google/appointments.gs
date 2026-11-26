@@ -865,11 +865,10 @@ function testReminder(sig) { if (sign_('admin', 'subs') !== sig) throw new Error
 
 /* ---- visitors: only the country, the tab and the time are stored (no IP address, no personal data) ----
    Every page view is appended to a Google Sheet that the script creates in your Drive ("Website visits log"). Indian visits are
-   logged but never emailed. Once a day (21:00 IST) you get ONE summary email if anyone from another country visited: it lists
-   those countries and tabs, the number of Indian visits since the last email, and every country's visitor total. A daily trigger
-   also moves these emails to the Trash after 30 days. The Visitors portal shows minutes, hours, days, weeks, months, years and
+   logged but never emailed. Once a day (about 19:00 IST) the script checks for countries outside India visiting for the first time;
+   only then does it send ONE email (see visitSummary_). A daily trigger moves these emails to the Trash after 30 days. The Visitors portal shows minutes, hours, days, weeks, months, years and
    any custom range. (Gmail and Sheets permission is asked once when you press "Turn on reminders".) */
-var VISIT_MAIL = true, VISIT_MAIL_DAYS = 30, HOME_CC = 'IN', SUMMARY_HOUR = 21;
+var VISIT_MAIL = true, VISIT_MAIL_DAYS = 30, HOME_CC = 'IN', SUMMARY_HOUR = 19;
 var TABS_ = { index: 'Home', home: 'Home', about: 'About me', research: 'Research', publications: 'Publications', workshops: 'Workshops', gallery: 'Gallery', contact: 'Contact' };
 var LANG_ = { en: 'English', ml: 'Malayalam', hi: 'Hindi', ar: 'Arabic', zh: 'Chinese', fr: 'French', de: 'German', ja: 'Japanese', pt: 'Portuguese', es: 'Spanish', sv: 'Swedish' };
 function visUrl_() { return portalBase_() + '?action=visitors&sig=' + sign_('admin', 'visitors'); }
@@ -926,36 +925,53 @@ function visit_(p) {
   visSheet_().appendRow([now, cc, nm, tab, first ? 1 : 0, lang, Utilities.formatDate(new Date(now), TZ, 'yyyy-MM-dd HH:mm:ss'), '', '', sid, '', stateOf_(cc, p.rg)]);
   return json_({ ok: true });
 }
+/* New-country email (checked once a day at about 19:00 IST). An email goes out ONLY when a country outside India visits for the
+   first time ever. It then lists the new countries, visits from countries already seen before, and Indian visits by state, all since
+   the last email, with one link: the Visitors portal. A country that has visited before never triggers an email again. */
+var VIS_LINK_ = 'https://anandu-prabhakaran.pages.dev/visitors';
+function visKnown_(sp, now) {
+  var k = sp.getProperty('VISKNOWN');
+  if (k) return JSON.parse(k);
+  /* first run: every country already in the log counts as known, so only genuinely new countries trigger an email */
+  var seen = {}; visRows_(0, now + 1).forEach(function (r) { if (r.cc !== HOME_CC) seen[r.cc] = 1; });
+  return Object.keys(seen);
+}
 function visitSummary_(force) {
-  var sp = PropertiesService.getScriptProperties(), last = +(sp.getProperty('VISLASTMAIL') || 0), now = Date.now(), rows = visRows_(last, now + 1);
-  var inN = 0, others = {}, order = [];
+  var sp = PropertiesService.getScriptProperties(), now = Date.now(), last = +(sp.getProperty('VISLASTMAIL') || 0), chk = +(sp.getProperty('VISLASTCHECK') || 0);
+  var known = visKnown_(sp, now), knownSet = {}; known.forEach(function (c) { knownSet[c] = 1; });
+  if (!sp.getProperty('VISKNOWN')) { sp.setProperty('VISKNOWN', JSON.stringify(known)); if (!chk) { sp.setProperty('VISLASTCHECK', String(now)); if (!force) return false; } }
+  /* new countries since the last daily check */
+  var fresh = {}, freshOrder = [];
+  visRows_(chk, now + 1).forEach(function (r) { if (r.x || r.cc === HOME_CC || knownSet[r.cc] || fresh[r.cc]) return; fresh[r.cc] = r.n; freshOrder.push(r.cc); });
+  freshOrder.forEach(function (c) { known.push(c); });
+  sp.setProperty('VISKNOWN', JSON.stringify(known)); sp.setProperty('VISLASTCHECK', String(now));
+  if (!freshOrder.length && !force) return false;
+  /* everything since the last email */
+  var rows = visRows_(last, now + 1), others = {}, order = [], inN = 0, st = {}, stOrder = [];
   rows.forEach(function (r) {
     if (r.x) return;
-    if (r.cc === HOME_CC) { if (r.f) inN++; return; }
-    var o = others[r.cc] || (others[r.cc] = { n: r.n, v: 0, tabs: {} }); if (!others[r.cc].seen) { others[r.cc].seen = 1; order.push(r.cc); }
+    if (r.cc === HOME_CC) { if (r.f) { inN++; var g = r.g || 'State not known'; if (!st[g]) { st[g] = 0; stOrder.push(g); } st[g]++; } return; }
+    var o = others[r.cc]; if (!o) { o = others[r.cc] = { n: r.n, v: 0, tabs: {} }; order.push(r.cc); }
     if (r.f) o.v++; o.tabs[r.tab] = (o.tabs[r.tab] || 0) + 1;
   });
-  var quiet = !order.length;
-  if (quiet) {
-    /* monthly reminder: no visitor from outside India since the last email (or since set-up) for 30 days */
-    var st = +(sp.getProperty('VISSTART') || 0); if (!st) { sp.setProperty('VISSTART', String(now)); st = now; }
-    if (!force && now - (last || st) < VISIT_MAIL_DAYS * 86400000) return false;
-  }
-  var all = visRows_(0, now + 1), tot = {};
-  all.forEach(function (r) { if (r.f) { var o = tot[r.cc] || (tot[r.cc] = { n: r.n, v: 0 }); o.v++; } });
-  var tl = Object.keys(tot).sort(function (a, b) { return tot[b].v - tot[a].v; }), total = tl.reduce(function (a, c) { return a + tot[c].v; }, 0);
-  var since = last ? Utilities.formatDate(new Date(last), TZ, 'd MMM, HH:mm') : 'the beginning';
-  var rowsH = [['Period', esc_('Since ' + since + ' IST')], ['Indian visits since the last email', String(inN)]], plain = quiet ? 'Monthly reminder: no visitors from other countries since ' + since + ' IST.\n' : 'Visitors from other countries since ' + since + ' IST:\n';
-  if (quiet) rowsH.splice(1, 0, ['Other countries', 'No visitors in this period']);
-  order.forEach(function (c) { var o = others[c], tabs = Object.keys(o.tabs).map(function (k) { return k + ' ' + o.tabs[k]; }).join(', ');
-    rowsH.push([esc_(o.n), o.v + (o.v === 1 ? ' visitor' : ' visitors') + ' (tabs: ' + esc_(tabs) + ')']); plain += ' - ' + o.n + ': ' + o.v + ' (tabs: ' + tabs + ')\n'; });
-  plain += '\nIndian visits since the last email: ' + inN + '\n\nVisitors so far, all time:\n';
-  tl.forEach(function (c) { rowsH.push(['All time: ' + esc_(tot[c].n), String(tot[c].v)]); plain += ' - ' + tot[c].n + ': ' + tot[c].v + '\n'; });
-  rowsH.push(['All countries together', String(total)]); plain += 'Total: ' + total + '\n\nPortals:\nVisitors: ' + visUrl_() + '\nSubscribers: ' + adminUrl_() + '\nWrite an email: ' + link_('compose', 'new') + '\nThis email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.';
-  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER, subject: quiet ? '[Site visit] Monthly reminder: no visitors from other countries' : '[Site visit] Daily summary: ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' visited', body: plain,
-    htmlBody: mail_('Your website visitors', quiet ? 'No visitor from outside India since the last email. Here is the Indian count and the all-time totals.' : 'Visitors from ' + order.length + ' other countr' + (order.length === 1 ? 'y' : 'ies') + ' since the last email, and how many visits came from India.', rowsH,
-      [['Visitors portal', visUrl_(), '#1f4e9c'], ['Subscribers portal', adminUrl_(), '#1f4e9c'], ['Write an email', link_('compose', 'new'), '#1f4e9c'], ['Messages', msgUrl_(), '#1f4e9c'], ['Appointments', apptUrl_(), '#1f4e9c']],
-      'Only the country and the tab are counted. No IP address or personal data is stored. Indian visits are counted but never trigger an email. This email is moved to the Trash after ' + VISIT_MAIL_DAYS + ' days.') });
+  var line = function (c) { var o = others[c] || { n: fresh[c], v: 0, tabs: {} }, tabs = Object.keys(o.tabs).map(function (k) { return k + ' ' + o.tabs[k]; }).join(', '); return [o.n, o.v + (o.v === 1 ? ' visitor' : ' visitors') + (tabs ? ' (tabs: ' + tabs + ')' : '')]; };
+  var since = last ? Utilities.formatDate(new Date(last), TZ, 'd MMM yyyy, HH:mm') + ' IST' : 'the start of the log';
+  var rowsH = [['Period', esc_('Since ' + since)]], plain = '';
+  var newNames = freshOrder.map(function (c) { return fresh[c]; });
+  plain += (freshOrder.length ? 'New countr' + (freshOrder.length === 1 ? 'y' : 'ies') + ' visiting your website for the first time: ' + newNames.join(', ') : 'Test email: no new country since the last check') + '\nPeriod: since ' + since + '\n\n';
+  freshOrder.forEach(function (c) { var l = line(c); rowsH.push(['New: ' + esc_(l[0]), esc_(l[1])]); plain += 'NEW ' + l[0] + ': ' + l[1] + '\n'; });
+  var prev = order.filter(function (c) { return !fresh[c]; });
+  if (prev.length) { plain += '\nOther countries (visited before):\n'; prev.forEach(function (c) { var l = line(c); rowsH.push([esc_(l[0]), esc_(l[1])]); plain += ' - ' + l[0] + ': ' + l[1] + '\n'; }); }
+  else rowsH.push(['Other countries', 'No visits from countries seen before']);
+  stOrder.sort(function (a, b) { return st[b] - st[a]; });
+  rowsH.push(['India, all states', inN + (inN === 1 ? ' visitor' : ' visitors')]); plain += '\nIndia: ' + inN + ' visitors\n';
+  stOrder.forEach(function (g) { rowsH.push(['India: ' + esc_(g), String(st[g])]); plain += ' - ' + g + ': ' + st[g] + '\n'; });
+  plain += '\nVisitors portal: ' + VIS_LINK_ + '\n\n' + VISIT_MARK_ + ' ' + VISIT_MAIL_DAYS + ' days.';
+  MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER,
+    subject: '[Site visit] New countr' + (freshOrder.length === 1 ? 'y' : 'ies') + ': ' + (newNames.join(', ') || 'test'), body: plain,
+    htmlBody: mail_('New country on your website', freshOrder.length ? 'First visit ever from ' + esc_(newNames.join(', ')) + '. Below: all visits since the last email, including countries seen before and Indian states.' : 'Test email. No new country since the last check.', rowsH,
+      [['Open the Visitors portal', VIS_LINK_, '#1f4e9c']],
+      'Only the country, the Indian state and the tab are counted. No IP address or personal data is stored. You get this email only when a country outside India visits for the first time. ' + VISIT_MARK_ + ' ' + VISIT_MAIL_DAYS + ' days.') });
   sp.setProperty('VISLASTMAIL', String(now));
   return true;
 }
@@ -967,7 +983,7 @@ function testVisitSummary() { visitSummary_(true); }
 var VISIT_MARK_ = 'This email is moved to the Trash after';
 function cleanVisitMails() {
   try { cleanOtpMails_(); } catch (x) { console.error('otp clean failed: ' + x); }
-  GmailApp.search('in:sent from:me subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd', 0, 100).forEach(function (t) {
+  GmailApp.search('from:me subject:"[Site visit]" older_than:' + VISIT_MAIL_DAYS + 'd -in:trash', 0, 100).forEach(function (t) {
     var ms = t.getMessages();
     if (ms.length !== 1) return;
     var m = ms[0];
