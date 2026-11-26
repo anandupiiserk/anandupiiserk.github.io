@@ -65,7 +65,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const page = document.body.dataset.page || 'home';
 const root = document.documentElement;
 const LS = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
-const LANGS = [{ c: 'en', n: 'English', s: 'EN' }, { c: 'ml', n: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', s: 'ML' }, { c: 'hi', n: '\u0939\u093f\u0928\u094d\u0926\u0940', s: 'HI' }, { c: 'ar', n: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', s: 'AR' }, { c: 'zh', n: '\u4e2d\u6587', s: 'ZH' }, { c: 'fr', n: 'Fran\u00e7ais', s: 'FR' }, { c: 'de', n: 'Deutsch', s: 'DE' }, { c: 'ja', n: '\u65e5\u672c\u8a9e', s: 'JA' }, { c: 'pt', n: 'Portugu\u00eas', s: 'PT' }, { c: 'es', n: 'Espa\u00f1ol', s: 'ES' }, { c: 'sv', n: 'Svenska', s: 'SV' }];
+const LANGS = [{ c: 'en', n: 'English', s: 'EN' }, { c: 'ml', n: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', s: 'ML' }, { c: 'fr', n: 'Fran\u00e7ais', s: 'FR' }, { c: 'de', n: 'Deutsch', s: 'DE' }, { c: 'ja', n: '\u65e5\u672c\u8a9e', s: 'JA' }, { c: 'pt', n: 'Portugu\u00eas', s: 'PT' }];
 let LANG = 'en'; const DICT = window.I18N || {};
 const norm = s => String(s).replace(/\s+/g, ' ').trim();
 const KEEP = /^(Blogger|Anandu Prabhakaran|\S+@\S+|anandu|\.fire|LAT|LON|FWI|[a-z.]+\.(com|net|org)|Anandu P|Anandu P\.|PMRF|anandu\.fire|GitHub|LinkedIn|ORCID|ResearchGate|Google Scholar|X|WRF-SFIRE|CMIP6|CoEDMM, IIT Roorkee|IIT Roorkee|CEFE-CNRS|DOI|you@example\.com)$/;
@@ -1305,35 +1305,6 @@ else (function loop() {
   const subOk = async (t, e, n) => { let r = null; try { r = await post({ kind: 'subscribe', email: e, name: n, vtoken: t, website: '' }); } catch (err) { /* network */ } window.__nlBan = !!(r && r.error === 'banned'); if (r && r.ok) { store.set('nl-sub', '1'); return true; } return false; };
   const nlForm = $('#nl-form');
   if (nlForm) gate('nl', nlForm, $('#nl-email'), $('#nl-name'), { sub: subOk });
-  /* Pop-up rules. Desktop (mouse, wide screen): once per browser window, on whichever page is opened first; a new window shows it again. Phone and tablet: only on the Contact page, once per browser. Never for someone already subscribed. */
-  const desk = matchMedia('(hover: hover) and (pointer: fine)').matches && innerWidth >= 900;
-  const sess = { get: k => { try { return sessionStorage.getItem(k); } catch (err) { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (err) { /* storage unavailable */ } } };
-  const shouldShow = () => !subscribed() && (desk ? sess.get('nl-seen-s') !== '1' : page === 'contact' && store.get('nl-seen') !== '1');
-  const markSeen = () => { if (desk) sess.set('nl-seen-s', '1'); else store.set('nl-seen', '1'); };
-  if (!shouldShow()) return;
-  const pop = document.createElement('div'); pop.className = 'nl-pop'; pop.id = 'nl-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', tr('Subscribe to my newsletter')); pop.hidden = true;
-  pop.innerHTML = '<i class="nl-grab" aria-hidden="true"></i><button type="button" class="nl-x" aria-label="Close">&times;</button><h3 class="nl-t"></h3><p class="nl-p"></p>'
-    + '<form class="cform" id="np-form" novalidate><div class="frow"><label for="np-name"></label><input id="np-name" type="text" autocomplete="name"></div><div class="frow"><label for="np-email"></label><input id="np-email" type="email" autocomplete="email" required></div>'
-    + '</form><div class="nl-bar" aria-hidden="true"><i></i></div>';
-  document.body.appendChild(pop);
-  $('.nl-t', pop).textContent = tr('Subscribe to my newsletter'); $('.nl-p', pop).textContent = tr('News and information by email. Your email is checked with a one-time code.');
-  $('label[for="np-name"]', pop).textContent = tr('Your name'); $('label[for="np-email"]', pop).textContent = tr('Your email');
-  gate('np', $('#np-form'), $('#np-email'), $('#np-name'), { sub: subOk, done: () => setTimeout(closePop, 3000) });
-  let popOpen = false, left = 10000, last = 0, raf = 0, hold = false, engaged = false;
-  const bar = $('.nl-bar i', pop);
-  const closePop = () => { if (!popOpen) return; popOpen = false; cancelAnimationFrame(raf); pop.classList.remove('show'); pop.style.transform = ''; setTimeout(() => { pop.hidden = true; }, 450); };
-  const loop = t => { if (!popOpen) return; if (last && !hold && !engaged) left -= t - last; last = t; bar.style.transform = 'scaleX(' + (engaged ? 0 : Math.max(0, left / 10000)) + ')'; if (left <= 0 && !engaged) closePop(); else raf = requestAnimationFrame(loop); };
-  const openPop = () => { if (popOpen || !shouldShow()) return; markSeen(); popOpen = true; pop.hidden = false; void pop.offsetWidth; pop.classList.add('show'); left = 10000; last = 0; raf = requestAnimationFrame(loop); };
-  $('.nl-x', pop).addEventListener('click', closePop);
-  addEventListener('keydown', e => { if (e.key === 'Escape' && popOpen) closePop(); });
-  pop.addEventListener('pointerenter', () => { hold = true; }); pop.addEventListener('pointerleave', () => { hold = false; });
-  pop.addEventListener('focusin', () => { hold = true; }); pop.addEventListener('focusout', () => { hold = false; });
-  pop.addEventListener('input', () => { engaged = true; }); pop.addEventListener('click', e => { if (e.target.closest('button') && !e.target.closest('.nl-x')) engaged = true; });
-  let y0 = null, dy = 0;
-  pop.addEventListener('touchstart', e => { hold = true; if (e.target.closest('input, button, a')) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; pop.style.transition = 'none'; }, { passive: true });
-  pop.addEventListener('touchmove', e => { if (y0 === null) return; dy = Math.max(0, e.touches[0].clientY - y0); pop.style.transform = 'translateY(' + dy + 'px)'; }, { passive: true });
-  pop.addEventListener('touchend', () => { hold = false; if (y0 === null) return; pop.style.transition = ''; if (dy > 70) closePop(); else pop.style.transform = ''; y0 = null; });
-  setTimeout(openPop, desk ? 3200 : 2500);
 })();
 
 /* ---------- Photo watermark: a faint corner text over gallery and workshop photos (CSS) and over the enlarged photo (this code). Switch: SITE.watermark. ---------- */
@@ -1776,8 +1747,8 @@ addEventListener('load', fitNav);
 
 (function(){var z=0;addEventListener('keydown',function(e){var t=e.target,n=t&&t.tagName;if(n==='INPUT'||n==='TEXTAREA'||n==='SELECT'||(t&&t.isContentEditable))return;if(e.key==='0'){z=Date.now();return}if(e.key==='Enter'&&Date.now()-z<900){e.preventDefault();location.href=atob('YWRtaW4=')}else z=0},true)})();
 
-/* Desktop only: resting the pointer on a header menu item for 5 s (the footer Admin login button: 2 s) starts a 10 s fill with a countdown, then opens it; moving away cancels it */
-(function(){var mq=matchMedia('(hover:hover) and (pointer:fine) and (min-width:1025px)'),SEL='.menu a, a.admlnk',cur=null,tip=null,tm=0,rf=0;
+/* Desktop only: resting the pointer on the footer Admin login button for 2 s starts a 10 s fill with a countdown, then opens it; moving away cancels it (the header menu does not do this) */
+(function(){var mq=matchMedia('(hover:hover) and (pointer:fine) and (min-width:1025px)'),SEL='a.admlnk',cur=null,tip=null,tm=0,rf=0;
 var W={"en": ["You will be redirected to {m} in {n} {u}", "second", "seconds"], "ml": ["{n} {u}ിനുള്ളിൽ നിങ്ങളെ {m} എന്നതിലേക്ക് കൊണ്ടുപോകും", "സെക്കൻഡ", "സെക്കൻഡ"], "hi": ["{n} {u} में आपको {m} पर ले जाया जाएगा", "सेकंड", "सेकंड"], "fr": ["Vous serez redirigé vers {m} dans {n} {u}", "seconde", "secondes"], "de": ["Sie werden in {n} {u} zu {m} weitergeleitet", "Sekunde", "Sekunden"], "ar": ["ستتم إعادة توجيهك إلى {m} خلال {n} {u}", "ثانية", "ثوانٍ"], "es": ["Serás redirigido a {m} en {n} {u}", "segundo", "segundos"], "zh": ["{n} {u}后将跳转到{m}", "秒", "秒"], "ja": ["{n} {u}後に{m}へ移動します", "秒", "秒"], "pt": ["Você será redirecionado para {m} em {n} {u}", "segundo", "segundos"], "sv": ["Du skickas vidare till {m} om {n} {u}", "sekund", "sekunder"]};function msg(m,n){var L=(document.documentElement.lang||'en').slice(0,2),w=W[L]||W.en;return w[0].replace('{m}',m).replace('{n}',n).replace('{u}',n===1?w[1]:w[2]);}
 function AT(){var d=(window.I18N||{})[document.documentElement.lang||'en'];return (d&&d['Admin login window'])||'Admin login window';}function stop(){clearTimeout(tm);cancelAnimationFrame(rf);if(cur){cur.classList.remove('hfill');cur.style.removeProperty('--hf');}if(tip){tip.remove();tip=null;}cur=null;}
 function place(){if(!tip||!cur)return;var r=cur.getBoundingClientRect();tip.style.top=(r.bottom+10)+'px';var x=r.left+r.width/2-tip.offsetWidth/2;tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,x))+'px';}
