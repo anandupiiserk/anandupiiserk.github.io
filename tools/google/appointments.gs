@@ -945,7 +945,9 @@ function visitSummary_(force) {
   visRows_(chk, now + 1).forEach(function (r) { if (r.x || r.cc === HOME_CC || knownSet[r.cc] || fresh[r.cc]) return; fresh[r.cc] = r.n; freshOrder.push(r.cc); });
   freshOrder.forEach(function (c) { known.push(c); });
   sp.setProperty('VISKNOWN', JSON.stringify(known)); sp.setProperty('VISLASTCHECK', String(now));
-  if (!freshOrder.length && !force) return false;
+  /* no new country: still send a summary once 30 days have passed since the last email */
+  var monthly = !freshOrder.length && last && now - last >= VISIT_MAIL_DAYS * 86400000;
+  if (!freshOrder.length && !force && !monthly) return false;
   /* everything since the last email */
   var rows = visRows_(last, now + 1), others = {}, order = [], inN = 0, st = {}, stOrder = [];
   rows.forEach(function (r) {
@@ -958,7 +960,7 @@ function visitSummary_(force) {
   var since = last ? Utilities.formatDate(new Date(last), TZ, 'd MMM yyyy, HH:mm') + ' IST' : 'the start of the log';
   var rowsH = [['Period', esc_('Since ' + since)]], plain = '';
   var newNames = freshOrder.map(function (c) { return fresh[c]; });
-  plain += (freshOrder.length ? 'New countr' + (freshOrder.length === 1 ? 'y' : 'ies') + ' visiting your website for the first time: ' + newNames.join(', ') : 'Test email: no new country since the last check') + '\nPeriod: since ' + since + '\n\n';
+  plain += (freshOrder.length ? 'New countr' + (freshOrder.length === 1 ? 'y' : 'ies') + ' visiting your website for the first time: ' + newNames.join(', ') : monthly ? 'Website visitors summary since the last email (no new country in ' + VISIT_MAIL_DAYS + ' days)' : 'Test email: no new country since the last check') + '\nPeriod: since ' + since + '\n\n';
   freshOrder.forEach(function (c) { var l = line(c); rowsH.push(['New: ' + esc_(l[0]), esc_(l[1])]); plain += 'NEW ' + l[0] + ': ' + l[1] + '\n'; });
   var prev = order.filter(function (c) { return !fresh[c]; });
   if (prev.length) { plain += '\nOther countries (visited before):\n'; prev.forEach(function (c) { var l = line(c); rowsH.push([esc_(l[0]), esc_(l[1])]); plain += ' - ' + l[0] + ': ' + l[1] + '\n'; }); }
@@ -968,10 +970,10 @@ function visitSummary_(force) {
   stOrder.forEach(function (g) { rowsH.push(['India: ' + esc_(g), String(st[g])]); plain += ' - ' + g + ': ' + st[g] + '\n'; });
   plain += '\nVisitors portal: ' + VIS_LINK_ + '\n\n' + VISIT_MARK_ + ' ' + VISIT_MAIL_DAYS + ' days.';
   MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), name: MSG_SENDER,
-    subject: '[Site visit] New countr' + (freshOrder.length === 1 ? 'y' : 'ies') + ': ' + (newNames.join(', ') || 'test'), body: plain,
-    htmlBody: mail_('New country on your website', freshOrder.length ? 'First visit ever from ' + esc_(newNames.join(', ')) + '. Below: all visits since the last email, including countries seen before and Indian states.' : 'Test email. No new country since the last check.', rowsH,
+    subject: freshOrder.length ? '[Site visit] New countr' + (freshOrder.length === 1 ? 'y' : 'ies') + ': ' + newNames.join(', ') : monthly ? '[Site visit] Website visitors summary since the last email' : '[Site visit] Test', body: plain,
+    htmlBody: mail_(freshOrder.length ? 'New country on your website' : 'Website visitors summary since the last email', freshOrder.length ? 'First visit ever from ' + esc_(newNames.join(', ')) + '. Below: all visits since the last email, including countries seen before and Indian states.' : monthly ? 'No new country in the last ' + VISIT_MAIL_DAYS + ' days. Here are all visits since the last email, by country and by Indian state.' : 'Test email. No new country since the last check.', rowsH,
       [['Open the Visitors portal', VIS_LINK_, '#1f4e9c']],
-      'Only the country, the Indian state and the tab are counted. No IP address or personal data is stored. You get this email only when a country outside India visits for the first time. ' + VISIT_MARK_ + ' ' + VISIT_MAIL_DAYS + ' days.') });
+      'Only the country, the Indian state and the tab are counted. No IP address or personal data is stored. You get this email when a country outside India visits for the first time, or as a summary after ' + VISIT_MAIL_DAYS + ' days without one. ' + VISIT_MARK_ + ' ' + VISIT_MAIL_DAYS + ' days.') });
   sp.setProperty('VISLASTMAIL', String(now));
   return true;
 }
