@@ -130,15 +130,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var q=(location.search.match(/[?&]theme=(dark|light)/)||[])[1];if(q){{try{{localStorage.setItem('theme',q)}}catch(e){{}}history.replaceState(null,'',location.pathname+location.search.replace(/([?&])theme=(dark|light)&?/,'$1').replace(/[?&]$/,'')+location.hash)}}var t=q||localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261126l">
+<link rel="stylesheet" href="style.css?v=20261126m">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261126l"></script>
-<script src="script.js?v=20261126l"></script>
+<script src="i18n.js?v=20261126m"></script>
+<script src="script.js?v=20261126m"></script>
 </body>
 </html>
 '''
@@ -500,13 +500,13 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
 </div>
 <div class="eyebrow reveal" style="margin-top:36px"><span class="n">05</span> Profiles</div>
 <div data-social-rows></div>
-<div class="eyebrow reveal" style="margin-top:36px"><span class="n">06</span> Newsletter</div>
-<div class="nl-wrap">
+<div class="nl-wrap" style="margin-top:36px">
+<div class="nl-col"><div class="eyebrow reveal"><span class="n">06</span> Newsletter</div>
 <form class="cform nl-form reveal" id="nl-form" novalidate>
   <p class="appt-note">Subscribe to receive news and information from me by email. Enter your name and email, send the one-time code, then verify it: that verification subscribes you.</p>
   <div class="frow"><label for="nl-name">Your name</label><input id="nl-name" type="text" autocomplete="name"></div>
   <div class="frow"><label for="nl-email">Your email</label><input id="nl-email" type="email" autocomplete="email" required></div>
-</form>
+</form></div>
 <aside class="vcc" id="vcc" hidden aria-labelledby="vcc-t">
   <div class="vcc-t" id="vcc-t">Visitors by country</div>
   <p class="vcc-n">Share of all visitors to this website</p>
