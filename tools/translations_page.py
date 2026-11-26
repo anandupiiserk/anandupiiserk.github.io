@@ -451,6 +451,17 @@ cap("Group photo of the IDRiM 2023 participants, CoEDMM, IIT Roorkee, September 
     "IDRiM 2023 参加者の集合写真、CoEDMM、IIT ルールキー、2023年9月。",
     "Foto de grupo dos participantes do IDRiM 2023, CoEDMM, IIT Roorkee, setembro de 2023.",
     "Gruppfoto av deltagarna vid IDRiM 2023, CoEDMM, IIT Roorkee, september 2023.")
+cap("The IDRiM 2023 technical team at Fuji Hall, IIT Roorkee. Front row: Anagha and Mahima. Back row: Anamika and Anandu.",
+    "IIT റൂർക്കിയിലെ Fuji Hall-ൽ IDRiM 2023 സാങ്കേതിക സംഘം. മുൻനിര: Anagha, Mahima. പിൻനിര: Anamika, Anandu.",
+    "IIT रुड़की के Fuji Hall में IDRiM 2023 की तकनीकी टीम। आगे की पंक्ति: Anagha और Mahima। पीछे की पंक्ति: Anamika और Anandu।",
+    "L'équipe technique d'IDRiM 2023 au Fuji Hall, IIT Roorkee. Premier rang : Anagha et Mahima. Second rang : Anamika et Anandu.",
+    "Das technische Team von IDRiM 2023 in der Fuji Hall, IIT Roorkee. Vordere Reihe: Anagha und Mahima. Hintere Reihe: Anamika und Anandu.",
+    "الفريق التقني لمؤتمر IDRiM 2023 في قاعة Fuji Hall، المعهد الهندي للتكنولوجيا في روركي. الصف الأمامي: Anagha وMahima. الصف الخلفي: Anamika وAnandu.",
+    "El equipo técnico de IDRiM 2023 en el Fuji Hall, IIT Roorkee. Primera fila: Anagha y Mahima. Segunda fila: Anamika y Anandu.",
+    "IDRiM 2023 技术团队在印度理工学院鲁尔基分校 Fuji Hall。前排：Anagha 和 Mahima。后排：Anamika 和 Anandu。",
+    "IIT ルールキーの Fuji Hall にて、IDRiM 2023 技術チーム。前列：Anagha と Mahima。後列：Anamika と Anandu。",
+    "A equipa técnica do IDRiM 2023 no Fuji Hall, IIT Roorkee. Fila da frente: Anagha e Mahima. Fila de trás: Anamika e Anandu.",
+    "Det tekniska teamet för IDRiM 2023 i Fuji Hall, IIT Roorkee. Främre raden: Anagha och Mahima. Bakre raden: Anamika och Anandu.")
 cap("Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.", "IIT Roorkee-ലെ Fit India Half Marathon 2024 (Sangram 2024), 21 കിലോമീറ്റർ; പൂർത്തീകരണ മെഡലും വഴിയിൽ നിന്നുള്ള ചില പ്രകൃതി ചിത്രങ്ങളും.",
  "IIT Roorkee में Fit India Half Marathon 2024 (Sangram 2024), 21 किमी; मेरा पूर्णता पदक और मार्ग की कुछ प्रकृति तस्वीरें।", "Fit India Half Marathon 2024 (Sangram 2024) à l'IIT Roorkee, 21 km, avec ma médaille de finisher et quelques photos de nature prises sur le parcours.",
  "Fit India Half Marathon 2024 (Sangram 2024) am IIT Roorkee, 21 km, mit meiner Finisher-Medaille und einigen Naturfotos von der Strecke.", "Fit India Half Marathon 2024 (Sangram 2024) في IIT Roorkee، 21 كم، مع ميدالية إتمام السباق وبعض صور الطبيعة من المسار.",
