@@ -5,6 +5,7 @@ function run(hero, cv, opts) {
   const FONT = opts.font;
   const LOWEND = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 2;
   let DPRMAX = LOWEND ? 1.25 : 2, PXB = LOWEND ? 9e5 : 1.6e6;
+  const DPRMAX0 = DPRMAX, PXB0 = PXB;
   const stage = hero; let cx = cv.getContext('2d', { alpha: false });
   const $ = id => hero.querySelector('#fs-' + id);
   const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -175,7 +176,7 @@ function run(hero, cv, opts) {
     if (st[q] !== 0 || fuel0[q] <= 0) return;
     st[q] = 1; tigR[q] = T; bd[q] = absDay; inten[q] = clamp(ros / (R0 * 4.2), .08, 1); FL[q] = 7 + 8 * Lf[q]; burning.push(q);
   }
-  function steam(k, c = 2) { const [x, y] = cellXY(k); for (let s = 0; s < c; s++) if (parts.length < 1300) parts.push({ k: 4, x: x + (Math.random() - .5) * G, y, vx: 2 + Math.random() * 3, vy: -(8 + Math.random() * 8), r: 5 + Math.random() * 5, age: 0, max: 3 + Math.random() * 2, w: Math.random() }); }
+  function steam(k, c = 2) { const [x, y] = cellXY(k); for (let s = 0; s < c; s++) if (parts.length < 850) parts.push({ k: 4, x: x + (Math.random() - .5) * G, y, vx: 2 + Math.random() * 3, vy: -(8 + Math.random() * 8), r: 5 + Math.random() * 5, age: 0, max: 3 + Math.random() * 2, w: Math.random() }); }
   const WNDN = () => Math.hypot(WIN.x, WIN.y);
 
   function stepFire(dt, nn) {
@@ -244,7 +245,7 @@ function run(hero, cv, opts) {
       if (c.mode === 'idle' && !inc) c.mode = 'done';
       if (c.mode !== 'done' && (c.k < 0 || st[c.k] !== 1)) { c.k = nearestBurning(c.x, c.y - 10, c.mode === 'work' ? 160 : 1e9); if (c.k >= 0) { const [x, y] = cellXY(c.k); const vx = c.x - x, vy = c.y - y, vd = Math.hypot(vx, vy) || 1, so = 58; c.fx = x; c.fy = y; c.tx = clamp(x + vx / vd * so + (c.tool ? 14 : -14), 10, W - 10); c.ty = clamp(y + vy / vd * so, SK + 16, H - 14); c.mode = 'walk'; } else if (c.mode === 'work') c.mode = 'done'; }
       if (c.mode === 'walk' && c.k >= 0) { const dx = c.tx - c.x, dy = c.ty - c.y, d = Math.hypot(dx, dy); if (d < 4) c.mode = 'work'; else { c.x += dx / d * 16 * dt; c.y += dy / d * 16 * dt; } }
-      if (c.mode === 'work' && c.k >= 0) { const fdx = c.fx - c.x, fdy = c.fy - (c.y - 16), fd = Math.hypot(fdx, fdy) || 1; if (fd < 38) { c.x -= fdx / fd * 22 * dt; c.y = clamp(c.y - fdy / fd * 22 * dt, SK + 16, H - 14); } if (fd < 80) { extinguishAt(c.fx, c.fy, c.eng ? 42 : 30, (c.eng ? 1.9 : 1.1) * dt, .9); if (Math.random() < dt * (c.eng ? 28 : 14) && parts.length < 1300) { const T2 = .65; parts.push({ k: 3, x: c.x + 5 * Math.sign(fdx || 1), y: c.y - 15, vx: fdx / T2 + (Math.random() - .5) * 8, vy: (fdy - 19) / T2 + (Math.random() - .5) * 8, r: 1.3, age: 0, max: T2 * (.9 + Math.random() * .2), w: 0 }); } } }
+      if (c.mode === 'work' && c.k >= 0) { const fdx = c.fx - c.x, fdy = c.fy - (c.y - 16), fd = Math.hypot(fdx, fdy) || 1; if (fd < 38) { c.x -= fdx / fd * 22 * dt; c.y = clamp(c.y - fdy / fd * 22 * dt, SK + 16, H - 14); } if (fd < 80) { extinguishAt(c.fx, c.fy, c.eng ? 42 : 30, (c.eng ? 1.9 : 1.1) * dt, .9); if (Math.random() < dt * (c.eng ? 28 : 14) && parts.length < 850) { const T2 = .65; parts.push({ k: 3, x: c.x + 5 * Math.sign(fdx || 1), y: c.y - 15, vx: fdx / T2 + (Math.random() - .5) * 8, vy: (fdy - 19) / T2 + (Math.random() - .5) * 8, r: 1.3, age: 0, max: T2 * (.9 + Math.random() * .2), w: 0 }); } } }
       if (!A.crew) A.crew = [c.x, c.y - 16];
     });
     for (let c = crews.length - 1; c >= 0; c--) if (crews[c].mode === 'done') { const q = crews[c]; if (q.eng) { if (!eng) { crews.splice(c, 1); continue; } const dx = eng.x - q.x, dy = eng.y - 3 - q.y, d = Math.hypot(dx, dy); if (d < 7) crews.splice(c, 1); else { q.x += dx / d * 22 * dt; q.y += dy / d * 22 * dt; } } else { q.x += 14 * dt; if (q.x > W + 20) crews.splice(c, 1); } }
@@ -258,7 +259,7 @@ function run(hero, cv, opts) {
     if (h.ph === 'in') { if (steer(lx - 30, ly - 40, 150)) { h.ph = 'dip'; h.t = 0; } }
     else if (h.ph === 'dip') { steer(lx, ly, 70); h.t += dt; if (h.t > 1 && h.t < 3.2 && Math.random() < dt * 5) ripples.push({ x: h.bx + (Math.random() - .5) * 6, y: LAKE.y - 2, t0: T }); h.load = clamp((h.t - 1.4) / 1.4, 0, 1); if (h.t > 3.4) { const c = nearestBurning(W * .5, SK + (H - SK) * .5); if (c >= 0) { const [x, y] = cellXY(c); h.tx = x; h.ty = y - 76; h.tgx = x; h.tgy = y; h.ph = 'carry'; } else h.ph = 'out'; } }
     else if (h.ph === 'carry') { if (steer(h.tx, h.ty, 115)) { h.ph = 'drop'; h.t = 0; } }
-    else if (h.ph === 'drop') { steer(h.tx, h.ty, 30); h.t += dt; if (h.t > .6 && h.t < 3) { h.load = Math.max(0, h.load - dt * .45); extinguishAt(h.tgx, h.tgy, 54, 1.3 * dt, 1); for (let s = 0; s < 3; s++) if (parts.length < 1500) parts.push({ k: 2, x: h.bx + (Math.random() - .5) * 8, y: h.by + 8, vx: (Math.random() - .5) * 10 + S.wind * 20, vy: 60 + Math.random() * 50, r: 1.4 + Math.random(), age: 0, max: (h.tgy - h.by) / 100 + .3, w: 0 }); if (Math.random() < dt * 6 && parts.length < 1500) parts.push({ k: 4, x: h.tgx + (Math.random() - .5) * 30, y: h.tgy, vx: 4, vy: -10, r: 5, age: 0, max: 2.2, w: 0 }); } if (h.t > 3.2) { h.load = 0; h.trips++; h.ph = small ? 'out' : 'back'; } }
+    else if (h.ph === 'drop') { steer(h.tx, h.ty, 30); h.t += dt; if (h.t > .6 && h.t < 3) { h.load = Math.max(0, h.load - dt * .45); extinguishAt(h.tgx, h.tgy, 54, 1.3 * dt, 1); for (let s = 0; s < 3; s++) if (parts.length < 950) parts.push({ k: 2, x: h.bx + (Math.random() - .5) * 8, y: h.by + 8, vx: (Math.random() - .5) * 10 + S.wind * 20, vy: 60 + Math.random() * 50, r: 1.4 + Math.random(), age: 0, max: (h.tgy - h.by) / 100 + .3, w: 0 }); if (Math.random() < dt * 6 && parts.length < 950) parts.push({ k: 4, x: h.tgx + (Math.random() - .5) * 30, y: h.tgy, vx: 4, vy: -10, r: 5, age: 0, max: 2.2, w: 0 }); } if (h.t > 3.2) { h.load = 0; h.trips++; h.ph = small ? 'out' : 'back'; } }
     else if (h.ph === 'back') { if (steer(lx, ly - 30, 120)) { h.ph = 'dip'; h.t = 0; } }
     else if (h.ph === 'out') { h.vx += (120 - h.vx) * Math.min(1, dt * 1.2); h.vy += (-26 - h.vy) * Math.min(1, dt * 1.2); h.x += h.vx * dt; h.y += h.vy * dt; if (h.x > W + 120) heli = null; }
     if (!heli) return;
@@ -329,14 +330,16 @@ function run(hero, cv, opts) {
   /* ================= fire drawing ================= */
   const scarC = document.createElement('canvas'), glowC = document.createElement('canvas');
   const scarD = [hex('#3a3331'), hex('#07070a')], grassD = [hex('#7fa157'), hex('#16301f')], tanD = [hex('#c9a45a'), hex('#4b4128')];
-  const FLAME = 10;
+  const FLAME = 10, LINE_C = [hex('#c9a45a'), hex('#5a4b30')]; let fireBuf = null;
   function updateFire(nn, time, dt) {
-    const sg = scarC.getContext('2d'), gg = glowC.getContext('2d'), si = sg.createImageData(GW, GH), gi = gg.createImageData(GW, GH), sd = si.data, gd = gi.data;
-    const sc = mixc(scarD[0], scarD[1], nn), gc = mixc(grassD[0], grassD[1], nn), tc = mixc(tanD[0], tanD[1], nn);
+    const sg = scarC.getContext('2d'), gg = glowC.getContext('2d');
+    if (!fireBuf || fireBuf[0].width !== GW || fireBuf[0].height !== GH) fireBuf = [sg.createImageData(GW, GH), gg.createImageData(GW, GH)];
+    const si = fireBuf[0], gi = fireBuf[1], sd = si.data, gd = gi.data; sd.fill(0); gd.fill(0);
+    const sc = mixc(scarD[0], scarD[1], nn), gc = mixc(grassD[0], grassD[1], nn), tc = mixc(tanD[0], tanD[1], nn), tcl = mixc(LINE_C[0], LINE_C[1], nn);
     const litRate = (.0016 + .0042 * S.litter) * rate * dt * (1 - S.rain * .6);
     for (let k = 0; k < N; k++) {
       if (wet[k] > 0) wet[k] = Math.max(0, wet[k] - dt * .012);
-      if (lineMask[k]) { const q2 = k * 4, tcl = mixc(hex('#c9a45a'), hex('#5a4b30'), nn); sd[q2] = tcl[0]; sd[q2 + 1] = tcl[1]; sd[q2 + 2] = tcl[2]; sd[q2 + 3] = 235; continue; }
+      if (lineMask[k]) { const q2 = k * 4; sd[q2] = tcl[0]; sd[q2 + 1] = tcl[1]; sd[q2 + 2] = tcl[2]; sd[q2 + 3] = 235; continue; }
       if (fuel0[k] <= 0) continue; const q = k * 4, s = st[k];
       if (s === 0) { Lf[k] = Math.min(1, Lf[k] + litRate * .5); const a = .2 * dryD * Lf[k] * (S.litter > .3 ? 1 : .5) * (1 - S.green * .4); if (a > .01) { sd[q] = tc[0]; sd[q + 1] = tc[1]; sd[q + 2] = tc[2]; sd[q + 3] = a * 255; } continue; }
       const u = T - tigR[k], age = absDay - bd[k]; let g = 0;
@@ -344,8 +347,8 @@ function run(hero, cv, opts) {
       else {
         Lf[k] = Math.min(1, Lf[k] + litRate * 1.4);
         const ac = .88 * (1 - sstep(25, 140, age)), ag = .62 * sstep(70, 190, age) * (1 - sstep(260, 430, age));
-        const col = mixc(sc, gc, ag / Math.max(.01, ac + ag)), al = Math.min(.92, ac + ag);
-        sd[q] = col[0]; sd[q + 1] = col[1]; sd[q + 2] = col[2]; sd[q + 3] = al * 255;
+        const w = ag / Math.max(.01, ac + ag), al = Math.min(.92, ac + ag);
+        sd[q] = sc[0] + (gc[0] - sc[0]) * w; sd[q + 1] = sc[1] + (gc[1] - sc[1]) * w; sd[q + 2] = sc[2] + (gc[2] - sc[2]) * w; sd[q + 3] = al * 255;
         if (u < 45) { const fl = .5 + .5 * Math.sin(time * 7 + (k % 97) * 3.1) * Math.sin(time * 3.3 + (k % 53)); g = Math.exp(-Math.max(0, u - FL[k]) / 11) * (.22 + .5 * fl) * (.6 + .6 * hash(k, 3)); if (S.rain > .2) g *= 1 - S.rain; }
       }
       if (g > .01) { gd[q] = 255; gd[q + 1] = 90 + 80 * g; gd[q + 2] = 25; gd[q + 3] = clamp(g * 150, 0, 255); }
@@ -405,7 +408,10 @@ function run(hero, cv, opts) {
   }
   function nearStream(x, y, m) { for (let i = 0; i < STREAM.length; i++) { const dx = STREAM[i][0] - x, dy = STREAM[i][1] - y; if (dx * dx + dy * dy < m * m) return true; } return false; }
 
+  /* trees that are not changing (healthy, regrowing, or burnt out and cold) are baked into the cached layers; only trees that are igniting, burning or still glowing are painted every frame */
+  let GROWING = [0, 0];
   function classify() {
+    const gw = [0, 0];
     for (let i = 0; i < trees.length; i++) {
       const t = trees[i], k = t.k, ly = t.ty === 1 ? 1 : 0;
       if (lineMask[k]) { if (t.s !== 5) { t.s = 5; if (t.st) { t.st = false; fDirty[ly] = true; } } continue; }
@@ -420,8 +426,11 @@ function run(hero, cv, opts) {
         else { if (ageD > 75 && S.green > .45) { t.born = absDay; t.g0 = grow; t.fate = 0; burntNow = false; } else state = u < 2 ? 1 : 3; }
       } else if (st[k] === 1 && u < 0.001) state = 1;
       t.s = state; t.gw = grow; t.u = u;
-      const stat = state === 0 && grow >= .999; if (stat !== t.st) { t.st = stat; fDirty[ly] = true; }
+      if (state === 0 && grow < .999) gw[ly]++;
+      const hot = st[k] === 1 && u < FL[k] + 1;
+      const stat = !hot && (state === 0 || (state === 4 && u - FL[k] >= 34) || (state === 3 && u >= 10)); if (stat !== t.st) { t.st = stat; fDirty[ly] = true; }
     }
+    GROWING = gw;
   }
   const mixCss = (a, b, q) => { const pa = a.match(/[\d.]+/g).map(Number), pb = b.match(/[\d.]+/g).map(Number); return `rgb(${(pa[0] + (pb[0] - pa[0]) * q) | 0},${(pa[1] + (pb[1] - pa[1]) * q) | 0},${(pa[2] + (pb[2] - pa[2]) * q) | 0})`; };
   function paintTree(t, nn, time, P, ln, bo, still) {
@@ -506,7 +515,7 @@ function run(hero, cv, opts) {
   }
   function drawTrees(nn, time) {
     LEAF = leafNow(doy, nn); classify();
-    for (let L = 0; L < 2; L++) { const f = fLast[L]; if (!fDirty[L] && (Math.abs(nn - f.nn) > .012 || Math.abs(S.green - f.gr) > .05 || (L === 1 && Math.abs(doy - f.d) > 7))) fDirty[L] = true; if (fDirty[L] && !LB[L] && time - f.t > .3) { if (f.t < -1) rebuildLayer(L, nn, time); else { fDirty[L] = false; startBuild(L, nn, time); } } if (LB[L]) stepBuild(L, 2.5); }
+    for (let L = 0; L < 2; L++) { const f = fLast[L]; if (!fDirty[L] && (Math.abs(nn - f.nn) > .012 || Math.abs(S.green - f.gr) > .05 || ((L === 1 || GROWING[L] > 0) && Math.abs(doy - f.d) > 7))) fDirty[L] = true; if (fDirty[L] && !LB[L] && time - f.t > .3) { if (f.t < -1) rebuildLayer(L, nn, time); else { fDirty[L] = false; startBuild(L, nn, time); } } if (LB[L]) stepBuild(L, 2.5); }
     const bands = 8, bh = (H - SK) / bands;
     for (let L = 0; L < 2; L++) { const c = LY[L][0], kd = c.width / W; for (let b = 0; b < bands; b++) { const y0 = SK + b * bh, off = Math.sin(time * .8 + b * .7 + L * 1.3) * (.35 + 1.3 * S.wind); cx.drawImage(c, 0, y0 * kd, c.width, bh * kd + 1, off, y0, W, bh + .5); } }
     const P = palette(nn), ln = lean(), bo = sstep(62, 76, doy) * (1 - sstep(108, 122, doy));
@@ -514,11 +523,11 @@ function run(hero, cv, opts) {
   }
 
   function drawGround(nn, time) {
-    const ln = lean(); A.fire = A.fire || [W * .5, H * .6]; let sx = 0, sy = 0, cnt = 0;
+    const ln = lean(), fStep = Math.max(3, Math.ceil(burning.length / 200)); A.fire = A.fire || [W * .5, H * .6]; let sx = 0, sy = 0, cnt = 0;
     for (let a = 0; a < burning.length; a++) {
       const k = burning[a], i = k % GW, j = (k / GW) | 0, u = T - tigR[k]; if (u < 0 || u > FL[k]) continue;
       if (a % 12 === 0) { sx += (i + .5) * G; sy += SK + (j + .5) * G; cnt++; }
-      if (a % 3) continue;
+      if (a % fStep) continue;
       const I = inten[k], v = vOfY(SK + (j + .5) * G), sc = .45 + 1.05 * Math.pow(1 - v, 1.35), up = sstep(0, 1.5, u) * (1 - sstep(FL[k] - 3, FL[k], u)), fl = .7 + .3 * Math.sin(time * 9 + a * 1.7) + .15 * Math.sin(time * 19 + a);
       drawFlame((i + .5) * G + (hash(i, j) - .5) * G, SK + (j + .5) * G + 2, (5 + 14 * I) * sc * fl * up + 1, (2 + 2.4 * I) * sc, Math.sin(time * 3 + a) * 2 * sc + ln * sc * (1 + 2 * I), up * (1 - S.rain * .8));
     }
@@ -526,13 +535,13 @@ function run(hero, cv, opts) {
   }
   function bloom(nn) {
     cx.globalCompositeOperation = 'lighter';
-    for (let a = 0; a < burning.length; a += 9) { const k = burning[a], i = k % GW, j = (k / GW) | 0, u = T - tigR[k]; if (u < 0 || u > FL[k]) continue; const v = vOfY(SK + (j + .5) * G), sc = .5 + 1.0 * Math.pow(1 - v, 1.3), r = (30 + 36 * inten[k]) * sc; cx.globalAlpha = (.04 + .15 * nn) * (.6 + .6 * inten[k]); cx.drawImage(SM.warm, (i + .5) * G - r, SK + (j + .5) * G - r * 1.2, r * 2, r * 2); }
+    for (let a = 0, bs = Math.max(9, Math.ceil(burning.length / 80)); a < burning.length; a += bs) { const k = burning[a], i = k % GW, j = (k / GW) | 0, u = T - tigR[k]; if (u < 0 || u > FL[k]) continue; const v = vOfY(SK + (j + .5) * G), sc = .5 + 1.0 * Math.pow(1 - v, 1.3), r = (30 + 36 * inten[k]) * sc; cx.globalAlpha = (.04 + .15 * nn) * (.6 + .6 * inten[k]); cx.drawImage(SM.warm, (i + .5) * G - r, SK + (j + .5) * G - r * 1.2, r * 2, r * 2); }
     cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over';
   }
 
   /* ================= smoke, steam, water ================= */
   function spawnSmoke(dt) {
-    if (!burning.length || parts.length > 1250) return;
+    if (!burning.length || parts.length > 800) return;
     const strong = clamp(burning.length / 520, 0, 1), k = Math.min(26, Math.round((270 * strong + 60) * dt * (1 - .35 * n) * (1 - S.rain * .8)));
     for (let s = 0; s < k; s++) { const c = burning[(Math.random() * burning.length) | 0], i = c % GW, j = (c / GW) | 0, I = inten[c], buoy = (1 - .55 * n) * (1 - .8 * S.inv); parts.push({ k: 0, x: (i + Math.random()) * G, y: SK + (j + .3) * G, vx: 0, vy: -(30 + 40 * I) * buoy, r: 3 + 4 * I, age: 0, max: 12 + Math.random() * 8, w: .5 + Math.random() }); }
   }
@@ -756,7 +765,7 @@ function run(hero, cv, opts) {
     }
     else { h.vx += (130 - h.vx) * Math.min(1, dt * 1.2); h.vy += (-34 - h.vy) * Math.min(1, dt * 1.2); h.x += h.vx * dt; h.y += h.vy * dt; if (h.x > W + 120) { resc = null; return; } }
     const tf = Math.abs(h.vx) > 10 ? Math.sign(h.vx) : h.face; h.face += (tf - h.face) * Math.min(1, dt * 3.2); h.pitch += (clamp(h.vx * .0016, -.2, .2) * (h.face < 0 ? -1 : 1) - h.pitch) * Math.min(1, dt * 3); h.rot += dt * 55; h.bx = h.x; h.by = h.y + 20;
-    if (h.ph !== 'out') for (let i = 0; i < 2; i++) if (Math.random() < dt * 8 && parts.length < 1400 && h.y > SK) steamAt(h.x + (Math.random() - .5) * 40, c.y + 6);
+    if (h.ph !== 'out') for (let i = 0; i < 2; i++) if (Math.random() < dt * 8 && parts.length < 900 && h.y > SK) steamAt(h.x + (Math.random() - .5) * 40, c.y + 6);
   }
   function drawRescueRig(nn, time) {
     if (!resc || resc.ph !== 'hoist') return; const h = resc, c = h.camp, p = c.people[h.i]; if (!p) return;
@@ -794,7 +803,7 @@ function run(hero, cv, opts) {
     const wr = eng.st === 'in' || eng.st === 'out' ? eng.ph * 14 : 0; for (const wx of [-22, -9, 17]) { cx.fillStyle = '#17181c'; cx.beginPath(); cx.arc(wx, -4, 5.4, 0, 6.283); cx.fill(); cx.fillStyle = '#9aa0ab'; cx.beginPath(); cx.arc(wx, -4, 2.4, 0, 6.283); cx.fill(); cx.strokeStyle = '#17181c'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(wx + Math.cos(wr) * 2.4, -4 + Math.sin(wr) * 2.4); cx.lineTo(wx - Math.cos(wr) * 2.4, -4 - Math.sin(wr) * 2.4); cx.stroke(); }
     cx.restore();
   }
-  function steamAt(x, y) { if (parts.length < 1400) parts.push({ k: 4, x: x + (Math.random() - .5) * 8, y: y - 2, vx: 2 + Math.random() * 3, vy: -(10 + Math.random() * 10), r: 4 + Math.random() * 4, age: 0, max: 2.4 + Math.random() * 1.6, w: Math.random() }); }
+  function steamAt(x, y) { if (parts.length < 900) parts.push({ k: 4, x: x + (Math.random() - .5) * 8, y: y - 2, vx: 2 + Math.random() * 3, vy: -(10 + Math.random() * 10), r: 4 + Math.random() * 4, age: 0, max: 2.4 + Math.random() * 1.6, w: Math.random() }); }
   function drawCamps(nn, time) {
     camps.forEach(c => {
       const sc = .75 + .7 * clamp((c.y - SK) / (H - SK), 0, 1), x = c.x, y = c.y;
@@ -803,7 +812,7 @@ function run(hero, cv, opts) {
         cx.fillStyle = css(c0); cx.beginPath(); cx.moveTo(tx - w, ty); cx.lineTo(tx, ty - h); cx.lineTo(tx + w, ty); cx.closePath(); cx.fill(); cx.fillStyle = css(mixc(c0, [0, 0, 0], .3)); cx.beginPath(); cx.moveTo(tx, ty - h); cx.lineTo(tx + w, ty); cx.lineTo(tx + 1, ty); cx.closePath(); cx.fill(); cx.fillStyle = 'rgba(0,0,0,.45)'; cx.beginPath(); cx.moveTo(tx - 2 * sc, ty); cx.lineTo(tx, ty - 5 * sc); cx.lineTo(tx + 2 * sc, ty); cx.closePath(); cx.fill(); });
       const fx = x, fy = y + 9 * sc;
       cx.strokeStyle = css(mixc(hex('#5a3a1e'), hex('#120c08'), nn)); cx.lineWidth = 2 * sc; cx.beginPath(); cx.moveTo(fx - 5 * sc, fy + 1); cx.lineTo(fx + 5 * sc, fy - 1); cx.moveTo(fx - 4 * sc, fy - 1); cx.lineTo(fx + 4 * sc, fy + 1); cx.stroke();
-      if (c.lit) { const fl = .8 + .2 * Math.sin(time * 11 + c.ph) + .1 * Math.sin(time * 23); drawFlame(fx, fy, (11 + (c.ignoring ? 4 : 0)) * sc * fl, 4.4 * sc, Math.sin(time * 3 + c.ph) * 1.5 + S.wind * 5, 1); if (nn > .15) { cx.globalCompositeOperation = 'lighter'; const r = 46 * sc; cx.globalAlpha = .35 * nn; cx.drawImage(SM.warm, fx - r, fy - r, r * 2, r * 2); cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over'; } if (Math.random() < .12 && parts.length < 1400) parts.push({ k: 0, x: fx, y: fy - 8 * sc, vx: 0, vy: -12, r: 2.4, age: 0, max: 5, w: .6 + Math.random() }); }
+      if (c.lit) { const fl = .8 + .2 * Math.sin(time * 11 + c.ph) + .1 * Math.sin(time * 23); drawFlame(fx, fy, (11 + (c.ignoring ? 4 : 0)) * sc * fl, 4.4 * sc, Math.sin(time * 3 + c.ph) * 1.5 + S.wind * 5, 1); if (nn > .15) { cx.globalCompositeOperation = 'lighter'; const r = 46 * sc; cx.globalAlpha = .35 * nn; cx.drawImage(SM.warm, fx - r, fy - r, r * 2, r * 2); cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over'; } if (Math.random() < .12 && parts.length < 900) parts.push({ k: 0, x: fx, y: fy - 8 * sc, vx: 0, vy: -12, r: 2.4, age: 0, max: 5, w: .6 + Math.random() }); }
       else if (c.out > 0) { cx.fillStyle = `rgba(60,40,30,${.6})`; cx.beginPath(); cx.ellipse(fx, fy, 6 * sc, 2 * sc, 0, 0, 6.283); cx.fill(); }
       /* wooden hut and a broadleaf tree beside the camp */
       { const hx = x - 36 * sc, hy = y + 5 * sc, w = 13 * sc, h = 11 * sc; cx.fillStyle = css(mixc(hex('#8a5a32'), hex('#1a1210'), nn * .75)); cx.fillRect(hx - w / 2, hy - h, w, h); cx.strokeStyle = css(mixc(hex('#5a3a1e'), hex('#0c0806'), nn * .75), .8); cx.lineWidth = .7; for (let q = 1; q < 4; q++) { cx.beginPath(); cx.moveTo(hx - w / 2 + q * w / 4, hy - h); cx.lineTo(hx - w / 2 + q * w / 4, hy); cx.stroke(); } cx.fillStyle = css(mixc(hex('#5b3a22'), hex('#0e0a08'), nn * .75)); cx.beginPath(); cx.moveTo(hx - w / 2 - 2 * sc, hy - h); cx.lineTo(hx, hy - h - 7 * sc); cx.lineTo(hx + w / 2 + 2 * sc, hy - h); cx.closePath(); cx.fill(); cx.fillStyle = 'rgba(0,0,0,.55)'; cx.fillRect(hx - 2 * sc, hy - 7 * sc, 4 * sc, 7 * sc); if (c.hide && nn > .3) { cx.fillStyle = 'rgba(240,228,66,.55)'; cx.fillRect(hx + 3 * sc, hy - 8 * sc, 2.4 * sc, 2.4 * sc); }
@@ -1395,18 +1404,22 @@ function run(hero, cv, opts) {
   setInterval(() => { let g = 0, gn = 0; for (let i = 0; i < trees.length; i += 3) { const t = trees[i]; g += t.s === 4 ? 0 : (t.gw || 1); gn++; } vegAvg = gn ? g / gn : 1; let s = 0; for (let k = 0; k < N; k += 7) if (fuel0[k] > 0) s += Lf[k]; avgL = s / (N / 7); }, 1500);
 
   /* ---- run loop: paused when off screen or hidden, throttled for reduced motion, resolution steps down if frames are slow ---- */
-  let vis = true, prevT = 0, ema = 16.7, slow = 0, slow2 = 0, lite = false, half = false, skip = false, lastRm = 0, lastW = W, lastH = H;
+  let vis = true, prevT = 0, ema = 16.7, slow = 0, slow2 = 0, lite = false, half = false, skip = false, lastRm = 0, lastW = W, lastH = H, work = 6, good = 0, upWait = 300, lastDown = 0;
   const R = document.documentElement; new IntersectionObserver(([e]) => { vis = e.isIntersecting; R.classList.toggle('fs-live', vis); }, { threshold: 0 }).observe(hero);
   new ResizeObserver(() => { const w = hero.clientWidth, h = hero.clientHeight; if (Math.abs(w - lastW) > 2 || Math.abs(h - lastH) > 90) { lastW = w; lastH = h; const d = absDay; resize(); absDay = d; } }).observe(hero);
   function loop(now) {
     if (!hero.isConnected) { R.classList.remove('fs-live'); return; } requestAnimationFrame(loop);
     if (!vis || document.hidden) { last = now; prevT = 0; return; }
     if (rm && now - lastRm < 500) { last = now; return; } lastRm = now;
-    if (prevT) { const dtm = now - prevT; ema += (Math.min(dtm, 100) - ema) * .05; if (ema > 26) { if (++slow > 120 && PXB > 5.5e5) { PXB *= .72; DPRMAX = Math.min(DPRMAX, 1.25); slow = 0; rescale(); } } else slow = Math.max(0, slow - 2);
-      if (ema > 34 && PXB <= 5.5e5) { if (++slow2 > 200) { if (!lite) lite = true; else half = true; slow2 = 0; } } else slow2 = Math.max(0, slow2 - 3); }
+    if (prevT) { const dtm = now - prevT; ema += (Math.min(dtm, 100) - ema) * .05; if (ema > 26) { if (++slow > 120 && PXB > 5.5e5) { PXB *= .72; DPRMAX = Math.min(DPRMAX, 1.25); slow = 0; lastDown = now; rescale(); } } else slow = Math.max(0, slow - 2);
+      if (ema > 34 && PXB <= 5.5e5) { if (++slow2 > 200) { if (!lite) lite = true; else half = true; slow2 = 0; lastDown = now; } } else slow2 = Math.max(0, slow2 - 3);
+      /* step back up after a quiet spell: half rate first, then lite, then resolution; each step waits longer if it had to drop again soon after */
+      const step = half || lite || PXB < PXB0;
+      if (step && work < (half ? 7 : 9) && ema < 21 && now - lastDown > 8000) { if (++good > upWait) { good = 0; if (now - lastDown < 30000) upWait = Math.min(upWait * 2, 2400); if (half) half = false; else if (lite) lite = false; else { PXB = Math.min(PXB0, PXB / .72); DPRMAX = PXB >= PXB0 ? DPRMAX0 : DPRMAX; rescale(); } } } else good = Math.max(0, good - 2); }
     prevT = now;
     if (half && (skip = !skip)) return;
-    try { frameInner(now); } catch (e) { if (!loop.err) { loop.err = 1; console.warn('fire-story frame error', e); } }
+    const w0 = performance.now(); try { frameInner(now); } catch (e) { if (!loop.err) { loop.err = 1; console.warn('fire-story frame error', e); } }
+    work += (performance.now() - w0 - work) * .05;
     if (lite && parts.length > 420) parts.splice(0, parts.length - 420);
   }
   requestAnimationFrame(loop);
