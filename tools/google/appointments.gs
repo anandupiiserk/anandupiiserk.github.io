@@ -405,7 +405,8 @@ function editorPage_(mode, p, r, D) {
         + '<label class="l">Send to</label><div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;font-size:14px"><label><input type="radio" name="aud" id="aud-one" checked> One person</label><label><input type="radio" name="aud" id="aud-all"> All newsletter subscribers (<b>' + nlActive_().length + '</b>)</label><label><input type="radio" name="aud" id="aud-watch"> Yellow list (<b>' + nlWatch_().length + '</b>)</label><a href="' + adminUrl_() + '" target="_top" style="color:#1f4e9c;text-decoration:none">View subscribers</a></div>'
         + '<div id="tow"><label class="l" for="to">To</label><input id="to" class="tx" list="subl" value="' + esc_(p.to || '') + '" placeholder="name@example.com, or type a name to search your subscribers" autocomplete="off" style="margin-bottom:14px"><datalist id="subl">' + nlActive_().map(function (r) { return '<option value="' + esc_(r.e) + '">' + esc_(r.n || '') + '</option>'; }).join('') + '</datalist></div>' + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="cc2"><div><label class="l" for="cc">Cc <span class="hint">(optional, separate with commas)</span></label><input id="cc" class="tx" placeholder="cc@example.com" autocomplete="off"></div><div><label class="l" for="bcc">Bcc <span class="hint">(hidden recipients)</span></label><input id="bcc" class="tx" placeholder="bcc@example.com" autocomplete="off"></div></div>'
         + '<label class="l" for="sub">Subject</label><input id="sub" class="tx" placeholder="Subject" style="margin-bottom:16px">')
-    + '<label class="l" for="hd">Email header <span class="hint">(the title bar at the top of the email)</span></label><input id="hd" class="tx" maxlength="80" value="Email from ' + OWNER_NAME + '" style="margin-bottom:16px">'
+    + '<label style="display:flex;gap:8px;align-items:flex-start;margin:0 0 14px;font-size:14px;font-weight:600"><input type="checkbox" id="pl" style="margin-top:3px"> <span>Send as normal email <span class="hint" style="font-weight:400">(only your text, like a regular Gmail message: no header bar, box or footer)</span></span></label>'
+    + '<div id="hdw"><label class="l" for="hd">Email header <span class="hint">(the title bar at the top of the email)</span></label><input id="hd" class="tx" maxlength="80" value="Email from ' + OWNER_NAME + '" style="margin-bottom:16px"></div>'
     + '<div style="margin:0 0 16px;padding:12px 14px;border:1px solid var(--bd,#d5dce8);border-radius:12px"><label style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600"><input type="checkbox" id="mton"> Schedule a meeting with them (blocks the time on the website calendar)</label>'
     + '<div id="mtbox" style="display:none;margin-top:12px"><div style="display:flex;flex-wrap:wrap;gap:12px;margin:0 0 12px"><label class="l" style="flex:1 1 150px">Date<input id="mtd" class="tx" style="min-height:0" type="date" min="' + Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd') + '"></label>'
     + '<label class="l" style="flex:1 1 120px">Start time (IST)<input id="mtt" class="tx" style="min-height:0" type="time" step="300"></label>'
@@ -460,12 +461,12 @@ function editorPage_(mode, p, r, D) {
     + 'function MT(){if(!mton.checked)return null;var mm=document.getElementById("mtm");return {on:true,date:document.getElementById("mtd").value,time:document.getElementById("mtt").value,len:document.getElementById("mtn").value,meet:mm?mm.checked:false,agenda:document.getElementById("mta").value};}'
     + 'var MODE=' + JSON.stringify(mode) + ',RID=' + JSON.stringify(id) + ',SIG=' + JSON.stringify(p.sig) + ',D=' + JSON.stringify(D || null) + ',DID=(D&&D.id)||"",sentFlag=false,sl=document.getElementById("sl"),slb=document.getElementById("slb"),sbtn=document.getElementById("send"),q2=function(i){return document.getElementById(i);};'
     + 'sl.onchange=function(){slb.style.display=sl.checked?"flex":"none";sbtn.textContent=sl.checked?"Schedule email":(MODE==="reply"?"Send reply":"Send email");};'
-    + 'function OPT(){return {draft:DID,fn:q2("fn").value,da:+q2("dad").value||0,at:sl.checked?(q2("sld").value+"T"+q2("slt").value):""};}'
+    + 'function OPT(){return {draft:DID,fn:q2("fn").value,da:+q2("dad").value||0,at:sl.checked?(q2("sld").value+"T"+q2("slt").value):"",pl:q2("pl").checked};}var plc=q2("pl");function plv(){q2("hdw").style.display=plc.checked?"none":"block";}plc.onchange=function(){plv();try{localStorage.setItem("mailpl",plc.checked?"1":"0");}catch(e){}};if(D){plc.checked=!!D.pl;}else{try{plc.checked=localStorage.getItem("mailpl")==="1";}catch(e){}}plv();'
     + 'function aud2(){return (typeof ao!=="undefined"&&ao.checked)?"all":(typeof aw!=="undefined"&&aw.checked)?"watch":"one";}'
     + 'function fv(i){var e=q2(i);return e?e.value:"";}'
-    + 'function snap(){return JSON.stringify([fv("fn"),aud2(),fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML]);}'
+    + 'function snap(){return JSON.stringify([fv("fn"),aud2(),fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML,q2("pl").checked]);}'
     + 'if(D){if(D.aud==="all"&&typeof ao!=="undefined"){ao.checked=true;ao.onchange&&ao.onchange();}else if(D.aud==="watch"&&typeof aw!=="undefined"){aw.checked=true;aw.onchange&&aw.onchange();}if(q2("to"))q2("to").value=D.to||"";if(q2("cc"))q2("cc").value=D.cc||"";if(q2("bcc"))q2("bcc").value=D.bcc||"";if(q2("sub"))q2("sub").value=D.s||"";if(D.fn&&q2("fn"))q2("fn").value=D.fn;if(q2("hd")){q2("hd").value=D.h||"";if(typeof hc!=="undefined")hc=true;}ed.innerHTML=D.body||"";}'
-    + 'var lastSnap=snap();function saveDraft(manual){if(sentFlag)return;var s0=snap();var ds=q2("ds");if(!manual&&s0===lastSnap)return;lastSnap=s0;ds.textContent="Saving draft...";google.script.run.withSuccessHandler(function(id){DID=id;ds.textContent="Draft saved at "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});}).withFailureHandler(function(e){ds.textContent="Draft not saved: "+(e&&e.message?e.message:"try again");}).saveDraft(MODE,RID,SIG,DID,fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML,aud2(),fv("fn"));}'
+    + 'var lastSnap=snap();function saveDraft(manual){if(sentFlag)return;var s0=snap();var ds=q2("ds");if(!manual&&s0===lastSnap)return;lastSnap=s0;ds.textContent="Saving draft...";google.script.run.withSuccessHandler(function(id){DID=id;ds.textContent="Draft saved at "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});}).withFailureHandler(function(e){ds.textContent="Draft not saved: "+(e&&e.message?e.message:"try again");}).saveDraft(MODE,RID,SIG,DID,fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML,aud2(),fv("fn"),q2("pl").checked);}'
     + 'q2("sd").onclick=function(){saveDraft(true);};setInterval(function(){saveDraft(false);},15000);'
     + 'document.getElementById("send").onclick=function(){var b=this;if(tot()>MAX){return;}sentFlag=true;b.disabled=true;b.textContent="Sending...";m.className="msg";m.textContent="";'
     + 'var out=files.map(function(f){return {name:f.name,type:f.type,data:f.data};});'
@@ -486,7 +487,7 @@ function addrs_(v, label) {
   return list.join(',');
 }
 function fromName_(v) { var n = String(v || '').replace(/[<>"\r\n]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60); return n || OWNER_NAME; }
-function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, header, fromName) {
+function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, header, fromName, simple) {
   header = String(header || '').trim().slice(0, 80) || 'Email from ' + OWNER_NAME;
   cc = addrs_(cc, 'Cc'); bcc = addrs_(bcc, 'Bcc');
   var blobs = [], total = 0;
@@ -498,7 +499,12 @@ function deliver_(to, subject, bodyHtml, files, quoted, cc, bcc, unsubUrl, heade
   var clean = String(bodyHtml || '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on[a-z]+="[^"]*"/gi, '').replace(/javascript:/gi, '');
   var plain = clean.replace(/<a [^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '$2 ($1)').replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
   subject = String(subject || '').trim().slice(0, 150);
-  var html = '<div style="background:#eef2f8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1c2430"><div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,156,.12)">'
+  /* "Send as normal email": the same formatted text, but no header bar, card, footer or button boxes, so it looks like an ordinary Gmail message */
+  if (simple) clean = clean.replace(/style="display:inline-block;background:[^"]*"/gi, 'style="color:#1a56b8"').replace(/<div style="margin:22px 0 0;padding:14px 16px;background:#f3f6fb;[^"]*">/gi, '<div style="margin:18px 0 0">');
+  var html = simple ? '<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#222222">' + clean
+      + (quoted ? '<br><div style="color:#555555">Your message:</div><blockquote style="margin:4px 0 0 .8ex;border-left:1px solid #cccccc;padding-left:1ex;color:#555555">' + esc_(quoted).replace(/\n/g, '<br>') + '</blockquote>' : '')
+      + (unsubUrl ? '<p style="color:#888888;font-size:12px;margin-top:20px">You are receiving this email because you subscribed to news and information from Anandu Prabhakaran on his website. <a href="' + unsubUrl + '" style="color:#888888">Unsubscribe</a></p>' : '') + '</div>'
+    : '<div style="background:#eef2f8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1c2430"><div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(31,78,156,.12)">'
     + '<div style="background:#1f4e9c;background-image:linear-gradient(135deg,#1f4e9c,#3b82c4);color:#ffffff;padding:20px 28px;font-size:18px;font-weight:bold">' + esc_(header) + '</div>'
     + '<div style="padding:26px 28px;font-size:15px;line-height:1.6">' + clean + '</div>'
     + (quoted ? '<div style="margin:0 28px 24px;padding:12px 14px;background:#f7f9fc;border-left:4px solid #c9d0da;border-radius:4px;color:#5b6675;font-size:13px;line-height:1.5"><b>Your message</b><br>' + esc_(quoted).replace(/\n/g, '<br>') + '</div>' : '')
@@ -522,8 +528,8 @@ function sendReply(id, sig, subject, bodyHtml, files, cc, bcc, header, mt, opt) 
   if (!raw) return statusHtml_('Not found', 'This message is no longer stored.', 'info');
   var r = JSON.parse(raw);
   opt = opt || {}; subject = subject || 'Re: your message'; if (mt && mt.on) mt.subject = subject;
-  if (opt.at) return scheduleMail_({ to: r.e, cc: cc, bcc: bcc, s: subject, h: header, ri: id }, bodyHtml, files, mt, opt);
-  return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject, bodyHtml + extra, files, r.m, cc, bcc, '', header, opt.fn); }, '', { fn: opt.fn, to: r.e, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: id, draft: opt.draft });
+  if (opt.at) return scheduleMail_({ to: r.e, cc: cc, bcc: bcc, s: subject, h: header, ri: id, pl: opt.pl }, bodyHtml, files, mt, opt);
+  return sendWithMeeting_(r.n, r.e, mt, function (extra) { return deliver_(r.e, subject, bodyHtml + extra, files, r.m, cc, bcc, '', header, opt.fn, opt.pl); }, '', { fn: opt.fn, to: r.e, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: id, draft: opt.draft });
 }
 
 // Called from the new-email editor (fresh conversation).
@@ -534,16 +540,16 @@ function sendNew(sig, to, subject, bodyHtml, files, cc, bcc, header, mt, opt) {
   opt = opt || {}; if (mt && mt.on) mt.subject = subject;
   if ((to === '__subscribers__' || to === '__watch__') && opt.at) throw new Error('Send later works for one person only. Remove the schedule to send to a group.');
   if (to === '__subscribers__' || to === '__watch__') {
-    var bulk = sendNews_(subject, bodyHtml, files, header, to === '__watch__', opt.fn);
+    var bulk = sendNews_(subject, bodyHtml, files, header, to === '__watch__', opt.fn, opt.pl);
     recordSent_({ to: to === '__watch__' ? 'Yellow list' : 'Newsletter subscribers', s: subject, h: header, body: bodyHtml, files: files, da: 0 });
     deleteDraft_(opt.draft);
     return bulk;
   }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('Enter a valid email address.');
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
-  if (opt.at) return scheduleMail_({ to: to, cc: cc, bcc: bcc, s: subject, h: header, ri: '' }, bodyHtml, files, mt, opt);
+  if (opt.at) return scheduleMail_({ to: to, cc: cc, bcc: bcc, s: subject, h: header, ri: '', pl: opt.pl }, bodyHtml, files, mt, opt);
   var nm = to.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
-  return sendWithMeeting_('', to, mt, function (extra) { return deliver_(to, subject, bodyHtml + extra, files, '', cc, bcc, '', header, opt.fn); }, nm, { fn: opt.fn, to: to, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: '', draft: opt.draft });
+  return sendWithMeeting_('', to, mt, function (extra) { return deliver_(to, subject, bodyHtml + extra, files, '', cc, bcc, '', header, opt.fn, opt.pl); }, nm, { fn: opt.fn, to: to, cc: cc, s: subject, h: header, body: bodyHtml, files: files, da: opt.da, ri: '', draft: opt.draft });
 }
 /* Optional meeting attached to an email: creates the calendar event (with a Meet link if asked), so the slot is busy on the booking calendar. */
 function sendWithMeeting_(n, to, mt, send, nm, rec) {
@@ -652,14 +658,14 @@ function nlUnsub(id, sig) {
   return statusHtml_('You have been unsubscribed', 'You will no longer receive emails from Anandu Prabhakaran. You can subscribe again at any time on the website.', 'ok');
 }
 // Sends one email to every confirmed subscriber, each with its own unsubscribe link.
-function sendNews_(subject, bodyHtml, files, header, yellow, fn) {
+function sendNews_(subject, bodyHtml, files, header, yellow, fn, pl) {
   if (!String(subject || '').trim()) throw new Error('Add a subject.');
   var subs = yellow ? nlWatch_() : nlActive_();
   if (!subs.length) throw new Error(yellow ? 'Nobody is on the yellow list.' : 'There are no confirmed subscribers yet.');
   var left = MailApp.getRemainingDailyQuota();
   if (subs.length > left) throw new Error('Gmail allows ' + left + ' more recipients today, and there are ' + subs.length + ' subscribers. Try again tomorrow.');
   var ok = 0, bad = 0;
-  subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header, fn); ok++; } catch (err) { bad++; } });
+  subs.forEach(function (r) { try { deliver_(r.e, subject, bodyHtml, files, '', '', '', nlUnsubUrl_(r.id), header, fn, pl); ok++; } catch (err) { bad++; } });
   if (ok && !yellow) PropertiesService.getScriptProperties().setProperty('LASTNEWS', String(Date.now()));
   return statusHtml_(yellow ? 'Sent to the yellow list' : 'Sent to subscribers', 'Your email went to ' + ok + (yellow ? ' yellow-listed person' : ' subscriber') + (ok === 1 ? '' : 's') + (bad ? ' (' + bad + ' failed)' : '') + '. You can close this tab, <a href="' + link_('compose', 'new') + '" target="_top">write another email</a> or <a href="' + mailUrl_() + '" target="_top">see your Sent emails</a>.', 'ok');
 }
@@ -1332,7 +1338,7 @@ function deleteDraft_(id) {
 function finishSend_(rec) { if (!rec) return; try { recordSent_(rec); } catch (x) { console.error('sent record failed: ' + x); } try { deleteDraft_(rec.draft); } catch (x) { } }
 
 /* ---- drafts (auto-saved from the editor) ---- */
-function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, aud, fn) {
+function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, aud, fn, pl) {
   if (!owner_()) throw new Error('Not allowed.');
   if (mode === 'reply' ? sign_('reply', rid) !== sig : sign_('compose', 'new') !== sig) throw new Error('This link is not valid.');
   body = String(body || '').slice(0, 200000); subject = String(subject || '').trim().slice(0, 150);
@@ -1343,7 +1349,7 @@ function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, 
   if (old && old.gid) { try { GmailApp.getDraft(old.gid).update(rcpt, subject || '(no subject)', plainOf_(body) || ' ', opts); gid = old.gid; } catch (x) { gid = ''; } }
   if (!gid) { var d = GmailApp.createDraft(rcpt, subject || '(no subject)', plainOf_(body) || ' ', opts); gid = d.getId(); }
   if (!old) id = mailId_();
-  props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: gid, to: String(to || '').slice(0, 200), cc: String(cc || '').slice(0, 200), bcc: String(bcc || '').slice(0, 200), s: subject, h: String(header || '').slice(0, 80), ri: mode === 'reply' ? rid : '', aud: aud === 'all' || aud === 'watch' ? aud : 'one', fn: fn ? fromName_(fn) : '' }));
+  props.setProperty('DRAFT_' + id, JSON.stringify({ t: Date.now(), gid: gid, to: String(to || '').slice(0, 200), cc: String(cc || '').slice(0, 200), bcc: String(bcc || '').slice(0, 200), s: subject, h: String(header || '').slice(0, 80), ri: mode === 'reply' ? rid : '', aud: aud === 'all' || aud === 'watch' ? aud : 'one', fn: fn ? fromName_(fn) : '', pl: pl ? 1 : 0 }));
   return id;
 }
 function draftPage_(p) {
@@ -1353,7 +1359,7 @@ function draftPage_(p) {
   if (!raw) return page_('Not found', 'This draft no longer exists.', 'info');
   var r = JSON.parse(raw), body = '';
   try { body = GmailApp.getDraft(r.gid).getMessage().getBody(); } catch (x) { body = ''; }
-  var D = { id: id, fn: r.fn || '', to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, aud: r.aud, body: body };
+  var D = { id: id, fn: r.fn || '', to: r.to, cc: r.cc, bcc: r.bcc, s: r.s, h: r.h, aud: r.aud, pl: r.pl || 0, body: body };
   if (r.ri) {
     var m = PropertiesService.getScriptProperties().getProperty('MSG_' + r.ri);
     if (m) return editorPage_('reply', { id: r.ri, sig: sign_('reply', r.ri) }, JSON.parse(m), D);
@@ -1373,7 +1379,7 @@ function scheduleMail_(base, bodyHtml, files, mt, opt) {
   var blobs = (files || []).map(function (f) { return Utilities.newBlob(Utilities.base64Decode(f.data), String(f.type || 'application/octet-stream'), String(f.name || 'attachment').slice(0, 120)); });
   var o = { htmlBody: String(bodyHtml || '').slice(0, 200000) || '<p></p>' }; if (blobs.length) o.attachments = blobs;
   var d = GmailApp.createDraft(to, String(base.s).trim().slice(0, 150), plainOf_(bodyHtml) || ' ', o), props = PropertiesService.getScriptProperties(), id = mailId_();
-  props.setProperty('SCH_' + id, JSON.stringify({ t: Date.now(), at: at, gid: d.getId(), to: to, cc: String(base.cc || '').slice(0, 200), bcc: String(base.bcc || '').slice(0, 200), s: String(base.s).trim().slice(0, 150), h: String(base.h || '').slice(0, 80), ri: base.ri || '', da: +opt.da > 0 ? Math.min(365, +opt.da) : 0, a: blobs.length, f: 0, fn: opt.fn ? fromName_(opt.fn) : '' }));
+  props.setProperty('SCH_' + id, JSON.stringify({ t: Date.now(), at: at, gid: d.getId(), to: to, cc: String(base.cc || '').slice(0, 200), bcc: String(base.bcc || '').slice(0, 200), s: String(base.s).trim().slice(0, 150), h: String(base.h || '').slice(0, 80), ri: base.ri || '', da: +opt.da > 0 ? Math.min(365, +opt.da) : 0, a: blobs.length, f: 0, fn: opt.fn ? fromName_(opt.fn) : '', pl: base.pl ? 1 : 0 }));
   deleteDraft_(opt.draft); ensureReminderTrigger_();
   return statusHtml_('Scheduled', 'Your email to ' + esc_(to) + ' will be sent on ' + esc_(Utilities.formatDate(new Date(at), TZ, 'EEEE d MMMM yyyy, HH:mm')) + ' IST (within about 5 minutes of that time). It is listed under Scheduled in <a href="' + mailUrl_() + '" target="_top">Email</a>, where you can send it now, move it back to drafts or delete it.', 'ok');
 }
@@ -1384,7 +1390,7 @@ function sendScheduledOne_(id) {
     var msg = GmailApp.getDraft(r.gid).getMessage(), files = msg.getAttachments().map(function (b) { return { name: b.getName(), type: b.getContentType(), data: Utilities.base64Encode(b.getBytes()) }; });
     var quoted = ''; if (r.ri) { try { quoted = JSON.parse(props.getProperty('MSG_' + r.ri) || '{}').m || ''; } catch (x) { } }
     var body = msg.getBody();
-    deliver_(r.to, r.s, body, files, quoted, r.cc, r.bcc, '', r.h, r.fn);
+    deliver_(r.to, r.s, body, files, quoted, r.cc, r.bcc, '', r.h, r.fn, r.pl);
     recordSent_({ fn: r.fn, to: r.to, cc: r.cc, s: r.s, h: r.h, body: body, files: files, da: r.da });
     try { GmailApp.getDraft(r.gid).deleteDraft(); } catch (x) { }
     props.deleteProperty('SCH_' + id);
