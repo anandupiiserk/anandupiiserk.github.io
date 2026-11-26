@@ -1776,15 +1776,50 @@ addEventListener('load', fitNav);
 
 (function(){var z=0;addEventListener('keydown',function(e){var t=e.target,n=t&&t.tagName;if(n==='INPUT'||n==='TEXTAREA'||n==='SELECT'||(t&&t.isContentEditable))return;if(e.key==='0'){z=Date.now();return}if(e.key==='Enter'&&Date.now()-z<900){e.preventDefault();location.href=atob('YWRtaW4=')}else z=0},true)})();
 
-/* Desktop only: resting the pointer on a header menu item for 5 s starts a 10 s fill with a countdown, then opens that page; moving away cancels it */
-(function(){var mq=matchMedia('(hover:hover) and (pointer:fine) and (min-width:1025px)'),SEL='.menu a',cur=null,tip=null,tm=0,rf=0;
+/* Desktop only: resting the pointer on a header menu item for 5 s (the footer Admin login button: 2 s) starts a 10 s fill with a countdown, then opens it; moving away cancels it */
+(function(){var mq=matchMedia('(hover:hover) and (pointer:fine) and (min-width:1025px)'),SEL='.menu a, a.admlnk',cur=null,tip=null,tm=0,rf=0;
 var W={"en": ["You will be redirected to {m} in {n} {u}", "second", "seconds"], "ml": ["{n} {u}ിനുള്ളിൽ നിങ്ങളെ {m} എന്നതിലേക്ക് കൊണ്ടുപോകും", "സെക്കൻഡ", "സെക്കൻഡ"], "hi": ["{n} {u} में आपको {m} पर ले जाया जाएगा", "सेकंड", "सेकंड"], "fr": ["Vous serez redirigé vers {m} dans {n} {u}", "seconde", "secondes"], "de": ["Sie werden in {n} {u} zu {m} weitergeleitet", "Sekunde", "Sekunden"], "ar": ["ستتم إعادة توجيهك إلى {m} خلال {n} {u}", "ثانية", "ثوانٍ"], "es": ["Serás redirigido a {m} en {n} {u}", "segundo", "segundos"], "zh": ["{n} {u}后将跳转到{m}", "秒", "秒"], "ja": ["{n} {u}後に{m}へ移動します", "秒", "秒"], "pt": ["Você será redirecionado para {m} em {n} {u}", "segundo", "segundos"], "sv": ["Du skickas vidare till {m} om {n} {u}", "sekund", "sekunder"]};function msg(m,n){var L=(document.documentElement.lang||'en').slice(0,2),w=W[L]||W.en;return w[0].replace('{m}',m).replace('{n}',n).replace('{u}',n===1?w[1]:w[2]);}
-function stop(){clearTimeout(tm);cancelAnimationFrame(rf);if(cur){cur.classList.remove('hfill');cur.style.removeProperty('--hf');}if(tip){tip.remove();tip=null;}cur=null;}
+function AT(){var d=(window.I18N||{})[document.documentElement.lang||'en'];return (d&&d['Admin login window'])||'Admin login window';}function stop(){clearTimeout(tm);cancelAnimationFrame(rf);if(cur){cur.classList.remove('hfill');cur.style.removeProperty('--hf');}if(tip){tip.remove();tip=null;}cur=null;}
 function place(){if(!tip||!cur)return;var r=cur.getBoundingClientRect();tip.style.top=(r.bottom+10)+'px';var x=r.left+r.width/2-tip.offsetWidth/2;tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,x))+'px';}
-function go(){var a=cur;if(!a)return;var s=a.querySelector('.t>span'),name=(s?s.textContent:a.textContent).trim(),t0=performance.now(),last=-1;
+function go(){var a=cur;if(!a)return;var adm=a.classList.contains('admlnk'),s=a.querySelector('.t>span'),name=adm?AT():(s?s.textContent:a.textContent).trim(),t0=performance.now(),last=-1;
 tip=document.createElement('div');tip.className='hf-tip';tip.setAttribute('role','status');document.body.appendChild(tip);a.classList.add('hfill');
-(function step(now){if(cur!==a)return;var p=Math.min(1,(now-t0)/10000),n=Math.max(1,Math.ceil(10-(now-t0)/1000));a.style.setProperty('--hf',(p*100).toFixed(2)+'%');if(n!==last){last=n;tip.textContent=msg(name,n);place();}
+(function step(now){if(cur!==a)return;var p=Math.min(1,(now-t0)/10000),n=adm?Math.max(0,10-Math.floor((now-t0)/1000)):Math.max(1,Math.ceil(10-(now-t0)/1000));a.style.setProperty('--hf',(p*100).toFixed(2)+'%');if(n!==last){last=n;tip.textContent=msg(name,n);place();}
 if(p>=1){stop();a.click();return;}rf=requestAnimationFrame(step);})(t0);}
-document.addEventListener('mouseover',function(e){if(!mq.matches){if(cur)stop();return;}var a=e.target.closest?e.target.closest(SEL):null;if(a===cur)return;stop();if(!a||a.getAttribute('aria-current')==='page'||a.classList.contains('cur'))return;cur=a;tm=setTimeout(go,5000);});
+document.addEventListener('mouseover',function(e){if(!mq.matches){if(cur)stop();return;}var a=e.target.closest?e.target.closest(SEL):null;if(a===cur)return;stop();if(!a||a.getAttribute('aria-current')==='page'||a.classList.contains('cur'))return;cur=a;tm=setTimeout(go,a.classList.contains('admlnk')?2000:5000);});
 document.addEventListener('mouseout',function(e){if(cur&&!(e.relatedTarget&&cur.contains(e.relatedTarget)))stop();});
 addEventListener('blur',stop);addEventListener('scroll',place,{passive:true});document.addEventListener('mousedown',function(e){if(cur&&!cur.contains(e.target))stop();});})();
+
+/* Contact page: visitors by country (whole-percentage shares only, from the script's cached public summary) */
+(function () {
+  const box = document.getElementById('vcc'); if (!box || !SITE.endpoint) return;
+  const COL = ['#0072B2', '#D55E00', '#009E73', '#CC79A7', '#E69F00', '#56B4E9', '#8C8C8C'];
+  let data = null;
+  const pct = v => (v > 0 && v < 0.5 ? '<1' : String(Math.round(v))) + '%';
+  const L = () => document.documentElement.lang || 'en';
+  const T = t => { const d = (window.I18N || {})[L()]; return (d && d[t]) || t; };
+  const nameOf = cc => { try { return new Intl.DisplayNames([L(), 'en'], { type: 'region' }).of(cc) || cc; } catch (e) { return cc; } };
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  function draw() {
+    if (!data) return;
+    const items = data.c.map(([cc, v], i) => ({ cc, v, n: nameOf(cc), col: COL[i] }));
+    if (data.o > 0) items.push({ cc: '', v: data.o, n: T('Other countries'), col: COL[6] });
+    let a = -Math.PI / 2, svg = '';
+    const tot = items.reduce((s, x) => s + x.v, 0) || 1, R = 50, r = 34;
+    items.forEach(x => {
+      const f = x.v / tot; if (f <= 0) return;
+      if (f >= 0.9999) { svg += `<circle cx="60" cy="60" r="${(R + r) / 2}" fill="none" stroke="${x.col}" stroke-width="${R - r}"/>`; return; }
+      const b = a + f * 2 * Math.PI, L = f > 0.5 ? 1 : 0, P = (rr, t) => (60 + rr * Math.cos(t)).toFixed(2) + ' ' + (60 + rr * Math.sin(t)).toFixed(2);
+      svg += `<path d="M${P(R, a)} A${R} ${R} 0 ${L} 1 ${P(R, b)} L${P(r, b)} A${r} ${r} 0 ${L} 0 ${P(r, a)}Z" fill="${x.col}" stroke="var(--surface)" stroke-width="1.2"/>`;
+      a = b;
+    });
+    box.querySelector('.vcc-d').innerHTML = svg;
+    box.querySelector('.vcc-l').innerHTML = items.map(x => `<li><i style="background:${x.col}"></i>${esc(x.n)}<b>${pct(x.v)}</b></li>`).join('');
+  }
+  fetch(SITE.endpoint + '?stats=countries', { credentials: 'omit' }).then(r => r.json()).then(d => {
+    if (!d || !d.ok || !Array.isArray(d.c) || !d.c.length) return;
+    data = { c: d.c.filter(x => Array.isArray(x) && /^[A-Z]{2}$/.test(x[0]) && isFinite(x[1])).slice(0, 6).map(x => [x[0], Math.max(0, Math.min(100, +x[1]))]), o: Math.max(0, Math.min(100, +d.o || 0)) };
+    if (!data.c.length) return;
+    box.hidden = false; draw();
+  }).catch(() => {});
+  addEventListener('langchange', draw);
+})();

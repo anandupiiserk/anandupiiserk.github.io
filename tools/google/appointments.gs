@@ -203,6 +203,7 @@ var THEME_Q_ = '';
 function doGet(e) {
   THEME_Q_ = (e && e.parameter && /^(dark|light)$/.test(e.parameter.theme || '')) ? e.parameter.theme : '';
   if (e && e.parameter && e.parameter.action) { var blocked = gate_(e.parameter); return blocked || act_(e.parameter); }
+  if (e && e.parameter && e.parameter.stats === 'countries') return json_(countryShares_());
   var now = new Date(), end = new Date(now.getTime() + DAYS_AHEAD * 86400000);
   var busy = [], daysOff = {};
   CalendarApp.getDefaultCalendar().getEvents(now, end).forEach(function (ev) {
@@ -940,6 +941,22 @@ function visSheet_() {
   return sh0;
 }
 /* rows with from <= time < to, oldest first. Rows are appended in time order, so read from the bottom. */
+/* Public, for the website's contact page: each country's share of all visitors as a whole percentage, top six plus "other".
+ * No counts, totals, times, pages or regions leave the script, and the result is cached for 30 minutes so repeated requests never touch the sheet. */
+function countryShares_() {
+  var c = CacheService.getScriptCache(), hit = c.get('CSHARE');
+  if (hit) return JSON.parse(hit);
+  var n = {}, tot = 0;
+  try { visRows_(0, Date.now() + 1).forEach(function (r) { if (r.x || !r.f || !/^[A-Z]{2}$/.test(r.cc)) return; n[r.cc] = (n[r.cc] || 0) + 1; tot++; }); } catch (x) { return { ok: false }; }
+  var out = { ok: true, c: [], o: 0 };
+  if (tot >= 10) {
+    var ks = Object.keys(n).sort(function (a, b) { return n[b] - n[a]; }), top = ks.slice(0, 6), rest = 0;
+    top.forEach(function (k) { out.c.push([k, Math.round(n[k] * 1000 / tot) / 10]); });
+    ks.slice(6).forEach(function (k) { rest += n[k]; }); out.o = Math.round(rest * 1000 / tot) / 10;
+  }
+  c.put('CSHARE', JSON.stringify(out), 1800);
+  return out;
+}
 function visRows_(from, to) {
   var sh = visSheet_(), last = sh.getLastRow(), out = [];
   if (last < 2) return out;

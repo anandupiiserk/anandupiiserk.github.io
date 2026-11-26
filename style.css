@@ -1237,3 +1237,16 @@ body[data-page="about"] .dl dd > b { display: block; text-align: left; } body[da
 .hfill{background-image:linear-gradient(90deg,rgba(0,114,178,.38) var(--hf,0%),transparent var(--hf,0%))!important;background-repeat:no-repeat}
 .hf-tip{position:fixed;z-index:2147483000;pointer-events:none;max-width:320px;padding:7px 12px;border-radius:10px;background:#1c2430;color:#fff;font:600 13px/1.35 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;box-shadow:0 6px 22px rgba(0,0,0,.25);white-space:nowrap}
 :root[data-theme="dark"] .hf-tip{background:#f2f4f8;color:#111}
+/* contact page: newsletter form with the visitors-by-country card beside it (percentages only) */
+.nl-wrap{display:grid;gap:28px;align-items:start}
+@media (min-width:1000px){.nl-wrap{grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:48px}}
+.vcc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow);animation:vccIn .6s var(--ease) both;max-width:520px}
+@keyframes vccIn{from{opacity:0;transform:translateY(12px)}}
+.vcc-t{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.vcc-n{margin:4px 0 16px;font-size:.86rem;color:var(--muted)}
+.vcc-top{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.vcc-d{width:170px;height:170px;flex:none}
+.vcc-l{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:1rem;color:var(--text)}
+.vcc-l b{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:600;margin-inline-start:4px}
+.vcc-l li{display:flex;align-items:center;gap:8px}.vcc-l i{width:10px;height:10px;border-radius:50%;flex:none}
+@media (prefers-reduced-motion:reduce){.vcc{animation:none}
