@@ -975,7 +975,12 @@ function visitSummary_(force) {
   sp.setProperty('VISLASTMAIL', String(now));
   return true;
 }
-function dailyVisitSummary() { if (VISIT_MAIL) visitSummary_(false); }
+/* the daily check runs at about SUMMARY_HOUR (IST). If its trigger still fires at an old hour, it moves itself to the new hour and skips that run. */
+function dailyVisitSummary() {
+  var h = +Utilities.formatDate(new Date(), TZ, 'H');
+  if (h < SUMMARY_HOUR || h > SUMMARY_HOUR + 1) { setupVisitCleanup(); return; }
+  if (VISIT_MAIL) visitSummary_(false);
+}
 function testVisitSummary() { visitSummary_(true); }
 /* Moves only this script's own visit emails to the Trash after VISIT_MAIL_DAYS. A thread is touched only when ALL of these hold:
    it is in Sent, it is older than the limit, it holds a single message, the sender name is MSG_SENDER, the subject starts with "[Site visit] "
