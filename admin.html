@@ -11,8 +11,8 @@
 <style>
 /* Admin entry. A hidden check asks Google whether this browser is signed in as the owner:
    the owner goes straight to the admin portal, anyone else sees a plain "Unauthorised access" notice. */
-:root{--pg:#f4f7fa;--card:#fff;--tx:#0f1722;--mut:#5b6675;--ln:#d0d7e2;--soft:#f1f5fb;--a:#0072B2;--on:#fff;--bad:#b94700;--badbg:rgba(185,71,0,.12);--shade:rgba(10,20,32,.35);color-scheme:light}
-:root[data-theme="dark"]{--pg:#0c0a09;--card:#171412;--tx:#f0eae2;--mut:#c2bab0;--ln:rgba(255,238,215,.2);--soft:#221d1a;--a:#e8a33d;--on:#1a1200;--bad:#ff9e5e;--badbg:rgba(255,158,94,.16);--shade:rgba(0,0,0,.55);color-scheme:dark}
+:root{--pg:#f4f7fa;--card:#fff;--tx:#0f1722;--mut:#5b6675;--ln:#d0d7e2;--soft:#f1f5fb;--a:#0072B2;--on:#fff;--bad:#b94700;--badbg:rgba(185,71,0,.12);--shade:rgba(10,20,32,.35);--ok:#00775a;--okbg:rgba(0,158,115,.14);color-scheme:light}
+:root[data-theme="dark"]{--pg:#0c0a09;--card:#171412;--tx:#f0eae2;--mut:#c2bab0;--ln:rgba(255,238,215,.2);--soft:#221d1a;--a:#e8a33d;--on:#1a1200;--bad:#ff9e5e;--badbg:rgba(255,158,94,.16);--shade:rgba(0,0,0,.55);--ok:#4fd1a8;--okbg:rgba(79,209,168,.15);color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--pg);color:var(--tx)}
@@ -27,6 +27,11 @@ body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial
 @media (prefers-reduced-motion:reduce){.sp{animation-duration:3s}}
 .ic{width:52px;height:52px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--badbg);color:var(--bad)}
 .ic svg{width:26px;height:26px}
+.ic.ok{background:var(--okbg);color:var(--ok);animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+.ic.ok .tick{stroke-dasharray:24;stroke-dashoffset:24;animation:dr .5s .2s ease-out forwards}
+.okt{color:var(--ok)}
+@keyframes pop{from{transform:scale(.4);opacity:0}}@keyframes dr{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.ic.ok,.ic.ok .tick{animation:none;stroke-dashoffset:0}}
 h1{margin:0 0 8px;font-size:22px}
 p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
 .btn{display:inline-block;margin-top:20px;padding:12px 26px;border-radius:999px;background:var(--a);color:var(--on);text-decoration:none;font-weight:bold;font-size:15px}
@@ -47,6 +52,7 @@ p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
 <button class="tt" id="tt" type="button"></button>
 <div class="wrap">
  <div class="card" id="chk" role="status"><div class="sp"></div><p>Checking your sign-in...</p></div>
+ <div class="card" id="yes" hidden role="status"><div class="ic ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="tick" d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h1 class="okt">Access Granted</h1><p>Welcome back, Anandu. Opening the admin portal...</p></div>
  <div class="card" id="no" hidden role="alert">
   <button class="x" type="button" aria-label="Close" title="Close">&times;</button>
   <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
@@ -86,7 +92,7 @@ p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
   function deny() { if (decided) return; decided = true; g('chk').hidden = true; g('no').hidden = false; g('msg').focus(); startBack(); }
   window.addEventListener('message', function (e) {
     if (decided || e.origin.indexOf('googleusercontent.com') < 0 || !e.data || e.data.t !== 'whoami') return;
-    if (e.data.owner === true) { decided = true; location.replace(portal()); } else deny();
+    if (e.data.owner === true) { decided = true; g('chk').hidden = true; g('yes').hidden = false; setTimeout(function () { location.replace(portal()); }, 1600); } else deny();
   });
   var fr = document.createElement('iframe'); fr.src = WHO; fr.title = ''; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
   fr.style.cssText = 'position:absolute;width:1px;height:1px;border:0;opacity:0;pointer-events:none';
