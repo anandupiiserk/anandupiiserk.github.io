@@ -2031,5 +2031,5 @@ function whoamiPage_() {
 }
 /* anyone who is not the owner and opens an owner-only link: a plain notice, no sign-in form */
 function trapPage_(p) {
-  return out_(statusHtml_('Unauthorised access', 'This area is only for the website owner. <a href="https://anandu-prabhakaran.pages.dev/home" target="_top">Back to the website</a>', 'bad'), 'Unauthorised access');
+  return out_(statusHtml_('Unauthorised access', 'You are not an Authorised User as per the Website Admin! If you have queries, please send a message to me.<br><br><a href="https://anandu-prabhakaran.pages.dev/contact#cform" target="_top">Send a message</a> &nbsp; <a href="https://anandu-prabhakaran.pages.dev/home" target="_top">Back to the website</a>', 'bad'), 'Unauthorised access');
 }
