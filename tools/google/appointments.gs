@@ -425,6 +425,8 @@ function editorPage_(mode, p, r, D) {
     + '<div class="tg"><button type="button" id="lk" title="Add a hyperlink to the selected text, or insert a new one">Hyperlink</button>' + tbtn('unlink', 'Remove link', '', 'Remove the hyperlink from the selected text') + '<button type="button" id="apl" title="Insert a button that opens the appointment booking page on your website">Add appointment link</button><button type="button" id="mlk" title="Insert a button that opens the message form on your website">Add message link</button>' + tbtn('removeFormat', 'Clear', '', 'Clear formatting') + '</div>'
     + '</div>'
     + '<div id="ed" class="ed" contenteditable="true">' + (reply ? 'Hello ' + esc_(r.n) + ',<br><br><br>Best regards,<br>Anandu Prabhakaran' : '') + '</div>'
+    + '<div style="display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;margin:10px 0 0;font-size:14px"><label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="sg"> Add my signature</label><button type="button" id="sgr" class="b auto" style="background:var(--soft);color:var(--text);padding:7px 14px;font-size:13px">Refresh from Gmail</button><button type="button" id="sge" class="b auto" style="background:var(--soft);color:var(--text);padding:7px 14px;font-size:13px">Edit signature</button><span id="sgm" class="sub" style="margin:0"></span></div>'
+    + '<div id="sgk" style="display:none;position:fixed;inset:0;background:rgba(15,25,45,.45);z-index:50;align-items:center;justify-content:center;padding:16px"><div style="background:var(--card,#fff);color:var(--text,#1c2430);border-radius:14px;padding:22px;max-width:560px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)"><h3 style="margin:0 0 6px;font-size:17px">Your signature</h3><p class="sub" style="margin:0 0 12px">Edit it here, or paste it from Gmail. Saving keeps this version (Refresh from Gmail brings the Gmail one back).</p><div id="sgx" class="ed" contenteditable="true" style="min-height:120px"></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" id="sgc" class="b auto" style="background:var(--soft);color:var(--text);padding:10px 18px">Cancel</button><button type="button" id="sgs" class="b blue auto" style="padding:10px 18px">Save signature</button></div></div></div>'
     + '<label class="l" style="margin-top:18px">Attachments <span class="hint">(up to 15 MB in total)</span></label>'
     + '<div id="lkm" style="display:none;position:fixed;inset:0;background:rgba(15,25,45,.45);z-index:50;align-items:center;justify-content:center;padding:16px"><div style="background:#fff;border-radius:14px;padding:22px;max-width:420px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)"><h3 style="margin:0 0 14px;font-size:17px">Add a hyperlink</h3><label class="l" for="lkt">Text to show</label><input id="lkt" class="tx" placeholder="For example: my website" style="margin-bottom:12px"><label class="l" for="lku">Web address</label><input id="lku" class="tx" placeholder="https://example.com" style="margin-bottom:16px"><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" id="lkx" class="b auto" style="background:var(--soft);color:var(--text);padding:10px 18px">Cancel</button><button type="button" id="lko" class="b blue auto" style="padding:10px 18px">Insert link</button></div></div></div>'
     + '<div id="dz" class="dz"><b>Click to add files</b> or drop them here</div><input type="file" id="fl" multiple style="display:none"><div id="fls" class="fl"></div>'
@@ -461,7 +463,7 @@ function editorPage_(mode, p, r, D) {
     + 'function MT(){if(!mton.checked)return null;var mm=document.getElementById("mtm");return {on:true,date:document.getElementById("mtd").value,time:document.getElementById("mtt").value,len:document.getElementById("mtn").value,meet:mm?mm.checked:false,agenda:document.getElementById("mta").value};}'
     + 'var MODE=' + JSON.stringify(mode) + ',RID=' + JSON.stringify(id) + ',SIG=' + JSON.stringify(p.sig) + ',D=' + JSON.stringify(D || null) + ',DID=(D&&D.id)||"",sentFlag=false,sl=document.getElementById("sl"),slb=document.getElementById("slb"),sbtn=document.getElementById("send"),q2=function(i){return document.getElementById(i);};'
     + 'sl.onchange=function(){slb.style.display=sl.checked?"flex":"none";sbtn.textContent=sl.checked?"Schedule email":(MODE==="reply"?"Send reply":"Send email");};'
-    + 'function OPT(){return {draft:DID,fn:q2("fn").value,da:+q2("dad").value||0,at:sl.checked?(q2("sld").value+"T"+q2("slt").value):"",pl:q2("pl").checked};}var plc=q2("pl");function plv(){q2("hdw").style.display=plc.checked?"none":"block";}plc.onchange=function(){plv();try{localStorage.setItem("mailpl",plc.checked?"1":"0");}catch(e){}};if(D){plc.checked=!!D.pl;}else{try{plc.checked=localStorage.getItem("mailpl")==="1";}catch(e){}}plv();'
+    + 'function OPT(){return {draft:DID,fn:q2("fn").value,da:+q2("dad").value||0,at:sl.checked?(q2("sld").value+"T"+q2("slt").value):"",pl:q2("pl").checked};}var plc=q2("pl");function plv(){q2("hdw").style.display=plc.checked?"none":"block";}plc.onchange=function(){plv();try{localStorage.setItem("mailpl",plc.checked?"1":"0");}catch(e){}};if(D){plc.checked=!!D.pl;}else{try{plc.checked=localStorage.getItem("mailpl")==="1";}catch(e){}}plv();var SIGH=' + JSON.stringify(sigGet_()).replace(/</g, '\\u003c') + ',sg=q2("sg"),sgm=q2("sgm"),sgk=q2("sgk"),sgx=q2("sgx");function sgBlk(){return ed.querySelector("[data-sig]");}function sgPut(){var x=sgBlk();if(x)x.parentNode.removeChild(x);if(sg.checked&&SIGH){if(!ed.textContent.trim()&&!ed.querySelector("img"))ed.innerHTML="<div><br></div>";var d=document.createElement("div");d.setAttribute("data-sig","1");d.style.marginTop="18px";d.innerHTML=SIGH;ed.appendChild(d);}sgm.textContent=SIGH?"":"No signature found yet. Use Refresh from Gmail or Edit signature.";}sg.onchange=function(){sgPut();try{localStorage.setItem("mailsig",sg.checked?"1":"0");}catch(e){}};if(D){setTimeout(function(){sg.checked=!!ed.querySelector("[data-sig]")||!!(SIGH&&ed.innerHTML.indexOf(SIGH.slice(0,40))>=0);},0);}else{var sv="1";try{sv=localStorage.getItem("mailsig")||"1";}catch(e){}sg.checked=sv==="1";if(sg.checked&&SIGH){ed.innerHTML=ed.innerHTML.replace("Best regards,<br>Anandu Prabhakaran","Best regards,");sgPut();}}if(!SIGH)sgm.textContent="No signature found yet. Use Refresh from Gmail or Edit signature.";q2("sgr").onclick=function(){sgm.textContent="Reading your Gmail signature...";google.script.run.withSuccessHandler(function(h){SIGH=h;sgPut();sgm.textContent="Signature updated from Gmail.";}).withFailureHandler(function(e){sgm.textContent=(e&&e.message)||"Could not read the signature.";}).sigRefresh(MODE,RID,SIG);};q2("sge").onclick=function(){sgx.innerHTML=SIGH;sgk.style.display="flex";sgx.focus();};q2("sgc").onclick=function(){sgk.style.display="none";};q2("sgs").onclick=function(){var b=this;b.disabled=true;google.script.run.withSuccessHandler(function(h){b.disabled=false;SIGH=h;sgk.style.display="none";sg.checked=true;sgPut();sgm.textContent="Signature saved.";}).withFailureHandler(function(e){b.disabled=false;sgm.textContent=(e&&e.message)||"Could not save.";}).sigSave(MODE,RID,SIG,sgx.innerHTML);};'
     + 'function aud2(){return (typeof ao!=="undefined"&&ao.checked)?"all":(typeof aw!=="undefined"&&aw.checked)?"watch":"one";}'
     + 'function fv(i){var e=q2(i);return e?e.value:"";}'
     + 'function snap(){return JSON.stringify([fv("fn"),aud2(),fv("to"),fv("cc"),fv("bcc"),fv("sub"),fv("hd"),ed.innerHTML,q2("pl").checked]);}'
@@ -1338,6 +1340,44 @@ function deleteDraft_(id) {
 function finishSend_(rec) { if (!rec) return; try { recordSent_(rec); } catch (x) { console.error('sent record failed: ' + x); } try { deleteDraft_(rec.draft); } catch (x) { } }
 
 /* ---- drafts (auto-saved from the editor) ---- */
+/* ---- Gmail signature: read from Gmail's own settings (primary address), kept in script properties, editable in the email editor ---- */
+function sigFetch_() {
+  var list = null;
+  try { if (typeof Gmail !== 'undefined' && Gmail.Users && Gmail.Users.Settings) list = Gmail.Users.Settings.SendAs.list('me').sendAs; } catch (x) { list = null; }
+  if (!list) {
+    var r = UrlFetchApp.fetch('https://gmail.googleapis.com/gmail/v1/users/me/settings/sendAs', { headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() }, muteHttpExceptions: true });
+    if (r.getResponseCode() !== 200) throw new Error('Gmail did not share the signature (' + r.getResponseCode() + '). You can paste it with Edit signature instead.');
+    list = JSON.parse(r.getContentText()).sendAs || [];
+  }
+  var me = String(Session.getEffectiveUser().getEmail()).toLowerCase();
+  var a = list.filter(function (x) { return x.isPrimary; })[0] || list.filter(function (x) { return String(x.sendAsEmail).toLowerCase() === me; })[0] || list[0];
+  return sigClean_(a && a.signature || '');
+}
+function sigClean_(h) { return String(h || '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on[a-z]+="[^"]*"/gi, '').replace(/javascript:/gi, '').slice(0, 8500); }
+function sigGet_() {
+  var pr = PropertiesService.getScriptProperties(), h = pr.getProperty('MAIL_SIG'), t = +(pr.getProperty('MAIL_SIG_T') || 0);
+  if ((h === null || Date.now() - t > 86400000) && pr.getProperty('MAIL_SIG_OWN') !== '1') {   /* refresh from Gmail once a day unless you edited it here */
+    try { var g = sigFetch_(); pr.setProperty('MAIL_SIG', g); pr.setProperty('MAIL_SIG_T', String(Date.now())); h = g; } catch (x) { console.error('signature fetch failed: ' + x); }
+  }
+  return h || '';
+}
+function edOk_(mode, rid, sig) {
+  if (!owner_()) throw new Error('Not allowed.');
+  if (mode === 'reply' ? sign_('reply', rid) !== sig : sign_('compose', 'new') !== sig) throw new Error('This link is not valid.');
+}
+function sigRefresh(mode, rid, sig) {
+  edOk_(mode, rid, sig);
+  var h = sigFetch_(), pr = PropertiesService.getScriptProperties();
+  if (!h) throw new Error('Your Gmail has no signature set. Add one in Gmail settings, or use Edit signature.');
+  pr.setProperty('MAIL_SIG', h); pr.setProperty('MAIL_SIG_T', String(Date.now())); pr.deleteProperty('MAIL_SIG_OWN');
+  return h;
+}
+function sigSave(mode, rid, sig, html) {
+  edOk_(mode, rid, sig);
+  var h = sigClean_(html), pr = PropertiesService.getScriptProperties();
+  pr.setProperty('MAIL_SIG', h); pr.setProperty('MAIL_SIG_T', String(Date.now())); pr.setProperty('MAIL_SIG_OWN', '1');
+  return h;
+}
 function saveDraft(mode, rid, sig, draftId, to, cc, bcc, subject, header, body, aud, fn, pl) {
   if (!owner_()) throw new Error('Not allowed.');
   if (mode === 'reply' ? sign_('reply', rid) !== sig : sign_('compose', 'new') !== sig) throw new Error('This link is not valid.');
