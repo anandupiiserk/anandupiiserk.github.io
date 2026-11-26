@@ -462,6 +462,17 @@ cap("The IDRiM 2023 technical team at Fuji Hall, IIT Roorkee. Front row: Anagha 
     "IIT ルールキーの Fuji Hall にて、IDRiM 2023 技術チーム。前列：Anagha と Mahima。後列：Anamika と Anandu。",
     "A equipa técnica do IDRiM 2023 no Fuji Hall, IIT Roorkee. Fila da frente: Anagha e Mahima. Fila de trás: Anamika e Anandu.",
     "Det tekniska teamet för IDRiM 2023 i Fuji Hall, IIT Roorkee. Främre raden: Anagha och Mahima. Bakre raden: Anamika och Anandu.")
+cap("At the IDRiM 2023 gala dinner.",
+    "IDRiM 2023 ഗാല ഡിന്നറിൽ.",
+    "IDRiM 2023 के गाला डिनर में।",
+    "Au dîner de gala d'IDRiM 2023.",
+    "Beim Galadinner von IDRiM 2023.",
+    "في عشاء الحفل الرسمي لمؤتمر IDRiM 2023.",
+    "En la cena de gala de IDRiM 2023.",
+    "在 IDRiM 2023 欢迎晚宴上。",
+    "IDRiM 2023 のガラディナーにて。",
+    "No jantar de gala do IDRiM 2023.",
+    "Vid galamiddagen under IDRiM 2023.")
 cap("Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.", "IIT Roorkee-ലെ Fit India Half Marathon 2024 (Sangram 2024), 21 കിലോമീറ്റർ; പൂർത്തീകരണ മെഡലും വഴിയിൽ നിന്നുള്ള ചില പ്രകൃതി ചിത്രങ്ങളും.",
  "IIT Roorkee में Fit India Half Marathon 2024 (Sangram 2024), 21 किमी; मेरा पूर्णता पदक और मार्ग की कुछ प्रकृति तस्वीरें।", "Fit India Half Marathon 2024 (Sangram 2024) à l'IIT Roorkee, 21 km, avec ma médaille de finisher et quelques photos de nature prises sur le parcours.",
  "Fit India Half Marathon 2024 (Sangram 2024) am IIT Roorkee, 21 km, mit meiner Finisher-Medaille und einigen Naturfotos von der Strecke.", "Fit India Half Marathon 2024 (Sangram 2024) في IIT Roorkee، 21 كم، مع ميدالية إتمام السباق وبعض صور الطبيعة من المسار.",
