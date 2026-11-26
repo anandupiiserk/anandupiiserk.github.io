@@ -56,6 +56,10 @@ def stamp(file, html):
             try: extras += open(os.path.join(ROOT, 'gallery', extra), encoding='utf-8').read()
             except OSError: pass
     rd = lambda n: open(os.path.join(ROOT, n), encoding='utf-8').read() if os.path.exists(os.path.join(ROOT, n)) else ''
+    if re.search(r'data-fs\b', html): extras += rd('fire-story.js')   # the home animation is its own file
+    for ref in sorted(set(re.findall(r'(?:src|href|srcset)="((?:img|gallery)/[^"?#\s]+)', html))):   # images the page shows: a replaced picture also counts as a change
+        fp = os.path.join(ROOT, ref)
+        if os.path.isfile(fp): extras += ref + hashlib.sha256(open(fp, 'rb').read()).hexdigest()
     digest = stamp_hash(file, html, rd('script.js'), rd('style.css'), rd('i18n.js'), extras)
     try: db = json.load(open(STAMPS))
     except (OSError, ValueError): db = {}
