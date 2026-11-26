@@ -9,190 +9,78 @@
 <meta name="theme-color" content="#f4f7fa">
 <script>(function(){var t="",q=(location.search.match(/[?&]theme=(dark|light)/)||[])[1];if(q){try{localStorage.setItem("theme",q)}catch(e){}t=q}else{try{t=localStorage.getItem("theme")||""}catch(e){}}if(t!=="dark"&&t!=="light")t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";document.documentElement.dataset.theme=t})();</script>
 <style>
-/* Admin entry. The owner email leads to the real admin portal (Google checks the account there).
-   Anyone else gets a harmless gag: nothing typed is stored or sent anywhere. */
-:root{--pg:#f4f7fa;--card:#fff;--tx:#0f1722;--mut:#5b6675;--ln:#d0d7e2;--in:#fff;--soft:#f1f5fb;--a:#0072B2;--on:#fff;--warn:#b94700;--warnbg:rgba(185,71,0,.15);--okbg:#e6f4ee;--ok:#00664a;--shade:rgba(10,20,32,.35);--stage:radial-gradient(circle at 70% 30%,#dde8f6,#f4f7fa);--stage2:radial-gradient(circle at 30% 20%,#cfe0f7,#f4f7fa);color-scheme:light}
-:root[data-theme="dark"]{--pg:#0c0a09;--card:#171412;--tx:#f0eae2;--mut:#c2bab0;--ln:rgba(255,238,215,.2);--in:#0f0d0c;--soft:#221d1a;--a:#e8a33d;--on:#1a1200;--warn:#ff9e5e;--warnbg:rgba(255,158,94,.18);--okbg:#10291f;--ok:#6fd8b0;--shade:rgba(0,0,0,.55);--stage:radial-gradient(circle at 70% 30%,#2a2018,#0c0a09);--stage2:radial-gradient(circle at 30% 20%,#3a2a14,#0c0a09);color-scheme:dark}
+/* Admin entry. A hidden check asks Google whether this browser is signed in as the owner:
+   the owner goes straight to the admin portal, anyone else sees a plain "Unauthorised access" notice. */
+:root{--pg:#f4f7fa;--card:#fff;--tx:#0f1722;--mut:#5b6675;--ln:#d0d7e2;--soft:#f1f5fb;--a:#0072B2;--on:#fff;--bad:#b94700;--badbg:rgba(185,71,0,.12);--shade:rgba(10,20,32,.35);color-scheme:light}
+:root[data-theme="dark"]{--pg:#0c0a09;--card:#171412;--tx:#f0eae2;--mut:#c2bab0;--ln:rgba(255,238,215,.2);--soft:#221d1a;--a:#e8a33d;--on:#1a1200;--bad:#ff9e5e;--badbg:rgba(255,158,94,.16);--shade:rgba(0,0,0,.55);color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--pg);color:var(--tx)}
-.scr{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}
-.scr.on{display:flex}
+body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--pg);color:var(--tx)}
 #site{position:fixed;inset:0;width:100%;height:100%;border:0;filter:blur(28px) saturate(.9);transform:scale(1.12);pointer-events:none}
-#scr1:after{content:"";position:fixed;inset:0;background:var(--shade)}
-.card{position:relative;z-index:1;background:var(--card);color:var(--tx);border:1px solid var(--ln);width:100%;max-width:360px;border-radius:18px;padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--shade)}
+.card{position:relative;width:100%;max-width:400px;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:32px 28px 26px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4)}
 .x{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--mut);font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .x:hover{background:var(--soft);color:var(--tx)}
-.x:focus-visible{outline:2px solid var(--a);outline-offset:1px}
-.card h1{margin:0 0 4px;font-size:22px}
-.card .s{margin:0 0 18px;color:var(--mut);font-size:14px}
-label{display:block;font-size:13px;color:var(--mut);margin:12px 0 5px}
-input{-webkit-user-select:text;user-select:text;width:100%;padding:12px 14px;border:1px solid var(--ln);border-radius:10px;font:inherit;font-size:16px;color:var(--tx);background:var(--in)}
-input::placeholder{color:var(--mut);opacity:.75}
-input:focus{outline:2px solid var(--a);outline-offset:1px}
-input.bad{border-color:var(--warn);box-shadow:0 0 0 3px var(--warnbg)}
-.er{min-height:18px;margin:6px 0 0;font-size:13px;color:var(--warn)}
-.btn{margin-top:14px;width:100%;padding:13px;border:0;border-radius:999px;background:var(--a);color:var(--on);font:inherit;font-size:15px;font-weight:bold;cursor:pointer}
-.btn:hover{filter:brightness(1.07)}
-#scr2{background:#000 url("img/admin-trap.jpg") center/contain no-repeat}
-#scr2:before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .6s}
-#scr2.late:before{background:rgba(0,0,0,.25)}
-#f2{opacity:0;transform:translateY(14px) scale(.97);visibility:hidden;transition:opacity .5s,transform .5s,visibility 0s .5s}
-#scr2.late #f2{opacity:1;transform:none;visibility:visible;transition:opacity .5s,transform .5s}
-#scr3{background:var(--stage)}
-.msg{text-align:center;color:var(--tx);max-width:440px}
-.sp{width:42px;height:42px;margin:0 auto 14px;border:4px solid var(--ln);border-top-color:var(--a);border-radius:50%;animation:sp 1s linear infinite}
+.x:focus-visible,.btn:focus-visible,.own:focus-visible,.tt:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.sp{width:40px;height:40px;margin:4px auto 14px;border:4px solid var(--ln);border-top-color:var(--a);border-radius:50%;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-#scr0{background:var(--stage)}
-.rv{width:100%;max-width:460px;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
-.rh{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:var(--warn);margin-bottom:14px}
-.dot{width:12px;height:12px;border-radius:50%;background:var(--warn);animation:bl 1s steps(2) infinite}
-@keyframes bl{50%{opacity:.2}}
-.rv dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;margin:0}
-.rv dt{color:var(--mut);font-size:14px}
-.rv dd{margin:0;font-weight:bold;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px}
-.sent{margin:18px 0 0;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:14px}
-.sent.ok{background:var(--okbg);color:var(--ok);font-weight:bold}
-.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
-#scr4{background:var(--stage2)}
-.msg p{line-height:1.5}
-.msg .e{font-size:68px;line-height:1}
-.msg h2{font-size:30px;margin:14px 0 8px;font-weight:800}
-.msg p{font-size:16px;color:var(--mut);margin:0}
-.msg a{display:inline-block;margin-top:22px;color:var(--tx);border:1.5px solid var(--tx);border-radius:999px;padding:10px 22px;text-decoration:none;font-weight:bold}
-.msg.box{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:32px 28px 26px;box-shadow:0 24px 60px rgba(0,0,0,.28);max-width:480px}
-.msg .bl{color:var(--tx);font-weight:bold;margin:0 0 12px}
-.msg .cd{margin:14px 0 0;font-size:14px}
-.msg .cd b{display:inline-block;min-width:1.4em;color:var(--a);font-size:16px}
-.msg a.fill{position:relative;overflow:hidden;isolation:isolate;border-color:var(--a);padding:12px 26px}
-.msg a.fill .fl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--a);color:var(--on);clip-path:inset(0 100% 0 0)}
-.msg a.fill.go .fl{clip-path:inset(0 0 0 0);transition:clip-path 20s linear}
-@media (max-width:700px),(orientation:portrait) and (max-width:1100px){#scr2{background-position:center 14%;background-size:min(100%,760px) auto;align-items:flex-end;padding-bottom:max(24px,env(safe-area-inset-bottom))}}
-@media (max-height:520px){.scr{align-items:flex-start;overflow-y:auto}.card,.rv,.msg.box{margin:8px auto}}
-.tt{position:fixed;top:14px;right:14px;z-index:50;width:44px;height:44px;border-radius:50%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
-.tt:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.sp{animation-duration:3s}}
+.ic{width:52px;height:52px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--badbg);color:var(--bad)}
+.ic svg{width:26px;height:26px}
+h1{margin:0 0 8px;font-size:22px}
+p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
+.btn{display:inline-block;margin-top:20px;padding:12px 26px;border-radius:999px;background:var(--a);color:var(--on);text-decoration:none;font-weight:bold;font-size:15px}
+.btn:hover{filter:brightness(1.07)}
+.own{display:inline-block;margin-top:14px;color:var(--mut);font-size:13px}
+[hidden]{display:none!important}
+.tt{position:fixed;top:14px;right:14px;z-index:5;width:44px;height:44px;border-radius:50%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 </style>
 </head>
 <body>
+<iframe id="site" src="home" title="" aria-hidden="true" tabindex="-1"></iframe>
 <button class="tt" id="tt" type="button"></button>
-<div class="scr on" id="scr0"><div class="msg"><div class="sp"></div><p>Checking your sign-in...</p></div></div>
-<div class="scr" id="scr1">
- <iframe id="site" src="home" title="" aria-hidden="true" tabindex="-1"></iframe>
- <form id="f1" class="card" autocomplete="off" novalidate>
-  <button class="x" type="button" aria-label="Close" title="Close">&times;</button><h1>Website Admin</h1><p class="s">Sign in to open the admin pages. Use your personal email ID only.</p>
-  <label for="f1e">Personal email ID</label><input id="f1e" type="email" inputmode="email" autocomplete="off" placeholder="yourname@gmail.com">
-  <label for="f1p">Password</label><input id="f1p" type="password" autocomplete="new-password" placeholder="Password">
-  <p class="er" id="f1r" role="alert"></p><button class="btn" type="submit">Sign in</button>
- </form>
+<div class="wrap">
+ <div class="card" id="chk" role="status"><div class="sp"></div><p>Checking your sign-in...</p></div>
+ <div class="card" id="no" hidden role="alert">
+  <button class="x" type="button" aria-label="Close" title="Close">&times;</button>
+  <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+  <h1>Unauthorised access</h1>
+  <p>This area is only for the website owner.</p>
+  <a class="btn" href="home">Back to the website</a><br>
+  <a class="own" id="own" href="#">Website owner? Sign in with Google</a>
+ </div>
 </div>
-<div class="scr" id="scr2" role="img" aria-label="Clickbait, clickbait everywhere">
- <form id="f2" class="card" autocomplete="off" novalidate>
-  <button class="x" type="button" aria-label="Close" title="Close">&times;</button><h1>Website Admin</h1><p class="s">Enter your personal email ID to continue.</p>
-  <label for="f2e">Personal email ID</label><input id="f2e" type="email" inputmode="email" autocomplete="off" placeholder="yourname@gmail.com">
-  <p class="er" id="f2r" role="alert"></p><button class="btn" type="submit">Continue</button>
- </form>
-</div>
-<div class="scr" id="scr3"><div class="rv" role="status">
- <div class="rh"><span class="dot"></span>Access attempt recorded</div>
- <dl>
-  <dt>Location</dt><dd id="vLoc">Locating...</dd>
-  <dt>IP address</dt><dd id="vIp"></dd>
-  <dt>Email</dt><dd id="vEm"></dd>
-  <dt>Password</dt><dd id="vPw"></dd>
- </dl>
- <p class="sent" id="vSent">Forwarding details to admin Anandu...</p>
-</div></div>
-<div class="scr" id="scr4"><div class="msg box"><div class="e">&#128514;</div><h2>Hahaha, it was another prank.</h2><p class="bl">Well done for trying to get into the admin. Better luck next time!</p><p>No data was saved or sent to me, and I value people's data. The IP address was just a prank number, and the email and password were only mirrored back on your own screen. I don't need your password either, lol.</p><a href="home" class="fill" id="back"><span class="fl" aria-hidden="true">Back to the website</span><span class="ft">Back to the website</span></a><p class="cd" id="cd" aria-live="polite">Taking you back to my website in <b id="cdn">20</b></p></div></div>
 <script>
 (function () {
-  var OWN = 'anandupiiserk@gmail.com';
   var PORTAL = 'https://script.google.com/macros/s/AKfycbzUnF7q15vyS7JtW5deY2ZZNu4Wi5zGck1bpTJF-CTESDNJuNi7ZT5BH8mnB4W1gt3x/exec?action=go';
-  var DELAY = 5000; /* how long the meme shows alone before the second login appears */
-  var RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
-  /* office and role mailboxes are refused: only a personal address is accepted */
-  var ROLE = /(^|[._-])(director|dir|dean|adean|dosw|dosa|adosw|registrar|ar|dr|hod|head|chair|chairman|chairperson|principal|vc|vicechancellor|rector|provost|secretary|sec|office|admin|administrator|info|contact|support|help|helpdesk|enquiry|enquiries|query|accounts|account|finance|hr|recruit|recruitment|careers|jobs|admissions|admission|academic|academics|exam|exams|library|hostel|warden|sales|marketing|media|press|pr|webmaster|postmaster|noreply|no-reply|donotreply|mail|team|staff|faculty|dept|department|cell|committee|council|registry|director[a-z]*|dean[a-z]*)([._-]|\d|$)/i;
-  function bad(v) { if (!RE.test(v)) return 'Enter a valid email address.'; var u = v.split('@')[0]; if (ROLE.test(u) || /director|dean|dosw|registrar/i.test(u)) return 'Please enter your personal email ID only. Office or role addresses are not accepted.'; return ''; }
-  var typed = { e: '', p: '' };
+  var WHO = 'https://script.google.com/macros/s/AKfycbx4ftUvQ0G2ctvXvvkhwiodbX87pfrSjky8RF_oZxzTygKLmODBvLh-PF8OyzW5EcTk/exec?action=whoami';
   function g(i) { return document.getElementById(i); }
-  function portal() { return PORTAL + '&theme=' + (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'); }
-  /* no right click, dragging or the usual inspect / view source / save shortcuts on this page (the admin portal itself is unaffected) */
-  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-  document.addEventListener('dragstart', function (e) { e.preventDefault(); });
-  document.addEventListener('keydown', function (e) {
-    var k = (e.key || '').toLowerCase(), c = e.ctrlKey || e.metaKey;
-    if (k === 'f12' || (c && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) || (c && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || (c && (k === 'u' || k === 's' || k === 'p'))) { e.preventDefault(); e.stopPropagation(); }
-  }, true);
-  /* light and dark theme, shared with the rest of the website */
   var root = document.documentElement, mc = document.querySelector('meta[name="theme-color"]');
-  function paint() { var d = root.dataset.theme === 'dark'; g('tt').textContent = d ? '\u2600' : '\u263E'; g('tt').setAttribute('aria-label', d ? 'Switch to light theme' : 'Switch to dark theme'); g('tt').title = g('tt').getAttribute('aria-label'); if (mc) mc.content = d ? '#0c0a09' : '#f4f7fa'; }
+  function portal() { return PORTAL + '&theme=' + (root.dataset.theme === 'dark' ? 'dark' : 'light'); }
+  /* light and dark theme, shared with the rest of the website */
+  function paint() { var d = root.dataset.theme === 'dark'; g('tt').textContent = d ? '☀' : '☾'; g('tt').setAttribute('aria-label', d ? 'Switch to light theme' : 'Switch to dark theme'); g('tt').title = g('tt').getAttribute('aria-label'); if (mc) mc.content = d ? '#0c0a09' : '#f4f7fa'; }
   function bg(t) { try { var w = g('site').contentWindow; if (w && w.applyTheme) w.applyTheme(t, false); else if (w) w.document.documentElement.dataset.theme = t; } catch (e) { } }
   g('tt').addEventListener('click', function () { var t = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) { } paint(); bg(t); });
   window.addEventListener('storage', function (e) { if (e.key === 'theme' && (e.newValue === 'dark' || e.newValue === 'light')) { root.dataset.theme = e.newValue; paint(); bg(e.newValue); } });
   paint();
-  /* the close button on the sign-in box goes back to the website */
-  [].forEach.call(document.querySelectorAll('.x'), function (b) { b.addEventListener('click', function () {
+  /* Google decides who gets into the portal; this link only opens its sign-in */
+  g('own').addEventListener('click', function (e) { e.preventDefault(); location.href = portal(); });
+  /* close goes back to the website */
+  document.querySelector('.x').addEventListener('click', function () {
     var same = false; try { same = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) { }
     if (same && history.length > 1) history.back(); else location.href = 'home';
-  }); });
-  function step(f, from, to) {
-    g(f).addEventListener('submit', function (e) {
-      e.preventDefault();
-      var em = g(f + 'e'), pw = g(f + 'p'), r = g(f + 'r'), v = em.value.trim();
-      em.classList.remove('bad'); if (pw) pw.classList.remove('bad'); r.textContent = '';
-      if (f === 'f1' && v.toLowerCase() === OWN && pw && pw.value) { pw.value = ''; location.href = portal(); return; }
-      var why = bad(v); if (why) { em.classList.add('bad'); r.textContent = why; em.focus(); return; }
-      if (f === 'f2' && v.toLowerCase() !== typed.e.toLowerCase()) { em.classList.add('bad'); r.textContent = 'This is not the email you entered before. Enter the same email ID to continue.'; em.focus(); return; }
-      if (pw && !pw.value) { pw.classList.add('bad'); r.textContent = 'Enter your password.'; pw.focus(); return; }
-      if (f === 'f1') typed.e = v; if (pw) { typed.p = pw.value; pw.value = ''; }
-      if (to === 'scr3') { reveal(); }
-      g(from).classList.remove('on'); g(to).classList.add('on');
-      if (to === 'scr2') { setTimeout(function () { g('scr2').classList.add('late'); g('f2e').focus(); }, DELAY); }
-      else { var n = g(to).querySelector('input'); if (n) n.focus(); }
-    });
-    /* the button stays disabled while the address is not a personal one */
-    var em = g(f + 'e'), pw = g(f + 'p'), b = g(f).querySelector('.btn'), r = g(f + 'r');
-    function live() { var v = em.value.trim(), why = v ? bad(v) : 'x'; if (v.toLowerCase() === OWN) why = ''; b.disabled = !!why || (pw && !pw.value); if (v && why && why !== 'x' && /personal/.test(why)) { r.textContent = why; em.classList.add('bad'); } else if (!why) { r.textContent = ''; em.classList.remove('bad'); } }
-    em.addEventListener('input', live); if (pw) pw.addEventListener('input', live); live();
-  }
-  /* the scare screen: everything shown is local (what they typed, a made-up IP and the region Cloudflare already knows from the page request); nothing is stored or sent */
-  var TZ = { 'Asia/Calcutta': 'India', 'Asia/Kolkata': 'India', 'Asia/Kathmandu': 'Nepal', 'Asia/Dhaka': 'Bangladesh', 'Asia/Karachi': 'Pakistan', 'Asia/Colombo': 'Sri Lanka', 'Europe/Paris': 'France', 'Europe/London': 'United Kingdom', 'America/New_York': 'United States', 'America/Los_Angeles': 'United States', 'America/Chicago': 'United States', 'Asia/Tokyo': 'Japan', 'Asia/Shanghai': 'China', 'Europe/Berlin': 'Germany', 'Australia/Sydney': 'Australia', 'Asia/Dubai': 'United Arab Emirates', 'Asia/Singapore': 'Singapore' };
-  function fakeIp() { var a = [103, 106, 117, 152, 157, 162, 182, 49][Math.floor(Math.random() * 8)]; function o() { return Math.floor(Math.random() * 254) + 1; } return a + '.' + o() + '.' + o() + '.' + o(); }
-  function reveal() {
-    g('vEm').textContent = typed.e; g('vPw').textContent = typed.p || '(empty)'; g('vIp').textContent = fakeIp();
-    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (x) { }
-    var fall = TZ[tz] || (tz ? tz.split('/').pop().replace(/_/g, ' ') : 'Unknown');
-    var done = false, put = function (t) { if (!done) { done = true; g('vLoc').textContent = t; } };
-    try {
-      var ac = window.AbortController ? new AbortController() : null; setTimeout(function () { if (ac) ac.abort(); put(fall); }, 2500);
-      fetch('api/where', { cache: 'no-store', signal: ac ? ac.signal : undefined }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-        if (!j) return put(fall); var parts = [j.region, j.country].filter(Boolean); put(parts.length ? parts.join(', ') : fall);
-      }).catch(function () { put(fall); });
-    } catch (x) { put(fall); }
-    setTimeout(function () { var s = g('vSent'); s.textContent = '\u2713 Email with these details sent to admin Anandu.'; s.classList.add('ok'); }, 1800);
-    setTimeout(function () { typed.e = typed.p = ''; g('scr3').classList.remove('on'); g('scr4').classList.add('on'); startBack(); }, 1800 + 4000);
-  }
-  /* the back button fills over 20 seconds and then goes to the About page; clicking it goes to the home page */
-  var backT = 0;
-  function startBack() {
-    var b = g('back'); requestAnimationFrame(function () { requestAnimationFrame(function () { b.classList.add('go'); }); });
-    backT = setTimeout(function () { location.href = 'about'; }, 20000);
-    var n = 20, cd = setInterval(function () { n -= 1; if (n <= 0) { clearInterval(cd); n = 0; } g('cdn').textContent = n; }, 1000);
-    b.addEventListener('click', function () { clearTimeout(backT); });
-  }
-  /* ask the site's Apps Script, in a hidden frame, whether Google knows this visitor as the owner; if so go straight in, otherwise show the sign-in */
-  var WHO = 'https://script.google.com/macros/s/AKfycbx4ftUvQ0G2ctvXvvkhwiodbX87pfrSjky8RF_oZxzTygKLmODBvLh-PF8OyzW5EcTk/exec?action=whoami';
+  });
+  /* hidden frame: the site's Apps Script says only whether this browser is signed in to Google as the owner (true or false) */
   var decided = false;
-  function show() { if (decided) return; decided = true; g('scr0').classList.remove('on'); g('scr1').classList.add('on'); g('f1e').focus(); }
+  function deny() { if (decided) return; decided = true; g('chk').hidden = true; g('no').hidden = false; g('no').querySelector('.btn').focus(); }
   window.addEventListener('message', function (e) {
     if (decided || e.origin.indexOf('googleusercontent.com') < 0 || !e.data || e.data.t !== 'whoami') return;
-    if (e.data.owner === true) { decided = true; location.replace(portal()); } else show();
+    if (e.data.owner === true) { decided = true; location.replace(portal()); } else deny();
   });
   var fr = document.createElement('iframe'); fr.src = WHO; fr.title = ''; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
   fr.style.cssText = 'position:absolute;width:1px;height:1px;border:0;opacity:0;pointer-events:none';
   document.body.appendChild(fr);
-  setTimeout(show, 4000);
-  step('f1', 'scr1', 'scr2');
-  step('f2', 'scr2', 'scr3');
+  setTimeout(deny, 5000);
 })();
 </script>
 </body>
