@@ -1775,3 +1775,16 @@ addEventListener('load', fitNav);
 })();
 
 (function(){var z=0;addEventListener('keydown',function(e){var t=e.target,n=t&&t.tagName;if(n==='INPUT'||n==='TEXTAREA'||n==='SELECT'||(t&&t.isContentEditable))return;if(e.key==='0'){z=Date.now();return}if(e.key==='Enter'&&Date.now()-z<900){e.preventDefault();location.href=atob('YWRtaW4=')}else z=0},true)})();
+
+/* Desktop only: resting the pointer on a header menu item for 5 s starts a 10 s fill with a countdown, then opens that page; moving away cancels it */
+(function(){var mq=matchMedia('(hover:hover) and (pointer:fine) and (min-width:1025px)'),SEL='.menu a',cur=null,tip=null,tm=0,rf=0;
+var W={"en": ["You will be redirected to {m} in {n} {u}", "second", "seconds"], "ml": ["{n} {u}ിനുള്ളിൽ നിങ്ങളെ {m} എന്നതിലേക്ക് കൊണ്ടുപോകും", "സെക്കൻഡ", "സെക്കൻഡ"], "hi": ["{n} {u} में आपको {m} पर ले जाया जाएगा", "सेकंड", "सेकंड"], "fr": ["Vous serez redirigé vers {m} dans {n} {u}", "seconde", "secondes"], "de": ["Sie werden in {n} {u} zu {m} weitergeleitet", "Sekunde", "Sekunden"], "ar": ["ستتم إعادة توجيهك إلى {m} خلال {n} {u}", "ثانية", "ثوانٍ"], "es": ["Serás redirigido a {m} en {n} {u}", "segundo", "segundos"], "zh": ["{n} {u}后将跳转到{m}", "秒", "秒"], "ja": ["{n} {u}後に{m}へ移動します", "秒", "秒"], "pt": ["Você será redirecionado para {m} em {n} {u}", "segundo", "segundos"], "sv": ["Du skickas vidare till {m} om {n} {u}", "sekund", "sekunder"]};function msg(m,n){var L=(document.documentElement.lang||'en').slice(0,2),w=W[L]||W.en;return w[0].replace('{m}',m).replace('{n}',n).replace('{u}',n===1?w[1]:w[2]);}
+function stop(){clearTimeout(tm);cancelAnimationFrame(rf);if(cur){cur.classList.remove('hfill');cur.style.removeProperty('--hf');}if(tip){tip.remove();tip=null;}cur=null;}
+function place(){if(!tip||!cur)return;var r=cur.getBoundingClientRect();tip.style.top=(r.bottom+10)+'px';var x=r.left+r.width/2-tip.offsetWidth/2;tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,x))+'px';}
+function go(){var a=cur;if(!a)return;var s=a.querySelector('.t>span'),name=(s?s.textContent:a.textContent).trim(),t0=performance.now(),last=-1;
+tip=document.createElement('div');tip.className='hf-tip';tip.setAttribute('role','status');document.body.appendChild(tip);a.classList.add('hfill');
+(function step(now){if(cur!==a)return;var p=Math.min(1,(now-t0)/10000),n=Math.max(1,Math.ceil(10-(now-t0)/1000));a.style.setProperty('--hf',(p*100).toFixed(2)+'%');if(n!==last){last=n;tip.textContent=msg(name,n);place();}
+if(p>=1){stop();a.click();return;}rf=requestAnimationFrame(step);})(t0);}
+document.addEventListener('mouseover',function(e){if(!mq.matches){if(cur)stop();return;}var a=e.target.closest?e.target.closest(SEL):null;if(a===cur)return;stop();if(!a||a.getAttribute('aria-current')==='page'||a.classList.contains('cur'))return;cur=a;tm=setTimeout(go,5000);});
+document.addEventListener('mouseout',function(e){if(cur&&!(e.relatedTarget&&cur.contains(e.relatedTarget)))stop();});
+addEventListener('blur',stop);addEventListener('scroll',place,{passive:true});document.addEventListener('mousedown',function(e){if(cur&&!cur.contains(e.target))stop();});})();
