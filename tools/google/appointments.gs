@@ -127,7 +127,7 @@ var SITE_URL_ = 'https://anandu-prabhakaran.pages.dev/';
 var PHOTO_URL_ = 'https://anandu-prabhakaran.pages.dev/home';
 var NAV_JS_ = "(function(){var n=document.querySelector('.nv');if(!n)return;var ind=n.querySelector('.ind'),cur=n.querySelector('a.cur');function mv(a,show){if(!a||!ind)return;ind.style.width=a.offsetWidth+'px';ind.style.transform='translateX('+a.offsetLeft+'px)';ind.style.opacity=show?'1':'0'}function rest(){mv(cur,!!cur)}[].forEach.call(n.querySelectorAll('a'),function(a){a.addEventListener('mouseenter',function(){mv(a,true)});a.addEventListener('focus',function(){mv(a,true)})});n.addEventListener('mouseleave',rest);n.addEventListener('mousemove',function(e){var r=n.getBoundingClientRect();n.style.setProperty('--mx',(e.clientX-r.left+n.scrollLeft)+'px')});window.addEventListener('resize',rest);if(cur){try{var l=cur.offsetLeft-(n.clientWidth-cur.offsetWidth)/2;n.scrollLeft=Math.max(0,l)}catch(e){}}rest();setTimeout(rest,250);})();";
 /* ---- red number badges (like chat apps): what is new in each section since you last opened it ----
-   Opening a section clears its badge; a new item after that brings it back. Counts are kept for 2 minutes to keep pages fast. */
+   Shown on the portal Home tiles only. Opening a section clears its badge; a new item after that brings it back. Counts are kept for 2 minutes to keep pages fast. */
 var NOTIF_KEYS_ = ['messages', 'appts', 'visitors', 'admin'];
 function notifSeen_() {
   var sp = PropertiesService.getScriptProperties(), raw = sp.getProperty('NOTIF_SEEN'), now = Date.now(), s = raw ? JSON.parse(raw) : {}, ch = !raw;
@@ -163,8 +163,7 @@ function notifClearAll(sig) {
 }
 function badge_(n, cls) { return n > 0 ? '<span class="' + cls + '" aria-label="' + n + ' new">' + (n > 99 ? '99+' : n) + '</span>' : ''; }
 function navBar_(cur) {
-  var nc = {}; try { nc = notifCounts_(); } catch (e) { }
-  var a = function (k, t, u, x) { return '<a href="' + u + '" target="_top"' + (k === cur ? ' class="cur" aria-current="page"' : '') + (x || '') + '><span class="t"><span>' + t + '</span><span>' + t + '</span></span>' + (k === cur ? '' : badge_(nc[k] || 0, 'nb')) + '</a>'; };
+  var a = function (k, t, u, x) { return '<a href="' + u + '" target="_top"' + (k === cur ? ' class="cur" aria-current="page"' : '') + (x || '') + '><span class="t"><span>' + t + '</span><span>' + t + '</span></span>' + '</a>'; };
   return '<nav class="nv" aria-label="Admin menu"><span class="ind"></span>' + a('site', 'Go to website', SITE_URL_, ' rel="noopener"') + a('home', 'Home', portalBase_() + '?action=go') + a('admin', 'Subscribers', adminUrl_()) + a('compose', 'Email', mailUrl_()) + a('messages', 'Messages', msgUrl_()) + a('appts', 'Appointments', apptUrl_()) + a('visitors', 'Visitors', visUrl_()) + a('cv', 'CV', cvUrl_()) + '</nav>';
 }
 /* top-right Log out: leaves the portal for the website (the theme goes along) */
@@ -1124,7 +1123,7 @@ function homePage_() {
     + '</div>';
   var inner = '<div class="hero"><div class="hi">' + Utilities.formatDate(new Date(), TZ, 'EEEE, d MMMM yyyy') + '</div><h1>' + hi + ', Anandu</h1><p>Everything for your website in one place. Pick a tile to open it.</p>'
     + (NOTIF_KEYS_.some(function (k) { return (nc[k] || 0) > 0; }) ? '<button type="button" class="mread" id="mar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12.5l4 4L14 8.5M10 16.5l1.5 1.5L22 7.5"/></svg>Mark all as read</button>'
-      + '<script>(function(){var b=document.getElementById("mar");b.onclick=function(){b.disabled=true;b.lastChild.textContent="Marking...";google.script.run.withSuccessHandler(function(){[].forEach.call(document.querySelectorAll(".tb,.nb"),function(x){x.remove()});b.remove()}).withFailureHandler(function(e){b.disabled=false;b.lastChild.textContent="Could not mark them. Try again"}).notifClearAll(' + JSON.stringify(sign_('admin', 'notif')) + ')}})();<\/script>' : '')
+      + '<script>(function(){var b=document.getElementById("mar");b.onclick=function(){b.disabled=true;b.lastChild.textContent="Marking...";google.script.run.withSuccessHandler(function(){[].forEach.call(document.querySelectorAll(".tb"),function(x){x.remove()});b.remove()}).withFailureHandler(function(e){b.disabled=false;b.lastChild.textContent="Could not mark them. Try again"}).notifClearAll(' + JSON.stringify(sign_('admin', 'notif')) + ')}})();<\/script>' : '')
     + '</div>' + tiles;
   return out_(shell_('', '', inner, true, 'home'), 'Home');
 }
