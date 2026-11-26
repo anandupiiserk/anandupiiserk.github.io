@@ -942,7 +942,7 @@ function visSheet_() {
 }
 /* rows with from <= time < to, oldest first. Rows are appended in time order, so read from the bottom. */
 /* Public, for the website's contact page: each country's share of all visitors as a whole percentage, top six plus "other".
- * No counts, totals, times, pages or regions leave the script, and the result is cached for 30 minutes so repeated requests never touch the sheet. */
+ * No counts, totals, times, pages or regions leave the script, and the result is cached for 10 minutes so repeated requests never touch the sheet. */
 function countryShares_() {
   var c = CacheService.getScriptCache(), hit = c.get('CSHARE');
   if (hit) return JSON.parse(hit);
@@ -954,7 +954,7 @@ function countryShares_() {
     top.forEach(function (k) { out.c.push([k, Math.round(n[k] * 1000 / tot) / 10]); });
     ks.slice(6).forEach(function (k) { rest += n[k]; }); out.o = Math.round(rest * 1000 / tot) / 10;
   }
-  c.put('CSHARE', JSON.stringify(out), 1800);
+  c.put('CSHARE', JSON.stringify(out), 600);
   return out;
 }
 function visRows_(from, to) {

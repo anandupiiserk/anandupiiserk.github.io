@@ -130,15 +130,15 @@ def page(file, pid, title, desc, body, html_class=''):
 <script>try{{var q=(location.search.match(/[?&]theme=(dark|light)/)||[])[1];if(q){{try{{localStorage.setItem('theme',q)}}catch(e){{}}history.replaceState(null,'',location.pathname+location.search.replace(/([?&])theme=(dark|light)&?/,'$1').replace(/[?&]$/,'')+location.hash)}}var t=q||localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;var z=localStorage.getItem('fs');if(z)document.documentElement.style.fontSize=z+'%';var l=localStorage.getItem('lang');if(l){{document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl'}}}}catch(e){{}}</script>
 <link rel="icon" href="{FAVICON}">
 {FONTS}
-<link rel="stylesheet" href="style.css?v=20261126k">
+<link rel="stylesheet" href="style.css?v=20261126l">
 </head>
 <body data-page="{pid}">
 <main>
 {body}
 </main>
 <noscript><p style="padding:20px">This site uses JavaScript for navigation and animation. Pages: index.html, about.html, research.html, publications.html, workshops.html, gallery.html, contact.html.</p></noscript>
-<script src="i18n.js?v=20261126k"></script>
-<script src="script.js?v=20261126k"></script>
+<script src="i18n.js?v=20261126l"></script>
+<script src="script.js?v=20261126l"></script>
 </body>
 </html>
 '''
@@ -511,6 +511,7 @@ contact = phero('06 / Contact', 'Get in touch', 'Write by email, or find me on t
   <div class="vcc-t" id="vcc-t">Visitors by country</div>
   <p class="vcc-n">Share of all visitors to this website</p>
   <div class="vcc-top"><svg class="vcc-d" viewBox="0 0 120 120" aria-hidden="true" data-i18n-skip></svg><ul class="vcc-l" data-i18n-skip></ul></div>
+  <p class="vcc-f">* New visitor records may take up to 15 minutes to appear here.</p>
 </aside>
 </div>
 </div>'''.replace('@@ADDRBLOCK@@', ADDR_BLOCK).replace('@@APPTEP@@', APPT_ENDPOINT).replace('@@BLOCKED@@', ','.join(APPT_BLOCKED + [x['range'] for x in json.load(open(os.path.join(ROOT, 'tools', 'unavailable.json')))])))
