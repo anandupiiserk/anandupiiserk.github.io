@@ -978,7 +978,7 @@ function visitSummary_(force) {
 /* the daily check runs at about SUMMARY_HOUR (IST). If its trigger still fires at an old hour, it moves itself to the new hour and skips that run. */
 function dailyVisitSummary() {
   var h = +Utilities.formatDate(new Date(), TZ, 'H');
-  if (h < SUMMARY_HOUR || h > SUMMARY_HOUR + 1) { setupVisitCleanup(); return; }
+  if (h < SUMMARY_HOUR || h > SUMMARY_HOUR + 1) { setupVisitCleanup(); if (VISIT_MAIL && !PropertiesService.getScriptProperties().getProperty('VISKNOWN')) visitSummary_(false); return; }
   if (VISIT_MAIL) visitSummary_(false);
 }
 function testVisitSummary() { visitSummary_(true); }
