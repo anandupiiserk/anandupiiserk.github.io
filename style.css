@@ -1113,7 +1113,7 @@ html.wmk .gimg::after, html.wmk .wk-pics .wmw::after { content: var(--wm-text); 
 .seg.my-on .seg-ind { background: var(--my); }
 
 /* ---------- Newsletter pop-up (contact page) ---------- */
-@media (max-width: 560px) { .fstat.ok{color:#2e8b57}
+.fstat.ok{color:#2e8b57}
 .otp [hidden] { display: none !important; }
 
 /* My Space button fills while its photos load in the background */
