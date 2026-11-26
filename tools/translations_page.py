@@ -440,6 +440,17 @@ cap("Lunch at the CNRS campus restaurant in Montpellier, open to CNRS employees 
  "Déjeuner au restaurant du campus du CNRS à Montpellier, ouvert aux employés du CNRS de juillet à décembre 2025.", "Mittagessen im Restaurant des CNRS-Campus in Montpellier, von Juli bis Dezember 2025 für CNRS-Beschäftigte geöffnet.", "غداء في مطعم حرم CNRS بمونبلييه، المتاح لموظفي CNRS من يوليو إلى ديسمبر 2025.",
  "Almuerzo en el restaurante del campus del CNRS en Montpellier, abierto a los empleados del CNRS de julio a diciembre de 2025.", "在蒙彼利埃 CNRS 校区餐厅用午餐，2025 年 7 月至 12 月向 CNRS 员工开放。", "モンペリエの CNRS キャンパスのレストランでの昼食。2025年7月から12月まで CNRS の職員に開放されていました。",
  "Almoço no restaurante do campus do CNRS em Montpellier, aberto aos funcionários do CNRS de julho a dezembro de 2025.", "Lunch på CNRS-campus restaurang i Montpellier, öppen för CNRS-anställda från juli till december 2025.")
+cap("Group photo of the IDRiM 2023 participants, CoEDMM, IIT Roorkee, September 2023.",
+    "IDRiM 2023 പങ്കാളികളുടെ ഗ്രൂപ്പ് ഫോട്ടോ, CoEDMM, IIT റൂർക്കി, സെപ്റ്റംബർ 2023.",
+    "IDRiM 2023 के प्रतिभागियों की समूह तस्वीर, CoEDMM, IIT रुड़की, सितंबर 2023।",
+    "Photo de groupe des participants à IDRiM 2023, CoEDMM, IIT Roorkee, septembre 2023.",
+    "Gruppenfoto der Teilnehmenden von IDRiM 2023, CoEDMM, IIT Roorkee, September 2023.",
+    "صورة جماعية للمشاركين في IDRiM 2023، CoEDMM، المعهد الهندي للتكنولوجيا في روركي، سبتمبر 2023.",
+    "Foto de grupo de los participantes de IDRiM 2023, CoEDMM, IIT Roorkee, septiembre de 2023.",
+    "IDRiM 2023 参会者合影，CoEDMM，印度理工学院鲁尔基分校，2023 年 9 月。",
+    "IDRiM 2023 参加者の集合写真、CoEDMM、IIT ルールキー、2023年9月。",
+    "Foto de grupo dos participantes do IDRiM 2023, CoEDMM, IIT Roorkee, setembro de 2023.",
+    "Gruppfoto av deltagarna vid IDRiM 2023, CoEDMM, IIT Roorkee, september 2023.")
 cap("Fit India Half Marathon 2024 (Sangram 2024) at IIT Roorkee, 21 km, with my completion medal and a few nature photos from the route.", "IIT Roorkee-ലെ Fit India Half Marathon 2024 (Sangram 2024), 21 കിലോമീറ്റർ; പൂർത്തീകരണ മെഡലും വഴിയിൽ നിന്നുള്ള ചില പ്രകൃതി ചിത്രങ്ങളും.",
  "IIT Roorkee में Fit India Half Marathon 2024 (Sangram 2024), 21 किमी; मेरा पूर्णता पदक और मार्ग की कुछ प्रकृति तस्वीरें।", "Fit India Half Marathon 2024 (Sangram 2024) à l'IIT Roorkee, 21 km, avec ma médaille de finisher et quelques photos de nature prises sur le parcours.",
  "Fit India Half Marathon 2024 (Sangram 2024) am IIT Roorkee, 21 km, mit meiner Finisher-Medaille und einigen Naturfotos von der Strecke.", "Fit India Half Marathon 2024 (Sangram 2024) في IIT Roorkee، 21 كم، مع ميدالية إتمام السباق وبعض صور الطبيعة من المسار.",
