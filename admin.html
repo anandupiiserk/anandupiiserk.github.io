@@ -21,7 +21,7 @@ body{font-family:Calibri,Carlito,"Segoe UI",system-ui,-apple-system,Roboto,Arial
 .card{position:relative;width:100%;max-width:400px;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:32px 28px 26px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4)}
 .x{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--mut);font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .x:hover{background:var(--soft);color:var(--tx)}
-.x:focus-visible,.btn:focus-visible,.own:focus-visible,.tt:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.x:focus-visible,.btn:focus-visible,.gbtn:focus-visible,.tt:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 .sp{width:40px;height:40px;margin:4px auto 14px;border:4px solid var(--ln);border-top-color:var(--a);border-radius:50%;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.sp{animation-duration:3s}}
@@ -31,7 +31,13 @@ h1{margin:0 0 8px;font-size:22px}
 p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
 .btn{display:inline-block;margin-top:20px;padding:12px 26px;border-radius:999px;background:var(--a);color:var(--on);text-decoration:none;font-weight:bold;font-size:15px}
 .btn:hover{filter:brightness(1.07)}
-.own{display:inline-block;margin-top:14px;color:var(--mut);font-size:13px}
+.acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}.acts .btn{margin-top:0}
+.btn.ghost{background:transparent;color:var(--a);border:1.5px solid var(--a);padding:10.5px 24px}
+.fill{position:relative;overflow:hidden;isolation:isolate}
+.fill .fl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--a);color:var(--on);clip-path:inset(0 100% 0 0)}
+.fill.go .fl{clip-path:inset(0 0 0 0);transition:clip-path 20s linear}
+.sep{display:flex;align-items:center;gap:10px;margin:22px 0 12px;color:var(--mut);font-size:12px}.sep:before,.sep:after{content:"";flex:1;height:1px;background:var(--ln)}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px 16px;border:1px solid var(--ln);border-radius:999px;background:var(--soft);color:var(--tx);text-decoration:none;font-weight:600;font-size:14px}.gbtn:hover{border-color:var(--a)}.gbtn svg{width:18px;height:18px}
 [hidden]{display:none!important}
 .tt{position:fixed;top:14px;right:14px;z-index:5;width:44px;height:44px;border-radius:50%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 </style>
@@ -45,9 +51,9 @@ p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
   <button class="x" type="button" aria-label="Close" title="Close">&times;</button>
   <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
   <h1>Unauthorised access</h1>
-  <p>This area is only for the website owner.</p>
-  <a class="btn" href="home">Back to the website</a><br>
-  <a class="own" id="own" href="#">Website owner? Sign in with Google</a>
+  <p>You are not an Authorised User as per the Website Admin! If you have queries, please send a message to me.</p>
+  <div class="acts"><a class="btn" id="msg" href="contact#cform">Send a message</a><a class="btn ghost fill" id="back" href="home"><span class="fl" aria-hidden="true">Back to the website</span><span>Back to the website</span></a></div>
+  <div class="sep"><span>Website owner?</span></div><a class="gbtn" id="own" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Sign in to the website with Google</a>
  </div>
 </div>
 <script>
@@ -64,15 +70,20 @@ p{margin:0;color:var(--mut);font-size:15px;line-height:1.5}
   window.addEventListener('storage', function (e) { if (e.key === 'theme' && (e.newValue === 'dark' || e.newValue === 'light')) { root.dataset.theme = e.newValue; paint(); bg(e.newValue); } });
   paint();
   /* Google decides who gets into the portal; this link only opens its sign-in */
-  g('own').addEventListener('click', function (e) { e.preventDefault(); location.href = portal(); });
+  g('own').addEventListener('click', function (e) { e.preventDefault(); clearTimeout(backT); location.href = portal(); });
+  /* "Back to the website" fills over 20 seconds and then opens the About page; clicking it goes to the home page, and "Send a message" opens the contact form */
+  var backT = 0;
+  function startBack() { var b = g('back'); requestAnimationFrame(function () { requestAnimationFrame(function () { b.classList.add('go'); }); }); backT = setTimeout(function () { location.href = 'about'; }, 20000); }
+  g('back').addEventListener('click', function () { clearTimeout(backT); });
+  g('msg').addEventListener('click', function () { clearTimeout(backT); });
   /* close goes back to the website */
   document.querySelector('.x').addEventListener('click', function () {
     var same = false; try { same = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) { }
-    if (same && history.length > 1) history.back(); else location.href = 'home';
+    clearTimeout(backT); if (same && history.length > 1) history.back(); else location.href = 'home';
   });
   /* hidden frame: the site's Apps Script says only whether this browser is signed in to Google as the owner (true or false) */
   var decided = false;
-  function deny() { if (decided) return; decided = true; g('chk').hidden = true; g('no').hidden = false; g('no').querySelector('.btn').focus(); }
+  function deny() { if (decided) return; decided = true; g('chk').hidden = true; g('no').hidden = false; g('msg').focus(); startBack(); }
   window.addEventListener('message', function (e) {
     if (decided || e.origin.indexOf('googleusercontent.com') < 0 || !e.data || e.data.t !== 'whoami') return;
     if (e.data.owner === true) { decided = true; location.replace(portal()); } else deny();
