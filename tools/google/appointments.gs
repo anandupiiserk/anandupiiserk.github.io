@@ -338,9 +338,9 @@ function otpSend_(p) {
   cache.put(nk, String(n + 1), 3600); props.setProperty(dk, String(dn + 1));
   try {
     MailApp.sendEmail({ to: email, name: MSG_SENDER, subject: 'Your verification code',
-      body: 'Your OTP is ' + code + '\n\nThis is system generated mail and do not respond here.\nThe OTP is valid for ' + (OTP_TTL_SEC / 60) + ' minutes.\n\nThis email is sent from a custom domain developed and maintained by Anandu Prabhakaran.',
+      body: 'Your OTP is ' + code + '\n\nThis is system generated mail and do not respond here.\nThe OTP is valid for ' + (OTP_TTL_SEC / 60) + ' minutes.\n\nThis email is sent from a custom domain developed and maintained by Anandu Prabhakaran.' + SYS_NOTE_T,
       htmlBody: mail_('Email verification', 'Your OTP is <span style="display:inline-block;margin-left:4px;padding:6px 14px;background:#eef5fd;border:1px solid #cfe0f5;border-radius:8px;font-size:26px;letter-spacing:.28em;font-weight:bold;color:#1f4e9c">' + code + '</span>', [], [],
-        'This is system generated mail and do not respond here. The OTP is valid for ' + (OTP_TTL_SEC / 60) + ' minutes. If you did not ask for it, ignore this email.') });
+        'This is system generated mail and do not respond here. The OTP is valid for ' + (OTP_TTL_SEC / 60) + ' minutes. If you did not ask for it, ignore this email.' + SYS_NOTE_H) });
   } catch (x) { console.error('otp mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
   if (p.purpose === 'subscribe') { try { var pid = subId_(email), po = pendGet_(pid); props.setProperty('PEND_' + pid, JSON.stringify({ e: email, t: po ? po.t : Date.now(), l: Date.now() })); } catch (x2) { } }   /* asked for an OTP to subscribe, not finished yet */
   return json_({ ok: true });
@@ -386,10 +386,10 @@ function message_(p) {
   } catch (x) { console.error('message mail failed: ' + x); return json_({ ok: false, error: 'mail' }); }
   try {
     MailApp.sendEmail({ to: email, name: MSG_SENDER, subject: 'Your message has been received',
-      body: 'Hello ' + name + ', your message has been received.\n\nName: ' + name + '\nEmail: ' + email + '\nMessage:\n' + msg + '\n\nThe details above are the details you filled in on the website.\nPlease do not respond to this email. It is system generated and you will be contacted by Anandu soon.',
+      body: 'Hello ' + name + ', your message has been received.\n\nName: ' + name + '\nEmail: ' + email + '\nMessage:\n' + msg + '\n\nThe details above are the details you filled in on the website.\nPlease do not respond to this email. It is system generated and you will be contacted by Anandu soon.' + SYS_NOTE_T,
       htmlBody: mail_('Your message has been received', 'Hello ' + esc_(name) + ', thank you for writing. Your message has been forwarded to Anandu.',
         [['Name', esc_(name)], ['Email', esc_(email)], ['Message', html]], [],
-        'The details shown above are the details you filled in on the website.<br><br>Please do not respond to this email. It is system generated and you will be contacted by Anandu soon.') });
+        'The details shown above are the details you filled in on the website.<br><br>Please do not respond to this email. It is system generated and you will be contacted by Anandu soon.' + SYS_NOTE_H) });
   } catch (x) { console.error('ack mail failed: ' + x); }
   return json_({ ok: true });
 }
@@ -1074,9 +1074,21 @@ function cleanVisitMails() {
     t.moveToTrash();
   });
 }
-/* Same rule for the OTP emails: only this script's own "Your verification code" mails are moved to the Trash, after OTP_MAIL_DAYS (2 months). Nothing else is touched. */
-var OTP_MAIL_DAYS = 60;
+/* Same rule for the system emails to visitors: only this script's own "Your verification code" and "Your message has been received" mails
+ * are moved to the Trash of the admin account after OTP_MAIL_DAYS (30 days); the visitor's copy is untouched, and the emails say so. Nothing else is touched. */
+var OTP_MAIL_DAYS = 30;
+var SYS_NOTE_T = "\n\nNote: the copy of this email in the website admin's account is deleted after 30 days. Your copy is not affected.";
+var SYS_NOTE_H = "<br><br><span style=\"color:#5b6675\">Note: the copy of this email in the website admin's account is deleted after 30 days. Your copy is not affected.</span>";
 function cleanOtpMails_() {
+  GmailApp.search('in:sent from:me subject:"Your message has been received" older_than:' + OTP_MAIL_DAYS + 'd', 0, 100).forEach(function (t) {
+    var ms = t.getMessages();
+    if (ms.length !== 1) return;
+    var m = ms[0];
+    if (m.getSubject() !== 'Your message has been received' || String(m.getFrom()).indexOf(MSG_SENDER) < 0) return;
+    var b = m.getPlainBody();
+    if (b.indexOf('your message has been received.') < 0 || b.indexOf('It is system generated and you will be contacted by Anandu soon.') < 0) return;
+    t.moveToTrash();
+  });
   GmailApp.search('in:sent from:me subject:"Your verification code" older_than:' + OTP_MAIL_DAYS + 'd', 0, 100).forEach(function (t) {
     var ms = t.getMessages();
     if (ms.length !== 1) return;
